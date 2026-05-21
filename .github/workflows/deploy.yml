@@ -26,6 +26,13 @@ permissions:
   pages: write
   id-token: write
 
+# Run the bundled JavaScript actions (checkout, setup-node, etc.) on
+# Node.js 24. GitHub is making this the runner default in June 2026 and
+# removing Node 20 from runners in September 2026; opting in early avoids
+# the deprecation warnings without changing behavior.
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 # Only one Pages deploy at a time; let an in-flight deploy finish rather
 # than cancelling it mid-publish.
 concurrency:
@@ -42,7 +49,7 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
           cache: 'npm'
 
       - name: Install dependencies
