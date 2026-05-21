@@ -1,19 +1,22 @@
 /**
  * App root.
  *
- * Stage 3: static layout shells. The page composition matches the mockup —
- * header, year selector, map + detail card grid, table, footer — with
- * placeholder boxes where Stage 4+ components (map, detail card, table)
- * will be rendered. Real numbers from the data layer flow into the header
- * and footer; selection state isn't wired yet.
+ * Owns the single piece of interactive state in the prototype: `selectedState`.
+ * The choropleth map dispatches selection up through `onSelect`; the detail
+ * card and table (Stage 5) will read the same state. Stage 4 only wires the
+ * map — the detail card and table remain placeholders.
  */
 
+import { useMemo, useState } from 'react';
 import csvText from '../homeschool-hub-state-summary-data.csv?raw';
 import { parseCsv } from './data/parseCsv.js';
 import { deriveByYear } from './data/derive.js';
+import { schoolYearLabel, computeQuantileBreaks } from './config/theme.js';
 import Header from './components/Header.jsx';
 import YearSelector from './components/YearSelector.jsx';
 import Footer from './components/Footer.jsx';
+import ChoroplethMap from './components/ChoroplethMap.jsx';
+import MapLegend from './components/MapLegend.jsx';
 
 // Data is parsed once at module load — the CSV is bundled at build time.
 const { byState, years } = parseCsv(csvText);
@@ -23,8 +26,30 @@ const byYear = deriveByYear(byState);
 const SELECTOR_YEARS = years.slice(-5);
 const ACTIVE_YEAR = SELECTOR_YEARS[SELECTOR_YEARS.length - 1];
 
+// Default selection per CLAUDE.md.
+const DEFAULT_STATE = 'Arkansas';
+
 export default function App() {
+  const [selectedState, setSelectedState] = useState(DEFAULT_STATE);
   const yearStats = byYear[ACTIVE_YEAR];
+
+  // { stateName: number | null } for the active year — what the map consumes.
+  const valuesByState = useMemo(() => {
+    const out = {};
+    for (const name of Object.keys(byState)) {
+      const v = byState[name][ACTIVE_YEAR];
+      out[name] = v == null ? null : v;
+    }
+    return out;
+  }, []);
+
+  // Quintile break points for the choropleth classification. Computed once
+  // per change in the active year's values; consumed by both the map (to
+  // pick a bucket for each state) and the legend (to label each swatch).
+  const breaks = useMemo(
+    () => computeQuantileBreaks(Object.values(valuesByState)),
+    [valuesByState],
+  );
 
   return (
     <main className="mx-auto max-w-[1200px] px-8 py-12 lg:px-12 lg:py-16">
@@ -43,22 +68,37 @@ export default function App() {
       </div>
 
       {/*
-        Layout: two columns. Left column stacks the map and the table; the
-        right column holds the detail card and spans the full vertical
-        height of the left column (map + table). At narrow widths the grid
-        collapses to a single column in document order.
+        Layout: two columns. Left column stacks the map + legend and the table;
+        the right column holds the detail card and spans the full vertical
+        height of the left column. At narrow widths the grid collapses to a
+        single column in document order.
       */}
       <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-[1fr_320px]">
-        <Placeholder label="Choropleth map" heightClass="h-[460px]" />
+        <div>
+          <ChoroplethMap
+            valuesByState={valuesByState}
+            breaks={breaks}
+            selectedState={selectedState}
+            onSelect={setSelectedState}
+          />
+          <div className="mt-4">
+            <MapLegend
+              label={`Students, ${schoolYearLabel(ACTIVE_YEAR)}`}
+              breaks={breaks}
+            />
+          </div>
+        </div>
+
         <Placeholder
           label="State detail card"
           accent
           className="lg:row-span-2 lg:h-auto"
         />
+
         <div>
           <hr className="border-t border-sable/15" />
           <h2 className="mt-6 font-sans text-[11px] font-semibold uppercase tracking-[0.18em] text-sable/70">
-            Arkansas Enrollment, by Year
+            {selectedState} Enrollment, by Year
           </h2>
           <Placeholder
             label="Enrollment table"
@@ -74,14 +114,10 @@ export default function App() {
 }
 
 /**
- * Dashed placeholder box used during Stage 3 to lock layout before the real
- * components ship in Stages 4-5. The `accent` variant wraps the dashed box
- * in a solid heritage-blue left bar — that bar is the final detail-card
- * affordance and stays once the real component lands.
+ * Dashed placeholder box for Stage 5 components (detail card, table). Same
+ * shape as Stage 3 — kept here until those land.
  */
 function Placeholder({ label, heightClass = '', accent = false, className = '' }) {
-  // Accent (detail card) stretches to its grid cell; plain placeholders use
-  // the explicit heightClass so they don't blow past their content.
   return (
     <div
       className={`${accent ? 'border-l-4 border-heritage' : ''} ${className}`}

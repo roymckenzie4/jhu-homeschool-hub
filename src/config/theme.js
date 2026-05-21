@@ -17,6 +17,22 @@ export const COLORS = {
   nonReportingStripe: '#CFCFCF', // stripe color for non-reporting states
 };
 
+/**
+ * Discrete 5-step color ramp for the choropleth, sampled along
+ * SPIRIT → HERITAGE. Sampled once here so the legend swatches and the map
+ * fills are guaranteed to use the same colors.
+ *
+ * To change the bucket count, edit this array — the map and legend pick it up
+ * automatically.
+ */
+export const RAMP_STEPS = [
+  '#C7DEF1', // lightest — close to spirit but desaturated for legibility on white
+  '#9EC4E5',
+  '#5C9AD6',
+  '#2E6BB8',
+  '#002D72', // heritage
+];
+
 // Standard transition for selection/fill changes.
 export const TRANSITION_MS = 200;
 
@@ -30,4 +46,48 @@ export const LAST_UPDATED = 'March 2026';
 export function schoolYearLabel(startYear) {
   const endSuffix = String((startYear + 1) % 100).padStart(2, '0');
   return `${startYear}-${endSuffix}`;
+}
+
+/**
+ * Compute quintile (or N-tile) break points for a list of numeric values.
+ * Returns the N+1 breakpoints that delimit RAMP_STEPS.length buckets, e.g.
+ * `[min, q1, q2, q3, q4, max]` for a 5-step ramp.
+ *
+ * Bucket i contains values in [breaks[i], breaks[i+1]] (the last bucket is
+ * closed on both ends). Equal-count classification is preferred over linear
+ * here because state homeschool enrollment is heavily right-skewed — a
+ * linear scale collapses ~35 of the reporting states into the bottom two
+ * buckets, hiding most of the variation we want to show.
+ *
+ * The legend pairs each swatch with its value range so readers see both the
+ * rank (color) and the magnitude (label).
+ */
+export function computeQuantileBreaks(values, stepCount = RAMP_STEPS.length) {
+  const sorted = values
+    .filter((v) => v != null && Number.isFinite(v))
+    .slice()
+    .sort((a, b) => a - b);
+  if (sorted.length === 0) return null;
+  const breaks = [sorted[0]];
+  for (let i = 1; i < stepCount; i += 1) {
+    const idx = Math.floor((i * sorted.length) / stepCount);
+    breaks.push(sorted[Math.min(idx, sorted.length - 1)]);
+  }
+  breaks.push(sorted[sorted.length - 1]);
+  return breaks;
+}
+
+/**
+ * Compact number formatter for the legend ranges. Tuned for the data range
+ * we actually see (hundreds → low hundreds of thousands).
+ *   942   -> "940"
+ *   1234  -> "1.2K"
+ *   12345 -> "12K"
+ */
+export function formatCompact(n) {
+  if (n == null || !Number.isFinite(n)) return '—';
+  const abs = Math.abs(n);
+  if (abs < 1000) return String(Math.round(n / 10) * 10);
+  if (abs < 10000) return `${(n / 1000).toFixed(1)}K`;
+  return `${Math.round(n / 1000)}K`;
 }

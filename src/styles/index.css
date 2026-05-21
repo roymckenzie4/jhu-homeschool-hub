@@ -34,3 +34,30 @@
     @apply bg-white text-sable font-sans antialiased;
   }
 }
+
+/* ChoroplethMap interaction styles.
+   Lives here (not inline in the SVG) because React's handling of <style>
+   children inside the SVG namespace is unreliable — rules silently drop.
+   Keeping them global also matches how Tailwind utilities are applied
+   elsewhere in the app and lets the dev tools show the cascade cleanly. */
+.state-path {
+  transition: opacity 180ms ease, filter 180ms ease;
+}
+.state-path--clickable {
+  cursor: pointer;
+}
+/* Hover: pair brightness with a thin sable outer glow (defined as the
+   SVG filter #state-hover-glow inside ChoroplethMap). The outer glow is
+   what makes the affordance visible against the darker heritage fills —
+   brightness alone on a near-black-blue is barely perceptible. */
+.state-path--clickable:not(.state-path--selected):hover {
+  filter: url(#state-hover-glow) brightness(0.93);
+}
+.map-base--has-selection .state-path:not(.state-path--selected) {
+  opacity: 0.86;
+}
+@media (prefers-reduced-motion: reduce) {
+  .state-path {
+    transition: none;
+  }
+}
