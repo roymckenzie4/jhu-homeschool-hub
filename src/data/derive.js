@@ -14,6 +14,22 @@
 
 import { BY_NAME } from '../config/states.js';
 
+/**
+ * Year-over-year percent change between two enrollment values.
+ * Returns null when a comparison isn't possible (either side missing, or
+ * the prior value is zero). Consumers render null as "—".
+ *
+ * Result is a number, not a string — formatting lives in `lib/format.js`.
+ *   computeYoY(22150, 20740) -> 6.799...   (rendered as "+6.8%")
+ *   computeYoY(20740, 21430) -> -3.220...  (rendered as "-3.2%")
+ */
+export function computeYoY(current, previous) {
+  if (current == null || previous == null) return null;
+  if (!Number.isFinite(current) || !Number.isFinite(previous)) return null;
+  if (previous === 0) return null;
+  return ((current - previous) / previous) * 100;
+}
+
 export function deriveByYear(byState) {
   const yearsSet = new Set();
   for (const name of Object.keys(byState)) {

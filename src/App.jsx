@@ -3,8 +3,9 @@
  *
  * Owns the single piece of interactive state in the prototype: `selectedState`.
  * The choropleth map dispatches selection up through `onSelect`; the detail
- * card and table (Stage 5) will read the same state. Stage 4 only wires the
- * map — the detail card and table remain placeholders.
+ * card and enrollment table both read from the same selected-state slice
+ * of the parsed data. The sparkline slot inside the detail card is the
+ * only remaining placeholder — landing in Stage 5b with shadcn-charts.
  */
 
 import { useMemo, useState } from 'react';
@@ -17,6 +18,8 @@ import YearSelector from './components/YearSelector.jsx';
 import Footer from './components/Footer.jsx';
 import ChoroplethMap from './components/ChoroplethMap.jsx';
 import MapLegend from './components/MapLegend.jsx';
+import StateDetailCard from './components/StateDetailCard.jsx';
+import EnrollmentTable from './components/EnrollmentTable.jsx';
 
 // Data is parsed once at module load — the CSV is bundled at build time.
 const { byState, years } = parseCsv(csvText);
@@ -29,9 +32,16 @@ const ACTIVE_YEAR = SELECTOR_YEARS[SELECTOR_YEARS.length - 1];
 // Default selection per CLAUDE.md.
 const DEFAULT_STATE = 'Arkansas';
 
+// Most recent five years displayed in the enrollment table (descending).
+const TABLE_YEARS = years.slice(-5);
+
 export default function App() {
   const [selectedState, setSelectedState] = useState(DEFAULT_STATE);
   const yearStats = byYear[ACTIVE_YEAR];
+  const selectedStateValues = byState[selectedState];
+  const currentValue = selectedStateValues?.[ACTIVE_YEAR] ?? null;
+  const previousValue = selectedStateValues?.[ACTIVE_YEAR - 1] ?? null;
+  const rank = yearStats.rankByState[selectedState] ?? null;
 
   // { stateName: number | null } for the active year — what the map consumes.
   const valuesByState = useMemo(() => {
@@ -89,48 +99,33 @@ export default function App() {
           </div>
         </div>
 
-        <Placeholder
-          label="State detail card"
-          accent
-          className="lg:row-span-2 lg:h-auto"
-        />
+        <div className="lg:row-span-2">
+          <StateDetailCard
+            stateName={selectedState}
+            currentValue={currentValue}
+            previousValue={previousValue}
+            year={ACTIVE_YEAR}
+            rank={rank}
+            reportingCount={yearStats.reportingCount}
+          />
+        </div>
 
         <div>
           <hr className="border-t border-sable/15" />
           <h2 className="mt-6 font-sans text-[11px] font-semibold uppercase tracking-[0.18em] text-sable/70">
             {selectedState} Enrollment, by Year
           </h2>
-          <Placeholder
-            label="Enrollment table"
-            heightClass="h-[220px]"
-            className="mt-3"
-          />
+          <div className="mt-3">
+            <EnrollmentTable
+              stateValues={selectedStateValues}
+              years={TABLE_YEARS}
+              activeYear={ACTIVE_YEAR}
+            />
+          </div>
         </div>
       </div>
 
       <Footer year={ACTIVE_YEAR} reportingCount={yearStats.reportingCount} />
     </main>
-  );
-}
-
-/**
- * Dashed placeholder box for Stage 5 components (detail card, table). Same
- * shape as Stage 3 — kept here until those land.
- */
-function Placeholder({ label, heightClass = '', accent = false, className = '' }) {
-  return (
-    <div
-      className={`${accent ? 'border-l-4 border-heritage' : ''} ${className}`}
-    >
-      <div
-        className={`flex items-center justify-center rounded border border-dashed border-sable/20 bg-sable/[0.02] ${
-          accent ? 'h-full min-h-[460px]' : heightClass
-        }`}
-      >
-        <span className="font-sans text-xs uppercase tracking-[0.18em] text-sable/40">
-          {label}
-        </span>
-      </div>
-    </div>
   );
 }
