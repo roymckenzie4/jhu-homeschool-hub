@@ -1,0 +1,68 @@
+# Builds the Vite static site on every push to main and deploys it to
+# GitHub Pages. Uses GitHub's first-party Pages actions only (no third-party
+# deploy actions) so the workflow stays simple and trustworthy.
+#
+# How it works:
+#   1. `build` checks out the repo, installs dependencies with `npm ci`,
+#      runs `vite build`, and uploads the resulting `dist/` directory as
+#      a Pages artifact.
+#   2. `deploy` takes that artifact and publishes it to the `github-pages`
+#      environment, which is what serves https://<user>.github.io/jhu-homeschool-hub/.
+#
+# To enable: in the repo on GitHub, go to Settings -> Pages and set
+# "Source" to "GitHub Actions". After that, every push to `main` deploys.
+
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  # Allows manually re-running the deploy from the Actions tab.
+  workflow_dispatch:
+
+# Pages deployments need these scoped permissions.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Only one Pages deploy at a time; let an in-flight deploy finish rather
+# than cancelling it mid-publish.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
