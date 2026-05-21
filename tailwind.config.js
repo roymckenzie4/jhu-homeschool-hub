@@ -14,7 +14,7 @@ export default {
         heritage: '#002D72',
         spirit: '#68ACE5',
         sable: '#31261D',
-        gold: '#F1C400',
+        gold: '#FF9E1B',
         brick: '#CF4520',
       },
       fontFamily: {

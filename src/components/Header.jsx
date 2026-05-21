@@ -16,17 +16,13 @@ function formatNumber(n) {
 export default function Header({ year, nationalTotal, reportingCount }) {
   return (
     <header>
-      <p className="font-slab text-[11px] font-medium uppercase tracking-[0.22em] text-sable">
-        Johns Hopkins University &middot; Homeschool Hub
-      </p>
-
-      <h1 className="mt-6 max-w-4xl font-sans text-4xl font-medium leading-[1.15] text-sable">
-        In {schoolYearLabel(year)}, at least{' '}
+      <h1 className="font-sans text-3xl font-medium leading-[1.2] tracking-tight text-sable">
+        In {schoolYearLabel(year)},{' '}
         <span className="font-bold">{formatNumber(nationalTotal)}</span>{' '}
-        students were reported as homeschoolers in the United States.
+        U.S. students were reported as homeschoolers.
       </h1>
 
-      <p className="mt-5 max-w-3xl font-sans text-sm leading-relaxed text-sable/70">
+      <p className="mt-2 max-w-3xl font-sans text-xs leading-relaxed text-sable/70">
         {reportingCount} of {JURISDICTIONS_LABEL} publicly report homeschool
         enrollment. The figure above reflects those states only;
         the true national total is higher and unknown.

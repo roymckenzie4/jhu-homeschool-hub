@@ -32,16 +32,16 @@ export default function EnrollmentTable({ stateValues, years, activeYear }) {
   const displayYears = [...years].sort((a, b) => b - a);
 
   return (
-    <Table className="font-sans text-sm">
+    <Table className="font-sans text-xs">
       <TableHeader>
         <TableRow className="border-b border-sable/15 hover:bg-transparent">
-          <TableHead className="h-9 px-3 text-left font-sans text-[11px] font-semibold uppercase tracking-[0.18em] text-sable/60">
+          <TableHead className="h-7 px-3 text-left font-sans text-[11px] font-semibold uppercase tracking-widest text-sable/60">
             Year
           </TableHead>
-          <TableHead className="h-9 px-3 text-right font-sans text-[11px] font-semibold uppercase tracking-[0.18em] text-sable/60">
+          <TableHead className="h-7 px-3 text-right font-sans text-[11px] font-semibold uppercase tracking-widest text-sable/60">
             Enrollment
           </TableHead>
-          <TableHead className="h-9 px-3 text-right font-sans text-[11px] font-semibold uppercase tracking-[0.18em] text-sable/60">
+          <TableHead className="h-7 px-3 text-right font-sans text-[11px] font-semibold uppercase tracking-widest text-sable/60">
             % Change
           </TableHead>
         </TableRow>
@@ -64,21 +64,21 @@ export default function EnrollmentTable({ stateValues, years, activeYear }) {
               }`}
             >
               <TableCell
-                className={`px-3 py-2.5 text-sable ${
+                className={`px-3 py-1.5 text-sable ${
                   isActive ? 'font-semibold' : ''
                 }`}
               >
                 {schoolYearLabel(year)}
               </TableCell>
               <TableCell
-                className={`px-3 py-2.5 text-right tabular-nums text-sable ${
+                className={`px-3 py-1.5 text-right tabular-nums text-sable ${
                   isActive ? 'font-semibold' : ''
                 }`}
               >
                 {formatNumber(value)}
               </TableCell>
               <TableCell
-                className={`px-3 py-2.5 text-right tabular-nums ${
+                className={`px-3 py-1.5 text-right tabular-nums ${
                   yoy == null
                     ? 'text-sable/40'
                     : yoyPositive

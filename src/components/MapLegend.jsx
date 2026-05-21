@@ -19,12 +19,12 @@ import { RAMP_STEPS, formatCompact } from '../config/theme.js';
 
 export default function MapLegend({ label, breaks }) {
   return (
-    <div className="flex flex-wrap items-start justify-between gap-x-8 gap-y-3 font-sans text-[11px] uppercase tracking-[0.14em] text-sable/70">
+    <div className="flex flex-wrap items-start justify-between gap-x-6 gap-y-3 font-sans text-[11px] text-sable/70">
       {/* Left cluster: section label sits to the left of the swatch ramp,
           top-aligned with the swatches so the range labels float below
           everything else. */}
-      <div className="flex items-start gap-5">
-        <span className="font-semibold text-sable/90 leading-3">{label}</span>
+      <div className="flex items-start gap-4">
+        <span className="font-semibold uppercase tracking-widest text-sable/90 leading-3">{label}</span>
         <div className="flex flex-col gap-[3px]" aria-hidden="true">
           <div className="flex gap-[2px]">
             {RAMP_STEPS.map((c) => (
@@ -35,7 +35,7 @@ export default function MapLegend({ label, breaks }) {
               />
             ))}
           </div>
-          <div className="flex gap-[2px] normal-case tracking-normal text-[10px] leading-none text-sable/55">
+          <div className="flex gap-[2px] text-[10px] leading-none text-sable/55">
             {RAMP_STEPS.map((_, i) => (
               <span
                 key={i}
@@ -48,7 +48,7 @@ export default function MapLegend({ label, breaks }) {
         </div>
       </div>
 
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 text-sable/60">
         {/* Re-uses the SVG pattern defined in ChoroplethMap's <defs>. */}
         <svg width="20" height="12" aria-hidden="true">
           <rect width="20" height="12" fill="url(#non-reporting)" />

@@ -46,7 +46,7 @@ export default function Sparkline({ series, maxDeviation }) {
   const reporting = series.filter((d) => d.value != null);
   if (reporting.length < 2) {
     return (
-      <div className="flex h-full items-center justify-center text-[10px] uppercase tracking-[0.18em] text-sable/40">
+      <div className="flex h-full items-center justify-center text-[10px] uppercase tracking-widest text-sable/40">
         not enough data to plot
       </div>
     );

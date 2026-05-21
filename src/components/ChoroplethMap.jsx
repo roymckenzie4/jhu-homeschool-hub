@@ -12,7 +12,7 @@
  *   - selectedState  string     the currently-selected state name.
  *   - onSelect       (name)     invoked when a state (or DC marker) is clicked.
  *
- * Visual rules (per CLAUDE.md):
+ * Visual rules:
  *   - Reporting states fill from the SPIRIT → HERITAGE blue ramp, classified
  *     into quintiles so the right-skewed distribution still shows variation.
  *   - Non-reporting states use a diagonal-stripe pattern on a light-gray ground.
@@ -28,11 +28,11 @@
  *     reliably on a continental projection).
  */
 
-import { useEffect, useMemo, useState } from 'react';
-import { feature } from 'topojson-client';
-import { BY_FIPS } from '../config/states.js';
-import { COLORS, RAMP_STEPS } from '../config/theme.js';
-import { buildProjection } from '../lib/geoProjection.js';
+import { useEffect, useMemo, useState } from "react";
+import { feature } from "topojson-client";
+import { BY_FIPS } from "../config/states.js";
+import { COLORS, RAMP_STEPS } from "../config/theme.js";
+import { buildProjection } from "../lib/geoProjection.js";
 
 // SVG viewBox dimensions. The map scales to its container via CSS; these
 // numbers just set the internal coordinate system the projection fits into.
@@ -49,19 +49,19 @@ const DC_LEADER_LENGTH = 26;
 // that's what gives it a soft glow feel rather than a hard racing stripe.
 // Hover affordance and dim-on-selection are driven by CSS rules in
 // `src/styles/index.css`.
-const STROKE_REST = 0.6;   // white separator between resting states
-const STROKE_RING = 2.5;   // sable selection ring on the overlay layer
-const STROKE_INNER = 2;    // white inner line, clipped to the state's
-                           // interior so only the inner half (~1px) shows;
-                           // produces a crisp hairline of white between
-                           // the sable ring and the state fill
+const STROKE_REST = 0.6; // white separator between resting states
+const STROKE_RING = 2.5; // sable selection ring on the overlay layer
+const STROKE_INNER = 2; // white inner line, clipped to the state's
+// interior so only the inner half (~1px) shows;
+// produces a crisp hairline of white between
+// the sable ring and the state fill
 
 /**
  * Map a reporting value to one of the RAMP_STEPS buckets via quintile breaks.
  * Returns the non-reporting pattern reference when no value exists.
  */
 function fillFor(value, breaks) {
-  if (value == null) return 'url(#non-reporting)';
+  if (value == null) return "url(#non-reporting)";
   if (!breaks) return RAMP_STEPS[0];
   // breaks has RAMP_STEPS.length + 1 entries. Find the bucket whose upper
   // bound is >= value. Defensive: clamp to the last bucket if value exceeds.
@@ -128,8 +128,8 @@ export default function ChoroplethMap({
   }
 
   const { path } = projected;
-  const dcValue = valuesByState['District of Columbia'] ?? null;
-  const dcSelected = selectedState === 'District of Columbia';
+  const dcValue = valuesByState["District of Columbia"] ?? null;
+  const dcSelected = selectedState === "District of Columbia";
 
   return (
     <svg
@@ -221,19 +221,19 @@ export default function ChoroplethMap({
         selected state stays in this layer too (so it accepts clicks and isn't
         dimmed), but the overlay layer below paints its ring + shadow on top.
       */}
-      <g className={selectedState ? 'map-base--has-selection' : ''}>
+      <g className={selectedState ? "map-base--has-selection" : ""}>
         {features.features.map((f) => {
           const meta = BY_FIPS[f.id];
           if (!meta) return null; // territories carried in the topojson
           const name = meta.name;
-          if (name === 'District of Columbia') return null; // marker handled below
+          if (name === "District of Columbia") return null; // marker handled below
           const value = valuesByState[name] ?? null;
           const isReporting = value != null;
           const isSelected = name === selectedState;
 
-          let className = 'state-path';
-          if (isReporting) className += ' state-path--clickable';
-          if (isSelected) className += ' state-path--selected';
+          let className = "state-path";
+          if (isReporting) className += " state-path--clickable";
+          if (isSelected) className += " state-path--selected";
 
           return (
             <path
@@ -261,51 +261,53 @@ export default function ChoroplethMap({
              between the sable ring and the state fill. Classic double-stroke
              framing; makes the selection read as deliberate.
       */}
-      <g style={{ pointerEvents: 'none' }}>
-        {selectedFeature && selectedState !== 'District of Columbia' && (() => {
-          const value = valuesByState[selectedState] ?? null;
-          const d = path(selectedFeature);
-          const fill = fillFor(value, breaks);
-          return (
-            <>
-              <defs>
-                <clipPath id="selection-inner-clip">
-                  <path d={d} />
-                </clipPath>
-              </defs>
-              <path
-                d={d}
-                fill={fill}
-                stroke="none"
-                filter="url(#selection-lift)"
-              />
-              <path
-                d={d}
-                fill="none"
-                stroke={COLORS.sable}
-                strokeWidth={STROKE_RING}
-                strokeLinejoin="round"
-              />
-              <path
-                d={d}
-                fill="none"
-                stroke="#FFFFFF"
-                strokeWidth={STROKE_INNER}
-                strokeLinejoin="round"
-                clipPath="url(#selection-inner-clip)"
-              />
-            </>
-          );
-        })()}
+      <g style={{ pointerEvents: "none" }}>
+        {selectedFeature &&
+          selectedState !== "District of Columbia" &&
+          (() => {
+            const value = valuesByState[selectedState] ?? null;
+            const d = path(selectedFeature);
+            const fill = fillFor(value, breaks);
+            return (
+              <>
+                <defs>
+                  <clipPath id="selection-inner-clip">
+                    <path d={d} />
+                  </clipPath>
+                </defs>
+                <path
+                  d={d}
+                  fill={fill}
+                  stroke="none"
+                  filter="url(#selection-lift)"
+                />
+                <path
+                  d={d}
+                  fill="none"
+                  stroke={COLORS.sable}
+                  strokeWidth={STROKE_RING}
+                  strokeLinejoin="round"
+                />
+                <path
+                  d={d}
+                  fill="none"
+                  stroke="#FFFFFF"
+                  strokeWidth={STROKE_INNER}
+                  strokeLinejoin="round"
+                  clipPath="url(#selection-inner-clip)"
+                />
+              </>
+            );
+          })()}
       </g>
 
       {/* DC: leader line + marker circle. Click + hover handled directly here
           since DC is tiny enough that CSS hover on the same circle is fine. */}
       {dcPoint && (
         <g
-          style={{ cursor: dcValue == null ? 'default' : 'pointer' }}
+          style={{ cursor: dcValue == null ? "default" : "pointer" }}
           onClick={
-            dcValue == null ? undefined : () => onSelect('District of Columbia')
+            dcValue == null ? undefined : () => onSelect("District of Columbia")
           }
         >
           <line

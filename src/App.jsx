@@ -41,6 +41,7 @@ const SPARKLINE_MAX_DEVIATION = computeMaxDeviation(byState, TABLE_YEARS);
 export default function App() {
   const [selectedState, setSelectedState] = useState(DEFAULT_STATE);
   const yearStats = byYear[ACTIVE_YEAR];
+  const dcReporting = (byState['District of Columbia']?.[ACTIVE_YEAR] ?? null) != null;
   const selectedStateValues = byState[selectedState];
   const currentValue = selectedStateValues?.[ACTIVE_YEAR] ?? null;
   const previousValue = selectedStateValues?.[ACTIVE_YEAR - 1] ?? null;
@@ -71,7 +72,7 @@ export default function App() {
   );
 
   return (
-    <main className="mx-auto max-w-[1200px] px-8 py-12 lg:px-12 lg:py-16">
+    <main className="mx-auto max-w-[1200px] px-8 py-4 lg:px-12 lg:py-6">
       <Header
         year={ACTIVE_YEAR}
         nationalTotal={yearStats.total}
@@ -79,12 +80,13 @@ export default function App() {
       />
 
       {/* Section label + year selector */}
-      <div className="mt-12 flex flex-wrap items-center justify-between gap-4">
-        <h2 className="font-sans text-[11px] font-semibold uppercase tracking-[0.18em] text-sable/70">
+      <div className="mt-4 flex flex-wrap items-center justify-between gap-4">
+        <h2 className="font-sans text-[11px] font-semibold uppercase tracking-widest text-sable/70">
           Enrollment by State
         </h2>
         <YearSelector years={SELECTOR_YEARS} activeYear={ACTIVE_YEAR} />
       </div>
+      <hr className="mt-3 border-t border-sable/15" />
 
       {/*
         Layout: two columns. Left column stacks the map + legend and the table;
@@ -92,15 +94,17 @@ export default function App() {
         height of the left column. At narrow widths the grid collapses to a
         single column in document order.
       */}
-      <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-[1fr_320px]">
+      <div className="mt-3 grid grid-cols-1 gap-x-6 gap-y-3 lg:grid-cols-[1fr_360px]">
         <div>
-          <ChoroplethMap
-            valuesByState={valuesByState}
-            breaks={breaks}
-            selectedState={selectedState}
-            onSelect={setSelectedState}
-          />
-          <div className="mt-4">
+          <div className="mx-auto" style={{ maxWidth: 'calc(320px * 760 / 460)' }}>
+            <ChoroplethMap
+              valuesByState={valuesByState}
+              breaks={breaks}
+              selectedState={selectedState}
+              onSelect={setSelectedState}
+            />
+          </div>
+          <div className="mt-2">
             <MapLegend
               label={`Students, ${schoolYearLabel(ACTIVE_YEAR)}`}
               breaks={breaks}
@@ -116,6 +120,7 @@ export default function App() {
             year={ACTIVE_YEAR}
             rank={rank}
             reportingCount={yearStats.reportingCount}
+            dcReporting={dcReporting}
             trendSeries={trendSeries}
             sparklineMaxDeviation={SPARKLINE_MAX_DEVIATION}
           />
@@ -123,10 +128,10 @@ export default function App() {
 
         <div>
           <hr className="border-t border-sable/15" />
-          <h2 className="mt-6 font-sans text-[11px] font-semibold uppercase tracking-[0.18em] text-sable/70">
+          <h2 className="mt-3 font-sans text-[11px] font-semibold uppercase tracking-widest text-sable/70">
             {selectedState} Enrollment, by Year
           </h2>
-          <div className="mt-3">
+          <div className="mt-1">
             <EnrollmentTable
               stateValues={selectedStateValues}
               years={TABLE_YEARS}
@@ -136,7 +141,7 @@ export default function App() {
         </div>
       </div>
 
-      <Footer year={ACTIVE_YEAR} reportingCount={yearStats.reportingCount} />
+      <Footer />
     </main>
   );
 }

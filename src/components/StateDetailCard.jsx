@@ -34,9 +34,15 @@ export default function StateDetailCard({
   year,
   rank,
   reportingCount,
+  dcReporting,
   trendSeries,
   sparklineMaxDeviation,
 }) {
+  // Detail-card subtitle treats DC separately from the 50 states so the
+  // denominator reads accurately rather than lumping DC into "states."
+  const stateRankLabel = dcReporting
+    ? `of ${reportingCount - 1} states + D.C.`
+    : `of ${reportingCount} reporting states`;
   const slug = BY_NAME[stateName]?.slug ?? '';
   const isReporting = currentValue != null;
   const yoy = computeYoY(currentValue, previousValue);
@@ -44,7 +50,7 @@ export default function StateDetailCard({
 
   return (
     <aside
-      className="flex h-full flex-col border-l-4 border-heritage bg-white px-6 py-6 lg:min-h-[460px]"
+      className="flex h-full flex-col border border-l-4 border-sable/10 border-l-heritage bg-white px-6 py-4"
       style={{ transitionDuration: `${TRANSITION_MS}ms` }}
     >
       <h3 className="font-sans text-lg font-semibold text-sable">
@@ -53,22 +59,20 @@ export default function StateDetailCard({
 
       {isReporting ? (
         <>
-          <p className="mt-4 font-sans text-5xl font-bold leading-none text-sable">
+          <p className="mt-3 font-sans text-4xl font-bold leading-none text-sable">
             {formatNumber(currentValue)}
           </p>
-          <p className="mt-3 font-sans text-xs leading-snug text-sable/60">
-            reported homeschool students,
-            <br />
-            {schoolYearLabel(year)}
+          <p className="mt-2 font-sans text-xs leading-snug text-sable">
+            reported homeschool students, {schoolYearLabel(year)}
           </p>
 
-          <hr className="my-5 border-t border-sable/15" />
+          <hr className="my-4 border-t border-sable/15" />
 
           {/* Two-column stat row: YoY chip + national rank. */}
           <div className="grid grid-cols-2 gap-4">
             <div>
               <p
-                className={`font-sans text-base font-semibold ${
+                className={`font-sans text-xl font-semibold ${
                   yoyPositive ? 'text-gold' : 'text-brick'
                 }`}
               >
@@ -79,16 +83,16 @@ export default function StateDetailCard({
               </p>
             </div>
             <div>
-              <p className="font-sans text-base font-semibold text-sable">
+              <p className="font-sans text-xl font-semibold text-sable">
                 {ordinal(rank)}
               </p>
-              <p className="mt-1 font-sans text-[11px] text-sable/60">
-                of {reportingCount} reporting states
+              <p className="mt-1 whitespace-nowrap font-sans text-[11px] text-sable/60">
+                {stateRankLabel}
               </p>
             </div>
           </div>
 
-          <hr className="my-5 border-t border-sable/15" />
+          <hr className="my-4 border-t border-sable/15" />
 
           {/*
             Sparkline section grows to fill whatever vertical space remains
@@ -97,8 +101,8 @@ export default function StateDetailCard({
             child from refusing to shrink below its content's intrinsic
             size, which is what Recharts' ResponsiveContainer needs.
           */}
-          <div className="flex min-h-[120px] flex-1 flex-col">
-            <p className="font-sans text-[11px] font-semibold uppercase tracking-[0.18em] text-sable/70">
+          <div className="flex min-h-[90px] flex-1 flex-col">
+            <p className="font-sans text-[11px] font-semibold uppercase tracking-widest text-sable/70">
               Five-Year Trend
             </p>
             <div className="mt-3 min-h-0 flex-1">
@@ -116,15 +120,22 @@ export default function StateDetailCard({
         </p>
       )}
 
-      {/* Anchor pinned to the bottom of the card via mt-auto. */}
-      <a
-        href={`${HOMESCHOOL_HUB_BASE}/${slug}/`}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="mt-auto pt-6 font-sans text-xs font-medium text-heritage underline-offset-4 hover:underline"
-      >
-        Read more about homeschool context in {stateName} →
-      </a>
+      {/*
+        Bottom block: hr + link grouped together and pinned to card bottom.
+        Margin on hr above and below visually centers it between the sparkline
+        and the link rather than letting flex-1 above starve the space.
+      */}
+      <div className="mt-auto">
+        <hr className="mb-3 mt-3 border-t border-sable/15" />
+        <a
+          href={`${HOMESCHOOL_HUB_BASE}/${slug}/`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-sans text-xs font-medium text-heritage underline-offset-4 hover:underline"
+        >
+          Read more about {stateName} →
+        </a>
+      </div>
     </aside>
   );
 }

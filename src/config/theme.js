@@ -11,7 +11,7 @@ export const COLORS = {
   heritage: '#002D72', // primary; choropleth ramp endpoint; card border
   spirit: '#68ACE5',   // choropleth ramp start
   sable: '#31261D',    // headline number, body text
-  gold: '#F1C400',     // positive YoY indicator
+  gold: '#FF9E1B',     // positive YoY indicator (JHU brand orange — more legible on white than the brand yellow)
   brick: '#CF4520',    // negative YoY indicator
   nonReportingGround: '#E5E5E5', // light gray under the diagonal stripes
   nonReportingStripe: '#CFCFCF', // stripe color for non-reporting states
@@ -26,10 +26,10 @@ export const COLORS = {
  * automatically.
  */
 export const RAMP_STEPS = [
-  '#C7DEF1', // lightest — close to spirit but desaturated for legibility on white
-  '#9EC4E5',
-  '#5C9AD6',
-  '#2E6BB8',
+  '#A9CDED', // lightest — confident enough to read against the white background
+  '#7CAFDD',
+  '#4889C8',
+  '#1F5CA3',
   '#002D72', // heritage
 ];
 

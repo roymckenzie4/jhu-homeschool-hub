@@ -14,7 +14,7 @@ import { cn } from '../lib/utils.js';
 export default function YearSelector({ years, activeYear }) {
   return (
     <div className="flex items-center">
-      <span className="mr-3 font-sans text-[11px] font-medium uppercase tracking-[0.18em] text-sable/60">
+      <span className="mr-3 font-sans text-[11px] font-medium uppercase tracking-widest text-sable/60">
         Year
       </span>
       <div className="flex">
@@ -29,7 +29,7 @@ export default function YearSelector({ years, activeYear }) {
               disabled={!active}
               aria-pressed={active}
               className={cn(
-                'border border-sable/20 px-3 py-1.5 font-sans text-sm tabular-nums transition',
+                'border border-sable/20 px-2.5 py-0.5 font-sans text-xs tabular-nums transition',
                 !first && '-ml-px',
                 first && 'rounded-l',
                 last && 'rounded-r',
