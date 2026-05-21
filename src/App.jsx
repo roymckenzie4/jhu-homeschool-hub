@@ -3,15 +3,14 @@
  *
  * Owns the single piece of interactive state in the prototype: `selectedState`.
  * The choropleth map dispatches selection up through `onSelect`; the detail
- * card and enrollment table both read from the same selected-state slice
- * of the parsed data. The sparkline slot inside the detail card is the
- * only remaining placeholder — landing in Stage 5b with shadcn-charts.
+ * card (with sparkline) and enrollment table both read from the same
+ * selected-state slice of the parsed data.
  */
 
 import { useMemo, useState } from 'react';
 import csvText from '../homeschool-hub-state-summary-data.csv?raw';
 import { parseCsv } from './data/parseCsv.js';
-import { deriveByYear } from './data/derive.js';
+import { deriveByYear, computeMaxDeviation } from './data/derive.js';
 import { schoolYearLabel, computeQuantileBreaks } from './config/theme.js';
 import Header from './components/Header.jsx';
 import YearSelector from './components/YearSelector.jsx';
@@ -35,6 +34,10 @@ const DEFAULT_STATE = 'Arkansas';
 // Most recent five years displayed in the enrollment table (descending).
 const TABLE_YEARS = years.slice(-5);
 
+// Shared vertical scale for every sparkline, computed once across the
+// displayed window so cross-state visual comparison is honest.
+const SPARKLINE_MAX_DEVIATION = computeMaxDeviation(byState, TABLE_YEARS);
+
 export default function App() {
   const [selectedState, setSelectedState] = useState(DEFAULT_STATE);
   const yearStats = byYear[ACTIVE_YEAR];
@@ -42,6 +45,12 @@ export default function App() {
   const currentValue = selectedStateValues?.[ACTIVE_YEAR] ?? null;
   const previousValue = selectedStateValues?.[ACTIVE_YEAR - 1] ?? null;
   const rank = yearStats.rankByState[selectedState] ?? null;
+
+  // Trend series for the sparkline: oldest → newest, last five years only.
+  const trendSeries = TABLE_YEARS.map((y) => ({
+    year: y,
+    value: selectedStateValues?.[y] ?? null,
+  }));
 
   // { stateName: number | null } for the active year — what the map consumes.
   const valuesByState = useMemo(() => {
@@ -107,6 +116,8 @@ export default function App() {
             year={ACTIVE_YEAR}
             rank={rank}
             reportingCount={yearStats.reportingCount}
+            trendSeries={trendSeries}
+            sparklineMaxDeviation={SPARKLINE_MAX_DEVIATION}
           />
         </div>
 

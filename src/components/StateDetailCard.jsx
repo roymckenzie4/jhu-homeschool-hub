@@ -22,6 +22,7 @@ import { computeYoY } from '../data/derive.js';
 import { formatNumber, formatYoY, ordinal } from '../lib/format.js';
 import { schoolYearLabel, TRANSITION_MS } from '../config/theme.js';
 import { BY_NAME } from '../config/states.js';
+import Sparkline from './Sparkline.jsx';
 
 const HOMESCHOOL_HUB_BASE =
   'https://education.jhu.edu/edpolicy/policy-research-initiatives/homeschool-hub/states';
@@ -33,6 +34,8 @@ export default function StateDetailCard({
   year,
   rank,
   reportingCount,
+  trendSeries,
+  sparklineMaxDeviation,
 }) {
   const slug = BY_NAME[stateName]?.slug ?? '';
   const isReporting = currentValue != null;
@@ -87,15 +90,22 @@ export default function StateDetailCard({
 
           <hr className="my-5 border-t border-sable/15" />
 
-          {/* Sparkline slot — filled in Stage 5b with shadcn-charts. */}
-          <div>
+          {/*
+            Sparkline section grows to fill whatever vertical space remains
+            between the stats above and the "Read more" link pinned to the
+            card bottom. A `min-h-0` on the chart wrapper keeps the flex
+            child from refusing to shrink below its content's intrinsic
+            size, which is what Recharts' ResponsiveContainer needs.
+          */}
+          <div className="flex min-h-[120px] flex-1 flex-col">
             <p className="font-sans text-[11px] font-semibold uppercase tracking-[0.18em] text-sable/70">
               Five-Year Trend
             </p>
-            <div className="mt-3 flex h-[70px] items-center justify-center rounded border border-dashed border-sable/15 bg-sable/[0.02]">
-              <span className="font-sans text-[10px] uppercase tracking-[0.18em] text-sable/40">
-                sparkline
-              </span>
+            <div className="mt-3 min-h-0 flex-1">
+              <Sparkline
+                series={trendSeries}
+                maxDeviation={sparklineMaxDeviation}
+              />
             </div>
           </div>
         </>
