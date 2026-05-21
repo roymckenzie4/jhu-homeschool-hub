@@ -231,3 +231,11 @@ End-to-end manual smoke before reporting done:
 
 - Behavior when a non-reporting state is clicked: silent no-op vs. "no data" state in detail card?
 - Exact size/placement of the DC marker — will dial in against the mockup once map is rendering.
+
+## Future work (Phase 1+, not for the prototype)
+
+Items intentionally deferred so the prototype ships clean. Capture them here so they're not forgotten when the contract kicks off.
+
+- **Upgrade Tailwind v3 → v4.** Prototype was scaffolded on Tailwind 3.4.15. v4 (released Jan 2025) is the current major and what the modern shadcn / ecosystem aligns to (`tw-animate-css`, the new `@theme` directive, the `@tailwindcss/vite` plugin, CSS-based config). Migration is non-trivial — `postcss.config.js` is replaced, theme tokens move from `tailwind.config.js` into a `@theme` block in CSS, a handful of utilities renamed/removed — so we kept v3 for the demo to avoid visual-regression risk. Plan to do this as one of the first Phase 1 tasks, before stacking new feature work on top.
+- **WCAG 2.1 AA pass.** Prototype gets keyboard nav and focus rings on the map; the full WCAG audit (color contrast verification, focus indicators throughout, screen-reader landmark structure, table semantics, motion-reduce coverage) is Phase 1.
+- **Year selector and Compare-states wiring.** Both render as ghosted UI in the prototype; the data layer already shapes by year, so wiring the selector is mostly view-state plumbing. Compare needs design work first.

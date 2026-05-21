@@ -20,11 +20,29 @@ import { RAMP_STEPS, formatCompact } from '../config/theme.js';
 export default function MapLegend({ label, breaks }) {
   return (
     <div className="flex flex-wrap items-start justify-between gap-x-6 gap-y-3 font-sans text-[11px] text-sable/70">
-      {/* Left cluster: section label sits to the left of the swatch ramp,
-          top-aligned with the swatches so the range labels float below
-          everything else. */}
+      {/* Left cluster: section label sits to the left of the swatch ramp.
+          The label is split into two rows that mirror the swatch + range-label
+          stack: "STUDENTS" lines up with the swatch row, and the year ("2024-25")
+          lines up with the range-label row, styled to match it. This keeps the
+          legend's total height unchanged while shrinking the label cluster's
+          horizontal footprint, which is what makes the "Does not publicly
+          report" pill fit at narrow desktop widths (~1024–1200px). */}
       <div className="flex items-start gap-4">
-        <span className="font-semibold uppercase tracking-widest text-sable/90 leading-3">{label}</span>
+        {(() => {
+          const [primary, year] = label.split(', ');
+          return (
+            <div className="flex flex-col gap-[3px]">
+              <span className="font-semibold uppercase tracking-widest text-sable/90 leading-3">
+                {primary}
+              </span>
+              {year && (
+                <span className="text-[10px] leading-none text-sable/55 tabular-nums">
+                  {year}
+                </span>
+              )}
+            </div>
+          );
+        })()}
         <div className="flex flex-col gap-[3px]" aria-hidden="true">
           <div className="flex gap-[2px]">
             {RAMP_STEPS.map((c) => (
@@ -48,12 +66,12 @@ export default function MapLegend({ label, breaks }) {
         </div>
       </div>
 
-      <div className="flex items-center gap-2 text-sable/60">
+      <div className="flex items-center gap-2 whitespace-nowrap text-sable/60">
         {/* Re-uses the SVG pattern defined in ChoroplethMap's <defs>. */}
         <svg width="20" height="12" aria-hidden="true">
           <rect width="20" height="12" fill="url(#non-reporting)" />
         </svg>
-        <span>Does not publicly report</span>
+        <span>No public data</span>
       </div>
     </div>
   );

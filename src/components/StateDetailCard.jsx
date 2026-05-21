@@ -50,10 +50,23 @@ export default function StateDetailCard({
 
   return (
     <aside
-      className="flex h-full flex-col border border-l-4 border-sable/10 border-l-heritage bg-white px-6 py-4"
+      className="flex flex-col border border-l-4 border-sable/10 border-l-heritage bg-white px-6 py-4 lg:h-full"
       style={{ transitionDuration: `${TRANSITION_MS}ms` }}
     >
-      <h3 className="font-sans text-lg font-semibold text-sable">
+      {/*
+        Content keyed by stateName so React remounts the subtree on every
+        selection swap; tw-animate-css plays a brief fade so the swap reads
+        as deliberate rather than as a flash of new numerals. The card frame
+        (border + left bar) stays mounted to avoid double-animating it.
+        h-full is scoped to lg: so the card sizes to its content in
+        single-column mode — otherwise the height carries over from the
+        desktop row span and only corrects on the next selection.
+      */}
+      <div
+        key={stateName}
+        className="flex flex-col animate-fade-in lg:h-full"
+      >
+        <h3 className="font-sans text-lg font-semibold text-sable">
         {stateName}
       </h3>
 
@@ -101,11 +114,19 @@ export default function StateDetailCard({
             child from refusing to shrink below its content's intrinsic
             size, which is what Recharts' ResponsiveContainer needs.
           */}
-          <div className="flex min-h-[90px] flex-1 flex-col">
+          {/*
+            Sparkline slot. In the desktop two-column layout this section is
+            flex-1 inside an h-full card so it expands to fill remaining
+            space. In single-column the card sizes to content, so there's
+            no row to grow into — we give the chart wrapper an explicit
+            height (h-24) at narrow widths and let lg: take over the
+            flex-grow behavior above the breakpoint.
+          */}
+          <div className="flex flex-col lg:min-h-[90px] lg:flex-1">
             <p className="font-sans text-[11px] font-semibold uppercase tracking-widest text-sable/70">
               Five-Year Trend
             </p>
-            <div className="mt-3 min-h-0 flex-1">
+            <div className="mt-3 aspect-[5/2] lg:aspect-auto lg:h-auto lg:min-h-0 lg:flex-1">
               <Sparkline
                 series={trendSeries}
                 maxDeviation={sparklineMaxDeviation}
@@ -135,6 +156,7 @@ export default function StateDetailCard({
         >
           Read more about {stateName} →
         </a>
+      </div>
       </div>
     </aside>
   );

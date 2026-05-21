@@ -28,7 +28,7 @@
  *     reliably on a continental projection).
  */
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useId, useMemo, useState } from "react";
 import { feature } from "topojson-client";
 import { BY_FIPS } from "../config/states.js";
 import { COLORS, RAMP_STEPS } from "../config/theme.js";
@@ -79,6 +79,13 @@ export default function ChoroplethMap({
 }) {
   // TopoJSON is fetched once at mount. Until it loads the SVG renders empty.
   const [features, setFeatures] = useState(null);
+
+  // Namespace clipPath ids so two ChoroplethMap instances on a page (unlikely
+  // here, but cheap insurance) don't collide. Plain string ids would silently
+  // bind the second map's clip to the first map's path.
+  const uid = useId();
+  const selectionClipId = `selection-inner-clip-${uid}`;
+  const dcClipId = `dc-inner-clip-${uid}`;
 
   useEffect(() => {
     const url = `${import.meta.env.BASE_URL}us-states-10m.json`;
@@ -235,6 +242,26 @@ export default function ChoroplethMap({
           if (isReporting) className += " state-path--clickable";
           if (isSelected) className += " state-path--selected";
 
+          // Keyboard activation: Enter and Space both select the state, matching
+          // native <button> semantics. Non-reporting states are unfocusable and
+          // unannounced so keyboard users skip over them, mirroring the mouse
+          // experience (no click target).
+          const interactive = isReporting
+            ? {
+                role: "button",
+                tabIndex: 0,
+                "aria-label": `${name}${value != null ? `, ${value.toLocaleString()} reported homeschoolers` : ""}`,
+                "aria-pressed": isSelected,
+                onClick: () => onSelect(name),
+                onKeyDown: (e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    onSelect(name);
+                  }
+                },
+              }
+            : { "aria-hidden": true };
+
           return (
             <path
               key={f.id}
@@ -243,7 +270,7 @@ export default function ChoroplethMap({
               fill={fillFor(value, breaks)}
               stroke="#FFFFFF"
               strokeWidth={STROKE_REST}
-              onClick={isReporting ? () => onSelect(name) : undefined}
+              {...interactive}
             />
           );
         })}
@@ -271,7 +298,7 @@ export default function ChoroplethMap({
             return (
               <>
                 <defs>
-                  <clipPath id="selection-inner-clip">
+                  <clipPath id={selectionClipId}>
                     <path d={d} />
                   </clipPath>
                 </defs>
@@ -294,7 +321,7 @@ export default function ChoroplethMap({
                   stroke="#FFFFFF"
                   strokeWidth={STROKE_INNER}
                   strokeLinejoin="round"
-                  clipPath="url(#selection-inner-clip)"
+                  clipPath={`url(#${selectionClipId})`}
                 />
               </>
             );
@@ -302,13 +329,28 @@ export default function ChoroplethMap({
       </g>
 
       {/* DC: leader line + marker circle. Click + hover handled directly here
-          since DC is tiny enough that CSS hover on the same circle is fine. */}
+          since DC is tiny enough that CSS hover on the same circle is fine.
+          The <g> takes the keyboard affordance as a whole — focusing the
+          group lights up the marker via the .state-path focus rule below. */}
       {dcPoint && (
         <g
+          className={dcValue == null ? undefined : "state-path state-path--clickable"}
           style={{ cursor: dcValue == null ? "default" : "pointer" }}
-          onClick={
-            dcValue == null ? undefined : () => onSelect("District of Columbia")
-          }
+          {...(dcValue == null
+            ? { "aria-hidden": true }
+            : {
+                role: "button",
+                tabIndex: 0,
+                "aria-label": `District of Columbia, ${dcValue.toLocaleString()} reported homeschoolers`,
+                "aria-pressed": dcSelected,
+                onClick: () => onSelect("District of Columbia"),
+                onKeyDown: (e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    onSelect("District of Columbia");
+                  }
+                },
+              })}
         >
           <line
             x1={dcPoint[0]}
@@ -334,7 +376,7 @@ export default function ChoroplethMap({
           {dcSelected && (
             <>
               <defs>
-                <clipPath id="dc-inner-clip">
+                <clipPath id={dcClipId}>
                   <circle
                     cx={dcPoint[0] + DC_LEADER_LENGTH}
                     cy={dcPoint[1] + DC_LEADER_LENGTH}
@@ -365,7 +407,7 @@ export default function ChoroplethMap({
                 fill="none"
                 stroke="#FFFFFF"
                 strokeWidth={STROKE_INNER}
-                clipPath="url(#dc-inner-clip)"
+                clipPath={`url(#${dcClipId})`}
               />
             </>
           )}

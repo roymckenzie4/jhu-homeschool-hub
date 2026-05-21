@@ -50,9 +50,16 @@
    SVG filter #state-hover-glow inside ChoroplethMap). The outer glow is
    what makes the affordance visible against the darker heritage fills —
    brightness alone on a near-black-blue is barely perceptible. */
-.state-path--clickable:not(.state-path--selected):hover {
+.state-path--clickable:not(.state-path--selected):hover,
+.state-path--clickable:not(.state-path--selected):focus-visible {
   filter: url(#state-hover-glow) brightness(0.93);
 }
+/* Suppress the browser's default focus outline on SVG paths/groups — the
+   sable glow above is the focus affordance. Without this, Chrome/Safari
+   draw a hard blue ring around the path's bounding box, which on a complex
+   state shape reads as a glitch. */
+.state-path--clickable:focus { outline: none; }
+.state-path--clickable:focus-visible { outline: none; }
 .map-base--has-selection .state-path:not(.state-path--selected) {
   opacity: 0.86;
 }

@@ -24,6 +24,19 @@ export default {
       transitionDuration: {
         DEFAULT: '200ms',
       },
+      // Animations. Extending `keyframes` + `animation` is the Tailwind v3
+      // native pattern (same approach Tailwind itself uses for `animate-pulse`
+      // and `animate-spin`). Used by StateDetailCard to fade content on
+      // selection swap so the numerals don't just snap to a new value.
+      keyframes: {
+        'fade-in': {
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' },
+        },
+      },
+      animation: {
+        'fade-in': 'fade-in 200ms ease-out',
+      },
     },
   },
   plugins: [],
