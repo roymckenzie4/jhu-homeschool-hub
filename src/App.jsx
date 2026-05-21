@@ -7,18 +7,18 @@
  * selected-state slice of the parsed data.
  */
 
-import { useMemo, useState } from 'react';
-import csvText from '../homeschool-hub-state-summary-data.csv?raw';
-import { parseCsv } from './data/parseCsv.js';
-import { deriveByYear, computeMaxDeviation } from './data/derive.js';
-import { schoolYearLabel, computeQuantileBreaks } from './config/theme.js';
-import Header from './components/Header.jsx';
-import YearSelector from './components/YearSelector.jsx';
-import Footer from './components/Footer.jsx';
-import ChoroplethMap from './components/ChoroplethMap.jsx';
-import MapLegend from './components/MapLegend.jsx';
-import StateDetailCard from './components/StateDetailCard.jsx';
-import EnrollmentTable from './components/EnrollmentTable.jsx';
+import { useMemo, useState } from "react";
+import csvText from "../homeschool-hub-state-summary-data.csv?raw";
+import { parseCsv } from "./data/parseCsv.js";
+import { deriveByYear, computeMaxDeviation } from "./data/derive.js";
+import { schoolYearLabel, computeQuantileBreaks } from "./config/theme.js";
+import Header from "./components/Header.jsx";
+import YearSelector from "./components/YearSelector.jsx";
+import Footer from "./components/Footer.jsx";
+import ChoroplethMap from "./components/ChoroplethMap.jsx";
+import MapLegend from "./components/MapLegend.jsx";
+import StateDetailCard from "./components/StateDetailCard.jsx";
+import EnrollmentTable from "./components/EnrollmentTable.jsx";
 
 // Data is parsed once at module load — the CSV is bundled at build time.
 const { byState, years } = parseCsv(csvText);
@@ -28,8 +28,8 @@ const byYear = deriveByYear(byState);
 const SELECTOR_YEARS = years.slice(-5);
 const ACTIVE_YEAR = SELECTOR_YEARS[SELECTOR_YEARS.length - 1];
 
-// Default selection per CLAUDE.md.
-const DEFAULT_STATE = 'Arkansas';
+// Default selection per .md.
+const DEFAULT_STATE = "Arkansas";
 
 // Most recent five years displayed in the enrollment table (descending).
 const TABLE_YEARS = years.slice(-5);
@@ -41,7 +41,8 @@ const SPARKLINE_MAX_DEVIATION = computeMaxDeviation(byState, TABLE_YEARS);
 export default function App() {
   const [selectedState, setSelectedState] = useState(DEFAULT_STATE);
   const yearStats = byYear[ACTIVE_YEAR];
-  const dcReporting = (byState['District of Columbia']?.[ACTIVE_YEAR] ?? null) != null;
+  const dcReporting =
+    (byState["District of Columbia"]?.[ACTIVE_YEAR] ?? null) != null;
   const selectedStateValues = byState[selectedState];
   const currentValue = selectedStateValues?.[ACTIVE_YEAR] ?? null;
   const previousValue = selectedStateValues?.[ACTIVE_YEAR - 1] ?? null;
@@ -96,7 +97,10 @@ export default function App() {
       */}
       <div className="mt-3 grid grid-cols-1 gap-x-6 gap-y-3 lg:grid-cols-[1fr_360px]">
         <div>
-          <div className="mx-auto" style={{ maxWidth: 'calc(320px * 760 / 460)' }}>
+          <div
+            className="mx-auto"
+            style={{ maxWidth: "calc(320px * 760 / 460)" }}
+          >
             <ChoroplethMap
               valuesByState={valuesByState}
               breaks={breaks}

@@ -6,15 +6,15 @@
  * in sync when you change anything here.
  */
 
-// JHU brand palette, per CLAUDE.md.
+// JHU brand palette
 export const COLORS = {
-  heritage: '#002D72', // primary; choropleth ramp endpoint; card border
-  spirit: '#68ACE5',   // choropleth ramp start
-  sable: '#31261D',    // headline number, body text
-  gold: '#FF9E1B',     // positive YoY indicator (JHU brand orange — more legible on white than the brand yellow)
-  brick: '#CF4520',    // negative YoY indicator
-  nonReportingGround: '#E5E5E5', // light gray under the diagonal stripes
-  nonReportingStripe: '#CFCFCF', // stripe color for non-reporting states
+  heritage: "#002D72", // primary; choropleth ramp endpoint; card border
+  spirit: "#68ACE5", // choropleth ramp start
+  sable: "#31261D", // headline number, body text
+  gold: "#FF9E1B", // positive YoY indicator (JHU brand orange — more legible on white than the brand yellow)
+  brick: "#CF4520", // negative YoY indicator
+  nonReportingGround: "#E5E5E5", // light gray under the diagonal stripes
+  nonReportingStripe: "#CFCFCF", // stripe color for non-reporting states
 };
 
 /**
@@ -26,25 +26,25 @@ export const COLORS = {
  * automatically.
  */
 export const RAMP_STEPS = [
-  '#A9CDED', // lightest — confident enough to read against the white background
-  '#7CAFDD',
-  '#4889C8',
-  '#1F5CA3',
-  '#002D72', // heritage
+  "#A9CDED", // lightest — confident enough to read against the white background
+  "#7CAFDD",
+  "#4889C8",
+  "#1F5CA3",
+  "#002D72", // heritage
 ];
 
 // Standard transition for selection/fill changes.
 export const TRANSITION_MS = 200;
 
 // Hardcoded footer label — easy to bump when new data is loaded.
-export const LAST_UPDATED = 'March 2026';
+export const LAST_UPDATED = "March 2026";
 
 /**
  * Display the abbreviated school-year label for a starting year integer.
  * 2024 -> "2024-25". Used everywhere we render a year to the user.
  */
 export function schoolYearLabel(startYear) {
-  const endSuffix = String((startYear + 1) % 100).padStart(2, '0');
+  const endSuffix = String((startYear + 1) % 100).padStart(2, "0");
   return `${startYear}-${endSuffix}`;
 }
 
@@ -85,7 +85,7 @@ export function computeQuantileBreaks(values, stepCount = RAMP_STEPS.length) {
  *   12345 -> "12K"
  */
 export function formatCompact(n) {
-  if (n == null || !Number.isFinite(n)) return '—';
+  if (n == null || !Number.isFinite(n)) return "—";
   const abs = Math.abs(n);
   if (abs < 1000) return String(Math.round(n / 10) * 10);
   if (abs < 10000) return `${(n / 1000).toFixed(1)}K`;

@@ -18,26 +18,28 @@
  *   - The in-flight "2025-2026" row is dropped for this prototype (partial data).
  */
 
-import { csvParse } from 'd3-dsv';
-import { BY_POSTAL } from '../config/states.js';
+import { csvParse } from "d3-dsv";
+import { BY_POSTAL } from "../config/states.js";
 
 // In-flight school year that the published data only partially covers.
-// Dropping this is intentional — see CLAUDE.md's data section.
-const PARTIAL_YEAR_ROW = '2025-2026';
+// Dropping this is intentional
+const PARTIAL_YEAR_ROW = "2025-2026";
 
 /** Strip thousands separators and parse to a number, or null for empty cells. */
 function normalizeCell(raw) {
   if (raw == null) return null;
   const trimmed = String(raw).trim();
-  if (trimmed === '') return null;
-  const stripped = trimmed.replace(/,/g, '');
+  if (trimmed === "") return null;
+  const stripped = trimmed.replace(/,/g, "");
   const n = Number(stripped);
   return Number.isFinite(n) ? n : null;
 }
 
 /** "2024-2025" → 2024. Returns null if the label doesn't look like a school year. */
 function parseSchoolYear(label) {
-  const match = String(label).trim().match(/^(\d{4})-\d{4}$/);
+  const match = String(label)
+    .trim()
+    .match(/^(\d{4})-\d{4}$/);
   return match ? Number(match[1]) : null;
 }
 
@@ -62,8 +64,8 @@ export function parseCsv(csvText) {
   const years = new Set();
 
   for (const row of rows) {
-    if (row['School Year'] === PARTIAL_YEAR_ROW) continue;
-    const startYear = parseSchoolYear(row['School Year']);
+    if (row["School Year"] === PARTIAL_YEAR_ROW) continue;
+    const startYear = parseSchoolYear(row["School Year"]);
     if (startYear == null) continue;
     years.add(startYear);
 
