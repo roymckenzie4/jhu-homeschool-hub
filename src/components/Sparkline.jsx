@@ -17,6 +17,7 @@
 import { Line, LineChart, ResponsiveContainer, YAxis } from 'recharts';
 import { COLORS } from '../config/theme.js';
 import { schoolYearLabel } from '../config/theme.js';
+import { formatNumber } from '../lib/format.js';
 
 /**
  * Inputs:
@@ -55,6 +56,48 @@ export default function Sparkline({ series, maxDeviation }) {
   const firstYear = reporting[0].year;
   const lastYear = reporting[reporting.length - 1].year;
 
+  // Indices into the FULL series (not the filtered `reporting` array) so
+  // Recharts' label renderer can match against the index it passes in.
+  const firstIdx = series.findIndex((d) => d.year === firstYear);
+  const lastIdx = series.findIndex((d) => d.year === lastYear);
+
+  // For each endpoint, decide whether the label sits above or below the
+  // point based on the adjacent line segment. The label is placed on the
+  // opposite vertical side from where the line travels, so a steep slope
+  // can never run through the digits.
+  const firstGoesUp = reporting[1].value > reporting[0].value;
+  const lastCameUp =
+    reporting[reporting.length - 1].value > reporting[reporting.length - 2].value;
+  // "above" = label drawn above the point (y - offset); "below" = below.
+  const firstAbove = !firstGoesUp;
+  const lastAbove = lastCameUp;
+
+  // Renders a value label only at the first and last reporting points.
+  // textAnchor keeps each label inside the chart area horizontally
+  // (first anchored to the left edge, last to the right).
+  const renderEndpointLabel = ({ x, y, value, index }) => {
+    if (value == null) return null;
+    if (index !== firstIdx && index !== lastIdx) return null;
+    const isFirst = index === firstIdx;
+    const above = isFirst ? firstAbove : lastAbove;
+    // 6px gap above the point, or 14px below (accounts for text baseline
+    // being at the bottom of the glyph, so "below" needs more clearance).
+    const yOffset = above ? -6 : 14;
+    return (
+      <text
+        x={x}
+        y={y + yOffset}
+        textAnchor={isFirst ? 'start' : 'end'}
+        fill={COLORS.sable}
+        fontSize={10}
+        fontFamily="Work Sans, sans-serif"
+        fontWeight={600}
+      >
+        {formatNumber(value)}
+      </text>
+    );
+  };
+
   // Anchor on the state's first reporting value in the window. The Y range
   // is symmetric around that anchor and scaled to the largest fractional
   // deviation seen across ALL states — so a 5% swing here renders shorter
@@ -70,7 +113,7 @@ export default function Sparkline({ series, maxDeviation }) {
         <ResponsiveContainer width="100%" height="100%">
           <LineChart
             data={series}
-            margin={{ top: 6, right: 6, bottom: 4, left: 6 }}
+            margin={{ top: 12, right: 6, bottom: 16, left: 6 }}
           >
             <YAxis hide domain={[yMin, yMax]} />
             <Line
@@ -82,6 +125,7 @@ export default function Sparkline({ series, maxDeviation }) {
               activeDot={false}
               connectNulls
               isAnimationActive={false}
+              label={renderEndpointLabel}
             />
           </LineChart>
         </ResponsiveContainer>
