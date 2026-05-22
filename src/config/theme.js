@@ -37,7 +37,7 @@ export const RAMP_STEPS = [
 export const TRANSITION_MS = 200;
 
 // Hardcoded footer label — easy to bump when new data is loaded.
-export const LAST_UPDATED = "March 2026";
+export const LAST_UPDATED = "May 2026";
 
 /**
  * Display the abbreviated school-year label for a starting year integer.
