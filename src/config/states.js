@@ -68,9 +68,3 @@ export const BY_POSTAL = Object.fromEntries(STATES.map((s) => [s.postal, s]));
 export const BY_NAME   = Object.fromEntries(STATES.map((s) => [s.name, s]));
 export const BY_FIPS   = Object.fromEntries(STATES.map((s) => [s.fips, s]));
 
-// Total used for the reporting-count denominator — 50 states plus DC.
-export const TOTAL_JURISDICTIONS = 51;
-
-// Human-readable label for that denominator. Used in body copy so the
-// phrasing ("50 states and DC") stays in sync with the count above.
-export const JURISDICTIONS_LABEL = '50 states and DC';

@@ -38,11 +38,7 @@ export default function StateDetailCard({
   trendSeries,
   sparklineMaxDeviation,
 }) {
-  // Detail-card subtitle treats DC separately from the 50 states so the
-  // denominator reads accurately rather than lumping DC into "states."
-  const stateRankLabel = dcReporting
-    ? `of ${reportingCount - 1} states + D.C.`
-    : `of ${reportingCount} reporting states`;
+  const stateRankLabel = `of ${reportingCount} reporting`;
   const slug = BY_NAME[stateName]?.slug ?? '';
   const isReporting = currentValue != null;
   const yoy = computeYoY(currentValue, previousValue);

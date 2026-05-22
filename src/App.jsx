@@ -78,6 +78,7 @@ export default function App() {
         year={ACTIVE_YEAR}
         nationalTotal={yearStats.total}
         reportingCount={yearStats.reportingCount}
+        dcReporting={dcReporting}
       />
 
       {/* Section label + year selector */}
