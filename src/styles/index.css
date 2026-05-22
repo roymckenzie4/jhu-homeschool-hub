@@ -46,13 +46,17 @@
 .state-path--clickable {
   cursor: pointer;
 }
-/* Hover: pair brightness with a thin sable outer glow (defined as the
-   SVG filter #state-hover-glow inside ChoroplethMap). The outer glow is
-   what makes the affordance visible against the darker heritage fills —
-   brightness alone on a near-black-blue is barely perceptible. */
+/* Hover: a thin sable outer glow plus a ~7% fill darkening, both baked
+   into the SVG filter #state-hover-glow inside ChoroplethMap. The glow
+   is what makes the affordance visible against the darker heritage
+   fills — brightness alone on a near-black-blue is barely perceptible.
+   Both effects live inside the single SVG filter (rather than chaining
+   url(#…) with CSS brightness() here) to work around a WebKit bug that
+   drops the whole filter when a url() reference is combined with a
+   filter function. */
 .state-path--clickable:not(.state-path--selected):hover,
 .state-path--clickable:not(.state-path--selected):focus-visible {
-  filter: url(#state-hover-glow) brightness(0.93);
+  filter: url(#state-hover-glow);
 }
 /* Suppress the browser's default focus outline on SVG paths/groups — the
    sable glow above is the focus affordance. Without this, Chrome/Safari

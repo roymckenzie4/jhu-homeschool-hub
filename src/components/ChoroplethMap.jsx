@@ -212,7 +212,24 @@ export default function ChoroplethMap({
           width="120%"
           height="120%"
         >
+          {/* Darken the source fill by ~7% (equivalent to CSS
+              brightness(0.93)) before the drop shadow renders. Doing the
+              brightness shift here — rather than chaining it in the CSS
+              `filter` shorthand alongside url(#state-hover-glow) — works
+              around a WebKit bug where Safari silently drops the whole
+              filter when a url() reference is combined with a filter
+              function like brightness(). */}
+          <feColorMatrix
+            in="SourceGraphic"
+            type="matrix"
+            values="0.93 0 0 0 0
+                    0 0.93 0 0 0
+                    0 0 0.93 0 0
+                    0 0 0 1 0"
+            result="darkened"
+          />
           <feDropShadow
+            in="darkened"
             dx="0"
             dy="0"
             stdDeviation="1.5"
