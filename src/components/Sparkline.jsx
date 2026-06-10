@@ -41,7 +41,7 @@ import { formatNumber } from '../lib/format.js';
 // flush against the top/bottom edge of its chart area.
 const DOMAIN_PAD_MULTIPLIER = 1.1;
 
-export default function Sparkline({ series, maxDeviation }) {
+export default function Sparkline({ series, maxDeviation, selectedYear }) {
   // Drop entries with no value before computing first/last labels so the
   // axis labels reflect the visible line, not the data array.
   const reporting = series.filter((d) => d.value != null);
@@ -121,7 +121,23 @@ export default function Sparkline({ series, maxDeviation }) {
               dataKey="value"
               stroke={COLORS.heritage}
               strokeWidth={2}
-              dot={false}
+              dot={(props) => {
+                const { cx, cy, payload, index } = props;
+                if (payload?.year !== selectedYear) return null;
+                if (payload.value == null) return null;
+                if (!Number.isFinite(cx) || !Number.isFinite(cy)) return null;
+                return (
+                  <circle
+                    key={`selected-${index}`}
+                    cx={cx}
+                    cy={cy}
+                    r={3.5}
+                    fill={COLORS.heritage}
+                    stroke="white"
+                    strokeWidth={1.5}
+                  />
+                );
+              }}
               activeDot={false}
               connectNulls
               isAnimationActive={false}

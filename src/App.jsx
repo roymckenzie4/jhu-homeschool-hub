@@ -1,16 +1,21 @@
 /**
  * App root.
  *
- * Owns the single piece of interactive state in the prototype: `selectedState`.
- * The choropleth map dispatches selection up through `onSelect`; the detail
- * card (with sparkline) and enrollment table both read from the same
- * selected-state slice of the parsed data.
+ * Owns the two pieces of interactive state in the prototype: `selectedState`
+ * and `activeYear`. The choropleth map dispatches state selection up through
+ * `onSelect`; the year selector dispatches year changes up through `onChange`.
+ * The detail card (with sparkline), enrollment table, and headline all read
+ * from those two slices of the parsed data and recompute via memos.
  */
 
 import { useMemo, useState } from "react";
 import csvText from "../homeschool-hub-state-summary-data.csv?raw";
 import { parseCsv } from "./data/parseCsv.js";
-import { deriveByYear, computeMaxDeviation } from "./data/derive.js";
+import {
+  deriveByYear,
+  computeMaxDeviation,
+  windowAroundYear,
+} from "./data/derive.js";
 import { schoolYearLabel, computeQuantileBreaks } from "./config/theme.js";
 import Header from "./components/Header.jsx";
 import YearSelector from "./components/YearSelector.jsx";
@@ -24,45 +29,63 @@ import EnrollmentTable from "./components/EnrollmentTable.jsx";
 const { byState, years } = parseCsv(csvText);
 const byYear = deriveByYear(byState);
 
-// Years displayed in the selector: most recent five reporting years.
-const SELECTOR_YEARS = years.slice(-5);
-const ACTIVE_YEAR = SELECTOR_YEARS[SELECTOR_YEARS.length - 1];
+// Most recent five years stay pinned in the selector row; everything older
+// is reachable through the trailing "More years" dropdown.
+const RECENT_COUNT = 5;
+const RECENT_YEARS = years.slice(-RECENT_COUNT);
+const OLDER_YEARS = years.slice(0, -RECENT_COUNT);
+const DEFAULT_YEAR = RECENT_YEARS[RECENT_YEARS.length - 1];
 
 // Default selection per .md.
 const DEFAULT_STATE = "Arkansas";
 
-// Most recent five years displayed in the enrollment table (descending).
-const TABLE_YEARS = years.slice(-5);
-
-// Shared vertical scale for every sparkline, computed once across the
-// displayed window so cross-state visual comparison is honest.
-const SPARKLINE_MAX_DEVIATION = computeMaxDeviation(byState, TABLE_YEARS);
-
 export default function App() {
   const [selectedState, setSelectedState] = useState(DEFAULT_STATE);
-  const yearStats = byYear[ACTIVE_YEAR];
+  const [activeYear, setActiveYear] = useState(DEFAULT_YEAR);
+
+  const yearStats = byYear[activeYear];
   const dcReporting =
-    (byState["District of Columbia"]?.[ACTIVE_YEAR] ?? null) != null;
+    (byState["District of Columbia"]?.[activeYear] ?? null) != null;
   const selectedStateValues = byState[selectedState];
-  const currentValue = selectedStateValues?.[ACTIVE_YEAR] ?? null;
-  const previousValue = selectedStateValues?.[ACTIVE_YEAR - 1] ?? null;
+  const currentValue = selectedStateValues?.[activeYear] ?? null;
+  const previousValue = selectedStateValues?.[activeYear - 1] ?? null;
   const rank = yearStats.rankByState[selectedState] ?? null;
 
-  // Trend series for the sparkline: oldest → newest, last five years only.
-  const trendSeries = TABLE_YEARS.map((y) => ({
-    year: y,
-    value: selectedStateValues?.[y] ?? null,
-  }));
+  // Centered five-year window around the selected year, clamped to the
+  // start/end of the series. Drives both the enrollment table and the
+  // sparkline so the two stay visually aligned.
+  const tableYears = useMemo(
+    () => windowAroundYear(years, activeYear, RECENT_COUNT),
+    [activeYear],
+  );
+
+  // Trend series for the sparkline: oldest → newest across the window.
+  const trendSeries = useMemo(
+    () =>
+      tableYears.map((y) => ({
+        year: y,
+        value: selectedStateValues?.[y] ?? null,
+      })),
+    [tableYears, selectedStateValues],
+  );
+
+  // Shared vertical scale across every state's sparkline within the window
+  // — recomputed when the window shifts so cross-state comparison stays
+  // honest year to year.
+  const sparklineMaxDeviation = useMemo(
+    () => computeMaxDeviation(byState, tableYears),
+    [tableYears],
+  );
 
   // { stateName: number | null } for the active year — what the map consumes.
   const valuesByState = useMemo(() => {
     const out = {};
     for (const name of Object.keys(byState)) {
-      const v = byState[name][ACTIVE_YEAR];
+      const v = byState[name][activeYear];
       out[name] = v == null ? null : v;
     }
     return out;
-  }, []);
+  }, [activeYear]);
 
   // Quintile break points for the choropleth classification. Computed once
   // per change in the active year's values; consumed by both the map (to
@@ -75,7 +98,7 @@ export default function App() {
   return (
     <main className="mx-auto max-w-[1200px] px-8 py-4 lg:px-12 lg:py-6">
       <Header
-        year={ACTIVE_YEAR}
+        year={activeYear}
         nationalTotal={yearStats.total}
         reportingCount={yearStats.reportingCount}
         dcReporting={dcReporting}
@@ -86,7 +109,12 @@ export default function App() {
         <h2 className="font-sans text-[11px] font-semibold uppercase tracking-widest text-sable/70">
           Enrollment by State
         </h2>
-        <YearSelector years={SELECTOR_YEARS} activeYear={ACTIVE_YEAR} />
+        <YearSelector
+          recentYears={RECENT_YEARS}
+          olderYears={OLDER_YEARS}
+          activeYear={activeYear}
+          onChange={setActiveYear}
+        />
       </div>
       <hr className="mt-3 border-t border-sable/15" />
 
@@ -111,7 +139,7 @@ export default function App() {
           </div>
           <div className="mt-2">
             <MapLegend
-              label={`Students, ${schoolYearLabel(ACTIVE_YEAR)}`}
+              label={`Students, ${schoolYearLabel(activeYear)}`}
               breaks={breaks}
             />
           </div>
@@ -122,12 +150,12 @@ export default function App() {
             stateName={selectedState}
             currentValue={currentValue}
             previousValue={previousValue}
-            year={ACTIVE_YEAR}
+            year={activeYear}
             rank={rank}
             reportingCount={yearStats.reportingCount}
             dcReporting={dcReporting}
             trendSeries={trendSeries}
-            sparklineMaxDeviation={SPARKLINE_MAX_DEVIATION}
+            sparklineMaxDeviation={sparklineMaxDeviation}
           />
         </div>
 
@@ -139,8 +167,8 @@ export default function App() {
           <div className="mt-1">
             <EnrollmentTable
               stateValues={selectedStateValues}
-              years={TABLE_YEARS}
-              activeYear={ACTIVE_YEAR}
+              years={tableYears}
+              activeYear={activeYear}
             />
           </div>
         </div>

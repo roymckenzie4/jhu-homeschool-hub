@@ -67,6 +67,30 @@ export function computeMaxDeviation(byState, windowYears) {
   return max;
 }
 
+/**
+ * Pick a centered window of years around a selected year, clamped to the
+ * bounds of the available data so the result always has `size` entries
+ * (assuming the underlying series is long enough).
+ *
+ * Default: 2 years on either side of the selected year. If the selection
+ * sits near the start of the series, the window shifts forward; near the
+ * end, it shifts backward. The selected year is always included.
+ *
+ * Returns an ascending array of year integers. Pass `years` as the full
+ * ascending series from parseCsv.
+ */
+export function windowAroundYear(years, selectedYear, size = 5) {
+  if (years.length <= size) return [...years];
+  const idx = years.indexOf(selectedYear);
+  if (idx === -1) return years.slice(-size);
+  const half = Math.floor(size / 2);
+  let start = idx - half;
+  let end = start + size;
+  if (start < 0) { end -= start; start = 0; }
+  if (end > years.length) { start -= end - years.length; end = years.length; }
+  return years.slice(start, end);
+}
+
 export function deriveByYear(byState) {
   const yearsSet = new Set();
   for (const name of Object.keys(byState)) {

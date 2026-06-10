@@ -57,7 +57,7 @@ export default function EnrollmentTable({ stateValues, years, activeYear }) {
           return (
             <TableRow
               key={year}
-              className={`border-b border-sable/10 ${
+              className={`border-b border-sable/10 transition-none ${
                 isActive
                   ? 'bg-sable/[0.03] hover:bg-sable/[0.03]'
                   : 'hover:bg-transparent'

@@ -120,12 +120,13 @@ export default function StateDetailCard({
           */}
           <div className="flex flex-col lg:min-h-[90px] lg:flex-1">
             <p className="font-sans text-[11px] font-semibold uppercase tracking-widest text-sable/70">
-              Five-Year Trend
+              Year in Context
             </p>
             <div className="mt-3 aspect-[5/2] lg:aspect-auto lg:h-auto lg:min-h-0 lg:flex-1">
               <Sparkline
                 series={trendSeries}
                 maxDeviation={sparklineMaxDeviation}
+                selectedYear={year}
               />
             </div>
           </div>
