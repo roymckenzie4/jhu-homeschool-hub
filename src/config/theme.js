@@ -39,6 +39,9 @@ export const TRANSITION_MS = 200;
 // Hardcoded footer label — easy to bump when new data is loaded.
 export const LAST_UPDATED = "May 2026";
 
+// Suggested filename when the user downloads the source CSV from the footer.
+export const DOWNLOAD_FILENAME = "homeschool-hub-state-enrollment-2000-2026.csv";
+
 /**
  * Display the abbreviated school-year label for a starting year integer.
  * 2024 -> "2024-25". Used everywhere we render a year to the user.

@@ -14,7 +14,26 @@
  */
 
 import { useEffect, useRef, useState } from 'react';
-import { LAST_UPDATED } from '../config/theme.js';
+import csvText from '../../homeschool-hub-state-summary-data.csv?raw';
+import { DOWNLOAD_FILENAME, LAST_UPDATED } from '../config/theme.js';
+
+/**
+ * Trigger a client-side download of the bundled CSV. The CSV string is
+ * wrapped in a Blob, exposed via a temporary object URL, and handed to a
+ * synthetic anchor whose `download` attribute prompts a Save dialog. The URL
+ * is revoked afterward so the browser can release the Blob from memory.
+ */
+function downloadCsv() {
+  const blob = new Blob([csvText], { type: 'text/csv;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = DOWNLOAD_FILENAME;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
 
 export default function Footer() {
   return (
@@ -23,12 +42,13 @@ export default function Footer() {
         <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
           <AboutDisclosure />
 
-          <span
-            aria-disabled="true"
-            className="cursor-not-allowed font-sans text-xs text-sable/40 underline decoration-dashed decoration-sable/25 underline-offset-4"
+          <button
+            type="button"
+            onClick={downloadCsv}
+            className="font-sans text-xs text-sable/70 underline decoration-dashed decoration-sable/30 underline-offset-4 hover:text-sable hover:decoration-sable/60"
           >
             Download data (CSV)
-          </span>
+          </button>
 
           <button
             type="button"
