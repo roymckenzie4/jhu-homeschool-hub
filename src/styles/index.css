@@ -1,10 +1,33 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+/* Theme tokens. In Tailwind v4, custom utilities (bg-heritage, font-slab,
+   animate-fade-in, etc.) are generated from CSS variables declared here
+   rather than from a JS config object. Values are mirrored in
+   src/config/theme.js for code that needs them at JavaScript runtime
+   (choropleth color ramp, sparkline stroke). Update both together. */
+@theme {
+  --color-heritage: #002D72;
+  --color-spirit: #68ACE5;
+  --color-sable: #31261D;
+  --color-gold: #FF9E1B;
+  --color-brick: #CF4520;
+
+  --font-sans: "Work Sans", system-ui, sans-serif;
+  --font-slab: "Roboto Slab", Georgia, serif;
+
+  --default-transition-duration: 200ms;
+
+  --animate-fade-in: fade-in 200ms ease-out;
+
+  @keyframes fade-in {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+  }
+}
 
 /* shadcn base CSS variables. We keep the neutral baseColor preset shadcn ships
    with so future `npx shadcn add ...` calls drop in cleanly. JHU-specific
-   colors (heritage, spirit, gold, etc.) live in tailwind.config.js and are
+   colors (heritage, spirit, gold, etc.) live in the @theme block above and are
    used directly via utility classes — they're not mapped onto these tokens. */
 @layer base {
   :root {
