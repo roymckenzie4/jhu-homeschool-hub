@@ -32,9 +32,10 @@ import { formatNumber } from '../lib/format.js';
  * anchor × (1 + maxDeviation × pad)], where `pad` adds visual breathing
  * room above and below the most-extreme line.
  *
- * Non-reporting points (value === null) cause the line to interpolate
- * straight across via Recharts' `connectNulls`. The data is sparse enough
- * (max five years) that any gap visualization would feel heavy.
+ * Non-reporting points (value === null) break the line — Recharts skips
+ * those segments rather than interpolating across them. With the full
+ * series rendered, gaps are meaningful information (a state that didn't
+ * report in a stretch of years) and shouldn't be hidden.
  */
 
 // Multiplier on maxDeviation so the most-extreme state's line doesn't sit
@@ -139,16 +140,21 @@ export default function Sparkline({ series, maxDeviation, selectedYear }) {
                 );
               }}
               activeDot={false}
-              connectNulls
               isAnimationActive={false}
               label={renderEndpointLabel}
             />
           </LineChart>
         </ResponsiveContainer>
       </div>
+      {/* Axis labels reflect the chart's full x-extent (the entire series),
+          not just the reporting subset — otherwise a state with sparse
+          reporting like Connecticut reads as if its line spans the whole
+          axis when it actually only covers a fraction. The endpoint VALUE
+          labels above stay tied to the reporting first/last; these are
+          the time axis. */}
       <div className="mt-1 flex justify-between font-sans text-[10px] text-sable/50">
-        <span>{schoolYearLabel(firstYear)}</span>
-        <span>{schoolYearLabel(lastYear)}</span>
+        <span>{schoolYearLabel(series[0].year)}</span>
+        <span>{schoolYearLabel(series[series.length - 1].year)}</span>
       </div>
     </div>
   );

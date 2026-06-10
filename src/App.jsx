@@ -59,22 +59,26 @@ export default function App() {
     [activeYear],
   );
 
-  // Trend series for the sparkline: oldest → newest across the window.
+  // Sparkline renders the state's full reporting history so the line reads
+  // as a mini timeline, not a fragment. The selected-year dot anchors the
+  // user within that span. Decoupled from the table window on purpose:
+  // the table wants precise rows around the focal year, the sparkline
+  // wants shape over time.
   const trendSeries = useMemo(
     () =>
-      tableYears.map((y) => ({
+      years.map((y) => ({
         year: y,
         value: selectedStateValues?.[y] ?? null,
       })),
-    [tableYears, selectedStateValues],
+    [selectedStateValues],
   );
 
-  // Shared vertical scale across every state's sparkline within the window
-  // — recomputed when the window shifts so cross-state comparison stays
-  // honest year to year.
+  // Shared vertical scale across every state's sparkline, computed once
+  // across the full series so cross-state comparison stays honest at any
+  // selection.
   const sparklineMaxDeviation = useMemo(
-    () => computeMaxDeviation(byState, tableYears),
-    [tableYears],
+    () => computeMaxDeviation(byState, years),
+    [],
   );
 
   // { stateName: number | null } for the active year — what the map consumes.
