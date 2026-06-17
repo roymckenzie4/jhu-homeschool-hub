@@ -12,22 +12,22 @@
  * line, matching the mockup's connected look.
  */
 
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown } from "lucide-react";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from './ui/select.jsx';
-import { schoolYearLabel } from '../config/theme.js';
-import { cn } from '../lib/utils.js';
+} from "./ui/select.jsx";
+import { schoolYearLabel } from "../config/theme.js";
+import { cn } from "../lib/utils.js";
 
 // Uniform width on every segment so the row reads as a balanced strip and
 // the dropdown trigger doesn't reflow when its label flips between "More"
 // and a year like "2010-11". Sized to fit a school-year label comfortably
 // alongside the dropdown chevron.
-const SEGMENT_WIDTH = 'w-[84px]';
+const SEGMENT_WIDTH = "w-[84px]";
 
 export default function YearSelector({
   recentYears,
@@ -49,17 +49,17 @@ export default function YearSelector({
         {/* Leading dropdown segment. Stays in the connected row; its label
             and style flip depending on whether the active year is recent. */}
         <Select
-          value={activeIsRecent ? '' : String(activeYear)}
+          value={activeIsRecent ? "" : String(activeYear)}
           onValueChange={(v) => onChange(Number(v))}
         >
           <SelectTrigger
             aria-label="Choose an older year"
             className={cn(
               SEGMENT_WIDTH,
-              'whitespace-nowrap rounded-l border border-sable/20 px-2.5 py-0.5 font-sans text-xs tabular-nums transition',
+              "whitespace-nowrap rounded-l border border-sable/20 px-2.5 py-0.5 font-sans text-xs tabular-nums transition",
               !activeIsRecent
-                ? 'z-10 border-heritage bg-heritage text-white'
-                : 'bg-white text-sable hover:bg-sable/5',
+                ? "z-10 border-heritage bg-heritage text-white"
+                : "bg-white text-sable hover:bg-sable/5 justify-left",
             )}
           >
             <SelectValue placeholder="More">
@@ -87,11 +87,11 @@ export default function YearSelector({
               onClick={() => onChange(year)}
               className={cn(
                 SEGMENT_WIDTH,
-                '-ml-px border border-sable/20 px-2.5 py-0.5 text-center font-sans text-xs tabular-nums transition',
-                last && 'rounded-r',
+                "-ml-px border border-sable/20 px-2.5 py-0.5 text-center font-sans text-xs tabular-nums transition",
+                last && "rounded-r",
                 active
-                  ? 'z-10 border-heritage bg-heritage text-white'
-                  : 'bg-white text-sable hover:bg-sable/5',
+                  ? "z-10 border-heritage bg-heritage text-white"
+                  : "bg-white text-sable hover:bg-sable/5",
               )}
             >
               {schoolYearLabel(year)}
