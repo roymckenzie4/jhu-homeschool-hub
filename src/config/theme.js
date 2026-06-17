@@ -37,10 +37,11 @@ export const RAMP_STEPS = [
 export const TRANSITION_MS = 200;
 
 // Hardcoded footer label — easy to bump when new data is loaded.
-export const LAST_UPDATED = "May 2026";
+export const LAST_UPDATED = "June 2026";
 
 // Suggested filename when the user downloads the source CSV from the footer.
-export const DOWNLOAD_FILENAME = "homeschool-hub-state-enrollment-2000-2026.csv";
+export const DOWNLOAD_FILENAME =
+  "homeschool-hub-state-enrollment-2000-2026.csv";
 
 /**
  * Display the abbreviated school-year label for a starting year integer.
