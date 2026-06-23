@@ -1,13 +1,14 @@
 # JHU Homeschool Hub — State Enrollment Dashboard
 
-An interactive prototype of a single-page dashboard for the Johns Hopkins
-University Homeschool Hub team. It visualizes state-level homeschool
-enrollment from the Hub's published CSV: a US choropleth map, a detail card
-for the selected state, a five-year sparkline, and a year-by-year table.
+An interactive single-page dashboard for the Johns Hopkins University
+Homeschool Hub team. It visualizes state-level homeschool enrollment from
+the Hub's published CSV: a US choropleth map, a detail card for the selected
+state, a sparkline of the state's full reporting history, and a year-by-year
+table.
 
-The only interactive surface is click-to-select on the map. The year
-selector, "Compare states," and "Download data" controls render as ghosted
-UI; they're scoped for a later phase. See
+Interactive surfaces: click-to-select on the map, a year selector that
+drives every panel, and a footer "Download data (CSV)" button. "Compare
+states" still renders as ghosted UI, pending design. See
 [What's intentionally not wired up](#whats-intentionally-not-wired-up) below.
 
 **Live demo:** https://roymckenzie4.github.io/jhu-homeschool-hub/
@@ -15,8 +16,9 @@ UI; they're scoped for a later phase. See
 ## Stack
 
 - **Vite** for the build, **React** (plain JSX — no TypeScript) for the UI.
-- **Tailwind CSS** (v3) with a small set of **shadcn/ui** primitives
-  (`Button`, `Card`, `Table`) copied into `src/components/ui/`.
+- **Tailwind CSS** (v4, CSS-first `@theme` config — no `tailwind.config.js`)
+  with a small set of **shadcn/ui** primitives (`Card`, `Table`, `Select`)
+  copied into `src/components/ui/`.
 - **d3-geo** + **topojson-client** + **us-atlas** for the choropleth map.
   Quarantined to one component (`ChoroplethMap.jsx`) and one helper
   (`lib/geoProjection.js`).
@@ -100,7 +102,7 @@ A few parsing notes worth knowing:
     ├── App.jsx                    Top-level layout; owns selectedState
     ├── main.jsx                   React entry point
     ├── components/                Header, ChoroplethMap, StateDetailCard, etc.
-    ├── components/ui/             shadcn primitives (Button, Card, Table)
+    ├── components/ui/             shadcn primitives (Card, Table, Select, chart)
     ├── config/
     │   ├── theme.js               Colors, durations, dimensions
     │   └── states.js              Postal ↔ full name ↔ slug ↔ FIPS table
@@ -108,7 +110,7 @@ A few parsing notes worth knowing:
     │   ├── parseCsv.js            Wide CSV → shaped objects
     │   └── derive.js              Totals, reporting count, rankings
     ├── lib/geoProjection.js       Memoized albersUsa projection
-    └── styles/index.css           Tailwind directives
+    └── styles/index.css           Tailwind import + CSS-first @theme tokens
 ```
 
 ## Where things live (for non-frontend maintainers)
@@ -140,26 +142,22 @@ inconsistent visual results.
 
 ## What's intentionally not wired up
 
-The mockup includes a few controls that render but don't do anything yet.
-These are scoped to a later phase:
+One control still renders without behavior, pending design:
 
-- **Year selector** — 2020-21 through 2024-25 render, with 2024-25 active.
-  Clicking other years no-ops. The data layer already shapes data by year,
-  so wiring this is mostly view-state plumbing.
-- **Compare states** button — ghosted. Needs UX design first.
-- **Download data (CSV)** button — ghosted. Trivial to wire up; left out
-  of the prototype to keep the scope focused on the core interaction.
+- **Compare states** button — ghosted. Needs UX design first. (The State
+  policies view planned for Phase 1 is built around multi-state comparison,
+  so this may be folded into that work.)
 
 The map intentionally has no hover tooltip — only a subtle hover affordance
-(stroke lightens, cursor changes). Click-to-select is the only interaction.
+(stroke lightens, cursor changes). Click-to-select is the only map interaction.
 
-## Planned upgrades (Phase 1)
+## Planned work (Phase 1)
 
-- **Tailwind v3 → v4.** Scaffolded on v3.4 to avoid visual-regression risk
-  during the prototype. v4 is the current major and what modern shadcn
-  aligns to.
-- **WCAG 2.1 AA pass.** The prototype includes keyboard navigation and
+- **State policies view.** A second view (tabbed alongside Enrollment) that
+  shades each state by how many of 10 tracked homeschool regulations it
+  enforces, with side-by-side comparison of multiple states. Awaiting the
+  policy dataset from JHU.
+- **WCAG 2.1 AA pass.** The dashboard includes keyboard navigation and
   focus rings on the map. A full audit (contrast, screen-reader landmarks,
   table semantics, motion-reduce) is Phase 1 scope.
-- **Wire up the year selector and Compare states.** Both render today as
-  ghosted UI.
+- **Wire up Compare states**, or supersede it with the State policies view.

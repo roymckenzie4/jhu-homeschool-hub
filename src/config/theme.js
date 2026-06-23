@@ -2,8 +2,8 @@
  * Single source of truth for theme values used at runtime in JavaScript
  * (color ramps, chart strokes, transition durations, etc.).
  *
- * Tailwind utility classes mirror these in tailwind.config.js — keep both
- * in sync when you change anything here.
+ * Tailwind utility classes mirror these in the @theme block in
+ * src/styles/index.css — keep both in sync when you change anything here.
  */
 
 // JHU brand palette
