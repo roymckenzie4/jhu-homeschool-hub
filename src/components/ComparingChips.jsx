@@ -20,7 +20,6 @@
  *   - onClear          ()                 empty the comparison.
  */
 
-import { X } from "lucide-react";
 import {
   Popover,
   PopoverTrigger,
@@ -36,6 +35,7 @@ import {
 import { COMPARE_CAP, REGULATION_COUNT } from "../config/policy.js";
 import { levelColor } from "../config/theme.js";
 import { STATES } from "../config/states.js";
+import RemoveButton from "./RemoveButton.jsx";
 
 // Small level-colored dot, shared by the chips and the combobox rows.
 function LevelDot({ level }) {
@@ -77,14 +77,7 @@ export default function ComparingChips({
         >
           <LevelDot level={policyByState[name]?.level} />
           {name}
-          <button
-            type="button"
-            onClick={() => onRemove(name)}
-            aria-label={`Remove ${name}`}
-            className="rounded-full p-0.5 text-sable/40 transition-colors hover:bg-sable/10 hover:text-sable"
-          >
-            <X className="h-3 w-3" aria-hidden="true" />
-          </button>
+          <RemoveButton onClick={() => onRemove(name)} label={`Remove ${name}`} />
         </span>
       ))}
 

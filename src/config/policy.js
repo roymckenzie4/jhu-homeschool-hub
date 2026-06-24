@@ -18,28 +18,78 @@ export const REGULATION_GROUPS = [
     id: "registration",
     label: "Registration",
     regulations: [
-      { key: "Only 1 HS Option", label: "Only one option" },
-      { key: "Parent Notice", label: "Parent notice" },
-      { key: "State Collects Data", label: "State collects data" },
+      {
+        key: "Only 1 HS Option",
+        label: "Only one option",
+        definition:
+          '"YES" indicates that there is only one option for homeschool students in the state. "NO" indicates that there are multiple different options that parents/guardians can choose to allow their children to school from home.',
+      },
+      {
+        key: "Parent Notice",
+        label: "Parent notice",
+        definition:
+          '"YES" indicates that the state requires parents/guardians to notify or request approval prior to homeschooling their children. "NO" indicates that there is no requirement to notify the state.',
+      },
+      {
+        key: "State Collects Data",
+        label: "State collects data",
+        definition:
+          '"YES" indicates that the state collects data on homeschool students and families. "NO" indicates that the state does not collect data on homeschool students and families.',
+      },
     ],
   },
   {
     id: "instruction",
     label: "Instruction",
     regulations: [
-      { key: "Min Educator Reqs", label: "Educator requirements" },
-      { key: "Min Instruction Time", label: "Instruction time" },
-      { key: "Required Subjects", label: "Required subjects" },
-      { key: "Maintain Records", label: "Maintain records" },
+      {
+        key: "Min Educator Reqs",
+        label: "Educator requirements",
+        definition:
+          '"YES" indicates that the state has minimum education or certification requirements for educators of homeschool students. "NO" indicates that the state has no minimum requirements for homeschool educators. This section was marked as "YES" even if only one of multiple homeschool options requires minimum educator requirements.',
+      },
+      {
+        key: "Min Instruction Time",
+        label: "Instruction time",
+        definition:
+          '"YES" indicates that the state has requirements about the minimum amount of instruction that homeschool students should receive. These requirements could be in number of days or hours of instruction. "NO" indicates that the state does not have requirements about minimum instruction time. This section was marked as "YES" even if only one of multiple homeschool options requires minimum instruction time.',
+      },
+      {
+        key: "Required Subjects",
+        label: "Required subjects",
+        definition:
+          '"YES" indicates that the state requires certain course subjects to be taught to homeschool students. "NO" indicates that the state does not require instruction in certain course subjects. This section was marked as "YES" even if only one of multiple homeschool options requires course subjects.',
+      },
+      {
+        key: "Maintain Records",
+        label: "Maintain records",
+        definition:
+          '"YES" indicates that the state requires homeschool educators to maintain certain records of their students. These records may include attendance records, immunization records, assessments, portfolios of student work, or others. "NO" indicates that the state does not require homeschool educators to maintain records. This section was marked as "YES" even if only one of multiple homeschool options requires record keeping.',
+      },
     ],
   },
   {
     id: "assessment",
     label: "Assessment",
     regulations: [
-      { key: "Assessment Required", label: "Assessment required" },
-      { key: "Annual Testing", label: "Annual testing" },
-      { key: "Required Submission", label: "Required submission" },
+      {
+        key: "Assessment Required",
+        label: "Assessment required",
+        definition:
+          '"YES" indicates that the state requires students to take assessments. "NO" indicates that the state does not have assessment requirements. This section was marked as "YES" even if only one of multiple homeschool option requires assessment. This section was also marked as "YES" even if there were alternatives to testing available, such as evaluation by a certified teacher.',
+      },
+      {
+        key: "Annual Testing",
+        label: "Annual testing",
+        definition:
+          '"YES" indicates that the state requires homeschool students to be assessed annually. "NO" indicates that the state does not require annual assessment. This section was marked as "YES" even if only one of multiple homeschool options requires annual testing.',
+      },
+      {
+        key: "Required Submission",
+        label: "Required submission",
+        definition:
+          '"YES" indicates that the state requires homeschool parents/guardians/educators to submit student assessments to the district or state. "NO" indicates that the state does not require submission of assessments. This section was marked as "YES" even if only one of multiple homeschool options requires submission.',
+      },
     ],
   },
 ];

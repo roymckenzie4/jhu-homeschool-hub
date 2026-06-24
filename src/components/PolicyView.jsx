@@ -23,6 +23,7 @@ import { COLORS, levelColor } from "../config/theme.js";
 import ChoroplethMap from "./ChoroplethMap.jsx";
 import MapLegend from "./MapLegend.jsx";
 import ComparingChips from "./ComparingChips.jsx";
+import PolicyComparisonTable from "./PolicyComparisonTable.jsx";
 
 // Legend swatches: one per level, colored + labeled with its count range.
 const LEGEND_SWATCHES = LEVEL_ORDER.map((level) => ({
@@ -98,6 +99,12 @@ export default function PolicyView() {
         onAdd={toggleState}
         onRemove={toggleState}
         onClear={() => setSelectedStates([])}
+      />
+
+      <PolicyComparisonTable
+        selectedStates={selectedStates}
+        policyByState={policyByState}
+        onRemove={toggleState}
       />
     </>
   );
