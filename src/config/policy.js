@@ -134,6 +134,9 @@ export function regulationLevel(count) {
 // truth — the map toggle, the chip row, and the table all read this.
 export const COMPARE_CAP = 6;
 
+// Suggested filename when the user downloads the policy CSV from the view.
+export const POLICY_DOWNLOAD_FILENAME = "homeschool-hub-state-policies-2026.csv";
+
 /**
  * Placeholder source link for every regulation cell. The real per-cell source
  * statutes arrive later via the Google Sheets API path (CSV export strips the

@@ -13,8 +13,10 @@
  */
 
 import { useMemo, useState } from "react";
-import csvText from "../../homeschool-hub-state-summary-data.csv?raw";
-import { parseCsv } from "../data/parseCsv.js";
+import {
+  enrollmentByState as byState,
+  enrollmentYears as years,
+} from "../data/enrollmentLoader.js";
 import {
   deriveByYear,
   computeMaxDeviation,
@@ -34,8 +36,8 @@ import MapLegend from "./MapLegend.jsx";
 import StateDetailCard from "./StateDetailCard.jsx";
 import EnrollmentTable from "./EnrollmentTable.jsx";
 
-// Data is parsed once at module load — the CSV is bundled at build time.
-const { byState, years } = parseCsv(csvText);
+// Enrollment data comes shaped from the loader (parsed once, shared with the
+// State policies view's Homeschoolers column). byYear aggregates are derived here.
 const byYear = deriveByYear(byState);
 
 // Most recent five years stay pinned in the selector row; everything older

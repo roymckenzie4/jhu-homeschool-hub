@@ -1,10 +1,8 @@
 /**
  * Page footer.
  *
- * Three link-style affordances (About this data, Download data, Compare
- * states) plus the last-updated meta line. "Compare states" stays a proper
- * button — it's the only ghosted *primary* action in the layout. The other
- * two are utility links.
+ * Two utility links (About this data, Download data) plus the last-updated
+ * meta line.
  *
  * The About disclosure is a small controlled popover: a button toggles it,
  * outside-click and Escape close it. Native <details> doesn't close on
@@ -14,26 +12,9 @@
  */
 
 import { useEffect, useRef, useState } from 'react';
-import csvText from '../../homeschool-hub-state-summary-data.csv?raw';
+import { enrollmentCsvText } from '../data/enrollmentLoader.js';
 import { DOWNLOAD_FILENAME, LAST_UPDATED } from '../config/theme.js';
-
-/**
- * Trigger a client-side download of the bundled CSV. The CSV string is
- * wrapped in a Blob, exposed via a temporary object URL, and handed to a
- * synthetic anchor whose `download` attribute prompts a Save dialog. The URL
- * is revoked afterward so the browser can release the Blob from memory.
- */
-function downloadCsv() {
-  const blob = new Blob([csvText], { type: 'text/csv;charset=utf-8' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = DOWNLOAD_FILENAME;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-}
+import { downloadCsv } from '../lib/download.js';
 
 export default function Footer() {
   return (
@@ -44,18 +25,10 @@ export default function Footer() {
 
           <button
             type="button"
-            onClick={downloadCsv}
+            onClick={() => downloadCsv(enrollmentCsvText, DOWNLOAD_FILENAME)}
             className="font-sans text-xs text-sable/70 underline decoration-dashed decoration-sable/30 underline-offset-4 hover:text-sable hover:decoration-sable/60"
           >
             Download data (CSV)
-          </button>
-
-          <button
-            type="button"
-            disabled
-            className="cursor-not-allowed rounded border border-sable/15 px-3 py-1.5 font-sans text-xs text-sable/40"
-          >
-            + Compare states
           </button>
         </div>
         <p className="font-sans text-[10px] uppercase tracking-widest text-sable/40">

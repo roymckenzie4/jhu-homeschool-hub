@@ -12,14 +12,16 @@
  */
 
 import { useState } from "react";
-import { policyByState } from "../data/policyLoader.js";
+import { policyByState, policyCsvText } from "../data/policyLoader.js";
 import {
   LEVELS,
   LEVEL_ORDER,
   COMPARE_CAP,
   REGULATION_COUNT,
+  POLICY_DOWNLOAD_FILENAME,
 } from "../config/policy.js";
 import { COLORS, levelColor } from "../config/theme.js";
+import { downloadCsv } from "../lib/download.js";
 import ChoroplethMap from "./ChoroplethMap.jsx";
 import MapLegend from "./MapLegend.jsx";
 import ComparingChips from "./ComparingChips.jsx";
@@ -106,6 +108,16 @@ export default function PolicyView() {
         policyByState={policyByState}
         onRemove={toggleState}
       />
+
+      <footer className="mt-3">
+        <button
+          type="button"
+          onClick={() => downloadCsv(policyCsvText, POLICY_DOWNLOAD_FILENAME)}
+          className="font-sans text-xs text-sable/70 underline decoration-dashed decoration-sable/30 underline-offset-4 hover:text-sable hover:decoration-sable/60"
+        >
+          Download data (CSV)
+        </button>
+      </footer>
     </>
   );
 }
