@@ -16,6 +16,7 @@ import { useMemo, useState } from "react";
 import {
   enrollmentByState as byState,
   enrollmentYears as years,
+  enrollmentCsvText,
 } from "../data/enrollmentLoader.js";
 import {
   deriveByYear,
@@ -27,6 +28,7 @@ import {
   schoolYearLabel,
   computeQuantileBreaks,
   rangeLabel,
+  DOWNLOAD_FILENAME,
 } from "../config/theme.js";
 import Header from "./Header.jsx";
 import YearSelector from "./YearSelector.jsx";
@@ -235,7 +237,19 @@ export default function EnrollmentView() {
         </div>
       </div>
 
-      <Footer />
+      <Footer
+        csvText={enrollmentCsvText}
+        downloadFilename={DOWNLOAD_FILENAME}
+        about={
+          <>
+            The Homeschool Hub aggregates publicly reported state-level
+            homeschool enrollment counts. Non-reporting states either decline to
+            track homeschool enrollment or do not release it publicly, so
+            national totals reflect reporting states only and should be read as a
+            floor, not a complete count.
+          </>
+        }
+      />
     </>
   );
 }

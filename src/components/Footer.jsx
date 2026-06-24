@@ -12,20 +12,29 @@
  */
 
 import { useEffect, useRef, useState } from 'react';
-import { enrollmentCsvText } from '../data/enrollmentLoader.js';
-import { DOWNLOAD_FILENAME, LAST_UPDATED } from '../config/theme.js';
+import { LAST_UPDATED } from '../config/theme.js';
 import { downloadCsv } from '../lib/download.js';
 
-export default function Footer() {
+/**
+ * Shared view footer. Both views render this same row so "About this data /
+ * Download data / Last updated" stays identical across tabs; only the content
+ * differs, passed in via props.
+ *
+ * Props:
+ *   - about            ReactNode  the "About this data" disclosure copy.
+ *   - csvText          string     CSV to download.
+ *   - downloadFilename string     suggested filename for the download.
+ */
+export default function Footer({ about, csvText, downloadFilename }) {
   return (
     <footer className="mt-3 border-t border-sable/10 pt-3">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
-          <AboutDisclosure />
+          <AboutDisclosure>{about}</AboutDisclosure>
 
           <button
             type="button"
-            onClick={() => downloadCsv(enrollmentCsvText, DOWNLOAD_FILENAME)}
+            onClick={() => downloadCsv(csvText, downloadFilename)}
             className="font-sans text-xs text-sable/70 underline decoration-dashed decoration-sable/30 underline-offset-4 hover:text-sable hover:decoration-sable/60"
           >
             Download data (CSV)
@@ -41,10 +50,10 @@ export default function Footer() {
 
 /**
  * Click-to-open popover anchored above the trigger. Closes on outside click
- * or Escape. Kept inline (not exported) because the About copy and its
- * placement are footer-specific.
+ * or Escape. The disclosure copy is passed in as children so each view supplies
+ * its own.
  */
-function AboutDisclosure() {
+function AboutDisclosure({ children }) {
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
 
@@ -81,13 +90,9 @@ function AboutDisclosure() {
       {open && (
         <div
           role="dialog"
-          className="absolute bottom-full left-0 z-10 mb-2 w-80 rounded border border-sable/15 bg-white p-3 font-sans text-xs leading-relaxed text-sable/80 shadow-md"
+          className="absolute bottom-full left-0 z-10 mb-2 w-96 max-w-[90vw] rounded border border-sable/15 bg-white p-3 font-sans text-xs leading-relaxed text-sable/80 shadow-md"
         >
-          The Homeschool Hub aggregates publicly reported state-level
-          homeschool enrollment counts. Non-reporting states either decline to
-          track homeschool enrollment or do not release it publicly, so
-          national totals reflect reporting states only and should be read as
-          a floor, not a complete count.
+          {children}
         </div>
       )}
     </div>

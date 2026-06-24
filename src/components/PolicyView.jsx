@@ -21,17 +21,43 @@ import {
   POLICY_DOWNLOAD_FILENAME,
 } from "../config/policy.js";
 import { COLORS, levelColor } from "../config/theme.js";
-import { downloadCsv } from "../lib/download.js";
 import ChoroplethMap from "./ChoroplethMap.jsx";
 import MapLegend from "./MapLegend.jsx";
 import ComparingChips from "./ComparingChips.jsx";
 import PolicyComparisonTable from "./PolicyComparisonTable.jsx";
+import Footer from "./Footer.jsx";
 
 // Legend swatches: one per level, colored + labeled with its count range.
 const LEGEND_SWATCHES = LEVEL_ORDER.map((level) => ({
   color: levelColor(level),
   label: `${LEVELS[level].label} ${LEVELS[level].range}`,
 }));
+
+// Live level distribution across all jurisdictions, computed once — keeps the
+// "About this data" counts honest against the dataset (never hard-coded).
+const LEVEL_DISTRIBUTION = Object.values(policyByState).reduce(
+  (dist, entry) => {
+    dist[entry.level] += 1;
+    return dist;
+  },
+  { Low: 0, Medium: 0, High: 0 },
+);
+
+// "About this data" copy for the shared footer disclosure (placeholder wording;
+// JHU owns final copy).
+const POLICY_ABOUT = (
+  <>
+    Each state is scored across {REGULATION_COUNT} homeschool regulations grouped
+    into registration, instruction, and assessment requirements. A state's
+    regulation level reflects how many are in force — Low (0–3), Medium (4–6), or
+    High (7–10) — currently {LEVEL_DISTRIBUTION.Low} Low,{" "}
+    {LEVEL_DISTRIBUTION.Medium} Medium, and {LEVEL_DISTRIBUTION.High} High. The
+    Homeschoolers column draws on the enrollment dataset and shows each state's
+    figure for the latest year, or “not reported” where the state does not
+    publish one. Figures are illustrative placeholders pending the verified
+    dataset.
+  </>
+);
 
 export default function PolicyView() {
   const [selectedStates, setSelectedStates] = useState([]);
@@ -68,7 +94,9 @@ export default function PolicyView() {
       <hr className="mt-3 border-t border-sable/15" />
 
       <div className="mt-3">
-        <div className="mx-auto max-w-5xl">
+        {/* Map matched to the Enrollment view's width for cross-view
+            consistency and to keep the fixed-frame height budget. */}
+        <div className="mx-auto" style={{ maxWidth: "calc(320px * 760 / 460)" }}>
           <ChoroplethMap
             fillForState={(name) => levelColor(policyByState[name]?.level)}
             selectedStates={selectedStates}
@@ -103,21 +131,19 @@ export default function PolicyView() {
         onClear={() => setSelectedStates([])}
       />
 
-      <PolicyComparisonTable
-        selectedStates={selectedStates}
-        policyByState={policyByState}
-        onRemove={toggleState}
-      />
+      <div className="mt-4">
+        <PolicyComparisonTable
+          selectedStates={selectedStates}
+          policyByState={policyByState}
+          onRemove={toggleState}
+        />
+      </div>
 
-      <footer className="mt-3">
-        <button
-          type="button"
-          onClick={() => downloadCsv(policyCsvText, POLICY_DOWNLOAD_FILENAME)}
-          className="font-sans text-xs text-sable/70 underline decoration-dashed decoration-sable/30 underline-offset-4 hover:text-sable hover:decoration-sable/60"
-        >
-          Download data (CSV)
-        </button>
-      </footer>
+      <Footer
+        about={POLICY_ABOUT}
+        csvText={policyCsvText}
+        downloadFilename={POLICY_DOWNLOAD_FILENAME}
+      />
     </>
   );
 }
