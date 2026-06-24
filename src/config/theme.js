@@ -95,3 +95,21 @@ export function formatCompact(n) {
   if (abs < 10000) return `${(n / 1000).toFixed(1)}K`;
   return `${Math.round(n / 1000)}K`;
 }
+
+/**
+ * Build the label for quantile bucket `i` of `total`, given the breakpoints
+ * from computeQuantileBreaks. Used to label each legend swatch in the
+ * Enrollment view:
+ * - First bucket : "<{upper}"   (smallest reporting states read as "fewer
+ *                                than X" rather than starting at 0)
+ * - Middle       : "{lo}–{hi}"
+ * - Last         : "{lo}+"
+ */
+export function rangeLabel(breaks, i, total) {
+  if (!breaks) return "";
+  const lo = breaks[i];
+  const hi = breaks[i + 1];
+  if (i === 0) return `<${formatCompact(hi)}`;
+  if (i === total - 1) return `${formatCompact(lo)}+`;
+  return `${formatCompact(lo)}–${formatCompact(hi)}`;
+}

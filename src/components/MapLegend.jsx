@@ -1,94 +1,64 @@
 /**
- * MapLegend — discrete color swatches with value ranges + non-reporting
- * swatch, shown directly below the map.
+ * MapLegend — labeled color key shown directly below a choropleth.
  *
- * Because the choropleth uses quintile (equal-count) classification rather
- * than a linear scale, the legend pulls double duty: color encodes a state's
- * rank within reporting states, and the label under each swatch tells the
- * reader the actual magnitudes that bucket covers. This is the standard
- * cartographic move when the underlying data is right-skewed.
+ * View-agnostic: the caller supplies the swatches (color + range/category
+ * label) and an optional trailing slot, so the same component serves the
+ * Enrollment view (quintile value ranges + a "no public data" note) and the
+ * State policies view (Low/Med/High categories + a helper note).
+ *
+ * The label cluster is split into two stacked rows that mirror the swatch +
+ * range-label stack: the primary label lines up with the swatch row, and an
+ * optional secondary line (everything after the first ", ") lines up with the
+ * range-label row. This keeps the legend compact enough that the trailing note
+ * still fits at narrow desktop widths (~1024–1200px).
  *
  * Props:
- *   - label   string       (e.g., "Students, 2024-25") shown above the ramp.
- *   - breaks  number[]|null  quintile breakpoints from computeQuantileBreaks
- *                          (length = RAMP_STEPS.length + 1). When null we
- *                          render the swatches without ranges.
+ *   - label    string              left label; a ", " splits it into the
+ *                                  primary line and a smaller secondary line
+ *                                  (e.g. "Students, 2024-25").
+ *   - swatches [{ color, label }]  the color key, in display order. `label` is
+ *                                  shown centered under each swatch.
+ *   - trailing ReactNode           optional right-aligned slot (a note, helper
+ *                                  text, or pill). Omitted when null.
  */
 
-import { RAMP_STEPS, formatCompact } from '../config/theme.js';
+export default function MapLegend({ label, swatches, trailing = null }) {
+  const [primary, secondary] = label.split(", ");
 
-export default function MapLegend({ label, breaks }) {
   return (
     <div className="flex flex-wrap items-start justify-between gap-x-6 gap-y-3 font-sans text-[11px] text-sable/70">
-      {/* Left cluster: section label sits to the left of the swatch ramp.
-          The label is split into two rows that mirror the swatch + range-label
-          stack: "STUDENTS" lines up with the swatch row, and the year ("2024-25")
-          lines up with the range-label row, styled to match it. This keeps the
-          legend's total height unchanged while shrinking the label cluster's
-          horizontal footprint, which is what makes the "Does not publicly
-          report" pill fit at narrow desktop widths (~1024–1200px). */}
       <div className="flex items-start gap-4">
-        {(() => {
-          const [primary, year] = label.split(', ');
-          return (
-            <div className="flex flex-col gap-[3px]">
-              <span className="font-semibold uppercase tracking-widest text-sable/90 leading-3">
-                {primary}
-              </span>
-              {year && (
-                <span className="text-[10px] leading-none text-sable/55 tabular-nums">
-                  {year}
-                </span>
-              )}
-            </div>
-          );
-        })()}
+        <div className="flex flex-col gap-[3px]">
+          <span className="font-semibold uppercase tracking-widest text-sable/90 leading-3">
+            {primary}
+          </span>
+          {secondary && (
+            <span className="text-[10px] leading-none text-sable/55 tabular-nums">
+              {secondary}
+            </span>
+          )}
+        </div>
         <div className="flex flex-col gap-[3px]" aria-hidden="true">
           <div className="flex gap-[2px]">
-            {RAMP_STEPS.map((c) => (
+            {swatches.map((s, i) => (
               <span
-                key={c}
+                key={i}
                 className="block h-2.5 w-16 rounded-[1px]"
-                style={{ backgroundColor: c }}
+                style={{ backgroundColor: s.color }}
               />
             ))}
           </div>
           <div className="flex gap-[2px] text-[10px] leading-none text-sable/55">
-            {RAMP_STEPS.map((_, i) => (
-              <span
-                key={i}
-                className="block w-16 text-center tabular-nums"
-              >
-                {rangeLabel(breaks, i, RAMP_STEPS.length)}
+            {swatches.map((s, i) => (
+              <span key={i} className="block w-16 text-center tabular-nums">
+                {s.label}
               </span>
             ))}
           </div>
         </div>
       </div>
 
-      <div className="flex items-center gap-2 whitespace-nowrap text-sable/60">
-        {/* Re-uses the SVG pattern defined in ChoroplethMap's <defs>. */}
-        <svg width="20" height="12" aria-hidden="true">
-          <rect width="20" height="12" fill="url(#non-reporting)" />
-        </svg>
-        <span>No public data</span>
-      </div>
+      {trailing}
     </div>
   );
-}
-
-/**
- * Label for bucket `i` of `total` given the quintile breakpoints.
- * - First bucket : "<{upper}"     (so the smallest reporting states read as
- *                                  "fewer than X" rather than starting at 0)
- * - Middle      : "{lo}–{hi}"
- * - Last         : "{lo}+"
- */
-function rangeLabel(breaks, i, total) {
-  if (!breaks) return '';
-  const lo = breaks[i];
-  const hi = breaks[i + 1];
-  if (i === 0) return `<${formatCompact(hi)}`;
-  if (i === total - 1) return `${formatCompact(lo)}+`;
-  return `${formatCompact(lo)}–${formatCompact(hi)}`;
 }

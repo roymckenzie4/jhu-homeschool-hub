@@ -20,7 +20,12 @@ import {
   computeMaxDeviation,
   windowAroundYear,
 } from "../data/derive.js";
-import { schoolYearLabel, computeQuantileBreaks } from "../config/theme.js";
+import {
+  RAMP_STEPS,
+  schoolYearLabel,
+  computeQuantileBreaks,
+  rangeLabel,
+} from "../config/theme.js";
 import Header from "./Header.jsx";
 import YearSelector from "./YearSelector.jsx";
 import Footer from "./Footer.jsx";
@@ -42,6 +47,21 @@ const DEFAULT_YEAR = RECENT_YEARS[RECENT_YEARS.length - 1];
 
 // Default selection per .md.
 const DEFAULT_STATE = "Arkansas";
+
+/**
+ * Map a reporting value to one of the RAMP_STEPS buckets via quintile breaks.
+ * Returns the non-reporting stripe pattern when no value exists. This is the
+ * Enrollment view's `fillForState`, kept here (not in the map) so the map
+ * stays classification-agnostic.
+ */
+function fillForValue(value, breaks) {
+  if (value == null) return "url(#non-reporting)";
+  if (!breaks) return RAMP_STEPS[0];
+  for (let i = 0; i < RAMP_STEPS.length; i += 1) {
+    if (value <= breaks[i + 1]) return RAMP_STEPS[i];
+  }
+  return RAMP_STEPS[RAMP_STEPS.length - 1];
+}
 
 export default function EnrollmentView() {
   const [selectedState, setSelectedState] = useState(DEFAULT_STATE);
@@ -103,6 +123,20 @@ export default function EnrollmentView() {
     [valuesByState],
   );
 
+  // The shared map takes a list of selected states; this view selects exactly
+  // one, so we wrap it in a stable single-element array.
+  const selectedStateList = useMemo(() => [selectedState], [selectedState]);
+
+  // Legend swatches: each quintile color paired with its value-range label.
+  const swatches = useMemo(
+    () =>
+      RAMP_STEPS.map((color, i) => ({
+        color,
+        label: rangeLabel(breaks, i, RAMP_STEPS.length),
+      })),
+    [breaks],
+  );
+
   return (
     <>
       <Header
@@ -139,16 +173,33 @@ export default function EnrollmentView() {
             style={{ maxWidth: "calc(320px * 760 / 460)" }}
           >
             <ChoroplethMap
-              valuesByState={valuesByState}
-              breaks={breaks}
-              selectedState={selectedState}
+              fillForState={(name) =>
+                fillForValue(valuesByState[name] ?? null, breaks)
+              }
+              selectedStates={selectedStateList}
               onSelect={setSelectedState}
+              isInteractive={(name) => (valuesByState[name] ?? null) != null}
+              ariaLabelForState={(name) => {
+                const v = valuesByState[name] ?? null;
+                return `${name}${
+                  v != null ? `, ${v.toLocaleString()} reported homeschoolers` : ""
+                }`;
+              }}
             />
           </div>
           <div className="mt-2">
             <MapLegend
               label={`Students, ${schoolYearLabel(activeYear)}`}
-              breaks={breaks}
+              swatches={swatches}
+              trailing={
+                <div className="flex items-center gap-2 whitespace-nowrap text-sable/60">
+                  {/* Re-uses the SVG pattern defined in ChoroplethMap's <defs>. */}
+                  <svg width="20" height="12" aria-hidden="true">
+                    <rect width="20" height="12" fill="url(#non-reporting)" />
+                  </svg>
+                  <span>No public data</span>
+                </div>
+              }
             />
           </div>
         </div>

@@ -1,29 +1,41 @@
 /**
  * ChoroplethMap — US state choropleth, rendered as an inline SVG.
  *
+ * View-agnostic: the map knows nothing about enrollment vs. regulation data.
+ * Each view supplies callbacks that map a state name to a fill, an
+ * interactivity flag, and an accessible label, plus the set of currently
+ * selected states. This lets the Enrollment view (single-select, blue quintile
+ * ramp) and the State policies view (multi-select, categorical level ramp)
+ * share one map.
+ *
  * All d3-geo usage in this app is confined to this file and `lib/geoProjection.js`.
  * The TopoJSON file (~110KB) lives in /public and is fetched once at mount.
  *
  * Props:
- *   - valuesByState  { [stateName: string]: number | null }  reporting numbers
- *                    for the active year. `null` means non-reporting.
- *   - breaks         number[]   quintile break points produced by
- *                    `computeQuantileBreaks`. Length = RAMP_STEPS.length + 1.
- *   - selectedState  string     the currently-selected state name.
- *   - onSelect       (name)     invoked when a state (or DC marker) is clicked.
+ *   - fillForState      (name) => string   fill for a state: a color, or
+ *                       "url(#non-reporting)" for the diagonal-stripe pattern.
+ *   - selectedStates    string[]           names currently selected (0..n).
+ *   - onSelect          (name)             invoked when an interactive state
+ *                       (or DC marker) is clicked / activated.
+ *   - selectionStroke   string             ring color for selected states
+ *                       (default sable; the policy view passes heritage blue).
+ *   - isInteractive     (name) => boolean  whether a state accepts selection
+ *                       (default: all). Non-interactive states are unfocusable
+ *                       and hidden from assistive tech.
+ *   - ariaLabelForState (name) => string   accessible label for an interactive
+ *                       state (default: the name alone).
  *
  * Visual rules:
- *   - Reporting states fill from the SPIRIT → HERITAGE blue ramp, classified
- *     into quintiles so the right-skewed distribution still shows variation.
- *   - Non-reporting states use a diagonal-stripe pattern on a light-gray ground.
+ *   - Non-reporting / inert states use a diagonal-stripe pattern (the view's
+ *     fillForState returns the pattern url for them).
  *   - Hover: subtle fill darkening via CSS — no React state, no re-renders on
  *     mousemove. This is what fixes the "stuck hover" problem the previous
  *     three-pass render produced when the hovered path's DOM identity swapped
  *     between layers under the cursor.
- *   - Selection: a non-interactive overlay layer above the map paints the
- *     selected state with a sable ring and a soft drop-shadow. The base layer
- *     dims all non-selected states ~14% so attention falls on the selection
- *     without the ring having to shout.
+ *   - Selection: a non-interactive overlay layer above the map paints each
+ *     selected state with a ring and a soft drop-shadow. The base layer dims
+ *     all non-selected states ~14% so attention falls on the selection without
+ *     the ring having to shout.
  *   - DC: a small marker circle with a leader line (DC is too tiny to color
  *     reliably on a continental projection).
  */
@@ -31,7 +43,7 @@
 import { useEffect, useId, useMemo, useState } from "react";
 import { feature } from "topojson-client";
 import { BY_FIPS } from "../config/states.js";
-import { COLORS, RAMP_STEPS } from "../config/theme.js";
+import { COLORS } from "../config/theme.js";
 import { buildProjection } from "../lib/geoProjection.js";
 
 // SVG viewBox dimensions. The map scales to its container via CSS; these
@@ -50,32 +62,21 @@ const DC_LEADER_LENGTH = 26;
 // Hover affordance and dim-on-selection are driven by CSS rules in
 // `src/styles/index.css`.
 const STROKE_REST = 0.6; // white separator between resting states
-const STROKE_RING = 2.5; // sable selection ring on the overlay layer
+const STROKE_RING = 2.5; // selection ring on the overlay layer
 const STROKE_INNER = 2; // white inner line, clipped to the state's
 // interior so only the inner half (~1px) shows;
 // produces a crisp hairline of white between
-// the sable ring and the state fill
+// the selection ring and the state fill
 
-/**
- * Map a reporting value to one of the RAMP_STEPS buckets via quintile breaks.
- * Returns the non-reporting pattern reference when no value exists.
- */
-function fillFor(value, breaks) {
-  if (value == null) return "url(#non-reporting)";
-  if (!breaks) return RAMP_STEPS[0];
-  // breaks has RAMP_STEPS.length + 1 entries. Find the bucket whose upper
-  // bound is >= value. Defensive: clamp to the last bucket if value exceeds.
-  for (let i = 0; i < RAMP_STEPS.length; i += 1) {
-    if (value <= breaks[i + 1]) return RAMP_STEPS[i];
-  }
-  return RAMP_STEPS[RAMP_STEPS.length - 1];
-}
+const DC_NAME = "District of Columbia";
 
 export default function ChoroplethMap({
-  valuesByState,
-  breaks,
-  selectedState,
+  fillForState,
+  selectedStates = [],
   onSelect,
+  selectionStroke = COLORS.sable,
+  isInteractive = () => true,
+  ariaLabelForState = (name) => name,
 }) {
   // TopoJSON is fetched once at mount. Until it loads the SVG renders empty.
   const [features, setFeatures] = useState(null);
@@ -84,7 +85,6 @@ export default function ChoroplethMap({
   // here, but cheap insurance) don't collide. Plain string ids would silently
   // bind the second map's clip to the first map's path.
   const uid = useId();
-  const selectionClipId = `selection-inner-clip-${uid}`;
   const dcClipId = `dc-inner-clip-${uid}`;
 
   useEffect(() => {
@@ -114,15 +114,15 @@ export default function ChoroplethMap({
     return projected.projection([-77.0369, 38.9072]);
   }, [projected]);
 
-  // Pre-resolve the selected state's feature so the overlay layer doesn't
-  // re-scan the feature list on every render.
-  const selectedFeature = useMemo(() => {
-    if (!features) return null;
-    return features.features.find((f) => {
+  // Pre-resolve the selected states' features (excluding DC, which renders as a
+  // marker) so the overlay layer doesn't re-scan the feature list every render.
+  const selectedFeatures = useMemo(() => {
+    if (!features) return [];
+    return features.features.filter((f) => {
       const m = BY_FIPS[f.id];
-      return m && m.name === selectedState;
+      return m && m.name !== DC_NAME && selectedStates.includes(m.name);
     });
-  }, [features, selectedState]);
+  }, [features, selectedStates]);
 
   if (!features || !projected) {
     return (
@@ -135,15 +135,16 @@ export default function ChoroplethMap({
   }
 
   const { path } = projected;
-  const dcValue = valuesByState["District of Columbia"] ?? null;
-  const dcSelected = selectedState === "District of Columbia";
+  const hasSelection = selectedStates.length > 0;
+  const dcInteractive = isInteractive(DC_NAME);
+  const dcSelected = selectedStates.includes(DC_NAME);
 
   return (
     <svg
       viewBox={`0 0 ${VIEW_W} ${VIEW_H}`}
       className="block h-auto w-full"
       role="img"
-      aria-label="US choropleth of reported homeschool enrollment by state"
+      aria-label="US choropleth by state"
     >
       <defs>
         {/* Diagonal stripes for states that do not publicly report. */}
@@ -169,8 +170,8 @@ export default function ChoroplethMap({
             (a) a tight, nearly opaque white halo right at the state's edge,
             (b) a softer wider white falloff that fades to nothing, and
             (c) a low-opacity black drop-shadow for lift off the map.
-            The two whites give a visible halo on dark fills like heritage
-            states without reading as a hard racing stripe. */}
+            The two whites give a visible halo on dark fills without reading
+            as a hard racing stripe. */}
         <filter
           id="selection-lift"
           x="-30%"
@@ -204,7 +205,7 @@ export default function ChoroplethMap({
         {/* Hover affordance: a thin sable outer glow. Lives outside the
             path so it can't be clipped by neighboring states, and it reads
             on every fill (the brightness shift on its own disappears
-            against the dark heritage states). */}
+            against the dark fills). */}
         <filter
           id="state-hover-glow"
           x="-10%"
@@ -241,33 +242,32 @@ export default function ChoroplethMap({
 
       {/*
         Single base layer: every state rendered exactly once. Hover affordance
-        comes from CSS so mouse movement does not trigger React renders. The
-        selected state stays in this layer too (so it accepts clicks and isn't
-        dimmed), but the overlay layer below paints its ring + shadow on top.
+        comes from CSS so mouse movement does not trigger React renders. Selected
+        states stay in this layer too (so they accept clicks and aren't dimmed),
+        but the overlay layer below paints their ring + shadow on top.
       */}
-      <g className={selectedState ? "map-base--has-selection" : ""}>
+      <g className={hasSelection ? "map-base--has-selection" : ""}>
         {features.features.map((f) => {
           const meta = BY_FIPS[f.id];
           if (!meta) return null; // territories carried in the topojson
           const name = meta.name;
-          if (name === "District of Columbia") return null; // marker handled below
-          const value = valuesByState[name] ?? null;
-          const isReporting = value != null;
-          const isSelected = name === selectedState;
+          if (name === DC_NAME) return null; // marker handled below
+          const interactive = isInteractive(name);
+          const isSelected = selectedStates.includes(name);
 
           let className = "state-path";
-          if (isReporting) className += " state-path--clickable";
+          if (interactive) className += " state-path--clickable";
           if (isSelected) className += " state-path--selected";
 
           // Keyboard activation: Enter and Space both select the state, matching
-          // native <button> semantics. Non-reporting states are unfocusable and
+          // native <button> semantics. Non-interactive states are unfocusable and
           // unannounced so keyboard users skip over them, mirroring the mouse
           // experience (no click target).
-          const interactive = isReporting
+          const a11y = interactive
             ? {
                 role: "button",
                 tabIndex: 0,
-                "aria-label": `${name}${value != null ? `, ${value.toLocaleString()} reported homeschoolers` : ""}`,
+                "aria-label": ariaLabelForState(name),
                 "aria-pressed": isSelected,
                 onClick: () => onSelect(name),
                 onKeyDown: (e) => {
@@ -284,10 +284,10 @@ export default function ChoroplethMap({
               key={f.id}
               d={path(f)}
               className={className}
-              fill={fillFor(value, breaks)}
+              fill={fillForState(name)}
               stroke="#FFFFFF"
               strokeWidth={STROKE_REST}
-              {...interactive}
+              {...a11y}
             />
           );
         })}
@@ -295,54 +295,52 @@ export default function ChoroplethMap({
 
       {/*
         Selection overlay. Non-interactive so hit-testing still falls through
-        to the base layer. Three stacked paths:
+        to the base layer. For each selected state, three stacked paths:
           1. Filled path with the selection-lift filter — outer soft white
              halo + drop shadow.
-          2. Stroke-only sable path — the crisp selection ring, centered on
-             the state edge.
+          2. Stroke-only path in `selectionStroke` — the crisp selection ring,
+             centered on the state edge.
           3. Stroke-only white path, clipped to the state's own interior so
              only the inside half of the stroke shows — a hairline of white
-             between the sable ring and the state fill. Classic double-stroke
+             between the ring and the state fill. Classic double-stroke
              framing; makes the selection read as deliberate.
       */}
       <g style={{ pointerEvents: "none" }}>
-        {selectedFeature &&
-          selectedState !== "District of Columbia" &&
-          (() => {
-            const value = valuesByState[selectedState] ?? null;
-            const d = path(selectedFeature);
-            const fill = fillFor(value, breaks);
-            return (
-              <>
-                <defs>
-                  <clipPath id={selectionClipId}>
-                    <path d={d} />
-                  </clipPath>
-                </defs>
-                <path
-                  d={d}
-                  fill={fill}
-                  stroke="none"
-                  filter="url(#selection-lift)"
-                />
-                <path
-                  d={d}
-                  fill="none"
-                  stroke={COLORS.sable}
-                  strokeWidth={STROKE_RING}
-                  strokeLinejoin="round"
-                />
-                <path
-                  d={d}
-                  fill="none"
-                  stroke="#FFFFFF"
-                  strokeWidth={STROKE_INNER}
-                  strokeLinejoin="round"
-                  clipPath={`url(#${selectionClipId})`}
-                />
-              </>
-            );
-          })()}
+        {selectedFeatures.map((f) => {
+          const name = BY_FIPS[f.id].name;
+          const d = path(f);
+          const clipId = `selection-inner-clip-${uid}-${f.id}`;
+          return (
+            <g key={f.id}>
+              <defs>
+                <clipPath id={clipId}>
+                  <path d={d} />
+                </clipPath>
+              </defs>
+              <path
+                d={d}
+                fill={fillForState(name)}
+                stroke="none"
+                filter="url(#selection-lift)"
+              />
+              <path
+                d={d}
+                fill="none"
+                stroke={selectionStroke}
+                strokeWidth={STROKE_RING}
+                strokeLinejoin="round"
+              />
+              <path
+                d={d}
+                fill="none"
+                stroke="#FFFFFF"
+                strokeWidth={STROKE_INNER}
+                strokeLinejoin="round"
+                clipPath={`url(#${clipId})`}
+              />
+            </g>
+          );
+        })}
       </g>
 
       {/* DC: leader line + marker circle. Click + hover handled directly here
@@ -351,23 +349,23 @@ export default function ChoroplethMap({
           group lights up the marker via the .state-path focus rule below. */}
       {dcPoint && (
         <g
-          className={dcValue == null ? undefined : "state-path state-path--clickable"}
-          style={{ cursor: dcValue == null ? "default" : "pointer" }}
-          {...(dcValue == null
-            ? { "aria-hidden": true }
-            : {
+          className={dcInteractive ? "state-path state-path--clickable" : undefined}
+          style={{ cursor: dcInteractive ? "pointer" : "default" }}
+          {...(dcInteractive
+            ? {
                 role: "button",
                 tabIndex: 0,
-                "aria-label": `District of Columbia, ${dcValue.toLocaleString()} reported homeschoolers`,
+                "aria-label": ariaLabelForState(DC_NAME),
                 "aria-pressed": dcSelected,
-                onClick: () => onSelect("District of Columbia"),
+                onClick: () => onSelect(DC_NAME),
                 onKeyDown: (e) => {
                   if (e.key === "Enter" || e.key === " ") {
                     e.preventDefault();
-                    onSelect("District of Columbia");
+                    onSelect(DC_NAME);
                   }
                 },
-              })}
+              }
+            : { "aria-hidden": true })}
         >
           <line
             x1={dcPoint[0]}
@@ -385,7 +383,7 @@ export default function ChoroplethMap({
               cx={dcPoint[0] + DC_LEADER_LENGTH}
               cy={dcPoint[1] + DC_LEADER_LENGTH}
               r={DC_MARKER_RADIUS}
-              fill={fillFor(dcValue, breaks)}
+              fill={fillForState(DC_NAME)}
               stroke="#FFFFFF"
               strokeWidth={STROKE_REST}
             />
@@ -405,7 +403,7 @@ export default function ChoroplethMap({
                 cx={dcPoint[0] + DC_LEADER_LENGTH}
                 cy={dcPoint[1] + DC_LEADER_LENGTH}
                 r={DC_MARKER_RADIUS}
-                fill={fillFor(dcValue, breaks)}
+                fill={fillForState(DC_NAME)}
                 stroke="none"
                 filter="url(#selection-lift)"
               />
@@ -414,7 +412,7 @@ export default function ChoroplethMap({
                 cy={dcPoint[1] + DC_LEADER_LENGTH}
                 r={DC_MARKER_RADIUS}
                 fill="none"
-                stroke={COLORS.sable}
+                stroke={selectionStroke}
                 strokeWidth={STROKE_RING}
               />
               <circle
