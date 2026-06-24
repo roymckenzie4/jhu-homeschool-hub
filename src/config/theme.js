@@ -33,6 +33,26 @@ export const RAMP_STEPS = [
   "#002D72", // heritage
 ];
 
+/**
+ * Categorical ramp for the State policies choropleth — the JHU Warm Accent
+ * yellow→orange→red heat sequence, keyed by regulation level (see
+ * config/policy.js). Straight from the brand guide; deliberately distinct from
+ * the blue enrollment ramp so the two views never read as the same data.
+ *
+ * Single source of truth: the map fills, the legend swatches, and the chip /
+ * badge dots all color through `levelColor` so they can never drift.
+ */
+export const POLICY_RAMP = {
+  Low: "#F1C400", // JHU Gold
+  Medium: "#FF9E1B", // JHU Orange
+  High: "#CF4520", // JHU Red
+};
+
+/** Fill color for a regulation level ("Low" | "Medium" | "High"). */
+export function levelColor(level) {
+  return POLICY_RAMP[level] ?? COLORS.nonReportingGround;
+}
+
 // Standard transition for selection/fill changes.
 export const TRANSITION_MS = 200;
 
