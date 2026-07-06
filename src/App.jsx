@@ -11,7 +11,7 @@
  * a localized change, since the views are already standalone components.
  */
 
-import { useState } from "react";
+import { useDeferredValue, useState } from "react";
 import ViewTabs from "./components/ViewTabs.jsx";
 import EnrollmentView from "./components/EnrollmentView.jsx";
 import PolicyView from "./components/PolicyView.jsx";
@@ -25,6 +25,13 @@ const TABS = [
 export default function App() {
   const [activeTab, setActiveTab] = useState("enrollment");
 
+  // Mounting a view is expensive (a 50-state map + table). Deferring the value
+  // that selects the view lets the tab underline repaint at high priority while
+  // the heavy panel renders in a following low-priority pass — so the tab
+  // responds instantly instead of stalling until the new view is ready. The
+  // panel keeps the old view until the new one is committed.
+  const shownTab = useDeferredValue(activeTab);
+
   // Toggle instead of a router, so each switch has to be sent as its own event
   // for view usage to show up in analytics.
   function handleTabChange(id) {
@@ -36,13 +43,15 @@ export default function App() {
     <main className="mx-auto max-w-[1200px] px-8 py-4 lg:px-12 lg:py-6">
       <ViewTabs tabs={TABS} activeTab={activeTab} onChange={handleTabChange} />
 
+      {/* Panel identity follows the rendered view (shownTab), not the selected
+          tab, so its id/label always match the content actually on screen. */}
       <div
-        id={`panel-${activeTab}`}
+        id={`panel-${shownTab}`}
         role="tabpanel"
-        aria-labelledby={`tab-${activeTab}`}
+        aria-labelledby={`tab-${shownTab}`}
         className="mt-4"
       >
-        {activeTab === "enrollment" ? <EnrollmentView /> : <PolicyView />}
+        {shownTab === "enrollment" ? <EnrollmentView /> : <PolicyView />}
       </div>
     </main>
   );
