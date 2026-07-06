@@ -36,7 +36,6 @@ export default function StateDetailCard({
   reportingCount,
   dcReporting,
   trendSeries,
-  sparklineMaxDeviation,
 }) {
   // Rank 1 = most reported homeschoolers that year. Show "Nth of M" so it reads
   // as a rank out of the reporting jurisdictions, with the caption naming the
@@ -127,11 +126,7 @@ export default function StateDetailCard({
               Year in Context
             </p>
             <div className="mt-3 aspect-[5/2] lg:aspect-auto lg:h-auto lg:min-h-0 lg:flex-1">
-              <Sparkline
-                series={trendSeries}
-                maxDeviation={sparklineMaxDeviation}
-                selectedYear={year}
-              />
+              <Sparkline series={trendSeries} selectedYear={year} />
             </div>
           </div>
         </>

@@ -1,17 +1,19 @@
 /**
- * Minimal trend sparkline for the State Detail Card.
+ * Single-state trend chart for the State Detail Card.
  *
- * A single-line Recharts `LineChart` wrapped in shadcn's `ChartContainer` so
- * future charts in the project share its theming/CSS-variable plumbing.
- * Everything that would make this look like a "chart" (axes, grid, dots,
- * legend, tooltip) is intentionally disabled — only the line and a small
- * end-point marker remain, plus an optional pair of subtle year labels
- * underneath the line so a reader has a rough time axis.
+ * A single-line Recharts `LineChart` wrapped in shadcn's charting plumbing so
+ * future charts in the project share its theming. Beyond a bare sparkline it
+ * fits the line to the state's own range and labels the first/last reported
+ * values, so a reader gets both the shape of the trend and its magnitude.
  *
- * The component renders into 100% of its container's width and height —
- * the parent decides how tall the sparkline should be. See StateDetailCard
- * where it's given `flex-1` so it grows to fill the remaining vertical
- * space alongside the stats above it.
+ * Scale: the y-domain is fit to THIS state's own reporting range (with padding)
+ * so the line uses the full vertical space. That's deliberately different from a
+ * shared cross-state scale — the single-state detail wants the state's own trend
+ * to be readable; honest cross-state comparison is the job of the (future)
+ * multi-line comparison view, which sets its own shared domain.
+ *
+ * The component renders into 100% of its container's width and height — the
+ * parent decides how tall it should be (see StateDetailCard).
  */
 
 import { Line, LineChart, ResponsiveContainer, YAxis } from 'recharts';
@@ -23,28 +25,32 @@ import { formatNumber } from '../lib/format.js';
  * Inputs:
  *   series: Array<{ year: number, value: number | null }>
  *           ordered ascending by year (oldest → newest).
- *   maxDeviation: number — the largest |value/anchor - 1| seen across ALL
- *           states in this window. Used to set a shared vertical scale so
- *           equal-percent swings render at equal heights across states.
+ *   selectedYear: number — the year to mark with a dot on the line.
  *
- * Each sparkline anchors on the state's first reporting value in the
- * window. The Y domain is then [anchor × (1 - maxDeviation × pad),
- * anchor × (1 + maxDeviation × pad)], where `pad` adds visual breathing
- * room above and below the most-extreme line.
- *
- * Non-reporting points (value === null) break the line — Recharts skips
- * those segments rather than interpolating across them. With the full
- * series rendered, gaps are meaningful information (a state that didn't
- * report in a stretch of years) and shouldn't be hidden.
+ * Non-reporting points (value === null) break the line — Recharts skips those
+ * segments rather than interpolating across them, so gaps in a state's
+ * reporting history stay visible.
  */
 
-// Multiplier on maxDeviation so the most-extreme state's line doesn't sit
-// flush against the top/bottom edge of its chart area.
-const DOMAIN_PAD_MULTIPLIER = 1.1;
+// Fraction of the data range added above and below so the top/bottom points
+// (and their labels) don't sit flush against the chart edges.
+const DOMAIN_PAD = 0.15;
 
-export default function Sparkline({ series, maxDeviation, selectedYear }) {
-  // Drop entries with no value before computing first/last labels so the
-  // axis labels reflect the visible line, not the data array.
+// Left/right gutter reserved for the start- and end-value labels, which sit
+// outside the plotting area. Sized to fit a six-figure comma-formatted number
+// at LABEL_FONT_SIZE.
+const LABEL_GUTTER = 52;
+
+// Horizontal gap between an endpoint and its value label. The labels sit in the
+// outer margins (start in the left gutter, end in the right gutter), clear of
+// the line's x-range entirely — so a steep endpoint can never run through the
+// digits, no above/below guessing required.
+const LABEL_GAP = 5;
+const LABEL_FONT_SIZE = 12;
+
+export default function Sparkline({ series, selectedYear }) {
+  // Drop entries with no value before computing the domain and endpoint labels
+  // so both reflect the visible line, not the padded data array.
   const reporting = series.filter((d) => d.value != null);
   if (reporting.length < 2) {
     return (
@@ -62,51 +68,38 @@ export default function Sparkline({ series, maxDeviation, selectedYear }) {
   const firstIdx = series.findIndex((d) => d.year === firstYear);
   const lastIdx = series.findIndex((d) => d.year === lastYear);
 
-  // For each endpoint, decide whether the label sits above or below the
-  // point based on the adjacent line segment. The label is placed on the
-  // opposite vertical side from where the line travels, so a steep slope
-  // can never run through the digits.
-  const firstGoesUp = reporting[1].value > reporting[0].value;
-  const lastCameUp =
-    reporting[reporting.length - 1].value > reporting[reporting.length - 2].value;
-  // "above" = label drawn above the point (y - offset); "below" = below.
-  const firstAbove = !firstGoesUp;
-  const lastAbove = lastCameUp;
+  // Fit the vertical domain to this state's own range, padded so the extremes
+  // don't touch the edges. A flat series (single distinct value) falls back to
+  // padding around that value so it renders as a centered flat line.
+  const values = reporting.map((d) => d.value);
+  const dataMin = Math.min(...values);
+  const dataMax = Math.max(...values);
+  const pad = (dataMax - dataMin || dataMax || 1) * DOMAIN_PAD;
+  const yMin = dataMin - pad;
+  const yMax = dataMax + pad;
 
-  // Renders a value label only at the first and last reporting points.
-  // textAnchor keeps each label inside the chart area horizontally
-  // (first anchored to the left edge, last to the right).
+  // Value label at the first and last reporting points only, parked in the
+  // outer margin on that side (end-anchored left of the first point, start-
+  // anchored right of the last point) and vertically centered on the point.
   const renderEndpointLabel = ({ x, y, value, index }) => {
     if (value == null) return null;
     if (index !== firstIdx && index !== lastIdx) return null;
     const isFirst = index === firstIdx;
-    const above = isFirst ? firstAbove : lastAbove;
-    // 6px gap above the point, or 14px below (accounts for text baseline
-    // being at the bottom of the glyph, so "below" needs more clearance).
-    const yOffset = above ? -6 : 14;
     return (
       <text
-        x={x}
-        y={y + yOffset}
-        textAnchor={isFirst ? 'start' : 'end'}
+        x={isFirst ? x - LABEL_GAP : x + LABEL_GAP}
+        y={y}
+        textAnchor={isFirst ? 'end' : 'start'}
+        dominantBaseline="central"
         fill={COLORS.sable}
-        fontSize={10}
+        fontSize={LABEL_FONT_SIZE}
         fontFamily="Work Sans, sans-serif"
-        fontWeight={600}
+        fontWeight={700}
       >
         {formatNumber(value)}
       </text>
     );
   };
-
-  // Anchor on the state's first reporting value in the window. The Y range
-  // is symmetric around that anchor and scaled to the largest fractional
-  // deviation seen across ALL states — so a 5% swing here renders shorter
-  // than a 40% swing in California, making cross-state comparison honest.
-  const anchor = reporting[0].value;
-  const spread = anchor * maxDeviation * DOMAIN_PAD_MULTIPLIER;
-  const yMin = anchor - spread;
-  const yMax = anchor + spread;
 
   return (
     <div className="flex h-full flex-col">
@@ -114,8 +107,11 @@ export default function Sparkline({ series, maxDeviation, selectedYear }) {
         <ResponsiveContainer width="100%" height="100%">
           <LineChart
             data={series}
-            margin={{ top: 12, right: 6, bottom: 16, left: 6 }}
+            margin={{ top: 14, right: LABEL_GUTTER, bottom: 8, left: LABEL_GUTTER }}
           >
+            {/* Hidden axis: supplies the fit-to-range vertical scale without
+                drawing a spine or ticks. The bold endpoint values carry the
+                magnitudes; no gridlines, so nothing reads as a stray rule. */}
             <YAxis hide domain={[yMin, yMax]} />
             <Line
               type="linear"
@@ -149,9 +145,7 @@ export default function Sparkline({ series, maxDeviation, selectedYear }) {
       {/* Axis labels reflect the chart's full x-extent (the entire series),
           not just the reporting subset — otherwise a state with sparse
           reporting like Connecticut reads as if its line spans the whole
-          axis when it actually only covers a fraction. The endpoint VALUE
-          labels above stay tied to the reporting first/last; these are
-          the time axis. */}
+          axis when it actually only covers a fraction. */}
       <div className="mt-1 flex justify-between font-sans text-[10px] text-sable/50">
         <span>{schoolYearLabel(series[0].year)}</span>
         <span>{schoolYearLabel(series[series.length - 1].year)}</span>

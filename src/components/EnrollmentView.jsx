@@ -18,11 +18,7 @@ import {
   enrollmentYears as years,
   enrollmentCsvText,
 } from "../data/enrollmentLoader.js";
-import {
-  deriveByYear,
-  computeMaxDeviation,
-  windowAroundYear,
-} from "../data/derive.js";
+import { deriveByYear, windowAroundYear } from "../data/derive.js";
 import {
   RAMP_STEPS,
   schoolYearLabel,
@@ -105,14 +101,6 @@ export default function EnrollmentView() {
         value: selectedStateValues?.[y] ?? null,
       })),
     [selectedStateValues],
-  );
-
-  // Shared vertical scale across every state's sparkline, computed once
-  // across the full series so cross-state comparison stays honest at any
-  // selection.
-  const sparklineMaxDeviation = useMemo(
-    () => computeMaxDeviation(byState, years),
-    [],
   );
 
   // { stateName: number | null } for the active year — what the map consumes.
@@ -224,7 +212,6 @@ export default function EnrollmentView() {
             reportingCount={yearStats.reportingCount}
             dcReporting={dcReporting}
             trendSeries={trendSeries}
-            sparklineMaxDeviation={sparklineMaxDeviation}
           />
         </div>
 
