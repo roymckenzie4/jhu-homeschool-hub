@@ -15,6 +15,7 @@ import { useState } from "react";
 import ViewTabs from "./components/ViewTabs.jsx";
 import EnrollmentView from "./components/EnrollmentView.jsx";
 import PolicyView from "./components/PolicyView.jsx";
+import { trackEvent } from "./lib/analytics.js";
 
 const TABS = [
   { id: "enrollment", label: "Enrollment" },
@@ -24,9 +25,16 @@ const TABS = [
 export default function App() {
   const [activeTab, setActiveTab] = useState("enrollment");
 
+  // Toggle instead of a router, so each switch has to be sent as its own event
+  // for view usage to show up in analytics.
+  function handleTabChange(id) {
+    setActiveTab(id);
+    trackEvent("tab_switch", { view: id });
+  }
+
   return (
     <main className="mx-auto max-w-[1200px] px-8 py-4 lg:px-12 lg:py-6">
-      <ViewTabs tabs={TABS} activeTab={activeTab} onChange={setActiveTab} />
+      <ViewTabs tabs={TABS} activeTab={activeTab} onChange={handleTabChange} />
 
       <div
         id={`panel-${activeTab}`}

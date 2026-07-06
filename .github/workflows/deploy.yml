@@ -57,6 +57,10 @@ jobs:
 
       - name: Build
         run: npm run build
+        # GA4 Measurement ID for the deployed site. Set the VITE_GA_ID repo
+        # variable to enable analytics on the live build; unset = no tracking.
+        env:
+          VITE_GA_ID: ${{ vars.VITE_GA_ID }}
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3

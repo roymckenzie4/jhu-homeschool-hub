@@ -26,6 +26,7 @@ import MapLegend from "./MapLegend.jsx";
 import ComparingChips from "./ComparingChips.jsx";
 import PolicyComparisonTable from "./PolicyComparisonTable.jsx";
 import Footer from "./Footer.jsx";
+import { trackEvent } from "../lib/analytics.js";
 
 // Legend swatches: one per level, colored + labeled with its count range.
 const LEGEND_SWATCHES = LEVEL_ORDER.map((level) => ({
@@ -70,6 +71,7 @@ export default function PolicyView() {
       if (prev.length >= COMPARE_CAP) return prev;
       return [...prev, name];
     });
+    trackEvent("state_select", { view: "policy", state: name });
   }
 
   return (

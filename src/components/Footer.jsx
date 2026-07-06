@@ -14,6 +14,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { LAST_UPDATED } from '../config/theme.js';
 import { downloadCsv } from '../lib/download.js';
+import { trackEvent } from '../lib/analytics.js';
 
 /**
  * Shared view footer. Both views render this same row so "About this data /
@@ -34,7 +35,11 @@ export default function Footer({ about, csvText, downloadFilename }) {
 
           <button
             type="button"
-            onClick={() => downloadCsv(csvText, downloadFilename)}
+            onClick={() => {
+              downloadCsv(csvText, downloadFilename);
+              // Filename differs per view, so it identifies which dataset went out.
+              trackEvent("download", { file: downloadFilename });
+            }}
             className="font-sans text-xs text-sable/70 underline decoration-dashed decoration-sable/30 underline-offset-4 hover:text-sable hover:decoration-sable/60"
           >
             Download data (CSV)

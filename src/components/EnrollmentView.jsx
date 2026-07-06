@@ -37,6 +37,7 @@ import ChoroplethMap from "./ChoroplethMap.jsx";
 import MapLegend from "./MapLegend.jsx";
 import StateDetailCard from "./StateDetailCard.jsx";
 import EnrollmentTable from "./EnrollmentTable.jsx";
+import { trackEvent } from "../lib/analytics.js";
 
 // Enrollment data comes shaped from the loader (parsed once, shared with the
 // State policies view's Homeschoolers column). byYear aggregates are derived here.
@@ -70,6 +71,11 @@ function fillForValue(value, breaks) {
 export default function EnrollmentView() {
   const [selectedState, setSelectedState] = useState(DEFAULT_STATE);
   const [activeYear, setActiveYear] = useState(DEFAULT_YEAR);
+
+  function selectState(name) {
+    setSelectedState(name);
+    trackEvent("state_select", { view: "enrollment", state: name });
+  }
 
   const yearStats = byYear[activeYear];
   const dcReporting =
@@ -181,7 +187,7 @@ export default function EnrollmentView() {
                 fillForValue(valuesByState[name] ?? null, breaks)
               }
               selectedStates={selectedStateList}
-              onSelect={setSelectedState}
+              onSelect={selectState}
               isInteractive={(name) => (valuesByState[name] ?? null) != null}
               ariaLabelForState={(name) => {
                 const v = valuesByState[name] ?? null;
