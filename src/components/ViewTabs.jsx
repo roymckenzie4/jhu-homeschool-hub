@@ -31,7 +31,7 @@ export default function ViewTabs({ tabs, activeTab, onChange }) {
       role="tablist"
       aria-label="Dashboard views"
       onKeyDown={handleKeyDown}
-      className="flex items-center gap-6 border-b border-sable/15"
+      className="flex items-center gap-1 border-b border-sable/15"
     >
       {tabs.map((tab) => {
         const isActive = tab.id === activeTab;
@@ -45,10 +45,13 @@ export default function ViewTabs({ tabs, activeTab, onChange }) {
             aria-controls={`panel-${tab.id}`}
             tabIndex={isActive ? 0 : -1}
             onClick={() => onChange(tab.id)}
-            className={`-mb-px border-b-2 pb-2 font-sans text-sm transition-colors ${
+            // Padded hit area with a rounded-top hover pill; a thick heritage
+            // underline (sitting on the container border via -mb-px) marks the
+            // active tab so the row reads as tabs, not text links.
+            className={`-mb-px rounded-t-md border-b-[3px] px-3 pb-2.5 pt-1.5 font-sans text-[15px] transition-[color,background-color] ${
               isActive
                 ? "border-heritage font-semibold text-heritage"
-                : "border-transparent text-sable/55 hover:text-sable"
+                : "border-transparent font-medium text-sable/55 hover:bg-sable/5 hover:text-sable"
             }`}
           >
             {tab.label}
