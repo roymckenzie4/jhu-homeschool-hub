@@ -38,7 +38,11 @@ export default function StateDetailCard({
   trendSeries,
   sparklineMaxDeviation,
 }) {
-  const stateRankLabel = `of ${reportingCount} reporting`;
+  // Rank 1 = most reported homeschoolers that year. Show "Nth of M" so it reads
+  // as a rank out of the reporting jurisdictions, with the caption naming the
+  // metric (student count) so it isn't mistaken for some other ranking.
+  const stateRankValue = `${ordinal(rank)} of ${reportingCount}`;
+  const stateRankLabel = "by reported count";
   const slug = BY_NAME[stateName]?.slug ?? '';
   const isReporting = currentValue != null;
   const yoy = computeYoY(currentValue, previousValue);
@@ -92,8 +96,8 @@ export default function StateDetailCard({
               </p>
             </div>
             <div>
-              <p className="font-sans text-xl font-semibold text-sable">
-                {ordinal(rank)}
+              <p className="whitespace-nowrap font-sans text-xl font-semibold text-sable">
+                {stateRankValue}
               </p>
               <p className="mt-1 whitespace-nowrap font-sans text-[11px] text-sable/60">
                 {stateRankLabel}
