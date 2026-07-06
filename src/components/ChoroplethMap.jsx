@@ -42,7 +42,7 @@
 
 import { useEffect, useId, useMemo, useState } from "react";
 import { feature } from "topojson-client";
-import { BY_FIPS } from "../config/states.js";
+import { BY_FIPS, BY_NAME } from "../config/states.js";
 import { COLORS } from "../config/theme.js";
 import { buildProjection } from "../lib/geoProjection.js";
 
@@ -80,6 +80,13 @@ export default function ChoroplethMap({
 }) {
   // TopoJSON is fetched once at mount. Until it loads the SVG renders empty.
   const [features, setFeatures] = useState(null);
+
+  // Name of the state under the cursor, or null. Set on mouseenter/mouseleave
+  // (which fire only when the pointer crosses a state boundary — not on every
+  // mousemove), so this re-renders at most once per hovered state, cheaply.
+  // Drives the on-hover abbreviation label so a reader can tell which state is
+  // which. The fill-darkening hover glow is separate and stays CSS-only.
+  const [hoveredState, setHoveredState] = useState(null);
 
   // Namespace clipPath ids so two ChoroplethMap instances on a page (unlikely
   // here, but cheap insurance) don't collide. Plain string ids would silently
@@ -138,6 +145,30 @@ export default function ChoroplethMap({
   const hasSelection = selectedStates.length > 0;
   const dcInteractive = isInteractive(DC_NAME);
   const dcSelected = selectedStates.includes(DC_NAME);
+
+  // Position + text for the on-hover abbreviation label. DC is placed at its
+  // marker (its geographic centroid sits inside Maryland); every other state
+  // labels at its projected path centroid. Guarded against non-finite
+  // centroids so a malformed feature can't throw mid-render.
+  let hoverLabel = null;
+  if (hoveredState) {
+    const abbr = BY_NAME[hoveredState]?.postal;
+    if (abbr && hoveredState === DC_NAME && dcPoint) {
+      hoverLabel = {
+        abbr,
+        x: dcPoint[0] + DC_LEADER_LENGTH,
+        y: dcPoint[1] + DC_LEADER_LENGTH,
+      };
+    } else if (abbr) {
+      const feat = features.features.find(
+        (f) => BY_FIPS[f.id]?.name === hoveredState,
+      );
+      const c = feat && path.centroid(feat);
+      if (c && Number.isFinite(c[0]) && Number.isFinite(c[1])) {
+        hoverLabel = { abbr, x: c[0], y: c[1] };
+      }
+    }
+  }
 
   return (
     <svg
@@ -287,6 +318,10 @@ export default function ChoroplethMap({
               fill={fillForState(name)}
               stroke="#FFFFFF"
               strokeWidth={STROKE_REST}
+              // Hover label tracks all states, reporting or not — the point is
+              // to identify the state under the cursor regardless of data.
+              onMouseEnter={() => setHoveredState(name)}
+              onMouseLeave={() => setHoveredState(null)}
               {...a11y}
             />
           );
@@ -351,6 +386,8 @@ export default function ChoroplethMap({
         <g
           className={dcInteractive ? "state-path state-path--clickable" : undefined}
           style={{ cursor: dcInteractive ? "pointer" : "default" }}
+          onMouseEnter={() => setHoveredState(DC_NAME)}
+          onMouseLeave={() => setHoveredState(null)}
           {...(dcInteractive
             ? {
                 role: "button",
@@ -427,6 +464,31 @@ export default function ChoroplethMap({
             </>
           )}
         </g>
+      )}
+
+      {/* On-hover abbreviation label — topmost layer so it clears fills and the
+          selection ring. paint-order:stroke draws the white halo behind the
+          sable glyphs, keeping it legible over dark heritage fills and the
+          diagonal-stripe pattern alike. Non-interactive so it never steals the
+          hover from the state beneath it. */}
+      {hoverLabel && (
+        <text
+          x={hoverLabel.x}
+          y={hoverLabel.y}
+          textAnchor="middle"
+          dominantBaseline="central"
+          fill={COLORS.sable}
+          stroke="#FFFFFF"
+          strokeWidth={2.5}
+          strokeLinejoin="round"
+          paintOrder="stroke"
+          fontFamily="Work Sans, sans-serif"
+          fontSize={13}
+          fontWeight={600}
+          style={{ pointerEvents: "none" }}
+        >
+          {hoverLabel.abbr}
+        </text>
       )}
     </svg>
   );
