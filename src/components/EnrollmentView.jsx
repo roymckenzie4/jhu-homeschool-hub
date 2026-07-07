@@ -20,6 +20,7 @@ import {
 } from "../data/enrollmentLoader.js";
 import { deriveByYear, topStatesForYear } from "../data/derive.js";
 import { ENROLLMENT_TABLE_HEIGHT } from "../config/layout.js";
+import { MAP_MODE } from "../config/tileGrid.js";
 import {
   RAMP_STEPS,
   schoolYearLabel,
@@ -188,6 +189,7 @@ export default function EnrollmentView() {
             style={{ maxWidth: "calc(320px * 760 / 460)" }}
           >
             <ChoroplethMap
+              mode={MAP_MODE}
               fillForState={(name) =>
                 fillForValue(valuesByState[name] ?? null, breaks)
               }

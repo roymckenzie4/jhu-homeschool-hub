@@ -53,6 +53,33 @@ export function levelColor(level) {
   return POLICY_RAMP[level] ?? COLORS.nonReportingGround;
 }
 
+// sRGB relative luminance (WCAG) of a #rgb / #rrggbb color, 0 (black) to 1 (white).
+function relativeLuminance(hex) {
+  const h = hex.replace("#", "");
+  const full = h.length === 3 ? h.split("").map((c) => c + c).join("") : h;
+  const channel = (i) => {
+    const c = parseInt(full.slice(i, i + 2), 16) / 255;
+    return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
+  };
+  return 0.2126 * channel(0) + 0.7152 * channel(2) + 0.0722 * channel(4);
+}
+
+const SABLE_LUMINANCE = relativeLuminance(COLORS.sable);
+
+/**
+ * Readable label color (white or sable) for a given map fill, picking whichever
+ * has the higher WCAG contrast against the fill. Used for the always-on tile
+ * labels and the geo hover label so text stays legible across the whole ramp
+ * without relying on a heavy outline. Non-hex fills (the diagonal-stripe "no
+ * data" pattern, which is light) fall through to sable.
+ */
+export function labelColorForFill(fill) {
+  if (typeof fill !== "string" || !fill.startsWith("#")) return COLORS.sable;
+  const L = relativeLuminance(fill);
+  const contrast = (a, b) => (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
+  return contrast(L, 1) >= contrast(L, SABLE_LUMINANCE) ? "#FFFFFF" : COLORS.sable;
+}
+
 // Standard transition for selection/fill changes.
 export const TRANSITION_MS = 200;
 

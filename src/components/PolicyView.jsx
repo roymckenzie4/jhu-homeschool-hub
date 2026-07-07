@@ -21,6 +21,7 @@ import {
   POLICY_DOWNLOAD_FILENAME,
 } from "../config/policy.js";
 import { COLORS, levelColor } from "../config/theme.js";
+import { MAP_MODE } from "../config/tileGrid.js";
 import ChoroplethMap from "./ChoroplethMap.jsx";
 import MapLegend from "./MapLegend.jsx";
 import ComparingChips from "./ComparingChips.jsx";
@@ -100,6 +101,7 @@ export default function PolicyView() {
             consistency and to keep the fixed-frame height budget. */}
         <div className="mx-auto" style={{ maxWidth: "calc(320px * 760 / 460)" }}>
           <ChoroplethMap
+            mode={MAP_MODE}
             fillForState={(name) => levelColor(policyByState[name]?.level)}
             selectedStates={selectedStates}
             onSelect={toggleState}
