@@ -13,6 +13,7 @@
  */
 
 import { useMemo, useState } from "react";
+import { useSelection } from "../state/selection.jsx";
 import {
   enrollmentByState as byState,
   enrollmentYears as years,
@@ -68,19 +69,28 @@ function fillForValue(value, breaks) {
 }
 
 export default function EnrollmentView() {
-  // selectedState is null on load: the app opens on a national overview rather
-  // than a pre-selected state. Selecting a state on the map fills it in; the
-  // detail card's "National overview" link clears it back to null.
-  const [selectedState, setSelectedState] = useState(null);
+  // Selection now lives in the shared context so it survives a topic switch.
+  // Enrollment stays single-select for now: it reads the first cohort member as
+  // its selected state (null = national overview). Step 4 makes it additive
+  // alongside the comparison UI that can render 2+ states.
+  const { selectedStates, toggleState, clearAll } = useSelection();
+  const selectedState = selectedStates[0] ?? null;
   const [activeYear, setActiveYear] = useState(DEFAULT_YEAR);
 
+  // Single-select semantics over the shared additive cohort: a click replaces
+  // whatever's selected with just this state (or clears it if re-clicked).
   function selectState(name) {
-    setSelectedState(name);
+    if (selectedState === name) {
+      clearAll();
+      return;
+    }
+    clearAll();
+    toggleState(name);
     trackEvent("state_select", { view: "enrollment", state: name });
   }
 
   function clearSelection() {
-    setSelectedState(null);
+    clearAll();
   }
 
   const yearStats = byYear[activeYear];

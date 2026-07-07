@@ -11,12 +11,11 @@
  * All regulation data comes through the policy loader, never the CSV directly.
  */
 
-import { useState } from "react";
+import { useSelection } from "../state/selection.jsx";
 import { policyByState, policyCsvText } from "../data/policyLoader.js";
 import {
   LEVELS,
   LEVEL_ORDER,
-  COMPARE_CAP,
   REGULATION_COUNT,
   POLICY_DOWNLOAD_FILENAME,
 } from "../config/policy.js";
@@ -62,16 +61,15 @@ const POLICY_ABOUT = (
 );
 
 export default function PolicyView() {
-  const [selectedStates, setSelectedStates] = useState([]);
+  // Selection comes from the shared context: the cohort and its cap now live
+  // once, shared with Enrollment and the map/chip row, so it survives a topic
+  // switch. Regulation is natively multi-select, so the shared additive
+  // toggleState maps onto it directly (cap enforcement lives in the context).
+  const { selectedStates, toggleState, clearAll } = useSelection();
 
-  // Click toggles a state in/out of the comparison. At the cap, adding more is
-  // ignored (the chip row in Step 5 surfaces this limit to the user).
-  function toggleState(name) {
-    setSelectedStates((prev) => {
-      if (prev.includes(name)) return prev.filter((n) => n !== name);
-      if (prev.length >= COMPARE_CAP) return prev;
-      return [...prev, name];
-    });
+  // Wrap the shared toggle to log the selection under this topic.
+  function selectState(name) {
+    toggleState(name);
     trackEvent("state_select", { view: "policy", state: name });
   }
 
@@ -104,7 +102,7 @@ export default function PolicyView() {
             mode={MAP_MODE}
             fillForState={(name) => levelColor(policyByState[name]?.level)}
             selectedStates={selectedStates}
-            onSelect={toggleState}
+            onSelect={selectState}
             selectionStroke={COLORS.heritage}
             ariaLabelForState={(name) => {
               const entry = policyByState[name];
@@ -130,16 +128,16 @@ export default function PolicyView() {
       <ComparingChips
         selectedStates={selectedStates}
         policyByState={policyByState}
-        onAdd={toggleState}
-        onRemove={toggleState}
-        onClear={() => setSelectedStates([])}
+        onAdd={selectState}
+        onRemove={selectState}
+        onClear={clearAll}
       />
 
       <div className="mt-4">
         <PolicyComparisonTable
           selectedStates={selectedStates}
           policyByState={policyByState}
-          onRemove={toggleState}
+          onRemove={selectState}
         />
       </div>
 
