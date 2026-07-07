@@ -91,6 +91,25 @@ export function windowAroundYear(years, selectedYear, size = 5) {
   return years.slice(start, end);
 }
 
+/**
+ * Top N reporting states for a given year, by reported enrollment (descending).
+ * Feeds the national-overview card's leaderboard. Ties break on name so the
+ * order is stable across renders. Returns `[{ name, value }]`, shorter than N
+ * only when fewer than N states reported that year.
+ *
+ * Like rank and YoY, this is derived at read time, not stored.
+ */
+export function topStatesForYear(byState, year, n = 5) {
+  const reporting = [];
+  for (const name of Object.keys(byState)) {
+    const v = byState[name][year];
+    if (v == null) continue;
+    reporting.push({ name, value: v });
+  }
+  reporting.sort((a, b) => b.value - a.value || a.name.localeCompare(b.name));
+  return reporting.slice(0, n);
+}
+
 export function deriveByYear(byState) {
   const yearsSet = new Set();
   for (const name of Object.keys(byState)) {

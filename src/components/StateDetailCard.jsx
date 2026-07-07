@@ -39,6 +39,7 @@ export default function StateDetailCard({
   reportingCount,
   dcReporting,
   trendSeries,
+  onClearSelection,
 }) {
   // Rank 1 = most reported homeschoolers that year. Show "Nth of M" so it reads
   // as a rank out of the reporting jurisdictions, with the caption naming the
@@ -78,8 +79,8 @@ export default function StateDetailCard({
         className="flex flex-col animate-fade-in lg:h-full"
       >
         <h3 className="font-sans text-lg font-semibold text-sable">
-        {stateName}
-      </h3>
+          {stateName}
+        </h3>
 
       {isReporting ? (
         <>
@@ -190,10 +191,19 @@ export default function StateDetailCard({
           href={`${HOMESCHOOL_HUB_BASE}/${slug}/`}
           target="_blank"
           rel="noopener noreferrer"
-          className="font-sans text-xs font-medium text-heritage underline-offset-4 hover:underline"
+          className="block font-sans text-xs font-medium text-heritage underline-offset-4 hover:underline"
         >
           Read more about {stateName} →
         </a>
+        {/* Return to the national overview. Muted so it reads as secondary to
+            the heritage "Read more" link above it. */}
+        <button
+          type="button"
+          onClick={onClearSelection}
+          className="mt-2 block font-sans text-xs text-sable/60 underline-offset-4 hover:text-heritage hover:underline"
+        >
+          ← Back to national overview
+        </button>
       </div>
       </div>
     </aside>

@@ -18,7 +18,7 @@ import {
   enrollmentYears as years,
   enrollmentCsvText,
 } from "../data/enrollmentLoader.js";
-import { deriveByYear } from "../data/derive.js";
+import { deriveByYear, topStatesForYear } from "../data/derive.js";
 import { ENROLLMENT_TABLE_HEIGHT } from "../config/layout.js";
 import {
   RAMP_STEPS,
@@ -33,6 +33,7 @@ import Footer from "./Footer.jsx";
 import ChoroplethMap from "./ChoroplethMap.jsx";
 import MapLegend from "./MapLegend.jsx";
 import StateDetailCard from "./StateDetailCard.jsx";
+import NationalOverviewCard from "./NationalOverviewCard.jsx";
 import EnrollmentTable from "./EnrollmentTable.jsx";
 import { trackEvent } from "../lib/analytics.js";
 
@@ -47,8 +48,8 @@ const RECENT_YEARS = years.slice(-RECENT_COUNT);
 const OLDER_YEARS = years.slice(0, -RECENT_COUNT);
 const DEFAULT_YEAR = RECENT_YEARS[RECENT_YEARS.length - 1];
 
-// Default selection per .md.
-const DEFAULT_STATE = "Arkansas";
+// Number of states in the national-overview leaderboard.
+const TOP_STATES_COUNT = 5;
 
 /**
  * Map a reporting value to one of the RAMP_STEPS buckets via quintile breaks.
@@ -66,12 +67,19 @@ function fillForValue(value, breaks) {
 }
 
 export default function EnrollmentView() {
-  const [selectedState, setSelectedState] = useState(DEFAULT_STATE);
+  // selectedState is null on load: the app opens on a national overview rather
+  // than a pre-selected state. Selecting a state on the map fills it in; the
+  // detail card's "National overview" link clears it back to null.
+  const [selectedState, setSelectedState] = useState(null);
   const [activeYear, setActiveYear] = useState(DEFAULT_YEAR);
 
   function selectState(name) {
     setSelectedState(name);
     trackEvent("state_select", { view: "enrollment", state: name });
+  }
+
+  function clearSelection() {
+    setSelectedState(null);
   }
 
   const yearStats = byYear[activeYear];
@@ -119,9 +127,20 @@ export default function EnrollmentView() {
     [valuesByState],
   );
 
-  // The shared map takes a list of selected states; this view selects exactly
-  // one, so we wrap it in a stable single-element array.
-  const selectedStateList = useMemo(() => [selectedState], [selectedState]);
+  // The shared map takes a list of selected states; this view selects at most
+  // one. On the national overview (no selection) the list is empty, so no
+  // state carries the selection stroke.
+  const selectedStateList = useMemo(
+    () => (selectedState ? [selectedState] : []),
+    [selectedState],
+  );
+
+  // National-overview leaderboard: the top reporting states for the active
+  // year. Only consumed when nothing is selected, but recomputes with the year.
+  const topStates = useMemo(
+    () => topStatesForYear(byState, activeYear, TOP_STATES_COUNT),
+    [activeYear],
+  );
 
   // Legend swatches: each quintile color paired with its value-range label.
   const swatches = useMemo(
@@ -204,22 +223,31 @@ export default function EnrollmentView() {
         </div>
 
         <div className="lg:row-span-2">
-          <StateDetailCard
-            stateName={selectedState}
-            currentValue={currentValue}
-            previousValue={previousValue}
-            year={activeYear}
-            rank={rank}
-            reportingCount={yearStats.reportingCount}
-            dcReporting={dcReporting}
-            trendSeries={trendSeries}
-          />
+          {selectedState === null ? (
+            <NationalOverviewCard
+              nationalTotal={yearStats.total}
+              year={activeYear}
+              topStates={topStates}
+            />
+          ) : (
+            <StateDetailCard
+              stateName={selectedState}
+              currentValue={currentValue}
+              previousValue={previousValue}
+              year={activeYear}
+              rank={rank}
+              reportingCount={yearStats.reportingCount}
+              dcReporting={dcReporting}
+              trendSeries={trendSeries}
+              onClearSelection={clearSelection}
+            />
+          )}
         </div>
 
         <div>
           <hr className="border-t border-sable/15" />
           <h2 className="mt-3 font-sans text-[11px] font-semibold uppercase tracking-widest text-sable/70">
-            {selectedState} Enrollment, by Year
+            {selectedState ? `${selectedState} Enrollment, by Year` : "Enrollment by Year"}
           </h2>
           <div className="mt-1">
             {hasHistory ? (
@@ -229,14 +257,16 @@ export default function EnrollmentView() {
                 activeYear={activeYear}
               />
             ) : (
-              // Same-height placeholder so a no-history state doesn't collapse
-              // the column (keeps the left column and detail card a constant
-              // height across selections).
+              // Same-height placeholder so the overview (no selection) and
+              // no-history states don't collapse the column — keeps the left
+              // column and detail card a constant height across selections.
               <div
                 className="flex items-center justify-center px-3 text-center font-sans text-xs text-sable/40"
                 style={{ height: ENROLLMENT_TABLE_HEIGHT }}
               >
-                No year-by-year enrollment reported.
+                {selectedState === null
+                  ? "Select a state to see its year-by-year enrollment."
+                  : "No year-by-year enrollment reported."}
               </div>
             )}
           </div>
