@@ -25,7 +25,7 @@
 // 'geo'  — geographic choropleth (mainline default)
 // 'tile' — square tile grid (the reorg branch flips this)
 // One-line flip per deploy; greppable by name.
-export const MAP_MODE = "geo";
+export const MAP_MODE = "tile";
 
 // Grid dimensions. Drive the map's viewBox and label sizing in tile mode.
 export const GRID_COLS = 12;
