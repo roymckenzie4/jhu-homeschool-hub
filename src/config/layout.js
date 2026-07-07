@@ -15,3 +15,10 @@
 // min-height so a view never collapses shorter than the frame; taller content
 // (e.g. a full six-state comparison) grows past it and the page scrolls.
 export const TARGET_HEIGHT = 760;
+
+// Fixed height of the by-year enrollment table's scroll area. The table shows
+// every reporting year (~26 rows), so it scrolls internally under a sticky
+// header rather than growing the page. Fixing the height also keeps the left
+// column a constant height across selections — a state with no year-by-year
+// data shows a same-height placeholder instead of collapsing the layout.
+export const ENROLLMENT_TABLE_HEIGHT = 180;

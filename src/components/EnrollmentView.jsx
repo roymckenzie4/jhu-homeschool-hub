@@ -18,7 +18,8 @@ import {
   enrollmentYears as years,
   enrollmentCsvText,
 } from "../data/enrollmentLoader.js";
-import { deriveByYear, windowAroundYear } from "../data/derive.js";
+import { deriveByYear } from "../data/derive.js";
+import { ENROLLMENT_TABLE_HEIGHT } from "../config/layout.js";
 import {
   RAMP_STEPS,
   schoolYearLabel,
@@ -82,25 +83,15 @@ export default function EnrollmentView() {
   const rank = yearStats.rankByState[selectedState] ?? null;
 
   // A state that never reported (e.g. Texas) is now clickable but has nothing
-  // to tabulate — hide the by-year table for it. States that reported in some
-  // year keep the table even on a year they skipped.
+  // to tabulate — its table slot shows a placeholder. States that reported in
+  // some year keep the table even on a year they skipped.
   const hasHistory = selectedStateValues
     ? Object.values(selectedStateValues).some((v) => v != null)
     : false;
 
-  // Centered five-year window around the selected year, clamped to the
-  // start/end of the series. Drives both the enrollment table and the
-  // sparkline so the two stay visually aligned.
-  const tableYears = useMemo(
-    () => windowAroundYear(years, activeYear, RECENT_COUNT),
-    [activeYear],
-  );
-
   // Sparkline renders the state's full reporting history so the line reads
   // as a mini timeline, not a fragment. The selected-year dot anchors the
-  // user within that span. Decoupled from the table window on purpose:
-  // the table wants precise rows around the focal year, the sparkline
-  // wants shape over time.
+  // user within that span.
   const trendSeries = useMemo(
     () =>
       years.map((y) => ({
@@ -225,21 +216,31 @@ export default function EnrollmentView() {
           />
         </div>
 
-        {hasHistory && (
-          <div>
-            <hr className="border-t border-sable/15" />
-            <h2 className="mt-3 font-sans text-[11px] font-semibold uppercase tracking-widest text-sable/70">
-              {selectedState} Enrollment, by Year
-            </h2>
-            <div className="mt-1">
+        <div>
+          <hr className="border-t border-sable/15" />
+          <h2 className="mt-3 font-sans text-[11px] font-semibold uppercase tracking-widest text-sable/70">
+            {selectedState} Enrollment, by Year
+          </h2>
+          <div className="mt-1">
+            {hasHistory ? (
               <EnrollmentTable
                 stateValues={selectedStateValues}
-                years={tableYears}
+                years={years}
                 activeYear={activeYear}
               />
-            </div>
+            ) : (
+              // Same-height placeholder so a no-history state doesn't collapse
+              // the column (keeps the left column and detail card a constant
+              // height across selections).
+              <div
+                className="flex items-center justify-center px-3 text-center font-sans text-xs text-sable/40"
+                style={{ height: ENROLLMENT_TABLE_HEIGHT }}
+              >
+                No year-by-year enrollment reported.
+              </div>
+            )}
           </div>
-        )}
+        </div>
       </div>
 
       <Footer

@@ -144,12 +144,15 @@ export default function StateDetailCard({
         </>
       ) : hasHistory ? (
         <>
-          {/* Reported in other years, just not this one: lead with the gap,
-              then keep the trend so the record stays visible. */}
-          <p className="mt-3 font-sans text-sm leading-snug text-sable/70">
+          {/* Reported in other years, just not this one. No headline figure —
+              a current count would be misleading — just a short lead line and a
+              dated "last reported" caption. Two short lines rather than one long
+              sentence, so nothing wraps raggedly. Work Sans + Sable per brand,
+              only the figure emphasized. */}
+          <p className="mt-4 font-sans text-sm leading-snug text-sable">
             Not reported for {schoolYearLabel(year)}.
           </p>
-          <p className="mt-2 font-sans text-xs leading-snug text-sable">
+          <p className="mt-1 font-sans text-xs leading-snug text-sable/60">
             Last reported{' '}
             <span className="font-semibold text-sable">
               {formatNumber(lastReported.value)}
