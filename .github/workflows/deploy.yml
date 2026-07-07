@@ -1,22 +1,22 @@
-# Builds the Vite static site on every push to main and deploys it to
-# GitHub Pages. Uses GitHub's first-party Pages actions only (no third-party
-# deploy actions) so the workflow stays simple and trustworthy.
+# Builds BOTH deployed versions into a single GitHub Pages artifact:
+#   - `main`  -> site root        -> https://<user>.github.io/jhu-homeschool-hub/
+#   - `reorg` -> the /new/ subdir -> https://<user>.github.io/jhu-homeschool-hub/new/
 #
-# How it works:
-#   1. `build` checks out the repo, installs dependencies with `npm ci`,
-#      runs `vite build`, and uploads the resulting `dist/` directory as
-#      a Pages artifact.
-#   2. `deploy` takes that artifact and publishes it to the `github-pages`
-#      environment, which is what serves https://<user>.github.io/jhu-homeschool-hub/.
+# GitHub Pages serves one artifact for the whole site, so every deploy rebuilds
+# both branches from their current heads and stitches them together. A push to
+# either branch (or a manual run) redeploys the whole site. Each build sets its
+# own Vite `base` so asset URLs resolve under the right path.
 #
-# To enable: in the repo on GitHub, go to Settings -> Pages and set
-# "Source" to "GitHub Actions". After that, every push to `main` deploys.
+# Collapsing the A/B later: merge reorg -> main, delete the reorg build + the
+# /new/ assemble step, and this returns to a single root build.
+#
+# To enable: Settings -> Pages -> Source = "GitHub Actions".
 
 name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [main]
+    branches: [main, reorg]
   # Allows manually re-running the deploy from the Actions tab.
   workflow_dispatch:
 
@@ -43,29 +43,61 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      # Two checkouts into sibling folders so both branches can be built in
+      # one job. Pages serves a single artifact, so each deploy rebuilds both.
+      - name: Checkout main branch
         uses: actions/checkout@v4
+        with:
+          ref: main
+          path: main
+
+      - name: Checkout reorg branch
+        uses: actions/checkout@v4
+        with:
+          ref: reorg
+          path: reorg
 
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
           node-version: "22"
           cache: "npm"
+          # Both lockfiles, since the repo is checked out into subfolders.
+          cache-dependency-path: |
+            main/package-lock.json
+            reorg/package-lock.json
 
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build
-        run: npm run build
-        # GA4 Measurement ID for the deployed site. Set the VITE_GA_ID repo
-        # variable to enable analytics on the live build; unset = no tracking.
+      # main -> site root. VITE_BASE matches the repo path so assets resolve.
+      - name: Build main (root)
+        working-directory: main
+        run: npm ci && npm run build
         env:
+          VITE_BASE: /jhu-homeschool-hub/
+          # GA4 Measurement ID for the live root build. Set the VITE_GA_ID repo
+          # variable to enable analytics; unset = no tracking.
           VITE_GA_ID: ${{ vars.VITE_GA_ID }}
+
+      # reorg -> /new/ subdirectory. Nested base so its assets resolve under
+      # /new/. No VITE_GA_ID: the preview build stays analytics-free for now.
+      - name: Build reorg (/new/)
+        working-directory: reorg
+        run: npm ci && npm run build
+        env:
+          VITE_BASE: /jhu-homeschool-hub/new/
+
+      # Assemble one site: main at root, reorg nested under /new/. The `/.`
+      # copies dotfiles too. No .nojekyll needed (Actions artifacts skip Jekyll).
+      - name: Assemble combined site
+        run: |
+          mkdir -p site
+          cp -r main/dist/. site/
+          mkdir -p site/new
+          cp -r reorg/dist/. site/new/
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: dist
+          path: site
 
   deploy:
     needs: build
