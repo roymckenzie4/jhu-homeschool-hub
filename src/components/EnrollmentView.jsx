@@ -81,6 +81,13 @@ export default function EnrollmentView() {
   const previousValue = selectedStateValues?.[activeYear - 1] ?? null;
   const rank = yearStats.rankByState[selectedState] ?? null;
 
+  // A state that never reported (e.g. Texas) is now clickable but has nothing
+  // to tabulate — hide the by-year table for it. States that reported in some
+  // year keep the table even on a year they skipped.
+  const hasHistory = selectedStateValues
+    ? Object.values(selectedStateValues).some((v) => v != null)
+    : false;
+
   // Centered five-year window around the selected year, clamped to the
   // start/end of the series. Drives both the enrollment table and the
   // sparkline so the two stay visually aligned.
@@ -176,12 +183,15 @@ export default function EnrollmentView() {
               }
               selectedStates={selectedStateList}
               onSelect={selectState}
-              isInteractive={(name) => (valuesByState[name] ?? null) != null}
+              // Every state is selectable, including non-reporting ones — clicking
+              // a grey state opens its detail card (its reporting history if it has
+              // any, otherwise a "does not report" message). The map stays visually
+              // honest: grey states keep the stripe pattern whether or not selected.
               ariaLabelForState={(name) => {
                 const v = valuesByState[name] ?? null;
-                return `${name}${
-                  v != null ? `, ${v.toLocaleString()} reported homeschoolers` : ""
-                }`;
+                return v != null
+                  ? `${name}, ${v.toLocaleString()} reported homeschoolers`
+                  : `${name}, no reported data for ${schoolYearLabel(activeYear)}`;
               }}
             />
           </div>
@@ -215,19 +225,21 @@ export default function EnrollmentView() {
           />
         </div>
 
-        <div>
-          <hr className="border-t border-sable/15" />
-          <h2 className="mt-3 font-sans text-[11px] font-semibold uppercase tracking-widest text-sable/70">
-            {selectedState} Enrollment, by Year
-          </h2>
-          <div className="mt-1">
-            <EnrollmentTable
-              stateValues={selectedStateValues}
-              years={tableYears}
-              activeYear={activeYear}
-            />
+        {hasHistory && (
+          <div>
+            <hr className="border-t border-sable/15" />
+            <h2 className="mt-3 font-sans text-[11px] font-semibold uppercase tracking-widest text-sable/70">
+              {selectedState} Enrollment, by Year
+            </h2>
+            <div className="mt-1">
+              <EnrollmentTable
+                stateValues={selectedStateValues}
+                years={tableYears}
+                activeYear={activeYear}
+              />
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
       <Footer

@@ -8,14 +8,17 @@
  *   4. Sparkline (placeholder slot until Stage 5b adds shadcn-charts)
  *   5. "Read more about homeschool context in [State] →" external link
  *
- * Non-reporting states (no value for the active year) are handled
- * defensively: stats collapse to a single "Does not publicly report"
- * message, and the sparkline slot is omitted. The map currently blocks
- * clicks on non-reporting states, but this fallback keeps the card
- * robust if that ever changes.
+ * A state with no value for the active year takes one of two no-data
+ * paths, distinguished by whether it has reported in ANY year:
+ *   - Has history (reported some other year): show the trend + a "not
+ *     reported this year" note, so its record stays visible while a year
+ *     it skipped is selected.
+ *   - Never reported: collapse to a single "does not publicly report"
+ *     message.
+ * Every state on the map is clickable, so both paths are reachable.
  *
  * Inputs come pre-shaped from App.jsx; the card does no data lookup
- * itself beyond YoY computation against the previous year.
+ * itself beyond YoY computation and reading its own trendSeries.
  */
 
 import { computeYoY } from '../data/derive.js';
@@ -46,6 +49,15 @@ export default function StateDetailCard({
   const isReporting = currentValue != null;
   const yoy = computeYoY(currentValue, previousValue);
   const yoyPositive = yoy != null && yoy > 0;
+
+  // No-data states split on whether any year in their history reports. The
+  // last reported point anchors the "not reported this year" note so the card
+  // still says something concrete (e.g. "last reported 6,168 in 2012-13").
+  const reportingPoints = (trendSeries ?? []).filter((d) => d.value != null);
+  const hasHistory = reportingPoints.length > 0;
+  const lastReported = hasHistory
+    ? reportingPoints[reportingPoints.length - 1]
+    : null;
 
   return (
     <aside
@@ -130,10 +142,37 @@ export default function StateDetailCard({
             </div>
           </div>
         </>
+      ) : hasHistory ? (
+        <>
+          {/* Reported in other years, just not this one: lead with the gap,
+              then keep the trend so the record stays visible. */}
+          <p className="mt-3 font-sans text-sm leading-snug text-sable/70">
+            Not reported for {schoolYearLabel(year)}.
+          </p>
+          <p className="mt-2 font-sans text-xs leading-snug text-sable">
+            Last reported{' '}
+            <span className="font-semibold text-sable">
+              {formatNumber(lastReported.value)}
+            </span>{' '}
+            in {schoolYearLabel(lastReported.year)}.
+          </p>
+
+          <hr className="my-4 border-t border-sable/15" />
+
+          <div className="flex flex-col lg:min-h-[90px] lg:flex-1">
+            <p className="font-sans text-[11px] font-semibold uppercase tracking-widest text-sable/70">
+              Year in Context
+            </p>
+            <div className="mt-3 aspect-[5/2] lg:aspect-auto lg:h-auto lg:min-h-0 lg:flex-1">
+              {/* selectedYear has no point this year, so the line shows the
+                  full history with no active-year dot. */}
+              <Sparkline series={trendSeries} selectedYear={year} />
+            </div>
+          </div>
+        </>
       ) : (
         <p className="mt-6 font-sans text-sm leading-relaxed text-sable/70">
-          {stateName} does not publicly report homeschool enrollment for{' '}
-          {schoolYearLabel(year)}.
+          {stateName} does not publicly report homeschool enrollment.
         </p>
       )}
 
