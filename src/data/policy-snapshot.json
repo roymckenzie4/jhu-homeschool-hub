@@ -1,0 +1,2351 @@
+{
+  "generatedAt": "2026-07-08T20:44:16.324Z",
+  "byState": {
+    "Alabama": {
+      "total": 4,
+      "level": "Medium",
+      "regulations": {
+        "Only 1 HS Option": {
+          "value": false,
+          "source": "https://codes.findlaw.com/al/title-16-education/al-code-sect-16-28-1/"
+        },
+        "Parent Notice": {
+          "value": true,
+          "source": "https://law.justia.com/codes/alabama/title-16/chapter-28/article-1/section-16-28-7/#:~:text=The%20enrollment%20and%20attendance%20of,12%2C%20or%20any%20combination%20thereof."
+        },
+        "State Collects Data": {
+          "value": false,
+          "source": "https://education.jhu.edu/edpolicy/policy-research-initiatives/homeschool-hub/states/alabama/"
+        },
+        "Min Educator Reqs": {
+          "value": true,
+          "source": "https://codes.findlaw.com/al/title-16-education/al-code-sect-16-28-5/#:~:text=Instruction%20by%20a%20private%20tutor,day%20for%20140%20days%20each"
+        },
+        "Min Instruction Time": {
+          "value": true,
+          "source": "https://codes.findlaw.com/al/title-16-education/al-code-sect-16-28-5/#:~:text=Instruction%20by%20a%20private%20tutor,day%20for%20140%20days%20each"
+        },
+        "Required Subjects": {
+          "value": false,
+          "source": "https://www.alabamaachieves.org/homeschool/"
+        },
+        "Maintain Records": {
+          "value": true,
+          "source": "https://codes.findlaw.com/al/title-16-education/al-code-sect-16-28-7/"
+        },
+        "Assessment Required": {
+          "value": false,
+          "source": "https://www.alabamaachieves.org/homeschool/"
+        },
+        "Annual Testing": {
+          "value": false,
+          "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
+        },
+        "Required Submission": {
+          "value": false,
+          "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
+        }
+      }
+    },
+    "Alaska": {
+      "total": 2,
+      "level": "Low",
+      "regulations": {
+        "Only 1 HS Option": {
+          "value": false,
+          "source": "https://lam.alaska.gov/homeschooling"
+        },
+        "Parent Notice": {
+          "value": false,
+          "source": "https://codes.findlaw.com/ak/title-14-education-libraries-and-museums/ak-st-sect-14-30-010.html"
+        },
+        "State Collects Data": {
+          "value": false,
+          "source": "https://education.jhu.edu/edpolicy/policy-research-initiatives/homeschool-hub/states/alaska/"
+        },
+        "Min Educator Reqs": {
+          "value": true,
+          "source": "https://codes.findlaw.com/ak/title-14-education-libraries-and-museums/ak-st-sect-14-30-010.html"
+        },
+        "Min Instruction Time": {
+          "value": false,
+          "source": "https://codes.findlaw.com/ak/title-14-education-libraries-and-museums/ak-st-sect-14-30-010.html"
+        },
+        "Required Subjects": {
+          "value": false,
+          "source": "https://codes.findlaw.com/ak/title-14-education-libraries-and-museums/ak-st-sect-14-30-010.html"
+        },
+        "Maintain Records": {
+          "value": false,
+          "source": "https://codes.findlaw.com/ak/title-14-education-libraries-and-museums/ak-st-sect-14-30-010.html"
+        },
+        "Assessment Required": {
+          "value": true,
+          "source": "https://law.justia.com/codes/alaska/title-14/chapter-45/article-2/section-14-45-120/"
+        },
+        "Annual Testing": {
+          "value": false,
+          "source": "https://law.justia.com/codes/alaska/title-14/chapter-45/article-2/section-14-45-120/"
+        },
+        "Required Submission": {
+          "value": false,
+          "source": "https://law.justia.com/codes/alaska/title-14/chapter-45/article-2/section-14-45-120/"
+        }
+      }
+    },
+    "Arizona": {
+      "total": 3,
+      "level": "Low",
+      "regulations": {
+        "Only 1 HS Option": {
+          "value": true,
+          "source": "https://www.azleg.gov/ars/15/00802.htm"
+        },
+        "Parent Notice": {
+          "value": true,
+          "source": "https://www.azleg.gov/ars/15/00802.htm"
+        },
+        "State Collects Data": {
+          "value": false,
+          "source": "https://education.jhu.edu/edpolicy/policy-research-initiatives/homeschool-hub/states/arizona/"
+        },
+        "Min Educator Reqs": {
+          "value": false,
+          "source": "https://www.azleg.gov/ars/15/00802.htm"
+        },
+        "Min Instruction Time": {
+          "value": false,
+          "source": "https://www.azleg.gov/ars/15/00802.htm"
+        },
+        "Required Subjects": {
+          "value": true,
+          "source": "https://www.azleg.gov/ars/15/00802.htm"
+        },
+        "Maintain Records": {
+          "value": false,
+          "source": "https://www.azleg.gov/ars/15/00802.htm"
+        },
+        "Assessment Required": {
+          "value": false,
+          "source": "https://www.azleg.gov/ars/15/00802.htm"
+        },
+        "Annual Testing": {
+          "value": false,
+          "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
+        },
+        "Required Submission": {
+          "value": false,
+          "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
+        }
+      }
+    },
+    "Arkansas": {
+      "total": 3,
+      "level": "Low",
+      "regulations": {
+        "Only 1 HS Option": {
+          "value": true,
+          "source": "https://law.justia.com/codes/arkansas/title-6/subtitle-2/chapter-15/subchapter-5/section-6-15-503/"
+        },
+        "Parent Notice": {
+          "value": true,
+          "source": "https://law.justia.com/codes/arkansas/title-6/subtitle-2/chapter-15/subchapter-5/section-6-15-503/"
+        },
+        "State Collects Data": {
+          "value": true,
+          "source": "https://education.jhu.edu/edpolicy/policy-research-initiatives/homeschool-hub/states/arkansas/"
+        },
+        "Min Educator Reqs": {
+          "value": false,
+          "source": "https://law.justia.com/codes/arkansas/title-6/subtitle-2/chapter-15/subchapter-5/section-6-15-503/"
+        },
+        "Min Instruction Time": {
+          "value": false,
+          "source": "https://law.justia.com/codes/arkansas/title-6/subtitle-2/chapter-15/subchapter-5/section-6-15-503/"
+        },
+        "Required Subjects": {
+          "value": false,
+          "source": "https://law.justia.com/codes/arkansas/title-6/subtitle-2/chapter-15/subchapter-5/section-6-15-503/"
+        },
+        "Maintain Records": {
+          "value": false,
+          "source": "https://law.justia.com/codes/arkansas/title-6/subtitle-2/chapter-15/subchapter-5/section-6-15-503/"
+        },
+        "Assessment Required": {
+          "value": false,
+          "source": "https://www.arkleg.state.ar.us/Bills/Detail?id=HB1381&ddBienniumSession=2015%2F2015R"
+        },
+        "Annual Testing": {
+          "value": false,
+          "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
+        },
+        "Required Submission": {
+          "value": false,
+          "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
+        }
+      }
+    },
+    "California": {
+      "total": 4,
+      "level": "Medium",
+      "regulations": {
+        "Only 1 HS Option": {
+          "value": false,
+          "source": "https://www.cde.ca.gov/sp/ps/homeschool.asp"
+        },
+        "Parent Notice": {
+          "value": true,
+          "source": "https://codes.findlaw.com/ca/education-code/edc-sect-33190.html"
+        },
+        "State Collects Data": {
+          "value": true,
+          "source": "https://education.jhu.edu/edpolicy/policy-research-initiatives/homeschool-hub/states/california/"
+        },
+        "Min Educator Reqs": {
+          "value": false,
+          "source": "https://www.cde.ca.gov/sp/ps/homeschool.asp"
+        },
+        "Min Instruction Time": {
+          "value": false,
+          "source": "https://codes.findlaw.com/ca/education-code/edc-sect-33190.html"
+        },
+        "Required Subjects": {
+          "value": true,
+          "source": "https://codes.findlaw.com/ca/education-code/edc-sect-51210/"
+        },
+        "Maintain Records": {
+          "value": true,
+          "source": "https://codes.findlaw.com/ca/education-code/edc-sect-33190.html"
+        },
+        "Assessment Required": {
+          "value": false,
+          "source": "https://www.cde.ca.gov/sp/ps/homeschool.asp"
+        },
+        "Annual Testing": {
+          "value": false,
+          "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
+        },
+        "Required Submission": {
+          "value": false,
+          "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
+        }
+      }
+    },
+    "Colorado": {
+      "total": 7,
+      "level": "High",
+      "regulations": {
+        "Only 1 HS Option": {
+          "value": false,
+          "source": "https://codes.findlaw.com/co/title-22-education/co-rev-st-sect-22-33-104-5/"
+        },
+        "Parent Notice": {
+          "value": true,
+          "source": "https://codes.findlaw.com/co/title-22-education/co-rev-st-sect-22-33-104-5/"
+        },
+        "State Collects Data": {
+          "value": true,
+          "source": "https://education.jhu.edu/edpolicy/policy-research-initiatives/homeschool-hub/states/colorado/"
+        },
+        "Min Educator Reqs": {
+          "value": false,
+          "source": "https://codes.findlaw.com/co/title-22-education/co-rev-st-sect-22-33-104-5/"
+        },
+        "Min Instruction Time": {
+          "value": true,
+          "source": "https://codes.findlaw.com/co/title-22-education/co-rev-st-sect-22-33-104-5/"
+        },
+        "Required Subjects": {
+          "value": true,
+          "source": "https://codes.findlaw.com/co/title-22-education/co-rev-st-sect-22-33-104-5/"
+        },
+        "Maintain Records": {
+          "value": true,
+          "source": "https://codes.findlaw.com/co/title-22-education/co-rev-st-sect-22-33-104-5/"
+        },
+        "Assessment Required": {
+          "value": true,
+          "source": "https://law.justia.com/codes/colorado/2022/title-22/"
+        },
+        "Annual Testing": {
+          "value": false,
+          "source": "https://codes.findlaw.com/co/title-22-education/co-rev-st-sect-22-33-104-5/"
+        },
+        "Required Submission": {
+          "value": true,
+          "source": "https://www.cde.state.co.us/choice/homeschool"
+        }
+      }
+    },
+    "Connecticut": {
+      "total": 3,
+      "level": "Low",
+      "regulations": {
+        "Only 1 HS Option": {
+          "value": true,
+          "source": "https://portal.ct.gov/sde/homeschooling/homeschooling-in-connecticut"
+        },
+        "Parent Notice": {
+          "value": false,
+          "source": "https://portal.ct.gov/sde/homeschooling/homeschooling-in-connecticut"
+        },
+        "State Collects Data": {
+          "value": false,
+          "source": "https://education.jhu.edu/edpolicy/policy-research-initiatives/homeschool-hub/states/connecticut/"
+        },
+        "Min Educator Reqs": {
+          "value": false,
+          "source": "https://portal.ct.gov/sde/homeschooling/homeschooling-in-connecticut"
+        },
+        "Min Instruction Time": {
+          "value": false,
+          "source": "https://portal.ct.gov/sde/homeschooling/homeschooling-in-connecticut"
+        },
+        "Required Subjects": {
+          "value": true,
+          "source": "https://law.justia.com/codes/connecticut/2022/title-10/chapter-168/section-10-184/"
+        },
+        "Maintain Records": {
+          "value": true,
+          "source": "https://portal.ct.gov/sde/homeschooling/homeschooling-in-connecticut"
+        },
+        "Assessment Required": {
+          "value": false,
+          "source": "https://portal.ct.gov/sde/homeschooling/homeschooling-in-connecticut"
+        },
+        "Annual Testing": {
+          "value": false,
+          "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
+        },
+        "Required Submission": {
+          "value": false,
+          "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
+        }
+      }
+    },
+    "Delaware": {
+      "total": 3,
+      "level": "Low",
+      "regulations": {
+        "Only 1 HS Option": {
+          "value": false,
+          "source": "https://law.justia.com/codes/delaware/2022/title-14/chapter-27/subchapter-i/section-2703a/"
+        },
+        "Parent Notice": {
+          "value": true,
+          "source": "https://delcode.delaware.gov/title14/c027/sc01/"
+        },
+        "State Collects Data": {
+          "value": true,
+          "source": "https://education.jhu.edu/edpolicy/policy-research-initiatives/homeschool-hub/states/delaware/"
+        },
+        "Min Educator Reqs": {
+          "value": false,
+          "source": "https://delcode.delaware.gov/title14/c027/sc01/"
+        },
+        "Min Instruction Time": {
+          "value": false,
+          "source": "https://delcode.delaware.gov/title14/c027/sc01/"
+        },
+        "Required Subjects": {
+          "value": false,
+          "source": "https://delcode.delaware.gov/title14/c027/sc01/"
+        },
+        "Maintain Records": {
+          "value": true,
+          "source": "https://delcode.delaware.gov/title14/c027/sc01/"
+        },
+        "Assessment Required": {
+          "value": false,
+          "source": "https://delcode.delaware.gov/title14/c027/sc01/"
+        },
+        "Annual Testing": {
+          "value": false,
+          "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
+        },
+        "Required Submission": {
+          "value": false,
+          "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
+        }
+      }
+    },
+    "Florida": {
+      "total": 7,
+      "level": "High",
+      "regulations": {
+        "Only 1 HS Option": {
+          "value": false,
+          "source": "http://www.leg.state.fl.us/statutes/index.cfm?App_mode=Display_Statute&Search_String=&URL=1000-1099/1002/Sections/1002.43.html"
+        },
+        "Parent Notice": {
+          "value": true,
+          "source": "http://www.leg.state.fl.us/statutes/index.cfm?mode=View%20Statutes&SubMenu=1&App_mode=Display_Statute&Search_String=1002.41&URL=1000-1099/1002/Sections/1002.41.html"
+        },
+        "State Collects Data": {
+          "value": true,
+          "source": "https://education.jhu.edu/edpolicy/policy-research-initiatives/homeschool-hub/states/florida/"
+        },
+        "Min Educator Reqs": {
+          "value": true,
+          "source": "http://www.leg.state.fl.us/statutes/index.cfm?App_mode=Display_Statute&Search_String=&URL=1000-1099/1002/Sections/1002.43.html"
+        },
+        "Min Instruction Time": {
+          "value": false,
+          "source": "http://www.leg.state.fl.us/statutes/index.cfm?mode=View%20Statutes&SubMenu=1&App_mode=Display_Statute&Search_String=1002.41&URL=1000-1099/1002/Sections/1002.41.html"
+        },
+        "Required Subjects": {
+          "value": false,
+          "source": "http://www.leg.state.fl.us/statutes/index.cfm?mode=View%20Statutes&SubMenu=1&App_mode=Display_Statute&Search_String=1002.41&URL=1000-1099/1002/Sections/1002.41.html"
+        },
+        "Maintain Records": {
+          "value": true,
+          "source": "http://www.leg.state.fl.us/statutes/index.cfm?mode=View%20Statutes&SubMenu=1&App_mode=Display_Statute&Search_String=1002.41&URL=1000-1099/1002/Sections/1002.41.html"
+        },
+        "Assessment Required": {
+          "value": true,
+          "source": "http://www.leg.state.fl.us/Statutes/index.cfm?App_mode=Display_Statute&URL=1000-1099/1002/Sections/1002.41.html"
+        },
+        "Annual Testing": {
+          "value": true,
+          "source": "http://www.leg.state.fl.us/Statutes/index.cfm?App_mode=Display_Statute&URL=1000-1099/1002/Sections/1002.41.html"
+        },
+        "Required Submission": {
+          "value": true,
+          "source": "http://www.leg.state.fl.us/Statutes/index.cfm?App_mode=Display_Statute&URL=1000-1099/1002/Sections/1002.41.html"
+        }
+      }
+    },
+    "Georgia": {
+      "total": 8,
+      "level": "High",
+      "regulations": {
+        "Only 1 HS Option": {
+          "value": true,
+          "source": "https://law.justia.com/codes/georgia/title-20/chapter-2/article-16/part-1/subpart-2/section-20-2-690/"
+        },
+        "Parent Notice": {
+          "value": true,
+          "source": "https://law.justia.com/codes/georgia/title-20/chapter-2/article-16/part-1/subpart-2/section-20-2-690/"
+        },
+        "State Collects Data": {
+          "value": true,
+          "source": "https://education.jhu.edu/edpolicy/policy-research-initiatives/homeschool-hub/states/georgia/"
+        },
+        "Min Educator Reqs": {
+          "value": true,
+          "source": "https://law.justia.com/codes/georgia/title-20/chapter-2/article-16/part-1/subpart-2/section-20-2-690/"
+        },
+        "Min Instruction Time": {
+          "value": true,
+          "source": "https://law.justia.com/codes/georgia/title-20/chapter-2/article-16/part-1/subpart-2/section-20-2-690/"
+        },
+        "Required Subjects": {
+          "value": true,
+          "source": "https://law.justia.com/codes/georgia/title-20/chapter-2/article-16/part-1/subpart-2/section-20-2-690/"
+        },
+        "Maintain Records": {
+          "value": true,
+          "source": "https://law.justia.com/codes/georgia/title-20/chapter-2/article-16/part-1/subpart-2/section-20-2-690/"
+        },
+        "Assessment Required": {
+          "value": true,
+          "source": "https://law.justia.com/codes/georgia/title-20/chapter-2/article-16/part-1/subpart-2/section-20-2-690/"
+        },
+        "Annual Testing": {
+          "value": false,
+          "source": "https://law.justia.com/codes/georgia/title-20/chapter-2/article-16/part-1/subpart-2/section-20-2-690/"
+        },
+        "Required Submission": {
+          "value": false,
+          "source": "https://law.justia.com/codes/georgia/title-20/chapter-2/article-16/part-1/subpart-2/section-20-2-690/"
+        }
+      }
+    },
+    "Hawaii": {
+      "total": 6,
+      "level": "Medium",
+      "regulations": {
+        "Only 1 HS Option": {
+          "value": true,
+          "source": "https://hawaiipublicschools.org/enrolling-in-school/homeschool/?highlight=homeschool"
+        },
+        "Parent Notice": {
+          "value": true,
+          "source": "https://hawaiipublicschools.org/enrolling-in-school/homeschool/?highlight=homeschool"
+        },
+        "State Collects Data": {
+          "value": true,
+          "source": "https://education.jhu.edu/edpolicy/policy-research-initiatives/homeschool-hub/states/hawaii/"
+        },
+        "Min Educator Reqs": {
+          "value": false,
+          "source": "https://hawaiipublicschools.org/enrolling-in-school/homeschool/?highlight=homeschool"
+        },
+        "Min Instruction Time": {
+          "value": false,
+          "source": "https://hawaiipublicschools.org/enrolling-in-school/homeschool/?highlight=homeschool"
+        },
+        "Required Subjects": {
+          "value": false,
+          "source": "https://hawaiipublicschools.org/enrolling-in-school/homeschool/?highlight=homeschool"
+        },
+        "Maintain Records": {
+          "value": true,
+          "source": "https://hawaiipublicschools.org/enrolling-in-school/homeschool/?highlight=homeschool"
+        },
+        "Assessment Required": {
+          "value": true,
+          "source": "https://hawaiipublicschools.org/enrolling-in-school/homeschool/?highlight=homeschool"
+        },
+        "Annual Testing": {
+          "value": false,
+          "source": "https://hawaiipublicschools.org/enrolling-in-school/homeschool/?highlight=homeschool"
+        },
+        "Required Submission": {
+          "value": true,
+          "source": "https://hawaiipublicschools.org/enrolling-in-school/homeschool/?highlight=homeschool"
+        }
+      }
+    },
+    "Idaho": {
+      "total": 2,
+      "level": "Low",
+      "regulations": {
+        "Only 1 HS Option": {
+          "value": true,
+          "source": "https://legislature.idaho.gov/statutesrules/idstat/title33/t33ch2/sect33-203/#:~:text=(9)%20A%20nonpublic%20student%20is,school%20or%20a%20home%20school."
+        },
+        "Parent Notice": {
+          "value": false,
+          "source": "https://legislature.idaho.gov/statutesrules/idstat/title33/t33ch2/sect33-203/#:~:text=(9)%20A%20nonpublic%20student%20is,school%20or%20a%20home%20school."
+        },
+        "State Collects Data": {
+          "value": false,
+          "source": "https://education.jhu.edu/edpolicy/policy-research-initiatives/homeschool-hub/states/idaho/"
+        },
+        "Min Educator Reqs": {
+          "value": false,
+          "source": "https://legislature.idaho.gov/statutesrules/idstat/title33/t33ch2/sect33-202/"
+        },
+        "Min Instruction Time": {
+          "value": false,
+          "source": "https://legislature.idaho.gov/statutesrules/idstat/title33/t33ch2/sect33-202/"
+        },
+        "Required Subjects": {
+          "value": true,
+          "source": "https://legislature.idaho.gov/statutesrules/idstat/Title33/T33CH2/SECT33-202/"
+        },
+        "Maintain Records": {
+          "value": false,
+          "source": "https://legislature.idaho.gov/statutesrules/idstat/title33/t33ch2/sect33-202/"
+        },
+        "Assessment Required": {
+          "value": false,
+          "source": "https://www.sde.idaho.gov/school-choice/home-school/"
+        },
+        "Annual Testing": {
+          "value": false,
+          "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
+        },
+        "Required Submission": {
+          "value": false,
+          "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
+        }
+      }
+    },
+    "Illinois": {
+      "total": 2,
+      "level": "Low",
+      "regulations": {
+        "Only 1 HS Option": {
+          "value": true,
+          "source": "https://www.isbe.net/pages/homeschool.aspx"
+        },
+        "Parent Notice": {
+          "value": false,
+          "source": "https://www.isbe.net/pages/homeschool.aspx"
+        },
+        "State Collects Data": {
+          "value": false,
+          "source": "https://education.jhu.edu/edpolicy/policy-research-initiatives/homeschool-hub/states/illinois/"
+        },
+        "Min Educator Reqs": {
+          "value": false,
+          "source": "https://www.isbe.net/pages/homeschool.aspx"
+        },
+        "Min Instruction Time": {
+          "value": false,
+          "source": "https://www.isbe.net/pages/homeschool.aspx"
+        },
+        "Required Subjects": {
+          "value": true,
+          "source": "https://www.isbe.net/pages/homeschool.aspx"
+        },
+        "Maintain Records": {
+          "value": false,
+          "source": "https://www.isbe.net/pages/homeschool.aspx"
+        },
+        "Assessment Required": {
+          "value": false,
+          "source": "https://www.isbe.net/pages/homeschool.aspx"
+        },
+        "Annual Testing": {
+          "value": false,
+          "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
+        },
+        "Required Submission": {
+          "value": false,
+          "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
+        }
+      }
+    },
+    "Indiana": {
+      "total": 3,
+      "level": "Low",
+      "regulations": {
+        "Only 1 HS Option": {
+          "value": true,
+          "source": "https://www.in.gov/doe/students/homeschool-information/#Homeschool_Information"
+        },
+        "Parent Notice": {
+          "value": false,
+          "source": "https://law.justia.com/codes/indiana/title-20/article-33/chapter-2/section-20-33-2-21/"
+        },
+        "State Collects Data": {
+          "value": false,
+          "source": "https://education.jhu.edu/edpolicy/policy-research-initiatives/homeschool-hub/states/indiana/"
+        },
+        "Min Educator Reqs": {
+          "value": false,
+          "source": "https://www.in.gov/doe/students/homeschool-information/#Homeschool_Information"
+        },
+        "Min Instruction Time": {
+          "value": true,
+          "source": "https://law.justia.com/codes/indiana/title-20/article-33/chapter-2/section-20-33-2-21/"
+        },
+        "Required Subjects": {
+          "value": false,
+          "source": "https://statecodesfiles.justia.com/indiana/2015/title-20/article-33/chapter-2/chapter-2.pdf"
+        },
+        "Maintain Records": {
+          "value": true,
+          "source": "https://www.in.gov/doe/students/homeschool-information/#Homeschool_Information"
+        },
+        "Assessment Required": {
+          "value": false,
+          "source": "https://www.in.gov/doe/students/homeschool-information/#Homeschool_Information"
+        },
+        "Annual Testing": {
+          "value": false,
+          "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
+        },
+        "Required Submission": {
+          "value": false,
+          "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
+        }
+      }
+    },
+    "Iowa": {
+      "total": 8,
+      "level": "High",
+      "regulations": {
+        "Only 1 HS Option": {
+          "value": false,
+          "source": "https://www.legis.iowa.gov/docs/ico/chapter/299A.pdf"
+        },
+        "Parent Notice": {
+          "value": true,
+          "source": "https://www.legis.iowa.gov/docs/iac/rule/281.31.2.pdf"
+        },
+        "State Collects Data": {
+          "value": true,
+          "source": "https://education.jhu.edu/edpolicy/policy-research-initiatives/homeschool-hub/states/iowa/"
+        },
+        "Min Educator Reqs": {
+          "value": false,
+          "source": "https://www.legis.iowa.gov/docs/iac/rule/281.31.2.pdf"
+        },
+        "Min Instruction Time": {
+          "value": true,
+          "source": "https://www.legis.iowa.gov/docs/ico/chapter/299A.pdf"
+        },
+        "Required Subjects": {
+          "value": true,
+          "source": "https://www.legis.iowa.gov/docs/iac/chapter/281.31.pdf"
+        },
+        "Maintain Records": {
+          "value": true,
+          "source": "https://www.legis.iowa.gov/docs/iac/chapter/281.31.pdf"
+        },
+        "Assessment Required": {
+          "value": true,
+          "source": "https://www.legis.iowa.gov/docs/ico/chapter/299A.pdf"
+        },
+        "Annual Testing": {
+          "value": true,
+          "source": "https://www.legis.iowa.gov/docs/ico/chapter/299A.pdf"
+        },
+        "Required Submission": {
+          "value": true,
+          "source": "https://www.legis.iowa.gov/docs/ico/chapter/299A.pdf"
+        }
+      }
+    },
+    "Kansas": {
+      "total": 5,
+      "level": "Medium",
+      "regulations": {
+        "Only 1 HS Option": {
+          "value": true,
+          "source": "https://www.ksde.org/Agency/Division-of-Learning-Services/Special-Education-and-Title-Services/Title-Services/Non-Accredited-Private-Schools"
+        },
+        "Parent Notice": {
+          "value": true,
+          "source": "https://www.ksde.org/Agency/Division-of-Learning-Services/Special-Education-and-Title-Services/Title-Services/Non-Accredited-Private-Schools"
+        },
+        "State Collects Data": {
+          "value": true,
+          "source": "https://education.jhu.edu/edpolicy/policy-research-initiatives/homeschool-hub/states/kansas/"
+        },
+        "Min Educator Reqs": {
+          "value": false,
+          "source": "https://law.justia.com/codes/kansas/chapter-72/article-31/section-72-3120/"
+        },
+        "Min Instruction Time": {
+          "value": true,
+          "source": "https://law.justia.com/codes/kansas/chapter-72/article-31/section-72-3120/"
+        },
+        "Required Subjects": {
+          "value": false,
+          "source": "https://law.justia.com/codes/kansas/chapter-72/article-31/section-72-3120/"
+        },
+        "Maintain Records": {
+          "value": true,
+          "source": "https://law.justia.com/codes/kansas/chapter-72/article-31/section-72-3120/"
+        },
+        "Assessment Required": {
+          "value": false,
+          "source": "https://law.justia.com/codes/kansas/chapter-72/article-31/section-72-3120/"
+        },
+        "Annual Testing": {
+          "value": false,
+          "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
+        },
+        "Required Submission": {
+          "value": false,
+          "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
+        }
+      }
+    },
+    "Kentucky": {
+      "total": 6,
+      "level": "Medium",
+      "regulations": {
+        "Only 1 HS Option": {
+          "value": true,
+          "source": "https://www.education.ky.gov/federal/fed/Pages/Home-School.aspx"
+        },
+        "Parent Notice": {
+          "value": true,
+          "source": "https://www.education.ky.gov/federal/fed/Pages/Home-School.aspx"
+        },
+        "State Collects Data": {
+          "value": true,
+          "source": "https://education.jhu.edu/edpolicy/policy-research-initiatives/homeschool-hub/states/kentucky/"
+        },
+        "Min Educator Reqs": {
+          "value": false,
+          "source": "https://www.education.ky.gov/federal/fed/Pages/Home-School.aspx"
+        },
+        "Min Instruction Time": {
+          "value": true,
+          "source": "https://www.education.ky.gov/federal/fed/Pages/Home-School.aspx"
+        },
+        "Required Subjects": {
+          "value": true,
+          "source": "https://www.education.ky.gov/federal/fed/Documents/Kentucky%20Nonpublic%20Information%20Packet.pdf"
+        },
+        "Maintain Records": {
+          "value": true,
+          "source": "https://www.education.ky.gov/federal/fed/Pages/Home-School.aspx"
+        },
+        "Assessment Required": {
+          "value": false,
+          "source": "https://www.education.ky.gov/federal/fed/Pages/Home-School.aspx"
+        },
+        "Annual Testing": {
+          "value": false,
+          "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
+        },
+        "Required Submission": {
+          "value": false,
+          "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
+        }
+      }
+    },
+    "Louisiana": {
+      "total": 8,
+      "level": "High",
+      "regulations": {
+        "Only 1 HS Option": {
+          "value": false,
+          "source": "https://www.louisianabelieves.com/schools/home-study"
+        },
+        "Parent Notice": {
+          "value": true,
+          "source": "https://law.justia.com/codes/louisiana/revised-statutes/title-17/rs-17-236-1/"
+        },
+        "State Collects Data": {
+          "value": true,
+          "source": "https://education.jhu.edu/edpolicy/policy-research-initiatives/homeschool-hub/states/louisiana/"
+        },
+        "Min Educator Reqs": {
+          "value": false,
+          "source": "https://law.justia.com/codes/louisiana/revised-statutes/title-17/rs-17-236-1/"
+        },
+        "Min Instruction Time": {
+          "value": true,
+          "source": "https://law.justia.com/codes/louisiana/revised-statutes/title-17/rs-17-236-1/"
+        },
+        "Required Subjects": {
+          "value": true,
+          "source": "https://law.justia.com/codes/louisiana/revised-statutes/title-17/rs-17-236-1/"
+        },
+        "Maintain Records": {
+          "value": true,
+          "source": "https://law.justia.com/codes/louisiana/revised-statutes/title-17/rs-17-236-1/"
+        },
+        "Assessment Required": {
+          "value": true,
+          "source": "https://law.justia.com/codes/louisiana/revised-statutes/title-17/rs-17-236-1/"
+        },
+        "Annual Testing": {
+          "value": true,
+          "source": "https://law.justia.com/codes/louisiana/revised-statutes/title-17/rs-17-236-1/"
+        },
+        "Required Submission": {
+          "value": true,
+          "source": "https://law.justia.com/codes/louisiana/revised-statutes/title-17/rs-17-236-1/"
+        }
+      }
+    },
+    "Maine": {
+      "total": 9,
+      "level": "High",
+      "regulations": {
+        "Only 1 HS Option": {
+          "value": false,
+          "source": "https://www.maine.gov/doe/index.php/schools/schoolops/homeinstruction/requirements"
+        },
+        "Parent Notice": {
+          "value": true,
+          "source": "https://law.justia.com/codes/maine/title-20-a/part-3/chapter-211/subchapter-1/section-5001-a/"
+        },
+        "State Collects Data": {
+          "value": true,
+          "source": "https://education.jhu.edu/edpolicy/policy-research-initiatives/homeschool-hub/states/maine/"
+        },
+        "Min Educator Reqs": {
+          "value": true,
+          "source": "https://law.justia.com/codes/maine/title-20-a/part-3/chapter-211/subchapter-1/section-5001-a/"
+        },
+        "Min Instruction Time": {
+          "value": true,
+          "source": "https://law.justia.com/codes/maine/title-20-a/part-3/chapter-211/subchapter-1/section-5001-a/"
+        },
+        "Required Subjects": {
+          "value": true,
+          "source": "https://law.justia.com/codes/maine/title-20-a/part-3/chapter-211/subchapter-1/section-5001-a/"
+        },
+        "Maintain Records": {
+          "value": true,
+          "source": "https://law.justia.com/codes/maine/title-20-a/part-3/chapter-211/subchapter-1/section-5001-a/"
+        },
+        "Assessment Required": {
+          "value": true,
+          "source": "https://law.justia.com/codes/maine/title-20-a/part-3/chapter-211/subchapter-1/section-5001-a/"
+        },
+        "Annual Testing": {
+          "value": true,
+          "source": "https://law.justia.com/codes/maine/title-20-a/part-3/chapter-211/subchapter-1/section-5001-a/"
+        },
+        "Required Submission": {
+          "value": true,
+          "source": "https://law.justia.com/codes/maine/title-20-a/part-3/chapter-211/subchapter-1/section-5001-a/"
+        }
+      }
+    },
+    "Maryland": {
+      "total": 4,
+      "level": "Medium",
+      "regulations": {
+        "Only 1 HS Option": {
+          "value": false,
+          "source": "https://marylandpublicschools.org/about/pages/dsfss/sssp/homeinstruct/index.aspx"
+        },
+        "Parent Notice": {
+          "value": true,
+          "source": "https://regulations.justia.com/states/maryland/title-13a/subtitle-10/chapter-13a-10-01/section-13a-10-01-01/"
+        },
+        "State Collects Data": {
+          "value": true,
+          "source": "https://education.jhu.edu/edpolicy/policy-research-initiatives/homeschool-hub/states/maryland/"
+        },
+        "Min Educator Reqs": {
+          "value": false,
+          "source": "https://regulations.justia.com/states/maryland/title-13a/subtitle-10/chapter-13a-10-01/section-13a-10-01-01/"
+        },
+        "Min Instruction Time": {
+          "value": false,
+          "source": "https://regulations.justia.com/states/maryland/title-13a/subtitle-10/chapter-13a-10-01/section-13a-10-01-01/"
+        },
+        "Required Subjects": {
+          "value": true,
+          "source": "https://regulations.justia.com/states/maryland/title-13a/subtitle-10/chapter-13a-10-01/section-13a-10-01-01/"
+        },
+        "Maintain Records": {
+          "value": true,
+          "source": "https://regulations.justia.com/states/maryland/title-13a/subtitle-10/chapter-13a-10-01/section-13a-10-01-01/"
+        },
+        "Assessment Required": {
+          "value": false,
+          "source": "https://regulations.justia.com/states/maryland/title-13a/subtitle-10/chapter-13a-10-01/section-13a-10-01-02/"
+        },
+        "Annual Testing": {
+          "value": false,
+          "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
+        },
+        "Required Submission": {
+          "value": false,
+          "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
+        }
+      }
+    },
+    "Massachusetts": {
+      "total": 6,
+      "level": "Medium",
+      "regulations": {
+        "Only 1 HS Option": {
+          "value": true,
+          "source": "https://www.doe.mass.edu/homeschool/"
+        },
+        "Parent Notice": {
+          "value": true,
+          "source": "https://www.doe.mass.edu/homeschool/#:~:text=Parents%20planning%20to%20educate%20their,parent%20to%20begin%20home%20schooling."
+        },
+        "State Collects Data": {
+          "value": true,
+          "source": "https://education.jhu.edu/edpolicy/policy-research-initiatives/homeschool-hub/states/massachusetts/"
+        },
+        "Min Educator Reqs": {
+          "value": false,
+          "source": "https://www.doe.mass.edu/homeschool/"
+        },
+        "Min Instruction Time": {
+          "value": false,
+          "source": "https://www.doe.mass.edu/homeschool/"
+        },
+        "Required Subjects": {
+          "value": true,
+          "source": "https://www.doe.mass.edu/homeschool/"
+        },
+        "Maintain Records": {
+          "value": false,
+          "source": "https://www.doe.mass.edu/homeschool/"
+        },
+        "Assessment Required": {
+          "value": true,
+          "source": "https://www.doe.mass.edu/homeschool/"
+        },
+        "Annual Testing": {
+          "value": false,
+          "source": "https://www.doe.mass.edu/homeschool/"
+        },
+        "Required Submission": {
+          "value": true,
+          "source": "https://www.doe.mass.edu/homeschool/"
+        }
+      }
+    },
+    "Michigan": {
+      "total": 2,
+      "level": "Low",
+      "regulations": {
+        "Only 1 HS Option": {
+          "value": false,
+          "source": "https://www.michigan.gov/mde/services/flexible-learning/options/nonpub-home"
+        },
+        "Parent Notice": {
+          "value": false,
+          "source": "https://www.michigan.gov/mde/services/flexible-learning/options/nonpub-home"
+        },
+        "State Collects Data": {
+          "value": false,
+          "source": "https://education.jhu.edu/edpolicy/policy-research-initiatives/homeschool-hub/states/michigan/"
+        },
+        "Min Educator Reqs": {
+          "value": true,
+          "source": "https://www.michigan.gov/mde/services/flexible-learning/options/nonpub-home"
+        },
+        "Min Instruction Time": {
+          "value": false,
+          "source": "https://www.michigan.gov/mde/services/flexible-learning/options/nonpub-home"
+        },
+        "Required Subjects": {
+          "value": true,
+          "source": "https://www.michigan.gov/mde/services/flexible-learning/options/nonpub-home"
+        },
+        "Maintain Records": {
+          "value": false,
+          "source": "https://www.michigan.gov/mde/services/flexible-learning/options/nonpub-home"
+        },
+        "Assessment Required": {
+          "value": false,
+          "source": "https://www.michigan.gov/mde/services/flexible-learning/options/nonpub-home"
+        },
+        "Annual Testing": {
+          "value": false,
+          "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
+        },
+        "Required Submission": {
+          "value": false,
+          "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
+        }
+      }
+    },
+    "Minnesota": {
+      "total": 9,
+      "level": "High",
+      "regulations": {
+        "Only 1 HS Option": {
+          "value": true,
+          "source": "https://www.revisor.mn.gov/statutes/cite/120A.22"
+        },
+        "Parent Notice": {
+          "value": true,
+          "source": "https://www.revisor.mn.gov/statutes/cite/120A.24"
+        },
+        "State Collects Data": {
+          "value": true,
+          "source": "https://education.jhu.edu/edpolicy/policy-research-initiatives/homeschool-hub/states/minnesota/"
+        },
+        "Min Educator Reqs": {
+          "value": true,
+          "source": "https://www.revisor.mn.gov/statutes/cite/120A.22"
+        },
+        "Min Instruction Time": {
+          "value": false,
+          "source": "https://www.revisor.mn.gov/statutes/cite/120A.22"
+        },
+        "Required Subjects": {
+          "value": true,
+          "source": "https://www.revisor.mn.gov/statutes/cite/120A.22"
+        },
+        "Maintain Records": {
+          "value": true,
+          "source": "https://www.revisor.mn.gov/statutes/cite/120A.22"
+        },
+        "Assessment Required": {
+          "value": true,
+          "source": "https://www.revisor.mn.gov/statutes/cite/120A.22"
+        },
+        "Annual Testing": {
+          "value": true,
+          "source": "https://www.revisor.mn.gov/statutes/cite/120A.22"
+        },
+        "Required Submission": {
+          "value": true,
+          "source": "https://www.revisor.mn.gov/statutes/cite/120A.22"
+        }
+      }
+    },
+    "Mississippi": {
+      "total": 3,
+      "level": "Low",
+      "regulations": {
+        "Only 1 HS Option": {
+          "value": true,
+          "source": "https://law.justia.com/codes/mississippi/title-37/chapter-13/mississippi-compulsory-school-attendance-law/section-37-13-91/"
+        },
+        "Parent Notice": {
+          "value": true,
+          "source": "https://law.justia.com/codes/mississippi/title-37/chapter-13/mississippi-compulsory-school-attendance-law/section-37-13-91/"
+        },
+        "State Collects Data": {
+          "value": true,
+          "source": "https://education.jhu.edu/edpolicy/policy-research-initiatives/homeschool-hub/states/mississippi/"
+        },
+        "Min Educator Reqs": {
+          "value": false,
+          "source": "https://law.justia.com/codes/mississippi/title-37/chapter-13/mississippi-compulsory-school-attendance-law/section-37-13-91/"
+        },
+        "Min Instruction Time": {
+          "value": false,
+          "source": "https://law.justia.com/codes/mississippi/title-37/chapter-13/mississippi-compulsory-school-attendance-law/section-37-13-91/"
+        },
+        "Required Subjects": {
+          "value": false,
+          "source": "https://law.justia.com/codes/mississippi/title-37/chapter-13/mississippi-compulsory-school-attendance-law/section-37-13-91/"
+        },
+        "Maintain Records": {
+          "value": false,
+          "source": "https://law.justia.com/codes/mississippi/title-37/chapter-13/mississippi-compulsory-school-attendance-law/section-37-13-91/"
+        },
+        "Assessment Required": {
+          "value": false,
+          "source": "https://law.justia.com/codes/mississippi/title-37/chapter-13/mississippi-compulsory-school-attendance-law/section-37-13-91/"
+        },
+        "Annual Testing": {
+          "value": false,
+          "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
+        },
+        "Required Submission": {
+          "value": false,
+          "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
+        }
+      }
+    },
+    "Missouri": {
+      "total": 4,
+      "level": "Medium",
+      "regulations": {
+        "Only 1 HS Option": {
+          "value": true,
+          "source": "https://revisor.mo.gov/main/OneSection.aspx?section=167.031"
+        },
+        "Parent Notice": {
+          "value": false,
+          "source": "https://revisor.mo.gov/main/OneSection.aspx?section=167.042"
+        },
+        "State Collects Data": {
+          "value": false,
+          "source": "https://education.jhu.edu/edpolicy/policy-research-initiatives/homeschool-hub/states/missouri/"
+        },
+        "Min Educator Reqs": {
+          "value": false,
+          "source": "https://revisor.mo.gov/main/OneSection.aspx?section=167.031"
+        },
+        "Min Instruction Time": {
+          "value": true,
+          "source": "https://revisor.mo.gov/main/OneSection.aspx?section=167.031"
+        },
+        "Required Subjects": {
+          "value": true,
+          "source": "https://revisor.mo.gov/main/OneSection.aspx?section=167.031"
+        },
+        "Maintain Records": {
+          "value": true,
+          "source": "https://revisor.mo.gov/main/OneSection.aspx?section=167.031"
+        },
+        "Assessment Required": {
+          "value": false,
+          "source": "https://revisor.mo.gov/main/OneSection.aspx?section=167.031"
+        },
+        "Annual Testing": {
+          "value": false,
+          "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
+        },
+        "Required Submission": {
+          "value": false,
+          "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
+        }
+      }
+    },
+    "Montana": {
+      "total": 6,
+      "level": "Medium",
+      "regulations": {
+        "Only 1 HS Option": {
+          "value": true,
+          "source": "https://law.justia.com/codes/montana/title-20/chapter-5/part-1/section-20-5-102/"
+        },
+        "Parent Notice": {
+          "value": true,
+          "source": "https://law.justia.com/codes/montana/title-20/chapter-5/part-1/section-20-5-109/"
+        },
+        "State Collects Data": {
+          "value": true,
+          "source": "https://education.jhu.edu/edpolicy/policy-research-initiatives/homeschool-hub/states/montana/"
+        },
+        "Min Educator Reqs": {
+          "value": false,
+          "source": "https://law.justia.com/codes/montana/title-20/chapter-5/part-1/section-20-5-111/"
+        },
+        "Min Instruction Time": {
+          "value": true,
+          "source": "https://law.justia.com/codes/montana/title-20/chapter-5/part-1/section-20-5-109/"
+        },
+        "Required Subjects": {
+          "value": true,
+          "source": "https://law.justia.com/codes/montana/title-20/chapter-5/part-1/section-20-5-109/"
+        },
+        "Maintain Records": {
+          "value": true,
+          "source": "https://law.justia.com/codes/montana/title-20/chapter-5/part-1/section-20-5-109/"
+        },
+        "Assessment Required": {
+          "value": false,
+          "source": "https://law.justia.com/codes/montana/title-20/chapter-5/part-1/section-20-5-109/"
+        },
+        "Annual Testing": {
+          "value": false,
+          "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
+        },
+        "Required Submission": {
+          "value": false,
+          "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
+        }
+      }
+    },
+    "Nebraska": {
+      "total": 5,
+      "level": "Medium",
+      "regulations": {
+        "Only 1 HS Option": {
+          "value": true,
+          "source": "https://nebraskalegislature.gov/laws/statutes.php?statute=79-201"
+        },
+        "Parent Notice": {
+          "value": true,
+          "source": "https://www.education.ne.gov/fos/exempt-schools/"
+        },
+        "State Collects Data": {
+          "value": true,
+          "source": "https://education.jhu.edu/edpolicy/policy-research-initiatives/homeschool-hub/states/nebraska/"
+        },
+        "Min Educator Reqs": {
+          "value": false,
+          "source": "https://www.education.ne.gov/fos/exempt-schools/"
+        },
+        "Min Instruction Time": {
+          "value": true,
+          "source": "https://www.education.ne.gov/fos/exempt-schools/"
+        },
+        "Required Subjects": {
+          "value": true,
+          "source": "https://www.education.ne.gov/fos/exempt-schools/"
+        },
+        "Maintain Records": {
+          "value": false,
+          "source": "https://www.education.ne.gov/fos/exempt-schools/"
+        },
+        "Assessment Required": {
+          "value": false,
+          "source": "https://www.education.ne.gov/fos/exempt-schools/"
+        },
+        "Annual Testing": {
+          "value": false,
+          "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
+        },
+        "Required Submission": {
+          "value": false,
+          "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
+        }
+      }
+    },
+    "Nevada": {
+      "total": 3,
+      "level": "Low",
+      "regulations": {
+        "Only 1 HS Option": {
+          "value": true,
+          "source": "https://law.justia.com/codes/nevada/chapter-388d/statute-388d-020/"
+        },
+        "Parent Notice": {
+          "value": true,
+          "source": "https://law.justia.com/codes/nevada/chapter-388d/statute-388d-020/"
+        },
+        "State Collects Data": {
+          "value": false,
+          "source": "https://education.jhu.edu/edpolicy/policy-research-initiatives/homeschool-hub/states/nevada/"
+        },
+        "Min Educator Reqs": {
+          "value": false,
+          "source": "https://law.justia.com/codes/nevada/chapter-388d/statute-388d-020/"
+        },
+        "Min Instruction Time": {
+          "value": false,
+          "source": "https://law.justia.com/codes/nevada/chapter-388d/statute-388d-020/"
+        },
+        "Required Subjects": {
+          "value": true,
+          "source": "https://law.justia.com/codes/nevada/chapter-388d/statute-388d-020/"
+        },
+        "Maintain Records": {
+          "value": false,
+          "source": "https://law.justia.com/codes/nevada/chapter-388d/statute-388d-020/"
+        },
+        "Assessment Required": {
+          "value": false,
+          "source": "https://law.justia.com/codes/nevada/chapter-388d/statute-388d-040/"
+        },
+        "Annual Testing": {
+          "value": false,
+          "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
+        },
+        "Required Submission": {
+          "value": false,
+          "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
+        }
+      }
+    },
+    "New Hampshire": {
+      "total": 7,
+      "level": "High",
+      "regulations": {
+        "Only 1 HS Option": {
+          "value": true,
+          "source": "https://www.education.nh.gov/pathways-education/home-education"
+        },
+        "Parent Notice": {
+          "value": true,
+          "source": "https://law.justia.com/codes/new-hampshire/title-xv/chapter-193-a/section-193-a-5/"
+        },
+        "State Collects Data": {
+          "value": true,
+          "source": "https://education.jhu.edu/edpolicy/policy-research-initiatives/homeschool-hub/states/new-hampshire/"
+        },
+        "Min Educator Reqs": {
+          "value": false,
+          "source": "https://law.justia.com/codes/new-hampshire/title-xv/chapter-193-a/section-193-a-5/"
+        },
+        "Min Instruction Time": {
+          "value": false,
+          "source": "https://law.justia.com/codes/new-hampshire/title-xv/chapter-193-a/section-193-a-4/"
+        },
+        "Required Subjects": {
+          "value": true,
+          "source": "https://law.justia.com/codes/new-hampshire/title-xv/chapter-193-a/section-193-a-4/"
+        },
+        "Maintain Records": {
+          "value": true,
+          "source": "https://law.justia.com/codes/new-hampshire/title-xv/chapter-193-a/section-193-a-6/"
+        },
+        "Assessment Required": {
+          "value": true,
+          "source": "https://law.justia.com/codes/new-hampshire/title-xv/chapter-193-a/section-193-a-6/"
+        },
+        "Annual Testing": {
+          "value": true,
+          "source": "https://law.justia.com/codes/new-hampshire/title-xv/chapter-193-a/section-193-a-6/"
+        },
+        "Required Submission": {
+          "value": false,
+          "source": "https://law.justia.com/codes/new-hampshire/title-xv/chapter-193-a/section-193-a-6/"
+        }
+      }
+    },
+    "New Jersey": {
+      "total": 0,
+      "level": "Low",
+      "regulations": {
+        "Only 1 HS Option": {
+          "value": false,
+          "source": "https://www.nj.gov/education/safety/nontraditional/"
+        },
+        "Parent Notice": {
+          "value": false,
+          "source": "https://www.nj.gov/education/safety/nontraditional/faq_homeschool.shtml"
+        },
+        "State Collects Data": {
+          "value": false,
+          "source": "https://education.jhu.edu/edpolicy/policy-research-initiatives/homeschool-hub/states/new-jersey/"
+        },
+        "Min Educator Reqs": {
+          "value": false,
+          "source": "https://www.nj.gov/education/safety/nontraditional/faq_homeschool.shtml"
+        },
+        "Min Instruction Time": {
+          "value": false,
+          "source": "https://www.nj.gov/education/safety/nontraditional/faq_homeschool.shtml"
+        },
+        "Required Subjects": {
+          "value": false,
+          "source": "https://www.nj.gov/education/safety/nontraditional/faq_homeschool.shtml"
+        },
+        "Maintain Records": {
+          "value": false,
+          "source": "https://www.nj.gov/education/safety/nontraditional/faq_homeschool.shtml"
+        },
+        "Assessment Required": {
+          "value": false,
+          "source": "https://www.nj.gov/education/safety/nontraditional/faq_homeschool.shtml"
+        },
+        "Annual Testing": {
+          "value": false,
+          "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
+        },
+        "Required Submission": {
+          "value": false,
+          "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
+        }
+      }
+    },
+    "New Mexico": {
+      "total": 7,
+      "level": "High",
+      "regulations": {
+        "Only 1 HS Option": {
+          "value": true,
+          "source": "https://law.justia.com/codes/new-mexico/chapter-22/article-1/section-22-1-2-1/"
+        },
+        "Parent Notice": {
+          "value": true,
+          "source": "https://law.justia.com/codes/new-mexico/chapter-22/article-1/section-22-1-2-1/"
+        },
+        "State Collects Data": {
+          "value": true,
+          "source": "https://education.jhu.edu/edpolicy/policy-research-initiatives/homeschool-hub/states/new-mexico/"
+        },
+        "Min Educator Reqs": {
+          "value": true,
+          "source": "https://law.justia.com/codes/new-mexico/chapter-22/article-1/section-22-1-2-1/"
+        },
+        "Min Instruction Time": {
+          "value": true,
+          "source": "https://law.justia.com/codes/new-mexico/chapter-22/article-2/section-22-2-8-1/"
+        },
+        "Required Subjects": {
+          "value": true,
+          "source": "https://law.justia.com/codes/new-mexico/chapter-22/article-1/section-22-1-2/"
+        },
+        "Maintain Records": {
+          "value": true,
+          "source": "https://law.justia.com/codes/new-mexico/chapter-22/article-1/section-22-1-2-1/"
+        },
+        "Assessment Required": {
+          "value": false,
+          "source": "https://web.ped.nm.gov/bureaus/options-for-parents-and-families/home-schooling/frequently-asked-questions/"
+        },
+        "Annual Testing": {
+          "value": false,
+          "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
+        },
+        "Required Submission": {
+          "value": false,
+          "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
+        }
+      }
+    },
+    "New York": {
+      "total": 9,
+      "level": "High",
+      "regulations": {
+        "Only 1 HS Option": {
+          "value": true,
+          "source": "https://govt.westlaw.com/nycrr/Document/I3652de29c22211ddb29d8bee567fca9f?viewType=FullText&originationContext=documenttoc&transitionType=CategoryPageItem&contextData=(sc.Default)&bhcp=1"
+        },
+        "Parent Notice": {
+          "value": true,
+          "source": "https://govt.westlaw.com/nycrr/Document/I3652de29c22211ddb29d8bee567fca9f?viewType=FullText&originationContext=documenttoc&transitionType=CategoryPageItem&contextData=(sc.Default)&bhcp=1"
+        },
+        "State Collects Data": {
+          "value": true,
+          "source": "https://education.jhu.edu/edpolicy/policy-research-initiatives/homeschool-hub/states/new-york/"
+        },
+        "Min Educator Reqs": {
+          "value": false,
+          "source": "https://govt.westlaw.com/nycrr/Document/I3652de29c22211ddb29d8bee567fca9f?viewType=FullText&originationContext=documenttoc&transitionType=CategoryPageItem&contextData=(sc.Default)&bhcp=1"
+        },
+        "Min Instruction Time": {
+          "value": true,
+          "source": "https://govt.westlaw.com/nycrr/Document/I3652de29c22211ddb29d8bee567fca9f?viewType=FullText&originationContext=documenttoc&transitionType=CategoryPageItem&contextData=(sc.Default)&bhcp=1"
+        },
+        "Required Subjects": {
+          "value": true,
+          "source": "https://govt.westlaw.com/nycrr/Document/I3652de29c22211ddb29d8bee567fca9f?viewType=FullText&originationContext=documenttoc&transitionType=CategoryPageItem&contextData=(sc.Default)&bhcp=1"
+        },
+        "Maintain Records": {
+          "value": true,
+          "source": "https://govt.westlaw.com/nycrr/Document/I3652de29c22211ddb29d8bee567fca9f?viewType=FullText&originationContext=documenttoc&transitionType=CategoryPageItem&contextData=(sc.Default)&bhcp=1"
+        },
+        "Assessment Required": {
+          "value": true,
+          "source": "https://govt.westlaw.com/nycrr/Document/I3652de29c22211ddb29d8bee567fca9f?viewType=FullText&originationContext=documenttoc&transitionType=CategoryPageItem&contextData=(sc.Default)&bhcp=1"
+        },
+        "Annual Testing": {
+          "value": true,
+          "source": "https://govt.westlaw.com/nycrr/Document/I3652de29c22211ddb29d8bee567fca9f?viewType=FullText&originationContext=documenttoc&transitionType=CategoryPageItem&contextData=(sc.Default)&bhcp=1"
+        },
+        "Required Submission": {
+          "value": true,
+          "source": "https://govt.westlaw.com/nycrr/Document/I3652de29c22211ddb29d8bee567fca9f?viewType=FullText&originationContext=documenttoc&transitionType=CategoryPageItem&contextData=(sc.Default)&bhcp=1"
+        }
+      }
+    },
+    "North Carolina": {
+      "total": 8,
+      "level": "High",
+      "regulations": {
+        "Only 1 HS Option": {
+          "value": true,
+          "source": "https://law.justia.com/codes/north-carolina/chapter-115c/article-39/section-115c-563/"
+        },
+        "Parent Notice": {
+          "value": true,
+          "source": "https://codes.findlaw.com/nc/chapter-115c-elementary-and-secondary-education/nc-gen-st-sect-115c-552.html"
+        },
+        "State Collects Data": {
+          "value": true,
+          "source": "https://education.jhu.edu/edpolicy/policy-research-initiatives/homeschool-hub/states/north-carolina/"
+        },
+        "Min Educator Reqs": {
+          "value": true,
+          "source": "https://codes.findlaw.com/nc/chapter-115c-elementary-and-secondary-education/nc-gen-st-sect-115c-564/"
+        },
+        "Min Instruction Time": {
+          "value": true,
+          "source": "https://law.justia.com/codes/north-carolina/chapter-115c/article-39/section-115c-556/"
+        },
+        "Required Subjects": {
+          "value": false,
+          "source": "https://law.justia.com/codes/north-carolina/chapter-115c/article-39/section-115c-556/"
+        },
+        "Maintain Records": {
+          "value": true,
+          "source": "https://law.justia.com/codes/north-carolina/chapter-115c/article-39/section-115c-557/"
+        },
+        "Assessment Required": {
+          "value": true,
+          "source": "https://www.doa.nc.gov/divisions/non-public-education/home-schools/standardized-testing"
+        },
+        "Annual Testing": {
+          "value": true,
+          "source": "https://www.doa.nc.gov/divisions/non-public-education/home-schools/standardized-testing"
+        },
+        "Required Submission": {
+          "value": false,
+          "source": "https://www.doa.nc.gov/divisions/non-public-education/home-schools/standardized-testing"
+        }
+      }
+    },
+    "North Dakota": {
+      "total": 9,
+      "level": "High",
+      "regulations": {
+        "Only 1 HS Option": {
+          "value": true,
+          "source": "https://codes.findlaw.com/nd/title-15-1-elementary-and-secondary-education/nd-cent-code-sect-15-1-23-02/"
+        },
+        "Parent Notice": {
+          "value": true,
+          "source": "https://codes.findlaw.com/nd/title-15-1-elementary-and-secondary-education/nd-cent-code-sect-15-1-23-02/"
+        },
+        "State Collects Data": {
+          "value": true,
+          "source": "https://education.jhu.edu/edpolicy/policy-research-initiatives/homeschool-hub/states/north-dakota/"
+        },
+        "Min Educator Reqs": {
+          "value": true,
+          "source": "https://codes.findlaw.com/nd/title-15-1-elementary-and-secondary-education/nd-cent-code-sect-15-1-23-03/"
+        },
+        "Min Instruction Time": {
+          "value": true,
+          "source": "https://codes.findlaw.com/nd/title-15-1-elementary-and-secondary-education/nd-cent-code-sect-15-1-23-04/"
+        },
+        "Required Subjects": {
+          "value": true,
+          "source": "https://codes.findlaw.com/nd/title-15-1-elementary-and-secondary-education/nd-cent-code-sect-15-1-23-04/"
+        },
+        "Maintain Records": {
+          "value": true,
+          "source": "https://codes.findlaw.com/nd/title-15-1-elementary-and-secondary-education/nd-cent-code-sect-15-1-23-05/"
+        },
+        "Assessment Required": {
+          "value": true,
+          "source": "https://codes.findlaw.com/nd/title-15-1-elementary-and-secondary-education/nd-cent-code-sect-15-1-23-06/"
+        },
+        "Annual Testing": {
+          "value": false,
+          "source": "https://codes.findlaw.com/nd/title-15-1-elementary-and-secondary-education/nd-cent-code-sect-15-1-23-06/"
+        },
+        "Required Submission": {
+          "value": true,
+          "source": "https://codes.findlaw.com/nd/title-15-1-elementary-and-secondary-education/nd-cent-code-sect-15-1-23-08/"
+        }
+      }
+    },
+    "Ohio": {
+      "total": 3,
+      "level": "Low",
+      "regulations": {
+        "Only 1 HS Option": {
+          "value": false,
+          "source": "https://education.ohio.gov/Topics/Ohio-Education-Options/Private-Schools/Non-Chartered-Non-Tax-School-Information"
+        },
+        "Parent Notice": {
+          "value": true,
+          "source": "https://education.ohio.gov/Topics/Ohio-Education-Options/Home-Schooling"
+        },
+        "State Collects Data": {
+          "value": true,
+          "source": "https://education.jhu.edu/edpolicy/policy-research-initiatives/homeschool-hub/states/ohio/"
+        },
+        "Min Educator Reqs": {
+          "value": false,
+          "source": "https://codes.ohio.gov/ohio-revised-code/section-3321.042"
+        },
+        "Min Instruction Time": {
+          "value": false,
+          "source": "https://codes.ohio.gov/ohio-revised-code/section-3321.042"
+        },
+        "Required Subjects": {
+          "value": true,
+          "source": "https://codes.ohio.gov/ohio-revised-code/section-3321.042"
+        },
+        "Maintain Records": {
+          "value": false,
+          "source": "https://codes.ohio.gov/ohio-revised-code/section-3321.042"
+        },
+        "Assessment Required": {
+          "value": false,
+          "source": "https://education.ohio.gov/Topics/Ohio-Education-Options/Home-Schooling"
+        },
+        "Annual Testing": {
+          "value": false,
+          "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
+        },
+        "Required Submission": {
+          "value": false,
+          "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
+        }
+      }
+    },
+    "Oklahoma": {
+      "total": 1,
+      "level": "Low",
+      "regulations": {
+        "Only 1 HS Option": {
+          "value": true,
+          "source": "https://law.justia.com/codes/oklahoma/title-70/section-70-10-105/"
+        },
+        "Parent Notice": {
+          "value": false,
+          "source": "https://oklahoma.gov/education/services/school-choice/home-school.html"
+        },
+        "State Collects Data": {
+          "value": false,
+          "source": "https://education.jhu.edu/edpolicy/policy-research-initiatives/homeschool-hub/states/oklahoma/"
+        },
+        "Min Educator Reqs": {
+          "value": false,
+          "source": "https://oklahoma.gov/education/services/school-choice/home-school.html"
+        },
+        "Min Instruction Time": {
+          "value": false,
+          "source": "https://oklahoma.gov/education/services/school-choice/home-school.html"
+        },
+        "Required Subjects": {
+          "value": false,
+          "source": "https://oklahoma.gov/education/services/school-choice/home-school.html"
+        },
+        "Maintain Records": {
+          "value": false,
+          "source": "https://oklahoma.gov/education/services/school-choice/home-school.html"
+        },
+        "Assessment Required": {
+          "value": false,
+          "source": "https://oklahoma.gov/education/services/school-choice/home-school.html"
+        },
+        "Annual Testing": {
+          "value": false,
+          "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
+        },
+        "Required Submission": {
+          "value": false,
+          "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
+        }
+      }
+    },
+    "Oregon": {
+      "total": 5,
+      "level": "Medium",
+      "regulations": {
+        "Only 1 HS Option": {
+          "value": true,
+          "source": "https://oregon.public.law/statutes/ors_339.035"
+        },
+        "Parent Notice": {
+          "value": true,
+          "source": "https://oregon.public.law/statutes/ors_339.035"
+        },
+        "State Collects Data": {
+          "value": true,
+          "source": "https://education.jhu.edu/edpolicy/policy-research-initiatives/homeschool-hub/states/oregon/"
+        },
+        "Min Educator Reqs": {
+          "value": false,
+          "source": "https://oregon.public.law/statutes/ors_339.035"
+        },
+        "Min Instruction Time": {
+          "value": false,
+          "source": "https://oregon.public.law/statutes/ors_339.035"
+        },
+        "Required Subjects": {
+          "value": false,
+          "source": "https://oregon.public.law/statutes/ors_339.035"
+        },
+        "Maintain Records": {
+          "value": false,
+          "source": "https://oregon.public.law/statutes/ors_339.035"
+        },
+        "Assessment Required": {
+          "value": true,
+          "source": "https://oregon.public.law/statutes/ors_339.035"
+        },
+        "Annual Testing": {
+          "value": false,
+          "source": "https://oregon.public.law/statutes/ors_339.035"
+        },
+        "Required Submission": {
+          "value": true,
+          "source": "https://oregon.public.law/statutes/ors_339.035"
+        }
+      }
+    },
+    "Pennsylvania": {
+      "total": 8,
+      "level": "High",
+      "regulations": {
+        "Only 1 HS Option": {
+          "value": false,
+          "source": "https://www.education.pa.gov/K-12/Home%20Education%20and%20Private%20Tutoring/Pages/default.aspx"
+        },
+        "Parent Notice": {
+          "value": true,
+          "source": "https://codes.findlaw.com/pa/title-24-ps-education/pa-st-sect-24-13-1327-1/"
+        },
+        "State Collects Data": {
+          "value": true,
+          "source": "https://education.jhu.edu/edpolicy/policy-research-initiatives/homeschool-hub/states/pennsylvania/"
+        },
+        "Min Educator Reqs": {
+          "value": true,
+          "source": "https://codes.findlaw.com/pa/title-24-ps-education/pa-st-sect-24-13-1327-1/"
+        },
+        "Min Instruction Time": {
+          "value": true,
+          "source": "https://codes.findlaw.com/pa/title-24-ps-education/pa-st-sect-24-13-1327-1/"
+        },
+        "Required Subjects": {
+          "value": true,
+          "source": "https://codes.findlaw.com/pa/title-24-ps-education/pa-st-sect-24-13-1327-1/"
+        },
+        "Maintain Records": {
+          "value": true,
+          "source": "https://codes.findlaw.com/pa/title-24-ps-education/pa-st-sect-24-13-1327-1/"
+        },
+        "Assessment Required": {
+          "value": true,
+          "source": "https://codes.findlaw.com/pa/title-24-ps-education/pa-st-sect-24-13-1327-1/"
+        },
+        "Annual Testing": {
+          "value": false,
+          "source": "https://codes.findlaw.com/pa/title-24-ps-education/pa-st-sect-24-13-1327-1/"
+        },
+        "Required Submission": {
+          "value": true,
+          "source": "https://codes.findlaw.com/pa/title-24-ps-education/pa-st-sect-24-13-1327-1/"
+        }
+      }
+    },
+    "Rhode Island": {
+      "total": 6,
+      "level": "Medium",
+      "regulations": {
+        "Only 1 HS Option": {
+          "value": true,
+          "source": "https://ride.ri.gov/students-families/education-programs/home-schooling"
+        },
+        "Parent Notice": {
+          "value": true,
+          "source": "https://ride.ri.gov/students-families/education-programs/home-schooling"
+        },
+        "State Collects Data": {
+          "value": true,
+          "source": "https://education.jhu.edu/edpolicy/policy-research-initiatives/homeschool-hub/states/rhode-island/"
+        },
+        "Min Educator Reqs": {
+          "value": false,
+          "source": "https://webserver.rilegislature.gov/Statutes/TITLE16/16-19/16-19-2.htm"
+        },
+        "Min Instruction Time": {
+          "value": true,
+          "source": "https://webserver.rilegislature.gov/Statutes/TITLE16/16-19/16-19-2.htm"
+        },
+        "Required Subjects": {
+          "value": true,
+          "source": "https://webserver.rilegislature.gov/Statutes/TITLE16/16-19/16-19-2.htm"
+        },
+        "Maintain Records": {
+          "value": true,
+          "source": "https://webserver.rilegislature.gov/Statutes/TITLE16/16-19/16-19-2.htm"
+        },
+        "Assessment Required": {
+          "value": false,
+          "source": "https://webserver.rilegislature.gov/Statutes/TITLE16/16-19/16-19-2.htm"
+        },
+        "Annual Testing": {
+          "value": false,
+          "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
+        },
+        "Required Submission": {
+          "value": false,
+          "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
+        }
+      }
+    },
+    "South Carolina": {
+      "total": 9,
+      "level": "High",
+      "regulations": {
+        "Only 1 HS Option": {
+          "value": false,
+          "source": "https://ed.sc.gov/districts-schools/state-accountability/home-schooling/"
+        },
+        "Parent Notice": {
+          "value": true,
+          "source": "https://law.justia.com/codes/south-carolina/title-59/chapter-65/section-59-65-40/"
+        },
+        "State Collects Data": {
+          "value": true,
+          "source": "https://education.jhu.edu/edpolicy/policy-research-initiatives/homeschool-hub/states/south-carolina/"
+        },
+        "Min Educator Reqs": {
+          "value": true,
+          "source": "https://law.justia.com/codes/south-carolina/title-59/chapter-65/section-59-65-40/"
+        },
+        "Min Instruction Time": {
+          "value": true,
+          "source": "https://law.justia.com/codes/south-carolina/title-59/chapter-65/section-59-65-40/"
+        },
+        "Required Subjects": {
+          "value": true,
+          "source": "https://law.justia.com/codes/south-carolina/title-59/chapter-65/section-59-65-40/"
+        },
+        "Maintain Records": {
+          "value": true,
+          "source": "https://law.justia.com/codes/south-carolina/title-59/chapter-65/section-59-65-40/"
+        },
+        "Assessment Required": {
+          "value": true,
+          "source": "https://law.justia.com/codes/south-carolina/title-59/chapter-65/section-59-65-40/"
+        },
+        "Annual Testing": {
+          "value": true,
+          "source": "https://law.justia.com/codes/south-carolina/title-59/chapter-65/section-59-65-40/"
+        },
+        "Required Submission": {
+          "value": true,
+          "source": "https://law.justia.com/codes/south-carolina/title-59/chapter-65/section-59-65-40/"
+        }
+      }
+    },
+    "South Dakota": {
+      "total": 4,
+      "level": "Medium",
+      "regulations": {
+        "Only 1 HS Option": {
+          "value": true,
+          "source": "https://doe.sd.gov/oatq/homeschooling.aspx"
+        },
+        "Parent Notice": {
+          "value": true,
+          "source": "https://law.justia.com/codes/south-dakota/title-13/chapter-27/section-13-27-3/"
+        },
+        "State Collects Data": {
+          "value": true,
+          "source": "https://education.jhu.edu/edpolicy/policy-research-initiatives/homeschool-hub/states/south-dakota/"
+        },
+        "Min Educator Reqs": {
+          "value": false,
+          "source": "https://law.justia.com/codes/south-dakota/title-13/chapter-27/section-13-27-3/"
+        },
+        "Min Instruction Time": {
+          "value": false,
+          "source": "https://law.justia.com/codes/south-dakota/title-13/chapter-27/section-13-27-3/"
+        },
+        "Required Subjects": {
+          "value": true,
+          "source": "https://law.justia.com/codes/south-dakota/title-13/chapter-27/section-13-27-3/"
+        },
+        "Maintain Records": {
+          "value": false,
+          "source": "https://law.justia.com/codes/south-dakota/title-13/chapter-27/section-13-27-3/"
+        },
+        "Assessment Required": {
+          "value": false,
+          "source": "https://doe.sd.gov/oatq/homeschooling.aspx"
+        },
+        "Annual Testing": {
+          "value": false,
+          "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
+        },
+        "Required Submission": {
+          "value": false,
+          "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
+        }
+      }
+    },
+    "Tennessee": {
+      "total": 7,
+      "level": "High",
+      "regulations": {
+        "Only 1 HS Option": {
+          "value": false,
+          "source": "https://law.justia.com/codes/tennessee/title-49/chapter-6/part-30/section-49-6-3050/"
+        },
+        "Parent Notice": {
+          "value": true,
+          "source": "https://law.justia.com/codes/tennessee/title-49/chapter-6/part-30/section-49-6-3050/"
+        },
+        "State Collects Data": {
+          "value": true,
+          "source": "https://education.jhu.edu/edpolicy/policy-research-initiatives/homeschool-hub/states/tennessee/"
+        },
+        "Min Educator Reqs": {
+          "value": true,
+          "source": "https://law.justia.com/codes/tennessee/title-49/chapter-6/part-30/section-49-6-3050/"
+        },
+        "Min Instruction Time": {
+          "value": true,
+          "source": "https://law.justia.com/codes/tennessee/title-49/chapter-6/part-30/section-49-6-3050/"
+        },
+        "Required Subjects": {
+          "value": false,
+          "source": "https://law.justia.com/codes/tennessee/title-49/chapter-6/part-30/section-49-6-3050/"
+        },
+        "Maintain Records": {
+          "value": true,
+          "source": "https://law.justia.com/codes/tennessee/title-49/chapter-6/part-30/section-49-6-3050/"
+        },
+        "Assessment Required": {
+          "value": true,
+          "source": "https://law.justia.com/codes/tennessee/title-49/chapter-6/part-30/section-49-6-3050/"
+        },
+        "Annual Testing": {
+          "value": false,
+          "source": "https://law.justia.com/codes/tennessee/title-49/chapter-6/part-30/section-49-6-3050/"
+        },
+        "Required Submission": {
+          "value": true,
+          "source": "https://law.justia.com/codes/tennessee/title-49/chapter-6/part-30/section-49-6-3050/"
+        }
+      }
+    },
+    "Texas": {
+      "total": 2,
+      "level": "Low",
+      "regulations": {
+        "Only 1 HS Option": {
+          "value": true,
+          "source": "https://tea.texas.gov/texas-schools/general-information/finding-a-school-for-your-child/home-schooling"
+        },
+        "Parent Notice": {
+          "value": false,
+          "source": "https://case-law.vlex.com/vid/texas-educ-agency-v-891307809"
+        },
+        "State Collects Data": {
+          "value": false,
+          "source": "https://casetext.com/case/texas-educ-agency-v-leeper-1"
+        },
+        "Min Educator Reqs": {
+          "value": false,
+          "source": "https://case-law.vlex.com/vid/texas-educ-agency-v-891307809"
+        },
+        "Min Instruction Time": {
+          "value": false,
+          "source": "https://case-law.vlex.com/vid/texas-educ-agency-v-891307809"
+        },
+        "Required Subjects": {
+          "value": true,
+          "source": "https://case-law.vlex.com/vid/texas-educ-agency-v-891307809"
+        },
+        "Maintain Records": {
+          "value": false,
+          "source": "https://case-law.vlex.com/vid/texas-educ-agency-v-891307809"
+        },
+        "Assessment Required": {
+          "value": false,
+          "source": "https://case-law.vlex.com/vid/texas-educ-agency-v-891307809"
+        },
+        "Annual Testing": {
+          "value": false,
+          "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
+        },
+        "Required Submission": {
+          "value": false,
+          "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
+        }
+      }
+    },
+    "Utah": {
+      "total": 2,
+      "level": "Low",
+      "regulations": {
+        "Only 1 HS Option": {
+          "value": true,
+          "source": "https://schools.utah.gov/curr/homeschool"
+        },
+        "Parent Notice": {
+          "value": true,
+          "source": "https://schools.utah.gov/curr/homeschool"
+        },
+        "State Collects Data": {
+          "value": false,
+          "source": "https://education.jhu.edu/edpolicy/policy-research-initiatives/homeschool-hub/states/utah/"
+        },
+        "Min Educator Reqs": {
+          "value": false,
+          "source": "https://schools.utah.gov/curr/homeschool"
+        },
+        "Min Instruction Time": {
+          "value": false,
+          "source": "https://schools.utah.gov/curr/homeschool"
+        },
+        "Required Subjects": {
+          "value": false,
+          "source": "https://schools.utah.gov/curr/homeschool"
+        },
+        "Maintain Records": {
+          "value": false,
+          "source": "https://schools.utah.gov/curr/homeschool"
+        },
+        "Assessment Required": {
+          "value": false,
+          "source": "https://schools.utah.gov/curr/homeschool"
+        },
+        "Annual Testing": {
+          "value": false,
+          "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
+        },
+        "Required Submission": {
+          "value": false,
+          "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
+        }
+      }
+    },
+    "Vermont": {
+      "total": 8,
+      "level": "High",
+      "regulations": {
+        "Only 1 HS Option": {
+          "value": true,
+          "source": "https://legislature.vermont.gov/statutes/section/16/003/00166B"
+        },
+        "Parent Notice": {
+          "value": true,
+          "source": "https://legislature.vermont.gov/statutes/section/16/003/00166B"
+        },
+        "State Collects Data": {
+          "value": true,
+          "source": "https://education.jhu.edu/edpolicy/policy-research-initiatives/homeschool-hub/states/vermont/"
+        },
+        "Min Educator Reqs": {
+          "value": false,
+          "source": "https://legislature.vermont.gov/statutes/section/16/003/00166B"
+        },
+        "Min Instruction Time": {
+          "value": true,
+          "source": "https://legislature.vermont.gov/statutes/section/16/003/00166B"
+        },
+        "Required Subjects": {
+          "value": true,
+          "source": "https://legislature.vermont.gov/statutes/section/16/003/00166B"
+        },
+        "Maintain Records": {
+          "value": true,
+          "source": "https://legislature.vermont.gov/statutes/section/16/003/00166B"
+        },
+        "Assessment Required": {
+          "value": true,
+          "source": "https://education.vermont.gov/home-study"
+        },
+        "Annual Testing": {
+          "value": true,
+          "source": "https://education.vermont.gov/home-study"
+        },
+        "Required Submission": {
+          "value": false,
+          "source": "https://education.vermont.gov/home-study"
+        }
+      }
+    },
+    "Virginia": {
+      "total": 7,
+      "level": "High",
+      "regulations": {
+        "Only 1 HS Option": {
+          "value": false,
+          "source": "https://www.doe.virginia.gov/parents-students/for-parents/home-instruction"
+        },
+        "Parent Notice": {
+          "value": true,
+          "source": "https://law.justia.com/codes/virginia/title-22-1/chapter-14/section-22-1-254/"
+        },
+        "State Collects Data": {
+          "value": true,
+          "source": "https://education.jhu.edu/edpolicy/policy-research-initiatives/homeschool-hub/states/virginia/"
+        },
+        "Min Educator Reqs": {
+          "value": true,
+          "source": "https://law.justia.com/codes/virginia/title-22-1/chapter-14/section-22-1-254/"
+        },
+        "Min Instruction Time": {
+          "value": true,
+          "source": "https://law.justia.com/codes/virginia/title-22-1/chapter-14/section-22-1-254/"
+        },
+        "Required Subjects": {
+          "value": false,
+          "source": "https://law.justia.com/codes/virginia/title-22-1/chapter-14/section-22-1-254/"
+        },
+        "Maintain Records": {
+          "value": false,
+          "source": "https://law.justia.com/codes/virginia/title-22-1/chapter-14/section-22-1-254/"
+        },
+        "Assessment Required": {
+          "value": true,
+          "source": "https://www.doe.virginia.gov/parents-students/for-parents/home-instruction"
+        },
+        "Annual Testing": {
+          "value": true,
+          "source": "https://www.doe.virginia.gov/parents-students/for-parents/home-instruction"
+        },
+        "Required Submission": {
+          "value": true,
+          "source": "https://www.doe.virginia.gov/parents-students/for-parents/home-instruction"
+        }
+      }
+    },
+    "Washington": {
+      "total": 9,
+      "level": "High",
+      "regulations": {
+        "Only 1 HS Option": {
+          "value": false,
+          "source": "https://law.justia.com/codes/washington/title-28a/chapter-28a-225/section-28a-225-010/"
+        },
+        "Parent Notice": {
+          "value": true,
+          "source": "https://law.justia.com/codes/washington/title-28a/chapter-28a-200/section-28a-200-010/"
+        },
+        "State Collects Data": {
+          "value": true,
+          "source": "https://education.jhu.edu/edpolicy/policy-research-initiatives/homeschool-hub/states/washington/"
+        },
+        "Min Educator Reqs": {
+          "value": true,
+          "source": "https://law.justia.com/codes/washington/title-28a/chapter-28a-225/section-28a-225-010/"
+        },
+        "Min Instruction Time": {
+          "value": true,
+          "source": "https://law.justia.com/codes/washington/title-28a/chapter-28a-225/section-28a-225-010/"
+        },
+        "Required Subjects": {
+          "value": true,
+          "source": "https://law.justia.com/codes/washington/title-28a/chapter-28a-225/section-28a-225-010/"
+        },
+        "Maintain Records": {
+          "value": true,
+          "source": "https://law.justia.com/codes/washington/title-28a/chapter-28a-200/section-28a-200-010/"
+        },
+        "Assessment Required": {
+          "value": true,
+          "source": "https://law.justia.com/codes/washington/title-28a/chapter-28a-200/section-28a-200-010/"
+        },
+        "Annual Testing": {
+          "value": true,
+          "source": "https://law.justia.com/codes/washington/title-28a/chapter-28a-200/section-28a-200-010/"
+        },
+        "Required Submission": {
+          "value": true,
+          "source": "https://law.justia.com/codes/washington/title-28a/chapter-28a-200/section-28a-200-010/"
+        }
+      }
+    },
+    "West Virginia": {
+      "total": 8,
+      "level": "High",
+      "regulations": {
+        "Only 1 HS Option": {
+          "value": false,
+          "source": "https://law.justia.com/codes/west-virginia/chapter-18/article-8/section-18-8-1/"
+        },
+        "Parent Notice": {
+          "value": true,
+          "source": "https://law.justia.com/codes/west-virginia/chapter-18/article-8/section-18-8-1/"
+        },
+        "State Collects Data": {
+          "value": false,
+          "source": "https://education.jhu.edu/edpolicy/policy-research-initiatives/homeschool-hub/states/west-virginia/"
+        },
+        "Min Educator Reqs": {
+          "value": true,
+          "source": "https://law.justia.com/codes/west-virginia/chapter-18/article-8/section-18-8-1/"
+        },
+        "Min Instruction Time": {
+          "value": true,
+          "source": "https://law.justia.com/codes/west-virginia/chapter-18/article-8/section-18-8-1/"
+        },
+        "Required Subjects": {
+          "value": true,
+          "source": "https://law.justia.com/codes/west-virginia/chapter-18/article-8/section-18-8-1/"
+        },
+        "Maintain Records": {
+          "value": true,
+          "source": "https://law.justia.com/codes/west-virginia/chapter-18/article-8/section-18-8-1/"
+        },
+        "Assessment Required": {
+          "value": true,
+          "source": "https://law.justia.com/codes/west-virginia/chapter-18/article-8/section-18-8-1/"
+        },
+        "Annual Testing": {
+          "value": true,
+          "source": "https://law.justia.com/codes/west-virginia/chapter-18/article-8/section-18-8-1/"
+        },
+        "Required Submission": {
+          "value": true,
+          "source": "https://law.justia.com/codes/west-virginia/chapter-18/article-8/section-18-8-1/"
+        }
+      }
+    },
+    "Wisconsin": {
+      "total": 5,
+      "level": "Medium",
+      "regulations": {
+        "Only 1 HS Option": {
+          "value": true,
+          "source": "https://law.justia.com/codes/wisconsin/chapter-118/section-118-15/"
+        },
+        "Parent Notice": {
+          "value": true,
+          "source": "https://law.justia.com/codes/wisconsin/chapter-115/section-115-30/"
+        },
+        "State Collects Data": {
+          "value": true,
+          "source": "https://education.jhu.edu/edpolicy/policy-research-initiatives/homeschool-hub/states/wisconsin/"
+        },
+        "Min Educator Reqs": {
+          "value": false,
+          "source": "https://law.justia.com/codes/wisconsin/chapter-118/section-118-165/"
+        },
+        "Min Instruction Time": {
+          "value": true,
+          "source": "https://law.justia.com/codes/wisconsin/chapter-118/section-118-165/"
+        },
+        "Required Subjects": {
+          "value": true,
+          "source": "https://law.justia.com/codes/wisconsin/chapter-118/section-118-165/"
+        },
+        "Maintain Records": {
+          "value": false,
+          "source": "https://law.justia.com/codes/wisconsin/chapter-118/section-118-165/"
+        },
+        "Assessment Required": {
+          "value": false,
+          "source": "https://law.justia.com/codes/wisconsin/chapter-118/section-118-165/"
+        },
+        "Annual Testing": {
+          "value": false,
+          "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
+        },
+        "Required Submission": {
+          "value": false,
+          "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
+        }
+      }
+    },
+    "Wyoming": {
+      "total": 1,
+      "level": "Low",
+      "regulations": {
+        "Only 1 HS Option": {
+          "value": false,
+          "source": "https://law.justia.com/codes/wyoming/title-21/chapter-4/article-1/section-21-4-101/"
+        },
+        "Parent Notice": {
+          "value": false,
+          "source": "https://www.wyoleg.gov/Legislation/2025/HB0046"
+        },
+        "State Collects Data": {
+          "value": false,
+          "source": "https://education.jhu.edu/edpolicy/policy-research-initiatives/homeschool-hub/states/wyoming/"
+        },
+        "Min Educator Reqs": {
+          "value": false,
+          "source": "https://law.justia.com/codes/wyoming/title-21/chapter-4/article-1/section-21-4-101/"
+        },
+        "Min Instruction Time": {
+          "value": false,
+          "source": "https://law.justia.com/codes/wyoming/title-21/chapter-4/article-1/section-21-4-101/"
+        },
+        "Required Subjects": {
+          "value": true,
+          "source": "https://law.justia.com/codes/wyoming/title-21/chapter-4/article-1/section-21-4-101/"
+        },
+        "Maintain Records": {
+          "value": false,
+          "source": "https://law.justia.com/codes/wyoming/title-21/chapter-4/article-1/section-21-4-101/"
+        },
+        "Assessment Required": {
+          "value": false,
+          "source": "https://law.justia.com/codes/wyoming/title-21/chapter-4/article-1/section-21-4-101/"
+        },
+        "Annual Testing": {
+          "value": false,
+          "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
+        },
+        "Required Submission": {
+          "value": false,
+          "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
+        }
+      }
+    },
+    "District of Columbia": {
+      "total": 6,
+      "level": "Medium",
+      "regulations": {
+        "Only 1 HS Option": {
+          "value": true,
+          "source": "https://osse.dc.gov/service/homeschooling-district-columbia"
+        },
+        "Parent Notice": {
+          "value": true,
+          "source": "https://osse.dc.gov/service/homeschooling-district-columbia"
+        },
+        "State Collects Data": {
+          "value": true,
+          "source": "https://education.jhu.edu/edpolicy/policy-research-initiatives/homeschool-hub/states/district-of-columbia/"
+        },
+        "Min Educator Reqs": {
+          "value": true,
+          "source": "https://osse.dc.gov/node/1637351"
+        },
+        "Min Instruction Time": {
+          "value": false,
+          "source": "https://osse.dc.gov/node/1637351"
+        },
+        "Required Subjects": {
+          "value": true,
+          "source": "https://osse.dc.gov/node/1637351"
+        },
+        "Maintain Records": {
+          "value": true,
+          "source": "https://osse.dc.gov/node/1637351"
+        },
+        "Assessment Required": {
+          "value": false,
+          "source": "https://osse.dc.gov/node/1637351"
+        },
+        "Annual Testing": {
+          "value": false,
+          "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
+        },
+        "Required Submission": {
+          "value": false,
+          "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
+        }
+      }
+    }
+  }
+}

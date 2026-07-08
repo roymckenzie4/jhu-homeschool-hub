@@ -5,16 +5,18 @@
  * tracked regulations are columns grouped into Registration / Instruction /
  * Assessment bands, followed by a Homeschoolers (latest-year enrollment)
  * column. It sizes naturally to its rows — the fixed frame lives at the shell
- * level (see App), not here. Each regulation cell shows "Yes" (a link to
- * that rule's source) when in force, or a muted "No". The STATE cell carries a
- * remove ✕, the Low/Med/High badge, and the regulation count.
+ * level (see App), not here. Each regulation cell shows "Yes" (in force, in
+ * heritage) or a muted "No"; either links to that rule's source statute when
+ * the sheet provides one. The STATE cell carries a remove ✕, the Low/Med/High
+ * badge, and the regulation count.
  *
  * Column widths are pinned so a long state name or "not reported" can never
  * reflow the grid. When nothing is selected, a prompt stands in for the table.
  * The "About this data" copy lives in the shared footer (see topics/policyTopic).
  *
- * Source links are placeholders for now (see config/policy.js); the live
- * per-cell statutes arrive via the loader.
+ * Source links come from the Google Sheet snapshot via the loader. Cells the
+ * sheet has no link for (source is the placeholder) render as plain text rather
+ * than linking to the raw spreadsheet.
  *
  * Props:
  *   - selectedStates string[]   states to show as rows, in selection order.
@@ -34,6 +36,7 @@ import {
   REGULATION_GROUPS,
   REGULATION_COUNT,
   LEVELS,
+  PLACEHOLDER_SOURCE_URL,
 } from "../config/policy.js";
 import { COLORS, levelColor, schoolYearLabel } from "../config/theme.js";
 import { formatNumber } from "../lib/format.js";
@@ -204,6 +207,17 @@ export default function PolicyComparisonTable({
                 {COLUMNS.map((col) => {
                   const cell = entry?.regulations[col.key];
                   const inForce = cell?.value;
+                  const hasSource =
+                    cell?.source && cell.source !== PLACEHOLDER_SOURCE_URL;
+                  const label = inForce ? "Yes" : "No";
+                  // In force reads in heritage; not-in-force stays muted. Either
+                  // links to its source when the sheet provides one; a slightly
+                  // stronger muted tone signals the "No" link is clickable.
+                  const tone = inForce
+                    ? "font-semibold text-heritage"
+                    : hasSource
+                      ? "text-sable/50"
+                      : "text-sable/30";
                   return (
                     <TableCell
                       key={col.key}
@@ -211,18 +225,24 @@ export default function PolicyComparisonTable({
                         col.isGroupStart ? DIVIDER : ""
                       }`}
                     >
-                      {inForce ? (
+                      {hasSource ? (
                         <a
                           href={cell.source}
                           target="_blank"
                           rel="noopener noreferrer"
-                          aria-label={`${col.label} in force in ${name} — view source`}
-                          className="font-sans text-xs font-semibold text-heritage underline decoration-transparent underline-offset-2 outline-none transition hover:decoration-heritage/40 focus-visible:ring-2 focus-visible:ring-heritage"
+                          aria-label={`${col.label} ${inForce ? "in force" : "not in force"} in ${name} — view source`}
+                          className={`font-sans text-xs underline decoration-transparent underline-offset-2 outline-none transition focus-visible:ring-2 focus-visible:ring-heritage ${tone} ${
+                            inForce
+                              ? "hover:decoration-heritage/40"
+                              : "hover:decoration-sable/40"
+                          }`}
                         >
-                          Yes
+                          {label}
                         </a>
                       ) : (
-                        <span className="font-sans text-xs text-sable/30">No</span>
+                        <span className={`font-sans text-xs ${tone}`}>
+                          {label}
+                        </span>
                       )}
                     </TableCell>
                   );
