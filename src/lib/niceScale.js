@@ -29,7 +29,10 @@ function niceNum(range, round) {
 export function niceTicks(min, max, count = 4) {
   if (!(max > min)) return [];
   const step = niceNum((max - min) / count, true);
-  const first = Math.ceil(min / step) * step;
+  // Math.ceil of a small negative (min dips below 0 after domain padding) yields
+  // -0, which the axis formats as "-0". Normalize it to a plain 0.
+  let first = Math.ceil(min / step) * step;
+  if (Object.is(first, -0)) first = 0;
   const ticks = [];
   for (let v = first; v <= max; v += step) ticks.push(v);
   return ticks;

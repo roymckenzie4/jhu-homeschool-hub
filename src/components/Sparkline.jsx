@@ -101,7 +101,7 @@ export default function Sparkline({ series, selectedYear }) {
       {/* Axis labels reflect the chart's full x-extent (the entire series), not
           just the reporting subset — so a sparse state doesn't read as spanning
           the whole axis. Left pad clears the y-axis gutter. */}
-      <div className="mt-1 flex justify-between pl-10 font-sans text-[10px] text-sable/50">
+      <div className="mt-1 flex justify-between whitespace-nowrap pl-10 font-sans text-[10px] text-sable/50">
         <span>{schoolYearLabel(series[0].year)}</span>
         <span>{schoolYearLabel(series[series.length - 1].year)}</span>
       </div>

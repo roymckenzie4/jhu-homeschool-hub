@@ -35,6 +35,12 @@
  *   - ariaLabelForState (name) => string   accessible label for an interactive
  *                       state (default: the name alone).
  *   - mode              'geo' | 'tile'     geometry to render (default 'geo').
+ *   - idPrefix          string             suffix appended to the shared <defs>
+ *                       ids (pattern + filters). Default "" keeps the canonical
+ *                       ids the global CSS and legend reference. A second map on
+ *                       the same page (e.g. the off-screen PNG-export copy) MUST
+ *                       pass a unique prefix so its defs don't collide with this
+ *                       one's — duplicate SVG ids corrupt fill/filter resolution.
  *
  * Visual rules:
  *   - Non-reporting / inert states use a diagonal-stripe pattern (the view's
@@ -119,8 +125,23 @@ export default function ChoroplethMap({
   isInteractive = () => true,
   ariaLabelForState = (name) => name,
   mode = "geo",
+  idPrefix = "",
 }) {
   const isTile = mode === "tile";
+
+  // Shared <defs> ids, suffixed so two maps on one page never collide. Default
+  // (empty) prefix yields the canonical ids the global CSS + legend swatch use.
+  const nonReportingId = `non-reporting${idPrefix}`;
+  const selectionLiftId = `selection-lift${idPrefix}`;
+  const hoverGlowId = `state-hover-glow${idPrefix}`;
+
+  // Resolve a fill from the view's fillForState, mapping the non-reporting
+  // sentinel to THIS instance's pattern id (fillForState returns the canonical
+  // "url(#non-reporting)"; the export copy needs its own suffixed pattern).
+  const resolveFill = (name) => {
+    const f = fillForState(name);
+    return f === "url(#non-reporting)" ? `url(#${nonReportingId})` : f;
+  };
 
   // TopoJSON is fetched once at mount (geo mode only). Until it loads the SVG
   // renders empty. Tile mode is self-contained from config, so it never fetches.
@@ -206,7 +227,7 @@ export default function ChoroplethMap({
     <defs>
       {/* Diagonal stripes for states that do not publicly report. */}
       <pattern
-        id="non-reporting"
+        id={nonReportingId}
         patternUnits="userSpaceOnUse"
         width="6"
         height="6"
@@ -229,7 +250,7 @@ export default function ChoroplethMap({
           (c) a low-opacity black drop-shadow for lift off the map.
           The two whites give a visible halo on dark fills without reading
           as a hard racing stripe. */}
-      <filter id="selection-lift" x="-30%" y="-30%" width="160%" height="160%">
+      <filter id={selectionLiftId} x="-30%" y="-30%" width="160%" height="160%">
         <feDropShadow
           dx="0"
           dy="0"
@@ -256,7 +277,7 @@ export default function ChoroplethMap({
       {/* Hover affordance: a thin sable outer glow. Lives outside the shape so
           it can't be clipped by neighbours, and it reads on every fill (the
           brightness shift on its own disappears against the dark fills). */}
-      <filter id="state-hover-glow" x="-10%" y="-10%" width="120%" height="120%">
+      <filter id={hoverGlowId} x="-10%" y="-10%" width="120%" height="120%">
         {/* Darken the source fill by ~10% (equivalent to CSS brightness(0.90))
             before the drop shadow renders. Doing the brightness shift here —
             rather than chaining it in the CSS `filter` shorthand alongside
@@ -311,7 +332,7 @@ export default function ChoroplethMap({
       return {
         postal,
         name,
-        fill: fillForState(name),
+        fill: resolveFill(name),
         isSelected,
         className,
         x,
@@ -373,7 +394,7 @@ export default function ChoroplethMap({
                       <rect {...shape} />
                     </clipPath>
                   </defs>
-                  <rect {...shape} fill={fill} filter="url(#selection-lift)" />
+                  <rect {...shape} fill={fill} filter={`url(#${selectionLiftId})`} />
                   <rect
                     {...shape}
                     fill="none"
@@ -498,7 +519,7 @@ export default function ChoroplethMap({
               key={f.id}
               d={path(f)}
               className={className}
-              fill={fillForState(name)}
+              fill={resolveFill(name)}
               stroke="#FFFFFF"
               strokeWidth={STROKE_REST}
               // Hover label tracks all states, reporting or not — the point is
@@ -537,9 +558,9 @@ export default function ChoroplethMap({
               </defs>
               <path
                 d={d}
-                fill={fillForState(name)}
+                fill={resolveFill(name)}
                 stroke="none"
-                filter="url(#selection-lift)"
+                filter={`url(#${selectionLiftId})`}
               />
               <path
                 d={d}
@@ -589,7 +610,7 @@ export default function ChoroplethMap({
               cx={dcPoint[0] + DC_LEADER_LENGTH}
               cy={dcPoint[1] + DC_LEADER_LENGTH}
               r={DC_MARKER_RADIUS}
-              fill={fillForState(DC_NAME)}
+              fill={resolveFill(DC_NAME)}
               stroke="#FFFFFF"
               strokeWidth={STROKE_REST}
             />
@@ -609,9 +630,9 @@ export default function ChoroplethMap({
                 cx={dcPoint[0] + DC_LEADER_LENGTH}
                 cy={dcPoint[1] + DC_LEADER_LENGTH}
                 r={DC_MARKER_RADIUS}
-                fill={fillForState(DC_NAME)}
+                fill={resolveFill(DC_NAME)}
                 stroke="none"
-                filter="url(#selection-lift)"
+                filter={`url(#${selectionLiftId})`}
               />
               <circle
                 cx={dcPoint[0] + DC_LEADER_LENGTH}

@@ -15,7 +15,7 @@
  * focus/back transitions.
  */
 
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useSelection } from "../state/selection.jsx";
 import {
   enrollmentByState as byState,
@@ -28,7 +28,13 @@ import {
   CARD_SLOT_CLASS,
   DATA_SLOT_CLASS,
 } from "../config/layout.js";
-import { comparisonColor } from "../config/theme.js";
+import {
+  comparisonColor,
+  schoolYearLabel,
+  enrollmentCitation,
+} from "../config/theme.js";
+import { exportElementAsPng } from "../lib/exportImage.js";
+import { trackEvent } from "../lib/analytics.js";
 import StateDetailCard from "./StateDetailCard.jsx";
 import NationalOverviewCard from "./NationalOverviewCard.jsx";
 import EnrollmentComparisonCard from "./EnrollmentComparisonCard.jsx";
@@ -37,6 +43,8 @@ import EnrollmentComparisonTable from "./EnrollmentComparisonTable.jsx";
 import Sparkline from "./Sparkline.jsx";
 import ComparisonTrend from "./ComparisonTrend.jsx";
 import ComparisonLegend from "./ComparisonLegend.jsx";
+import ChartExportCard from "./ChartExportCard.jsx";
+import DownloadPngButton from "./DownloadPngButton.jsx";
 
 // Enrollment data comes shaped from the loader (parsed once, shared with the
 // State policies view's Homeschoolers column). byYear aggregates are derived here.
@@ -139,6 +147,49 @@ export default function EnrollmentPanel({ activeYear }) {
   // Single-state detail drives both the table and the graph in the data zone.
   const showDetailData = detailState && hasHistory;
 
+  // Chart export (PNG download). A composed ChartExportCard is mounted off-screen
+  // holding whichever chart is currently shown; the download button snapshots it.
+  // Only single-state and comparison modes have a chart to export.
+  const exportable = showDetailData || isComparing;
+  const chartExportRef = useRef(null);
+  const spanLabel = `${schoolYearLabel(years[0])} to ${schoolYearLabel(years[years.length - 1])}`;
+
+  // Title/subtitle/filename/legend for the off-screen export card, per mode. The
+  // comparison export carries its own static color key so a republished graph
+  // still identifies each line (the on-screen legend is an interactive sibling).
+  let exportTitle;
+  let exportSubtitle;
+  let exportFilename;
+  let exportLegend = null;
+  if (isComparing) {
+    exportTitle = "Homeschool enrollment trends";
+    exportSubtitle = `Comparing ${count} states · ${spanLabel}`;
+    exportFilename = "homeschool-enrollment-comparison.png";
+    exportLegend = (
+      <div className="flex flex-wrap gap-x-4 gap-y-1.5">
+        {selectedStates.map((name) => (
+          <span key={name} className="flex items-center gap-1.5 text-xs text-sable/80">
+            <span
+              className="inline-block h-2.5 w-2.5 rounded-full"
+              style={{ backgroundColor: colorForState(name) }}
+            />
+            {name}
+          </span>
+        ))}
+      </div>
+    );
+  } else if (showDetailData) {
+    exportTitle = `${detailState} homeschool enrollment`;
+    exportSubtitle = spanLabel;
+    exportFilename = `homeschool-enrollment-${detailState.toLowerCase().replace(/\s+/g, "-")}.png`;
+  }
+
+  const handleDownloadChart = async () => {
+    if (!chartExportRef.current) return;
+    await exportElementAsPng(chartExportRef.current, exportFilename);
+    trackEvent("download", { file: exportFilename });
+  };
+
   return (
     <>
       {/* Summary card — beside the map. The map cell defines row 1's height; the
@@ -216,7 +267,10 @@ export default function EnrollmentPanel({ activeYear }) {
           </div>
 
           <div>
-            <div className="flex items-baseline justify-between gap-3">
+            {/* Title, legend, and download spread across the row (justify-between)
+                so the legend sits between the title and the button with breathing
+                room on both sides, rather than glued to the button. */}
+            <div className="flex items-center justify-between gap-4">
               <h2 className="shrink-0 font-sans text-[11px] font-semibold uppercase tracking-widest text-sable/70">
                 {isComparing ? "Trends" : "Year in Context"}
               </h2>
@@ -229,6 +283,7 @@ export default function EnrollmentPanel({ activeYear }) {
                   onTogglePin={togglePin}
                 />
               )}
+              {exportable && <DownloadPngButton onClick={handleDownloadChart} />}
             </div>
             <div className="mt-3" style={{ height: ENROLLMENT_TABLE_HEIGHT }}>
               {showDetailData ? (
@@ -249,6 +304,36 @@ export default function EnrollmentPanel({ activeYear }) {
           </div>
         </div>
       </div>
+
+      {/* Off-screen export composition — the standalone card snapshotted to PNG
+          on download. Kept out of the live layout (fixed, far left) so it never
+          affects the on-screen look; recharts sizes fine inside its fixed box. */}
+      {exportable && (
+        <div
+          aria-hidden="true"
+          style={{ position: "fixed", left: -99999, top: 0, pointerEvents: "none" }}
+        >
+          <div ref={chartExportRef}>
+            <ChartExportCard
+              title={exportTitle}
+              subtitle={exportSubtitle}
+              legend={exportLegend}
+              citation={enrollmentCitation(spanLabel)}
+            >
+              {isComparing ? (
+                <ComparisonTrend
+                  rows={comparisonSeries}
+                  states={selectedStates}
+                  colorForState={colorForState}
+                  highlighted={null}
+                />
+              ) : (
+                <Sparkline series={trendSeries} selectedYear={activeYear} />
+              )}
+            </ChartExportCard>
+          </div>
+        </div>
+      )}
     </>
   );
 }

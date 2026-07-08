@@ -111,6 +111,20 @@ export const LAST_UPDATED = "June 2026";
 export const DOWNLOAD_FILENAME =
   "homeschool-hub-state-enrollment-2000-2026.csv";
 
+// Source attribution baked into downloaded chart images. A republished graph
+// gets detached from the site (the audience is journalists/advocates pulling it
+// into articles), so the citation has to travel with the image. Placeholder
+// wording — JHU will supply final text.
+export const CHART_SOURCE_URL =
+  "education.jhu.edu/edpolicy/policy-research-initiatives/homeschool-hub";
+const CHART_SOURCE_RETRIEVED = "July 2026";
+export function enrollmentCitation(rangeLabel) {
+  return `Source: Homeschool Hub, Johns Hopkins University School of Education. Reported homeschool enrollment, ${rangeLabel}. Retrieved ${CHART_SOURCE_RETRIEVED} from ${CHART_SOURCE_URL}`;
+}
+export function regulationCitation() {
+  return `Source: Homeschool Hub, Johns Hopkins University School of Education. State homeschool regulations in force, current as of 2024–25. Retrieved ${CHART_SOURCE_RETRIEVED} from ${CHART_SOURCE_URL}`;
+}
+
 /**
  * Display the abbreviated school-year label for a starting year integer.
  * 2024 -> "2024-25". Used everywhere we render a year to the user.

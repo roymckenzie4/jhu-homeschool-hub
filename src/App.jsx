@@ -20,12 +20,18 @@ import ChoroplethMap from "./components/ChoroplethMap.jsx";
 import MapLegend from "./components/MapLegend.jsx";
 import ComparingChips from "./components/ComparingChips.jsx";
 import YearSelector from "./components/YearSelector.jsx";
+import MapDownloadButton from "./components/MapDownloadButton.jsx";
 import Footer from "./components/Footer.jsx";
 import EnrollmentPanel from "./components/EnrollmentPanel.jsx";
 import PolicyPanel from "./components/PolicyPanel.jsx";
 import { useSelection } from "./state/selection.jsx";
 import { CHIPS_SLOT_CLASS } from "./config/layout.js";
-import { comparisonColor } from "./config/theme.js";
+import {
+  comparisonColor,
+  schoolYearLabel,
+  enrollmentCitation,
+  regulationCitation,
+} from "./config/theme.js";
 import { MAP_MODE } from "./config/tileGrid.js";
 import {
   buildEnrollmentDescriptor,
@@ -88,6 +94,23 @@ export default function App() {
         }
       : descriptor.dotColorForState;
 
+  // Topic-aware title/subtitle/citation/filename for the map's PNG export, so a
+  // downloaded map stays attributable after republication.
+  const mapExport = isEnrollment
+    ? {
+        title: "Reported homeschool enrollment",
+        subtitle: `By state · ${schoolYearLabel(activeYear)}`,
+        // Spring year by convention (2024-25 -> 2025).
+        citation: enrollmentCitation(schoolYearLabel(activeYear)),
+        filename: `homeschool-enrollment-map-${activeYear + 1}.png`,
+      }
+    : {
+        title: "State homeschool regulation",
+        subtitle: "Regulation level by state · current as of 2024–25",
+        citation: regulationCitation(),
+        filename: "homeschool-regulation-map.png",
+      };
+
   return (
     <main className="mx-auto max-w-[1200px] px-8 py-4 lg:px-12 lg:py-6">
       <header>
@@ -144,8 +167,28 @@ export default function App() {
             selectedStates={selectedStates}
             onSelect={selectState}
           />
+          {/* Legend fills the row on its own (flex-wrap justify-between with a
+              trailing slot). The PNG button rides in that trailing slot next to
+              the topic note so it doesn't steal width and force a wrap. */}
           <div className="mt-2">
-            <MapLegend {...descriptor.legend} />
+            <MapLegend
+              label={descriptor.legend.label}
+              swatches={descriptor.legend.swatches}
+              trailing={
+                <div className="flex items-center gap-5">
+                  {descriptor.legend.trailing}
+                  <MapDownloadButton
+                    mode={MAP_MODE}
+                    descriptor={descriptor}
+                    selectedStates={selectedStates}
+                    title={mapExport.title}
+                    subtitle={mapExport.subtitle}
+                    citation={mapExport.citation}
+                    filename={mapExport.filename}
+                  />
+                </div>
+              }
+            />
           </div>
         </div>
 
