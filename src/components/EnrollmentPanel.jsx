@@ -141,8 +141,12 @@ export default function EnrollmentPanel({ activeYear }) {
 
   return (
     <>
-      {/* Summary card — beside the map, sized to the map's height. */}
-      <div className={CARD_SLOT_CLASS}>
+      {/* Summary card — beside the map. The map cell defines row 1's height; the
+          card is pinned to fill it (lg:absolute over a relative cell) so a taller
+          card can never grow the row, keeping the top section a constant height
+          across every mode and both tabs. */}
+      <div className={`${CARD_SLOT_CLASS} lg:relative`}>
+       <div className="lg:absolute lg:inset-0">
         {count === 0 ? (
           <NationalOverviewCard
             nationalTotal={yearStats.total}
@@ -174,6 +178,7 @@ export default function EnrollmentPanel({ activeYear }) {
             onClear={clearAll}
           />
         )}
+       </div>
       </div>
 
       {/* Data zone — full width below. Table left, trend graph right, both at

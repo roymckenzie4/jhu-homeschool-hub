@@ -62,7 +62,7 @@ export default function StateDetailCard({
 
   return (
     <aside
-      className="flex flex-col border border-l-4 border-sable/10 border-l-heritage bg-white px-6 py-4 lg:h-full"
+      className="flex flex-col border border-l-4 border-sable/10 border-l-heritage bg-white px-6 py-4 lg:h-full lg:overflow-y-auto"
       style={{ transitionDuration: `${TRANSITION_MS}ms` }}
     >
       {/*

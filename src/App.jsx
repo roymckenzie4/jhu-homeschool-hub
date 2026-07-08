@@ -37,9 +37,11 @@ import {
 import { policyDescriptor, policyFooter } from "./topics/policyTopic.jsx";
 import { trackEvent } from "./lib/analytics.js";
 
+// Tab ids stay `policy` internally (the Policy-vs-Regulation naming split is
+// still an open question for JHU); the user-facing label is "Regulation".
 const TABS = [
   { id: "enrollment", label: "Enrollment" },
-  { id: "policy", label: "State policies" },
+  { id: "policy", label: "Regulation" },
 ];
 
 export default function App() {

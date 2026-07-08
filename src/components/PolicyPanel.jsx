@@ -18,6 +18,7 @@ import {
   DATA_SLOT_CLASS,
   DATA_ZONE_MIN_HEIGHT,
 } from "../config/layout.js";
+import PolicyCard from "./PolicyCard.jsx";
 import PolicyComparisonTable from "./PolicyComparisonTable.jsx";
 import { trackEvent } from "../lib/analytics.js";
 
@@ -33,20 +34,16 @@ export default function PolicyPanel() {
 
   return (
     <>
-      {/* Placeholder card — a per-state regulation summary replaces this once
-          its layout is settled. Copy stands in so the slot reads intentionally
-          rather than as an empty gutter beside the map. */}
-      <div className={CARD_SLOT_CLASS}>
-        <aside className="flex h-full flex-col border border-l-4 border-sable/10 border-l-heritage bg-white px-6 py-4">
-          <h3 className="font-sans text-lg font-semibold text-sable">
-            State regulation
-          </h3>
-          <p className="mt-3 font-sans text-xs leading-relaxed text-sable/70">
-            Select states on the map to compare how they regulate homeschooling
-            across ten policy areas. A per-state summary of each selected state's
-            requirements will appear here.
-          </p>
-        </aside>
+      {/* Summary card — pinned to the map's height (relative cell + absolute
+          fill), matching the enrollment card slot so the top section stays a
+          constant height across tabs. */}
+      <div className={`${CARD_SLOT_CLASS} lg:relative`}>
+        <div className="lg:absolute lg:inset-0">
+          <PolicyCard
+            selectedStates={selectedStates}
+            policyByState={policyByState}
+          />
+        </div>
       </div>
 
       <div

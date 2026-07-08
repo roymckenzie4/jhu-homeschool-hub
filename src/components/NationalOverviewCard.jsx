@@ -23,7 +23,7 @@ export default function NationalOverviewCard({
 }) {
   return (
     <aside
-      className="flex flex-col border border-l-4 border-sable/10 border-l-heritage bg-white px-6 py-4 lg:h-full"
+      className="flex flex-col border border-l-4 border-sable/10 border-l-heritage bg-white px-6 py-3 lg:h-full lg:overflow-y-auto"
       style={{ transitionDuration: `${TRANSITION_MS}ms` }}
     >
       <h3 className="font-sans text-lg font-semibold text-sable">
@@ -37,7 +37,7 @@ export default function NationalOverviewCard({
         reported homeschool students, {schoolYearLabel(year)}
       </p>
 
-      <hr className="my-4 border-t border-sable/15" />
+      <hr className="my-3 border-t border-sable/15" />
 
       {/* Leaderboard — a headerless, borderless table: quiet rank annotations
           pulled close to medium-weight names, bold right-aligned counts.
@@ -45,7 +45,7 @@ export default function NationalOverviewCard({
       <p className="font-sans text-[11px] font-semibold uppercase tracking-widest text-sable/70">
         Highest Reported Counts, {schoolYearLabel(year)}
       </p>
-      <Table className="mt-6 font-sans text-xs">
+      <Table className="mt-3 font-sans text-xs">
         <TableBody>
           {topStates.map((s, i) => (
             <TableRow key={s.name} className="border-0 hover:bg-transparent">
@@ -65,19 +65,10 @@ export default function NationalOverviewCard({
 
       {/* Caveat fills the remaining space and keeps the headline counts from
           being read as a true, complete total. */}
-      <p className="mt-4 flex-1 font-sans text-xs leading-relaxed text-sable/60">
-        States report homeschool enrollment in different ways, and many do not
-        report it at all. These figures reflect only what each state publicly
-        reports — a floor, not a complete count of homeschooling in any state or
-        nationwide.
+      <p className="mt-3 flex-1 font-sans text-xs leading-relaxed text-sable/60">
+        States report homeschool enrollment differently and many not at all;
+        these counts are a floor, not a complete nationwide total.
       </p>
-
-      <div className="mt-auto">
-        <hr className="mb-3 mt-3 border-t border-sable/15" />
-        <p className="font-sans text-xs leading-relaxed text-sable/60">
-          Select a state on the map to see its detail.
-        </p>
-      </div>
     </aside>
   );
 }

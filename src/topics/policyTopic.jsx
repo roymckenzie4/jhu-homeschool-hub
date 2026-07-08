@@ -37,7 +37,7 @@ export const policyDescriptor = {
     swatches: LEGEND_SWATCHES,
     trailing: (
       <span className="whitespace-nowrap text-sable/55">
-        Click states to compare · {REGULATION_COUNT} tracked regulations
+        {REGULATION_COUNT} tracked regulations
       </span>
     ),
   },
