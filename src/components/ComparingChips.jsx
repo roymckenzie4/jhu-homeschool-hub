@@ -80,6 +80,14 @@ export default function ComparingChips({
         {label}
       </span>
 
+      {/* Empty state keeps the row at full height (no layout jump) and reads as
+          a prompt rather than a blank strip. */}
+      {count === 0 && (
+        <span className="font-sans text-xs italic text-sable/45">
+          Select states on the map to compare
+        </span>
+      )}
+
       {selectedStates.map((name) => (
         <span
           key={name}

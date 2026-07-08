@@ -8,7 +8,7 @@
  *
  * Shares StateDetailCard's outer frame (border, left bar, lg:h-full) so it
  * drops into the same detail-panel slot at matching height. Inputs come
- * pre-shaped from EnrollmentView; no data lookup here beyond reading topStates.
+ * pre-shaped from EnrollmentPanel; no data lookup here beyond reading topStates.
  */
 
 import { Table, TableBody, TableCell, TableRow } from "./ui/table.jsx";

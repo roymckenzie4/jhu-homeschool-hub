@@ -10,7 +10,7 @@
  *
  * Shares StateDetailCard / NationalOverviewCard's outer frame so it drops into
  * the same panel slot at matching height. Rows come pre-shaped from
- * EnrollmentView; no data lookup here.
+ * EnrollmentPanel; no data lookup here.
  */
 
 import { Table, TableBody, TableCell, TableRow } from "./ui/table.jsx";

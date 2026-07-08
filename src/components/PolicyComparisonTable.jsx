@@ -4,14 +4,14 @@
  * A plain table (same shape as the Enrollment table): states are rows, the 10
  * tracked regulations are columns grouped into Registration / Instruction /
  * Assessment bands, followed by a Homeschoolers (latest-year enrollment)
- * column. It sizes naturally to its rows — the fixed frame lives at the view
- * level (see PolicyView), not here. Each regulation cell shows "Yes" (a link to
+ * column. It sizes naturally to its rows — the fixed frame lives at the shell
+ * level (see App), not here. Each regulation cell shows "Yes" (a link to
  * that rule's source) when in force, or a muted "No". The STATE cell carries a
  * remove ✕, the Low/Med/High badge, and the regulation count.
  *
  * Column widths are pinned so a long state name or "not reported" can never
  * reflow the grid. When nothing is selected, a prompt stands in for the table.
- * The "About this data" copy lives in the shared footer (see PolicyView).
+ * The "About this data" copy lives in the shared footer (see topics/policyTopic).
  *
  * Source links are placeholders for now (see config/policy.js); the live
  * per-cell statutes arrive via the loader.
