@@ -127,7 +127,10 @@ export default function PolicyView() {
 
       <ComparingChips
         selectedStates={selectedStates}
-        policyByState={policyByState}
+        dotColorForState={(name) => levelColor(policyByState[name]?.level)}
+        metaForState={(name) =>
+          `${policyByState[name]?.total ?? 0}/${REGULATION_COUNT}`
+        }
         onAdd={selectState}
         onRemove={selectState}
         onClear={clearAll}
