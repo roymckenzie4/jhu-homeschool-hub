@@ -39,7 +39,11 @@ export default function StateDetailCard({
   reportingCount,
   dcReporting,
   trendSeries,
-  onClearSelection,
+  // Back control at the card foot. Label + handler vary by mode: single detail
+  // returns to the national overview (clears the cohort); a drill-in from a
+  // comparison returns to the comparison (clears focus, cohort intact).
+  backLabel,
+  onBack,
 }) {
   // Rank 1 = most reported homeschoolers that year. Show "Nth of M" so it reads
   // as a rank out of the reporting jurisdictions, with the caption naming the
@@ -195,14 +199,14 @@ export default function StateDetailCard({
         >
           Read more about {stateName} →
         </a>
-        {/* Return to the national overview. Muted so it reads as secondary to
-            the heritage "Read more" link above it. */}
+        {/* Back control. Muted so it reads as secondary to the heritage
+            "Read more" link above it. Label + target set by the caller. */}
         <button
           type="button"
-          onClick={onClearSelection}
+          onClick={onBack}
           className="mt-2 block font-sans text-xs text-sable/60 underline-offset-4 hover:text-heritage hover:underline"
         >
-          ← Back to national overview
+          ← {backLabel}
         </button>
       </div>
       </div>

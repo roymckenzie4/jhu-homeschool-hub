@@ -1,11 +1,12 @@
 /**
  * EnrollmentView — the homeschool-enrollment dashboard (the app's first view).
  *
- * Owns the two pieces of interactive state for this view: `selectedState` and
- * `activeYear`. The choropleth map dispatches state selection up through
- * `onSelect`; the year selector dispatches year changes up through `onChange`.
- * The detail card (with sparkline), enrollment table, and headline all read
- * from those two slices of the parsed data and recompute via memos.
+ * Reads the cohort (`selectedStates`) and drill-in (`focusedState`) from the
+ * shared selection context and owns only `activeYear` locally. The right-hand
+ * panel is emergent from those: 0 selected -> national overview, 1 -> that
+ * state's detail, 2+ -> comparison, 2+ with a focus -> the focused state's
+ * detail with a "back to comparison" control. The map dispatches selection up
+ * through `onSelect` (additive toggle); the year selector through `onChange`.
  *
  * Self-contained: renders its own header and footer so it can sit behind a tab
  * alongside the State policies view (see App.jsx). The page shell (max width,
@@ -36,6 +37,7 @@ import ChoroplethMap from "./ChoroplethMap.jsx";
 import MapLegend from "./MapLegend.jsx";
 import StateDetailCard from "./StateDetailCard.jsx";
 import NationalOverviewCard from "./NationalOverviewCard.jsx";
+import EnrollmentComparisonCard from "./EnrollmentComparisonCard.jsx";
 import EnrollmentTable from "./EnrollmentTable.jsx";
 import { trackEvent } from "../lib/analytics.js";
 
@@ -69,43 +71,41 @@ function fillForValue(value, breaks) {
 }
 
 export default function EnrollmentView() {
-  // Selection now lives in the shared context so it survives a topic switch.
-  // Enrollment stays single-select for now: it reads the first cohort member as
-  // its selected state (null = national overview). Step 4 makes it additive
-  // alongside the comparison UI that can render 2+ states.
-  const { selectedStates, toggleState, clearAll } = useSelection();
-  const selectedState = selectedStates[0] ?? null;
+  // Selection lives in the shared context so it survives a topic switch.
+  // Enrollment is additive: clicking toggles a state in/out of the cohort, and
+  // the mode is emergent from how many are selected (0 overview / 1 single /
+  // 2+ comparison) plus whether one is focused (a drill-in from a comparison).
+  const { selectedStates, focusedState, toggleState, clearAll, focusState, clearFocus } =
+    useSelection();
   const [activeYear, setActiveYear] = useState(DEFAULT_YEAR);
+  const count = selectedStates.length;
 
-  // Single-select semantics over the shared additive cohort: a click replaces
-  // whatever's selected with just this state (or clears it if re-clicked).
+  // The state whose single detail is shown: the drill-in target when comparing,
+  // else the sole selection. Null in the overview (0) and comparison (2+ with
+  // no drill-in) modes — those render their own cards instead.
+  const detailState = focusedState ?? (count === 1 ? selectedStates[0] : null);
+
   function selectState(name) {
-    if (selectedState === name) {
-      clearAll();
-      return;
-    }
-    clearAll();
     toggleState(name);
     trackEvent("state_select", { view: "enrollment", state: name });
-  }
-
-  function clearSelection() {
-    clearAll();
   }
 
   const yearStats = byYear[activeYear];
   const dcReporting =
     (byState["District of Columbia"]?.[activeYear] ?? null) != null;
-  const selectedStateValues = byState[selectedState];
-  const currentValue = selectedStateValues?.[activeYear] ?? null;
-  const previousValue = selectedStateValues?.[activeYear - 1] ?? null;
-  const rank = yearStats.rankByState[selectedState] ?? null;
 
-  // A state that never reported (e.g. Texas) is now clickable but has nothing
-  // to tabulate — its table slot shows a placeholder. States that reported in
+  // Detail-card slices, keyed to the drill-in/single state (null in overview
+  // and comparison modes, where these go unread).
+  const detailValues = byState[detailState];
+  const currentValue = detailValues?.[activeYear] ?? null;
+  const previousValue = detailValues?.[activeYear - 1] ?? null;
+  const rank = yearStats.rankByState[detailState] ?? null;
+
+  // A state that never reported (e.g. Texas) is clickable but has nothing to
+  // tabulate — its table slot shows a placeholder. States that reported in
   // some year keep the table even on a year they skipped.
-  const hasHistory = selectedStateValues
-    ? Object.values(selectedStateValues).some((v) => v != null)
+  const hasHistory = detailValues
+    ? Object.values(detailValues).some((v) => v != null)
     : false;
 
   // Sparkline renders the state's full reporting history so the line reads
@@ -115,9 +115,9 @@ export default function EnrollmentView() {
     () =>
       years.map((y) => ({
         year: y,
-        value: selectedStateValues?.[y] ?? null,
+        value: detailValues?.[y] ?? null,
       })),
-    [selectedStateValues],
+    [detailValues],
   );
 
   // { stateName: number | null } for the active year — what the map consumes.
@@ -138,12 +138,15 @@ export default function EnrollmentView() {
     [valuesByState],
   );
 
-  // The shared map takes a list of selected states; this view selects at most
-  // one. On the national overview (no selection) the list is empty, so no
-  // state carries the selection stroke.
-  const selectedStateList = useMemo(
-    () => (selectedState ? [selectedState] : []),
-    [selectedState],
+  // Rows for the comparison card: each selected state with its active-year
+  // count. Only read when 2+ are selected, but recomputes with the year.
+  const comparisonRows = useMemo(
+    () =>
+      selectedStates.map((name) => ({
+        name,
+        value: byState[name]?.[activeYear] ?? null,
+      })),
+    [selectedStates, activeYear],
   );
 
   // National-overview leaderboard: the top reporting states for the active
@@ -203,7 +206,7 @@ export default function EnrollmentView() {
               fillForState={(name) =>
                 fillForValue(valuesByState[name] ?? null, breaks)
               }
-              selectedStates={selectedStateList}
+              selectedStates={selectedStates}
               onSelect={selectState}
               // Every state is selectable, including non-reporting ones — clicking
               // a grey state opens its detail card (its reporting history if it has
@@ -235,15 +238,15 @@ export default function EnrollmentView() {
         </div>
 
         <div className="lg:row-span-2">
-          {selectedState === null ? (
+          {count === 0 ? (
             <NationalOverviewCard
               nationalTotal={yearStats.total}
               year={activeYear}
               topStates={topStates}
             />
-          ) : (
+          ) : detailState ? (
             <StateDetailCard
-              stateName={selectedState}
+              stateName={detailState}
               currentValue={currentValue}
               previousValue={previousValue}
               year={activeYear}
@@ -251,7 +254,18 @@ export default function EnrollmentView() {
               reportingCount={yearStats.reportingCount}
               dcReporting={dcReporting}
               trendSeries={trendSeries}
-              onClearSelection={clearSelection}
+              // Focused = drilled in from a comparison, so back returns to it
+              // (cohort intact). Otherwise this is the lone selection, so back
+              // clears to the national overview.
+              backLabel={focusedState ? "Back to comparison" : "Back to national overview"}
+              onBack={focusedState ? clearFocus : clearAll}
+            />
+          ) : (
+            <EnrollmentComparisonCard
+              rows={comparisonRows}
+              year={activeYear}
+              onFocus={focusState}
+              onClear={clearAll}
             />
           )}
         </div>
@@ -259,26 +273,28 @@ export default function EnrollmentView() {
         <div>
           <hr className="border-t border-sable/15" />
           <h2 className="mt-3 font-sans text-[11px] font-semibold uppercase tracking-widest text-sable/70">
-            {selectedState ? `${selectedState} Enrollment, by Year` : "Enrollment by Year"}
+            {detailState ? `${detailState} Enrollment, by Year` : "Enrollment by Year"}
           </h2>
           <div className="mt-1">
-            {hasHistory ? (
+            {detailState && hasHistory ? (
               <EnrollmentTable
-                stateValues={selectedStateValues}
+                stateValues={detailValues}
                 years={years}
                 activeYear={activeYear}
               />
             ) : (
-              // Same-height placeholder so the overview (no selection) and
+              // Same-height placeholder so the overview, comparison, and
               // no-history states don't collapse the column — keeps the left
-              // column and detail card a constant height across selections.
+              // column and detail card a constant height across modes.
               <div
                 className="flex items-center justify-center px-3 text-center font-sans text-xs text-sable/40"
                 style={{ height: ENROLLMENT_TABLE_HEIGHT }}
               >
-                {selectedState === null
+                {count === 0
                   ? "Select a state to see its year-by-year enrollment."
-                  : "No year-by-year enrollment reported."}
+                  : !detailState
+                    ? "View one state's detail to see its year-by-year enrollment."
+                    : "No year-by-year enrollment reported."}
               </div>
             )}
           </div>
