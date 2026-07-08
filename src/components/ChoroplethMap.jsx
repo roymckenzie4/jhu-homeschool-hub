@@ -68,7 +68,14 @@ import {
   TILE_GAP,
   TILE_GRID,
   TILE_H,
+  TILE_HOVER_DARKEN,
+  TILE_HOVER_SCALE,
+  TILE_HOVER_SHADOW_BLUR,
+  TILE_HOVER_SHADOW_DY,
+  TILE_HOVER_SHADOW_OPACITY,
   TILE_RADIUS,
+  TILE_SELECT_RING_W,
+  TILE_SELECT_STROKE,
   TILE_W,
 } from "../config/tileGrid.js";
 import { buildProjection } from "../lib/geoProjection.js";
@@ -134,6 +141,7 @@ export default function ChoroplethMap({
   const nonReportingId = `non-reporting${idPrefix}`;
   const selectionLiftId = `selection-lift${idPrefix}`;
   const hoverGlowId = `state-hover-glow${idPrefix}`;
+  const tileHoverLiftId = `tile-hover-lift${idPrefix}`;
 
   // Resolve a fill from the view's fillForState, mapping the non-reporting
   // sentinel to THIS instance's pattern id (fillForState returns the canonical
@@ -302,6 +310,38 @@ export default function ChoroplethMap({
           floodOpacity="0.62"
         />
       </filter>
+
+      {/* Tile-mode hover lift: a stronger fill-darken than the geo glow plus a
+          real offset drop shadow, so a hovered tile reads as popping off the
+          grid (paired with a CSS scale — see .map-tile in index.css). Only the
+          tile map references it; geo keeps #state-hover-glow. */}
+      {isTile && (
+        <filter
+          id={tileHoverLiftId}
+          x="-30%"
+          y="-30%"
+          width="160%"
+          height="160%"
+        >
+          <feColorMatrix
+            in="SourceGraphic"
+            type="matrix"
+            values={`${TILE_HOVER_DARKEN} 0 0 0 0
+                    0 ${TILE_HOVER_DARKEN} 0 0 0
+                    0 0 ${TILE_HOVER_DARKEN} 0 0
+                    0 0 0 1 0`}
+            result="darkened"
+          />
+          <feDropShadow
+            in="darkened"
+            dx="0"
+            dy={TILE_HOVER_SHADOW_DY}
+            stdDeviation={TILE_HOVER_SHADOW_BLUR}
+            floodColor="#000000"
+            floodOpacity={TILE_HOVER_SHADOW_OPACITY}
+          />
+        </filter>
+      )}
     </defs>
   );
 
@@ -326,7 +366,7 @@ export default function ChoroplethMap({
       const isSelected = selectedStates.includes(name);
       const x = col * TILE_W + TILE_GAP / 2;
       const y = row * TILE_H + TILE_GAP / 2;
-      let className = "state-path";
+      let className = "state-path map-tile";
       if (interactive) className += " state-path--clickable";
       if (isSelected) className += " state-path--selected";
       return {
@@ -342,19 +382,33 @@ export default function ChoroplethMap({
       };
     });
 
+    // Draw the hovered tile last so its lift shadow (and slight growth) isn't
+    // clipped by tiles that come later in grid order. Only reorders the base
+    // fills; the selection overlay and labels keep their own passes.
+    const baseTiles = hoveredState
+      ? [
+          ...tiles.filter((t) => t.name !== hoveredState),
+          ...tiles.filter((t) => t.name === hoveredState),
+        ]
+      : tiles;
+
     return (
       <svg
         viewBox={`0 0 ${tileViewW} ${tileViewH}`}
         className="block h-auto w-full"
         role="img"
         aria-label="US tile grid by state"
+        // Feeds the tile-hover scale in .map-tile (index.css) from config so the
+        // magic number stays in tileGrid.js.
+        style={{ "--tile-hover-scale": TILE_HOVER_SCALE }}
       >
         {sharedDefs}
 
-        {/* Base fills: one rect per state. Hover glow + dim-on-selection come
-            from the shared CSS (same classes as the geo paths). */}
+        {/* Base fills: one rect per state. Hover lift + dim-on-selection come
+            from the shared CSS (same classes as the geo paths, plus .map-tile
+            for the tile-only pop). */}
         <g className={hasSelection ? "map-base--has-selection" : ""}>
-          {tiles.map(({ postal, name, fill, className, isSelected, x, y }) => (
+          {baseTiles.map(({ postal, name, fill, className, isSelected, x, y }) => (
             <rect
               key={postal}
               x={x}
@@ -371,48 +425,28 @@ export default function ChoroplethMap({
           ))}
         </g>
 
-        {/* Selection overlay: soft white halo + drop shadow, the selection ring,
-            and a clipped white inner hairline — the same three-layer treatment
-            the geo map uses. Non-interactive so clicks fall through to the base
-            tile below. */}
+        {/* Selection overlay: a crisp near-black border per selected tile,
+            framed by the white channel between tiles. Simpler than geo's white
+            halo + topic ring — on a square against white gaps a solid dark
+            border reads cleaner and stronger. Non-interactive so clicks fall
+            through to the base tile below. */}
         <g style={{ pointerEvents: "none" }}>
           {tiles
             .filter((t) => t.isSelected)
-            .map(({ postal, fill, x, y }) => {
-              const clipId = `tile-selection-clip-${uid}-${postal}`;
-              const shape = {
-                x,
-                y,
-                width: TILE_DRAWN_W,
-                height: TILE_DRAWN_H,
-                rx: TILE_RADIUS,
-              };
-              return (
-                <g key={postal}>
-                  <defs>
-                    <clipPath id={clipId}>
-                      <rect {...shape} />
-                    </clipPath>
-                  </defs>
-                  <rect {...shape} fill={fill} filter={`url(#${selectionLiftId})`} />
-                  <rect
-                    {...shape}
-                    fill="none"
-                    stroke={selectionStroke}
-                    strokeWidth={STROKE_RING}
-                    strokeLinejoin="round"
-                  />
-                  <rect
-                    {...shape}
-                    fill="none"
-                    stroke="#FFFFFF"
-                    strokeWidth={STROKE_INNER}
-                    strokeLinejoin="round"
-                    clipPath={`url(#${clipId})`}
-                  />
-                </g>
-              );
-            })}
+            .map(({ postal, x, y }) => (
+              <rect
+                key={postal}
+                x={x}
+                y={y}
+                width={TILE_DRAWN_W}
+                height={TILE_DRAWN_H}
+                rx={TILE_RADIUS}
+                fill="none"
+                stroke={TILE_SELECT_STROKE}
+                strokeWidth={TILE_SELECT_RING_W}
+                strokeLinejoin="round"
+              />
+            ))}
         </g>
 
         {/* Labels: topmost so the selection overlay never covers them. Color

@@ -48,6 +48,28 @@ export const TILE_BOTTOM_PAD = 26;
 export const TILE_GAP = 6;
 export const TILE_RADIUS = 4;
 
+// Hover "pop" — tile-mode only (a geo path can't scale the same way, so this
+// never touches the geo hover glow). On hover the tile scales up around its own
+// center and gains a stronger fill-darken + a real drop shadow, so it reads as
+// lifting off the grid. Kept small enough that the grown tile stays inside
+// TILE_GAP and doesn't overlap its neighbours; only the soft shadow spills, and
+// the hovered tile is drawn last so that shadow isn't clipped.
+export const TILE_HOVER_SCALE = 1.06; // 1 = no growth
+// Multiplier on the fill's RGB channels; < 1 darkens. Stronger than the geo
+// hover glow's 0.90 so the pop reads on the light end of the ramp too.
+export const TILE_HOVER_DARKEN = 0.82;
+// Drop shadow under the lifted tile, in tile-map units (scales with the map).
+export const TILE_HOVER_SHADOW_DY = 2;
+export const TILE_HOVER_SHADOW_BLUR = 3;
+export const TILE_HOVER_SHADOW_OPACITY = 0.35;
+
+// Selection border for tile mode. A crisp near-black border reads as a
+// deliberate "selected" state against every fill on the ramp, framed by the
+// white channel between tiles. Tile-only: geo keeps its topic-colored ring +
+// soft white halo (selectionStroke), which a square border would read as flat.
+export const TILE_SELECT_STROKE = "#1F1A14";
+export const TILE_SELECT_RING_W = 3;
+
 // Postal -> grid cell. 50 states + DC = 51 entries.
 export const TILE_GRID = {
   AK: { row: 0, col: 0 },

@@ -90,8 +90,30 @@
 .map-base--has-selection .state-path:not(.state-path--selected) {
   opacity: 0.86;
 }
+/* Tile mode only: the hover "pop". The extra .map-tile class outranks the
+   shared geo hover rule above, so swapping in #tile-hover-lift (a stronger
+   fill-darken + a real drop shadow) is deterministic — geo paths lack .map-tile
+   and keep #state-hover-glow, so geo is untouched. A path can't scale off its
+   own center the way a square tile can, which is why the pop is tile-scoped.
+   scale grows the tile around its own center (transform-box: fill-box);
+   --tile-hover-scale is fed from config/tileGrid.js so the amount stays there. */
+.state-path.map-tile {
+  transition: opacity 100ms ease, filter 100ms ease, transform 100ms ease;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.map-tile.state-path--clickable:not(.state-path--selected):hover,
+.map-tile.state-path--clickable:not(.state-path--selected):focus-visible {
+  filter: url(#tile-hover-lift);
+  transform: scale(var(--tile-hover-scale));
+}
 @media (prefers-reduced-motion: reduce) {
   .state-path {
     transition: none;
+  }
+  /* Keep the darken/shadow feedback, drop the size change (a scale is motion). */
+  .map-tile.state-path--clickable:hover,
+  .map-tile.state-path--clickable:focus-visible {
+    transform: none;
   }
 }
