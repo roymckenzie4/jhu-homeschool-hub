@@ -53,6 +53,27 @@ export function levelColor(level) {
   return POLICY_RAMP[level] ?? COLORS.nonReportingGround;
 }
 
+/**
+ * Categorical line colors for the multi-line enrollment comparison — one per
+ * selected state, assigned by selection order. DISTINCT hues (not the sequential
+ * blue ramp) so overlapping trend lines stay tellable apart; brand blue / orange
+ * / red lead, then supplementary hues to reach the compare cap. Provisional
+ * pending design feedback on the comparison palette.
+ */
+export const COMPARISON_SERIES_COLORS = [
+  "#002D72", // heritage blue
+  "#FF9E1B", // brand orange
+  "#0E8A6B", // teal
+  "#CF4520", // brick red
+  "#6A4C93", // violet
+  "#68ACE5", // spirit blue
+];
+
+/** Line color for the Nth selected state in the comparison (wraps if needed). */
+export function comparisonColor(index) {
+  return COMPARISON_SERIES_COLORS[index % COMPARISON_SERIES_COLORS.length];
+}
+
 // sRGB relative luminance (WCAG) of a #rgb / #rrggbb color, 0 (black) to 1 (white).
 function relativeLuminance(hex) {
   const h = hex.replace("#", "");

@@ -5,8 +5,9 @@
  *
  * Drilling in sets the shared focusedState (a lens over the cohort, not a
  * membership change), which swaps this card for that state's StateDetailCard
- * with a "Back to comparison" control. Placeholder for now — the multi-line
- * trend comparison (Tier B) upgrades this same slot later.
+ * with a "Back to comparison" control. The color dot on each row is the state's
+ * comparison color, shared with the multi-line trend + years×states table that
+ * fill the data zone below.
  *
  * Shares StateDetailCard / NationalOverviewCard's outer frame so it drops into
  * the same panel slot at matching height. Rows come pre-shaped from
@@ -21,6 +22,7 @@ import { BY_NAME } from "../config/states.js";
 export default function EnrollmentComparisonCard({
   rows,
   year,
+  colorForState,
   onFocus,
   onClear,
 }) {
@@ -54,7 +56,15 @@ export default function EnrollmentComparisonCard({
           {rows.map((row) => (
             <TableRow key={row.name} className="border-0 hover:bg-transparent">
               <TableCell className="py-1.5 pr-3 font-medium tracking-[0.03em] text-sable">
-                {BY_NAME[row.name]?.name ?? row.name}
+                <span className="inline-flex items-center gap-2">
+                  {/* Color key shared with the trend lines + table columns. */}
+                  <span
+                    className="h-2 w-2 shrink-0 rounded-full"
+                    style={{ backgroundColor: colorForState(row.name) }}
+                    aria-hidden="true"
+                  />
+                  {BY_NAME[row.name]?.name ?? row.name}
+                </span>
               </TableCell>
               <TableCell className="whitespace-nowrap py-1.5 pr-3 text-right tabular-nums tracking-[0.03em] text-sable">
                 {row.value != null ? (
@@ -78,8 +88,8 @@ export default function EnrollmentComparisonCard({
       </Table>
 
       <p className="mt-4 flex-1 font-sans text-xs leading-relaxed text-sable/60">
-        Select more states on the map to add them, or view one state's full
-        detail. A side-by-side trend comparison lands here next.
+        Compare the trend lines and year-by-year figures below, or view one
+        state's full detail.
       </p>
     </aside>
   );

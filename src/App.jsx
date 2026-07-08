@@ -24,6 +24,8 @@ import Footer from "./components/Footer.jsx";
 import EnrollmentPanel from "./components/EnrollmentPanel.jsx";
 import PolicyPanel from "./components/PolicyPanel.jsx";
 import { useSelection } from "./state/selection.jsx";
+import { CHIPS_SLOT_CLASS } from "./config/layout.js";
+import { comparisonColor } from "./config/theme.js";
 import { MAP_MODE } from "./config/tileGrid.js";
 import {
   buildEnrollmentDescriptor,
@@ -39,10 +41,6 @@ const TABS = [
   { id: "enrollment", label: "Enrollment" },
   { id: "policy", label: "State policies" },
 ];
-
-// The shared map is sized to a fixed aspect so it stays a consistent height
-// across topics and modes (the WordPress iframe must not resize as you click).
-const MAP_MAX_WIDTH = "calc(320px * 760 / 460)";
 
 export default function App() {
   const [activeTab, setActiveTab] = useState("enrollment");
@@ -75,6 +73,19 @@ export default function App() {
   const descriptor = isEnrollment ? enrollmentDescriptor : policyDescriptor;
   const footer = isEnrollment ? enrollmentFooter : policyFooter;
 
+  // Chip dot color. When comparing on Enrollment (2+ states), a chip carries the
+  // state's per-state COMPARISON color so it matches the trend line, table
+  // header, and card dot — one identity color across every comparison surface.
+  // Unselected states (the combobox rows) keep the topic's heatmap color; single
+  // / overview / Policy always use the descriptor's heatmap or level color.
+  const chipDotColor =
+    isEnrollment && selectedStates.length >= 2
+      ? (name) => {
+          const i = selectedStates.indexOf(name);
+          return i >= 0 ? comparisonColor(i) : descriptor.dotColorForState(name);
+        }
+      : descriptor.dotColorForState;
+
   return (
     <main className="mx-auto max-w-[1200px] px-8 py-4 lg:px-12 lg:py-6">
       <header>
@@ -88,61 +99,78 @@ export default function App() {
         </p>
       </header>
 
-      <div className="mt-4">
+      {/* Tabs on the left; the year control (Enrollment) or a same-spot "as of"
+          label (Policy) on the right. Keeping the year here rather than on its
+          own row means the tab row's height governs — the row doesn't resize
+          when switching to Policy, which has no year control. */}
+      <div className="mt-4 flex items-center justify-between gap-4">
         <ViewTabs tabs={TABS} activeTab={activeTab} onChange={handleTabChange} />
+        <div className="shrink-0">
+          {isEnrollment ? (
+            <YearSelector
+              recentYears={RECENT_YEARS}
+              olderYears={OLDER_YEARS}
+              activeYear={activeYear}
+              onChange={setActiveYear}
+            />
+          ) : (
+            <span className="font-sans text-[11px] font-medium uppercase tracking-widest text-sable/50">
+              Regulations current as of 2024–25
+            </span>
+          )}
+        </div>
       </div>
 
-      {/* Section label + year selector (Enrollment only — Regulation has no
-          year; the value is preserved and unused while on that tab). */}
-      <div className="mt-4 flex flex-wrap items-center justify-between gap-4">
-        <h2 className="font-sans text-[11px] font-semibold uppercase tracking-widest text-sable/70">
-          {isEnrollment ? "Enrollment by State" : "Regulation by State"}
-        </h2>
-        {isEnrollment && (
-          <YearSelector
-            recentYears={RECENT_YEARS}
-            olderYears={OLDER_YEARS}
-            activeYear={activeYear}
-            onChange={setActiveYear}
+      {/*
+        Shell grid. On lg it's two columns across three rows: row 1 = the shared
+        map + legend top-left and the topic's summary card top-right; row 2 = the
+        shared selection chip strip, full-width under the map; row 3 = the topic's
+        data zone full-width below. The map fills its column (no gutters) and its
+        width is identical on both tabs, so switching topics recolors the mounted
+        map without resizing/reprojecting it. Card and data come from the active
+        topic's panel (CARD_SLOT_CLASS / DATA_SLOT_CLASS). On mobile the grid is
+        single-column: map -> chips -> card -> data.
+      */}
+      <div className="mt-4 grid grid-cols-1 gap-x-8 gap-y-6 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)]">
+        <div className="lg:col-start-1 lg:row-start-1">
+          {/* Shared, always-mounted map. Only the descriptor swaps per topic. */}
+          <ChoroplethMap
+            mode={MAP_MODE}
+            fillForState={descriptor.fillForState}
+            ariaLabelForState={descriptor.ariaLabelForState}
+            selectionStroke={descriptor.selectionStroke}
+            selectedStates={selectedStates}
+            onSelect={selectState}
           />
-        )}
-      </div>
-      <hr className="mt-3 border-t border-sable/15" />
+          <div className="mt-2">
+            <MapLegend {...descriptor.legend} />
+          </div>
+        </div>
 
-      {/* Shared, always-mounted map. Only the descriptor swaps per topic. */}
-      <div className="mt-3 mx-auto" style={{ maxWidth: MAP_MAX_WIDTH }}>
-        <ChoroplethMap
-          mode={MAP_MODE}
-          fillForState={descriptor.fillForState}
-          ariaLabelForState={descriptor.ariaLabelForState}
-          selectionStroke={descriptor.selectionStroke}
-          selectedStates={selectedStates}
-          onSelect={selectState}
-        />
-      </div>
-      <div className="mt-2">
-        <MapLegend {...descriptor.legend} />
-      </div>
+        {/* Selection chips — full-width strip under the map, above the data. */}
+        <div className={CHIPS_SLOT_CLASS}>
+          <ComparingChips
+            selectedStates={selectedStates}
+            dotColorForState={chipDotColor}
+            metaForState={descriptor.metaForState}
+            onAdd={selectState}
+            onRemove={selectState}
+            onClear={clearAll}
+            label="Viewing"
+          />
+        </div>
 
-      <ComparingChips
-        selectedStates={selectedStates}
-        dotColorForState={descriptor.dotColorForState}
-        metaForState={descriptor.metaForState}
-        onAdd={selectState}
-        onRemove={selectState}
-        onClear={clearAll}
-        label="Viewing"
-      />
-
-      {/* Panel identity tracks the active tab. The map/legend/chips above are
-          shared, so only this region's content is topic-specific. */}
-      <div
-        id={`panel-${activeTab}`}
-        role="tabpanel"
-        aria-labelledby={`tab-${activeTab}`}
-        className="mt-5"
-      >
-        {isEnrollment ? <EnrollmentPanel activeYear={activeYear} /> : <PolicyPanel />}
+        {/* Panel identity tracks the active tab. `contents` keeps the tabpanel
+            wrapper out of the grid box model so the panel's card/data children
+            place directly into the shell grid. */}
+        <div
+          id={`panel-${activeTab}`}
+          role="tabpanel"
+          aria-labelledby={`tab-${activeTab}`}
+          className="contents"
+        >
+          {isEnrollment ? <EnrollmentPanel activeYear={activeYear} /> : <PolicyPanel />}
+        </div>
       </div>
 
       <Footer

@@ -95,13 +95,17 @@ function LevelBadge({ level }) {
   );
 }
 
-// Shown in place of the table when no states are selected yet.
+// Shown in place of the table when no states are selected yet. Fills the data
+// zone's reserved height (flex-1 in the panel's flex column) so it reads as a
+// deliberate empty state rather than a short box floating above whitespace.
 function EmptyPrompt() {
   return (
-    <div className="rounded border border-dashed border-sable/25 px-6 py-10 text-center font-sans text-sm text-sable/50">
-      Select states on the map — or use{" "}
-      <span className="font-medium text-sable/70">+ add state</span> — to compare
-      their regulations side by side.
+    <div className="flex flex-1 items-center justify-center rounded border border-dashed border-sable/25 px-6 py-10 text-center font-sans text-sm text-sable/50">
+      <p>
+        Select states on the map — or use{" "}
+        <span className="font-medium text-sable/70">+ add state</span> — to
+        compare their regulations side by side.
+      </p>
     </div>
   );
 }

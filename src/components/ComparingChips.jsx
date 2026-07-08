@@ -75,7 +75,7 @@ export default function ComparingChips({
     .sort((a, b) => a.localeCompare(b));
 
   return (
-    <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2 border-t border-sable/15 pt-3">
+    <div className="flex flex-wrap items-center gap-x-3 gap-y-2 border-t border-sable/15 pt-3">
       <span className="font-sans text-[11px] font-semibold uppercase tracking-widest text-sable/60">
         {label}
       </span>

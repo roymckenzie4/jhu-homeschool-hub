@@ -1,29 +1,42 @@
 /**
- * EnrollmentPanel — the enrollment topic's below-the-shell content.
+ * EnrollmentPanel — the enrollment topic's card + data regions.
  *
  * The unified shell (App) owns the shared map, legend, chip row, and the year
- * selector, and passes the active year down. This panel renders only what's
- * specific to enrollment below that: the detail card and the by-year table.
+ * selector. This panel supplies the two topic-specific regions the shell grid
+ * places: a summary CARD (top-right, beside the map) and a full-width DATA zone
+ * below (the by-year table on the left, the trend graph on the right, at a
+ * matched height). It returns them as a fragment so both land directly in the
+ * shell grid via CARD_SLOT_CLASS / DATA_SLOT_CLASS.
  *
- * The card is emergent from the shared selection: 0 selected -> national
+ * Both regions are emergent from the shared selection: 0 selected -> national
  * overview, 1 -> that state's detail, 2+ -> comparison, 2+ with a focus -> the
  * focused state's detail with a "back to comparison" control. Selection itself
  * is dispatched by the shell's map; this panel only reads it and drives the
  * focus/back transitions.
  */
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useSelection } from "../state/selection.jsx";
 import {
   enrollmentByState as byState,
   enrollmentYears as years,
 } from "../data/enrollmentLoader.js";
 import { deriveByYear, topStatesForYear } from "../data/derive.js";
-import { ENROLLMENT_TABLE_HEIGHT } from "../config/layout.js";
+import {
+  ENROLLMENT_TABLE_HEIGHT,
+  DATA_ZONE_MIN_HEIGHT,
+  CARD_SLOT_CLASS,
+  DATA_SLOT_CLASS,
+} from "../config/layout.js";
+import { comparisonColor } from "../config/theme.js";
 import StateDetailCard from "./StateDetailCard.jsx";
 import NationalOverviewCard from "./NationalOverviewCard.jsx";
 import EnrollmentComparisonCard from "./EnrollmentComparisonCard.jsx";
 import EnrollmentTable from "./EnrollmentTable.jsx";
+import EnrollmentComparisonTable from "./EnrollmentComparisonTable.jsx";
+import Sparkline from "./Sparkline.jsx";
+import ComparisonTrend from "./ComparisonTrend.jsx";
+import ComparisonLegend from "./ComparisonLegend.jsx";
 
 // Enrollment data comes shaped from the loader (parsed once, shared with the
 // State policies view's Homeschoolers column). byYear aggregates are derived here.
@@ -43,22 +56,13 @@ export default function EnrollmentPanel({ activeYear }) {
   const detailState = focusedState ?? (count === 1 ? selectedStates[0] : null);
 
   const yearStats = byYear[activeYear];
-  const dcReporting =
-    (byState["District of Columbia"]?.[activeYear] ?? null) != null;
 
-  // Detail-card slices, keyed to the drill-in/single state (null in overview
-  // and comparison modes, where these go unread).
+  // Detail slices, keyed to the drill-in/single state (null in overview and
+  // comparison modes, where these go unread).
   const detailValues = byState[detailState];
   const currentValue = detailValues?.[activeYear] ?? null;
   const previousValue = detailValues?.[activeYear - 1] ?? null;
   const rank = yearStats.rankByState[detailState] ?? null;
-
-  // A state that never reported (e.g. Texas) is clickable but has nothing to
-  // tabulate — its table slot shows a placeholder. States that reported in
-  // some year keep the table even on a year they skipped.
-  const hasHistory = detailValues
-    ? Object.values(detailValues).some((v) => v != null)
-    : false;
 
   // Sparkline renders the state's full reporting history so the line reads
   // as a mini timeline, not a fragment. The selected-year dot anchors the
@@ -72,6 +76,34 @@ export default function EnrollmentPanel({ activeYear }) {
     [detailValues],
   );
 
+  // A state that never reported (e.g. Texas) is clickable but has nothing to
+  // plot or tabulate — its table + graph slots show placeholders. The last
+  // reported point feeds the card's "not reported this year" note for a state
+  // that skipped only the active year.
+  const reportingPoints = trendSeries.filter((d) => d.value != null);
+  const hasHistory = reportingPoints.length > 0;
+  const lastReported = hasHistory
+    ? reportingPoints[reportingPoints.length - 1]
+    : null;
+
+  // Comparison mode: 2+ selected with no single-state drill-in. Drives the
+  // multi-line trend + years×states table in the data zone.
+  const isComparing = count >= 2 && !detailState;
+
+  // Each selected state's line/column/legend color, by selection order. Shared
+  // by the trend, the comparison table, and the chips (via App).
+  const colorForState = (name) => comparisonColor(selectedStates.indexOf(name));
+
+  // Trend highlight, lifted so the legend (in the heading row) and the chart
+  // stay in lockstep: hover previews, click pins, hover takes precedence over a
+  // pin. Guarded so a pin on a since-removed state highlights nothing.
+  const [hoveredState, setHoveredState] = useState(null);
+  const [pinnedState, setPinnedState] = useState(null);
+  const rawHighlight = hoveredState ?? pinnedState;
+  const highlighted = selectedStates.includes(rawHighlight) ? rawHighlight : null;
+  const togglePin = (name) =>
+    setPinnedState((prev) => (prev === name ? null : name));
+
   // Rows for the comparison card: each selected state with its active-year
   // count. Only read when 2+ are selected, but recomputes with the year.
   const comparisonRows = useMemo(
@@ -83,6 +115,20 @@ export default function EnrollmentPanel({ activeYear }) {
     [selectedStates, activeYear],
   );
 
+  // Years×states series for the trend + comparison table: one row per year with
+  // a value per selected state. Year-independent, so keyed only to the cohort.
+  const comparisonSeries = useMemo(
+    () =>
+      years.map((y) => {
+        const row = { year: y };
+        selectedStates.forEach((name) => {
+          row[name] = byState[name]?.[y] ?? null;
+        });
+        return row;
+      }),
+    [selectedStates],
+  );
+
   // National-overview leaderboard: the top reporting states for the active
   // year. Only consumed when nothing is selected, but recomputes with the year.
   const topStates = useMemo(
@@ -90,9 +136,13 @@ export default function EnrollmentPanel({ activeYear }) {
     [activeYear],
   );
 
+  // Single-state detail drives both the table and the graph in the data zone.
+  const showDetailData = detailState && hasHistory;
+
   return (
-    <div className="grid grid-cols-1 gap-x-6 gap-y-6 lg:grid-cols-[360px_1fr]">
-      <div>
+    <>
+      {/* Summary card — beside the map, sized to the map's height. */}
+      <div className={CARD_SLOT_CLASS}>
         {count === 0 ? (
           <NationalOverviewCard
             nationalTotal={yearStats.total}
@@ -107,8 +157,8 @@ export default function EnrollmentPanel({ activeYear }) {
             year={activeYear}
             rank={rank}
             reportingCount={yearStats.reportingCount}
-            dcReporting={dcReporting}
-            trendSeries={trendSeries}
+            hasHistory={hasHistory}
+            lastReported={lastReported}
             // Focused = drilled in from a comparison, so back returns to it
             // (cohort intact). Otherwise this is the lone selection, so back
             // clears to the national overview.
@@ -119,40 +169,94 @@ export default function EnrollmentPanel({ activeYear }) {
           <EnrollmentComparisonCard
             rows={comparisonRows}
             year={activeYear}
+            colorForState={colorForState}
             onFocus={focusState}
             onClear={clearAll}
           />
         )}
       </div>
 
-      <div>
-        <h2 className="font-sans text-[11px] font-semibold uppercase tracking-widest text-sable/70">
-          {detailState ? `${detailState} Enrollment, by Year` : "Enrollment by Year"}
-        </h2>
-        <div className="mt-1">
-          {detailState && hasHistory ? (
-            <EnrollmentTable
-              stateValues={detailValues}
-              years={years}
-              activeYear={activeYear}
-            />
-          ) : (
-            // Same-height placeholder so the overview, comparison, and
-            // no-history states don't collapse the column — keeps the panel a
-            // constant height across modes.
-            <div
-              className="flex items-center justify-center px-3 text-center font-sans text-xs text-sable/40"
-              style={{ height: ENROLLMENT_TABLE_HEIGHT }}
-            >
-              {count === 0
-                ? "Select a state to see its year-by-year enrollment."
-                : !detailState
-                  ? "View one state's detail to see its year-by-year enrollment."
-                  : "No year-by-year enrollment reported."}
+      {/* Data zone — full width below. Table left, trend graph right, both at
+          ENROLLMENT_TABLE_HEIGHT so they read as one matched-height row. Each
+          mode that has no single-state detail (overview, comparison, no-history
+          states) shows same-height placeholders so the row never collapses. */}
+      <div className={DATA_SLOT_CLASS} style={{ minHeight: DATA_ZONE_MIN_HEIGHT }}>
+        <div className="grid grid-cols-1 gap-x-8 gap-y-6 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)]">
+          <div>
+            <h2 className="font-sans text-[11px] font-semibold uppercase tracking-widest text-sable/70">
+              {detailState ? `${detailState}, by Year` : "Enrollment by Year"}
+            </h2>
+            <div className="mt-3">
+              {showDetailData ? (
+                <EnrollmentTable
+                  stateValues={detailValues}
+                  years={years}
+                  activeYear={activeYear}
+                />
+              ) : isComparing ? (
+                <EnrollmentComparisonTable
+                  rows={comparisonSeries}
+                  states={selectedStates}
+                  activeYear={activeYear}
+                  colorForState={colorForState}
+                />
+              ) : (
+                <DataPlaceholder>
+                  {count === 0
+                    ? "Select a state to see its year-by-year enrollment."
+                    : "No year-by-year enrollment reported."}
+                </DataPlaceholder>
+              )}
             </div>
-          )}
+          </div>
+
+          <div>
+            <div className="flex items-baseline justify-between gap-3">
+              <h2 className="shrink-0 font-sans text-[11px] font-semibold uppercase tracking-widest text-sable/70">
+                {isComparing ? "Trends" : "Year in Context"}
+              </h2>
+              {isComparing && (
+                <ComparisonLegend
+                  states={selectedStates}
+                  colorForState={colorForState}
+                  highlighted={highlighted}
+                  onHover={setHoveredState}
+                  onTogglePin={togglePin}
+                />
+              )}
+            </div>
+            <div className="mt-3" style={{ height: ENROLLMENT_TABLE_HEIGHT }}>
+              {showDetailData ? (
+                <Sparkline series={trendSeries} selectedYear={activeYear} />
+              ) : isComparing ? (
+                <ComparisonTrend
+                  rows={comparisonSeries}
+                  states={selectedStates}
+                  colorForState={colorForState}
+                  highlighted={highlighted}
+                />
+              ) : (
+                <DataPlaceholder>
+                  Select a state to see its trend.
+                </DataPlaceholder>
+              )}
+            </div>
+          </div>
         </div>
       </div>
+    </>
+  );
+}
+
+// Same-height filler for a data-zone slot with nothing to show, so the table +
+// graph row stays a constant height across modes (no-resize discipline).
+function DataPlaceholder({ children }) {
+  return (
+    <div
+      className="flex items-center justify-center px-3 text-center font-sans text-xs text-sable/40"
+      style={{ height: ENROLLMENT_TABLE_HEIGHT }}
+    >
+      {children}
     </div>
   );
 }

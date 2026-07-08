@@ -21,4 +21,27 @@ export const TARGET_HEIGHT = 760;
 // header rather than growing the page. Fixing the height also keeps the left
 // column a constant height across selections — a state with no year-by-year
 // data shows a same-height placeholder instead of collapsing the layout.
+//
+// The data zone's trend graph is pinned to this SAME height, so the table and
+// graph sit as one matched-height row (see EnrollmentPanel's data zone).
 export const ENROLLMENT_TABLE_HEIGHT = 180;
+
+// Grid placement for the shell's regions. The shell (App) lays out a two-column
+// grid on lg across three rows: row 1 is the map top-left + the topic's summary
+// card top-right; row 2 is the shared selection chip strip full-width; row 3 is
+// the topic's data zone (table + graph, or the wide comparison table) full-width
+// below. Each topic panel tags its card/data children with these so the shell's
+// grid can place them without the panel owning the grid itself. On mobile the
+// grid collapses to one column and these are inert — children flow map -> card
+// -> chips -> data top to bottom.
+export const CARD_SLOT_CLASS = "lg:col-start-2 lg:row-start-1";
+export const CHIPS_SLOT_CLASS = "lg:col-span-2 lg:row-start-2";
+export const DATA_SLOT_CLASS = "lg:col-span-2 lg:row-start-3";
+
+// Min-height the data zone reserves regardless of content, so switching topics
+// (or selecting a single state on Policy, where the table is one short row)
+// doesn't collapse the zone and resize the tool. Sized to the Enrollment data
+// zone's natural height (an eyebrow heading + ENROLLMENT_TABLE_HEIGHT body), so
+// Policy's shorter table reserves the same space with whitespace below rather
+// than fake rows. Provisional alongside TARGET_HEIGHT until real iframe dims.
+export const DATA_ZONE_MIN_HEIGHT = ENROLLMENT_TABLE_HEIGHT + 28;
