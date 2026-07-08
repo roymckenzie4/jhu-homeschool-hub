@@ -17,8 +17,14 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [main, reorg]
-  # Allows manually re-running the deploy from the Actions tab.
+  # Manual "Run workflow" button, plus a weekly refresh so the regulation
+  # snapshot picks up JHU's sheet edits on its own. NOTE: GitHub only fires
+  # `schedule` and `workflow_dispatch` from the DEFAULT branch, so both stay
+  # dormant until this file lands on `main` (the reorg -> main merge). Until
+  # then the snapshot refreshes on every push to `reorg`.
   workflow_dispatch:
+  schedule:
+    - cron: "0 12 * * 1" # Mondays, 12:00 UTC
 
 # Pages deployments need these scoped permissions.
 permissions:
@@ -76,6 +82,17 @@ jobs:
           # GA4 Measurement ID for the live root build. Set the VITE_GA_ID repo
           # variable to enable analytics; unset = no tracking.
           VITE_GA_ID: ${{ vars.VITE_GA_ID }}
+
+      # Refresh the regulation source-link snapshot from the JHU Google Sheet
+      # before building reorg (this branch is where the live-links feature
+      # lives; main doesn't have the fetch script). Non-fatal: on any failure
+      # — transient API outage, quota — the committed snapshot is used, so a
+      # bad fetch can never break the deploy.
+      - name: Refresh regulation snapshot (reorg)
+        working-directory: reorg
+        run: node scripts/fetch-policy-snapshot.mjs || echo "snapshot refresh failed; using committed snapshot"
+        env:
+          SHEETS_API_KEY: ${{ secrets.SHEETS_API_KEY }}
 
       # reorg -> /new/ subdirectory. Nested base so its assets resolve under
       # /new/. No VITE_GA_ID: the preview build stays analytics-free for now.
