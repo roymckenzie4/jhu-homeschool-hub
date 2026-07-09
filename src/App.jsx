@@ -19,7 +19,7 @@ import { trackEvent } from "./lib/analytics.js";
 
 const TABS = [
   { id: "enrollment", label: "Enrollment" },
-  { id: "policy", label: "State policies" },
+  { id: "policy", label: "Regulation" },
 ];
 
 export default function App() {
