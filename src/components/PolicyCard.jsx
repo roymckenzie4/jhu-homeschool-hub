@@ -18,8 +18,15 @@ import {
   LEVELS,
   LEVEL_ORDER,
 } from "../config/policy.js";
-import { COLORS, levelColor, TRANSITION_MS } from "../config/theme.js";
+import { COLORS, levelColor } from "../config/theme.js";
 import { BY_NAME } from "../config/states.js";
+import SummaryCard, {
+  CARD_HEADING_CLASS,
+  CARD_DIVIDER_CLASS,
+  CARD_EYEBROW_CLASS,
+  CARD_LIST_CLASS,
+  CARD_CAVEAT_CLASS,
+} from "./SummaryCard.jsx";
 
 const HOMESCHOOL_HUB_BASE =
   "https://education.jhu.edu/edpolicy/policy-research-initiatives/homeschool-hub/states";
@@ -47,9 +54,6 @@ function legislationLine(leg) {
   if (leg.legalized != null) parts.push(`${leg.legalized}`);
   return parts.join(" · ");
 }
-
-const CARD_CLASS =
-  "flex flex-col border border-l-4 border-sable/10 border-l-heritage bg-white px-5 py-3 lg:h-full lg:overflow-y-auto";
 
 // Level pill — heritage-warm fill per level, white text only on the darkest.
 function LevelBadge({ level }) {
@@ -79,11 +83,9 @@ function LegislationFacts({ legislation }) {
   ];
   return (
     <>
-      <hr className="my-3 border-t border-sable/15" />
-      <p className="font-sans text-[11px] font-semibold uppercase tracking-widest text-sable/70">
-        State context
-      </p>
-      <ul className="mt-2 space-y-1.5">
+      <hr className={CARD_DIVIDER_CLASS} />
+      <p className={CARD_EYEBROW_CLASS}>State context</p>
+      <ul className={CARD_LIST_CLASS}>
         {rows.map(([label, value]) => (
           <li
             key={label}
@@ -98,11 +100,11 @@ function LegislationFacts({ legislation }) {
   );
 }
 
-export default function PolicyCard({ selectedStates, policyByState }) {
+export default function PolicyCard({ selectedStates, policyByState, onClear }) {
   const count = selectedStates.length;
 
   return (
-    <aside className={CARD_CLASS} style={{ transitionDuration: `${TRANSITION_MS}ms` }}>
+    <SummaryCard>
       {count === 0 ? (
         <Overview policyByState={policyByState} />
       ) : count === 1 ? (
@@ -114,9 +116,10 @@ export default function PolicyCard({ selectedStates, policyByState }) {
         <ComparisonSummary
           selectedStates={selectedStates}
           policyByState={policyByState}
+          onClear={onClear}
         />
       )}
-    </aside>
+    </SummaryCard>
   );
 }
 
@@ -126,20 +129,16 @@ function Overview({ policyByState }) {
   const entries = Object.values(policyByState);
   return (
     <>
-      <h3 className="font-sans text-lg font-semibold text-sable">
-        State regulation
-      </h3>
+      <h3 className={CARD_HEADING_CLASS}>State regulation</h3>
       <p className="mt-2 font-sans text-xs leading-snug text-sable/70">
         How each state regulates homeschooling, across {REGULATION_COUNT}{" "}
         regulations in three groups.
       </p>
 
-      <hr className="my-3 border-t border-sable/15" />
+      <hr className={CARD_DIVIDER_CLASS} />
 
-      <p className="font-sans text-[11px] font-semibold uppercase tracking-widest text-sable/70">
-        States by Regulation Level
-      </p>
-      <ul className="mt-2 space-y-1.5">
+      <p className={CARD_EYEBROW_CLASS}>States by Regulation Level</p>
+      <ul className={CARD_LIST_CLASS}>
         {LEVEL_ORDER.map((level) => {
           const n = entries.filter((e) => e.level === level).length;
           return (
@@ -152,7 +151,7 @@ function Overview({ policyByState }) {
         })}
       </ul>
 
-      <p className="mt-4 flex-1 font-sans text-xs leading-relaxed text-sable/60">
+      <p className={CARD_CAVEAT_CLASS}>
         Select states on the map to compare their requirements side by side.
       </p>
     </>
@@ -164,7 +163,7 @@ function Detail({ stateName, entry }) {
   const slug = BY_NAME[stateName]?.slug ?? "";
   return (
     <>
-      <h3 className="font-sans text-lg font-semibold text-sable">{stateName}</h3>
+      <h3 className={CARD_HEADING_CLASS}>{stateName}</h3>
 
       {/* Profile-style level stat: the level as the anchor, count as the read. */}
       <div className="mt-3 flex items-center gap-2">
@@ -177,12 +176,10 @@ function Detail({ stateName, entry }) {
         {entry?.total ?? 0} of {REGULATION_COUNT} regulations in force
       </p>
 
-      <hr className="my-3 border-t border-sable/15" />
+      <hr className={CARD_DIVIDER_CLASS} />
 
-      <p className="font-sans text-[11px] font-semibold uppercase tracking-widest text-sable/70">
-        Regulations
-      </p>
-      <ul className="mt-2 space-y-1.5">
+      <p className={CARD_EYEBROW_CLASS}>Regulations</p>
+      <ul className={CARD_LIST_CLASS}>
         {REGULATION_GROUPS.map((group) => {
           const yes = group.regulations.filter(
             (r) => entry?.regulations?.[r.key]?.value,
@@ -221,19 +218,28 @@ function Detail({ stateName, entry }) {
 // 2+ states: a compact roster, ONE line per state (name · muted legal context ·
 // badge + score) in selection order — orients quickly without turning into a
 // stack of mini-profiles. The full side-by-side breakdown lives in the table.
-function ComparisonSummary({ selectedStates, policyByState }) {
+function ComparisonSummary({ selectedStates, policyByState, onClear }) {
   return (
     <>
-      <h3 className="font-sans text-lg font-semibold text-sable">
-        Comparing {selectedStates.length} states
-      </h3>
+      <div className="flex items-baseline justify-between">
+        <h3 className={CARD_HEADING_CLASS}>
+          Comparing {selectedStates.length} states
+        </h3>
+        <button
+          type="button"
+          onClick={onClear}
+          className="font-sans text-xs text-sable/60 underline-offset-4 hover:text-heritage hover:underline"
+        >
+          Clear
+        </button>
+      </div>
       {/* Muted key so the middle metadata (e.g. "ages 5–18 · 13 yrs · 2008")
           is decodable without reading like a stiff table header. */}
       <p className="mt-1.5 font-sans text-[11px] text-sable/45">
         State · age range · years required · law year · level
       </p>
 
-      <hr className="my-3 border-t border-sable/15" />
+      <hr className={CARD_DIVIDER_CLASS} />
 
       {/* Rows breathe through spacing, not rules — the source-linked table
           below does the table job. */}
@@ -262,7 +268,7 @@ function ComparisonSummary({ selectedStates, policyByState }) {
         })}
       </ul>
 
-      <p className="mt-3 flex-1 font-sans text-xs leading-relaxed text-sable/60">
+      <p className={CARD_CAVEAT_CLASS}>
         See the table below for source-linked requirements.
       </p>
     </>

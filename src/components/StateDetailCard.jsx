@@ -26,8 +26,12 @@
 
 import { computeYoY } from '../data/derive.js';
 import { formatNumber, formatYoY, ordinal } from '../lib/format.js';
-import { schoolYearLabel, TRANSITION_MS } from '../config/theme.js';
+import { schoolYearLabel } from '../config/theme.js';
 import { BY_NAME } from '../config/states.js';
+import SummaryCard, {
+  CARD_HEADING_CLASS,
+  CARD_DIVIDER_CLASS,
+} from './SummaryCard.jsx';
 
 const HOMESCHOOL_HUB_BASE =
   'https://education.jhu.edu/edpolicy/policy-research-initiatives/homeschool-hub/states';
@@ -61,10 +65,7 @@ export default function StateDetailCard({
   const yoyPositive = yoy != null && yoy > 0;
 
   return (
-    <aside
-      className="flex flex-col border border-l-4 border-sable/10 border-l-heritage bg-white px-6 py-4 lg:h-full lg:overflow-y-auto"
-      style={{ transitionDuration: `${TRANSITION_MS}ms` }}
-    >
+    <SummaryCard>
       {/*
         Content keyed by stateName so React remounts the subtree on every
         selection swap; tw-animate-css plays a brief fade so the swap reads
@@ -78,7 +79,7 @@ export default function StateDetailCard({
         key={stateName}
         className="flex flex-col animate-fade-in lg:h-full"
       >
-        <h3 className="font-sans text-lg font-semibold text-sable">
+        <h3 className={CARD_HEADING_CLASS}>
           {stateName}
         </h3>
 
@@ -91,7 +92,7 @@ export default function StateDetailCard({
             reported homeschool students, {schoolYearLabel(year)}
           </p>
 
-          <hr className="my-4 border-t border-sable/15" />
+          <hr className={CARD_DIVIDER_CLASS} />
 
           {/* Two-column stat row: YoY chip + national rank. */}
           <div className="grid grid-cols-2 gap-4">
@@ -146,7 +147,7 @@ export default function StateDetailCard({
         and the link rather than letting flex-1 above starve the space.
       */}
       <div className="mt-auto">
-        <hr className="mb-3 mt-3 border-t border-sable/15" />
+        <hr className={CARD_DIVIDER_CLASS} />
         <a
           href={`${HOMESCHOOL_HUB_BASE}/${slug}/`}
           target="_blank"
@@ -166,6 +167,6 @@ export default function StateDetailCard({
         </button>
       </div>
       </div>
-    </aside>
+    </SummaryCard>
   );
 }

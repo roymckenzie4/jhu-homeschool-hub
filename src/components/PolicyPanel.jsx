@@ -20,7 +20,7 @@ import PolicyCard from "./PolicyCard.jsx";
 import PolicyComparisonTable from "./PolicyComparisonTable.jsx";
 
 export default function PolicyPanel() {
-  const { selectedStates } = useSelection();
+  const { selectedStates, clearAll } = useSelection();
 
   return (
     <>
@@ -32,6 +32,7 @@ export default function PolicyPanel() {
           <PolicyCard
             selectedStates={selectedStates}
             policyByState={policyByState}
+            onClear={clearAll}
           />
         </div>
       </div>

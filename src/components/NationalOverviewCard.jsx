@@ -13,8 +13,14 @@
 
 import { Table, TableBody, TableCell, TableRow } from "./ui/table.jsx";
 import { formatNumber } from "../lib/format.js";
-import { schoolYearLabel, TRANSITION_MS } from "../config/theme.js";
+import { schoolYearLabel } from "../config/theme.js";
 import { BY_NAME } from "../config/states.js";
+import SummaryCard, {
+  CARD_HEADING_CLASS,
+  CARD_DIVIDER_CLASS,
+  CARD_EYEBROW_CLASS,
+  CARD_CAVEAT_CLASS,
+} from "./SummaryCard.jsx";
 
 export default function NationalOverviewCard({
   nationalTotal,
@@ -22,13 +28,8 @@ export default function NationalOverviewCard({
   topStates,
 }) {
   return (
-    <aside
-      className="flex flex-col border border-l-4 border-sable/10 border-l-heritage bg-white px-6 py-3 lg:h-full lg:overflow-y-auto"
-      style={{ transitionDuration: `${TRANSITION_MS}ms` }}
-    >
-      <h3 className="font-sans text-lg font-semibold text-sable">
-        United States
-      </h3>
+    <SummaryCard>
+      <h3 className={CARD_HEADING_CLASS}>United States</h3>
 
       <p className="mt-3 font-sans text-4xl font-bold leading-none text-sable">
         {formatNumber(nationalTotal)}
@@ -37,25 +38,25 @@ export default function NationalOverviewCard({
         reported homeschool students, {schoolYearLabel(year)}
       </p>
 
-      <hr className="my-3 border-t border-sable/15" />
+      <hr className={CARD_DIVIDER_CLASS} />
 
       {/* Leaderboard — a headerless, borderless table: quiet rank annotations
           pulled close to medium-weight names, bold right-aligned counts.
           Spacing (not row rules) separates the rows. */}
-      <p className="font-sans text-[11px] font-semibold uppercase tracking-widest text-sable/70">
+      <p className={CARD_EYEBROW_CLASS}>
         Highest Reported Counts, {schoolYearLabel(year)}
       </p>
-      <Table className="mt-3 font-sans text-xs">
+      <Table className="mt-2 font-sans text-xs">
         <TableBody>
           {topStates.map((s, i) => (
             <TableRow key={s.name} className="border-0 hover:bg-transparent">
-              <TableCell className="w-5 py-1 pr-1.5 text-right tabular-nums text-[11px] text-sable/35">
+              <TableCell className="w-5 py-1.5 pr-1.5 text-right tabular-nums text-[11px] text-sable/35">
                 {i + 1}
               </TableCell>
-              <TableCell className="py-1 pr-3 font-medium tracking-[0.03em] text-sable">
+              <TableCell className="py-1.5 pr-3 font-medium tracking-[0.03em] text-sable">
                 {BY_NAME[s.name]?.name ?? s.name}
               </TableCell>
-              <TableCell className="whitespace-nowrap py-1 text-right font-bold tabular-nums tracking-[0.03em] text-sable">
+              <TableCell className="whitespace-nowrap py-1.5 text-right font-bold tabular-nums tracking-[0.03em] text-sable">
                 {formatNumber(s.value)}
               </TableCell>
             </TableRow>
@@ -65,10 +66,10 @@ export default function NationalOverviewCard({
 
       {/* Caveat fills the remaining space and keeps the headline counts from
           being read as a true, complete total. */}
-      <p className="mt-3 flex-1 font-sans text-xs leading-relaxed text-sable/60">
+      <p className={CARD_CAVEAT_CLASS}>
         States report homeschool enrollment differently and many not at all;
         these counts are a floor, not a complete nationwide total.
       </p>
-    </aside>
+    </SummaryCard>
   );
 }

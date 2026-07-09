@@ -16,8 +16,13 @@
 
 import { Table, TableBody, TableCell, TableRow } from "./ui/table.jsx";
 import { formatNumber } from "../lib/format.js";
-import { schoolYearLabel, TRANSITION_MS } from "../config/theme.js";
+import { schoolYearLabel } from "../config/theme.js";
 import { BY_NAME } from "../config/states.js";
+import SummaryCard, {
+  CARD_HEADING_CLASS,
+  CARD_DIVIDER_CLASS,
+  CARD_CAVEAT_CLASS,
+} from "./SummaryCard.jsx";
 
 export default function EnrollmentComparisonCard({
   rows,
@@ -27,12 +32,9 @@ export default function EnrollmentComparisonCard({
   onClear,
 }) {
   return (
-    <aside
-      className="flex flex-col border border-l-4 border-sable/10 border-l-heritage bg-white px-6 py-4 lg:h-full lg:overflow-y-auto"
-      style={{ transitionDuration: `${TRANSITION_MS}ms` }}
-    >
+    <SummaryCard>
       <div className="flex items-baseline justify-between">
-        <h3 className="font-sans text-lg font-semibold text-sable">
+        <h3 className={CARD_HEADING_CLASS}>
           Comparing {rows.length} states
         </h3>
         <button
@@ -47,7 +49,7 @@ export default function EnrollmentComparisonCard({
         reported homeschool students, {schoolYearLabel(year)}
       </p>
 
-      <hr className="my-4 border-t border-sable/15" />
+      <hr className={CARD_DIVIDER_CLASS} />
 
       {/* One row per selected state: name, active-year count, drill-in link.
           Spacing (not row rules) separates rows, matching the overview card. */}
@@ -87,10 +89,10 @@ export default function EnrollmentComparisonCard({
         </TableBody>
       </Table>
 
-      <p className="mt-4 flex-1 font-sans text-xs leading-relaxed text-sable/60">
+      <p className={CARD_CAVEAT_CLASS}>
         Compare the trend lines and year-by-year figures below, or view one
         state's full detail.
       </p>
-    </aside>
+    </SummaryCard>
   );
 }
