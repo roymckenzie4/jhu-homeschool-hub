@@ -134,6 +134,20 @@ export function regulationLevel(count) {
 // truth — the map toggle, the chip row, and the table all read this.
 export const COMPARE_CAP = 6;
 
+/**
+ * Compulsory-schooling + legalization facts surfaced in the regulation card,
+ * pulled from the sheet's "Legislation" tab. Keys are the internal field names;
+ * values are the EXACT Legislation header strings (the parser reads cells by
+ * these — do not rename without updating the sheet, or vice versa). These are
+ * plain numbers on that tab (no source links), so they come via values.get.
+ */
+export const LEGISLATION_COLUMNS = {
+  compMinAge: "Comp min age",
+  compMaxAge: "Comp max age",
+  yearsRequired: "Years required",
+  legalized: "Legalized",
+};
+
 // Suggested filename when the user downloads the policy CSV from the view.
 export const POLICY_DOWNLOAD_FILENAME = "homeschool-hub-state-policies-2026.csv";
 

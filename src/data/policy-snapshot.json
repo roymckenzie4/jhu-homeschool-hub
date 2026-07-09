@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-08T20:44:16.324Z",
+  "generatedAt": "2026-07-09T02:06:46.734Z",
   "byState": {
     "Alabama": {
       "total": 4,
@@ -45,6 +45,12 @@
           "value": false,
           "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
         }
+      },
+      "legislation": {
+        "compMinAge": 6,
+        "compMaxAge": 17,
+        "yearsRequired": 11,
+        "legalized": 1982
       }
     },
     "Alaska": {
@@ -91,6 +97,12 @@
           "value": false,
           "source": "https://law.justia.com/codes/alaska/title-14/chapter-45/article-2/section-14-45-120/"
         }
+      },
+      "legislation": {
+        "compMinAge": 7,
+        "compMaxAge": 16,
+        "yearsRequired": 9,
+        "legalized": 1997
       }
     },
     "Arizona": {
@@ -137,6 +149,12 @@
           "value": false,
           "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
         }
+      },
+      "legislation": {
+        "compMinAge": 6,
+        "compMaxAge": 16,
+        "yearsRequired": 10,
+        "legalized": 1982
       }
     },
     "Arkansas": {
@@ -183,6 +201,12 @@
           "value": false,
           "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
         }
+      },
+      "legislation": {
+        "compMinAge": 5,
+        "compMaxAge": 17,
+        "yearsRequired": 12,
+        "legalized": 1985
       }
     },
     "California": {
@@ -229,6 +253,12 @@
           "value": false,
           "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
         }
+      },
+      "legislation": {
+        "compMinAge": 6,
+        "compMaxAge": 18,
+        "yearsRequired": 12,
+        "legalized": 2008
       }
     },
     "Colorado": {
@@ -275,6 +305,12 @@
           "value": true,
           "source": "https://www.cde.state.co.us/choice/homeschool"
         }
+      },
+      "legislation": {
+        "compMinAge": 6,
+        "compMaxAge": 17,
+        "yearsRequired": 11,
+        "legalized": 1973
       }
     },
     "Connecticut": {
@@ -321,6 +357,12 @@
           "value": false,
           "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
         }
+      },
+      "legislation": {
+        "compMinAge": 5,
+        "compMaxAge": 18,
+        "yearsRequired": 13,
+        "legalized": 1990
       }
     },
     "Delaware": {
@@ -367,6 +409,12 @@
           "value": false,
           "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
         }
+      },
+      "legislation": {
+        "compMinAge": 5,
+        "compMaxAge": 16,
+        "yearsRequired": 11,
+        "legalized": 1997
       }
     },
     "Florida": {
@@ -413,6 +461,12 @@
           "value": true,
           "source": "http://www.leg.state.fl.us/Statutes/index.cfm?App_mode=Display_Statute&URL=1000-1099/1002/Sections/1002.41.html"
         }
+      },
+      "legislation": {
+        "compMinAge": 6,
+        "compMaxAge": 16,
+        "yearsRequired": 10,
+        "legalized": 1985
       }
     },
     "Georgia": {
@@ -459,6 +513,12 @@
           "value": false,
           "source": "https://law.justia.com/codes/georgia/title-20/chapter-2/article-16/part-1/subpart-2/section-20-2-690/"
         }
+      },
+      "legislation": {
+        "compMinAge": 6,
+        "compMaxAge": 16,
+        "yearsRequired": 10,
+        "legalized": 1984
       }
     },
     "Hawaii": {
@@ -505,6 +565,12 @@
           "value": true,
           "source": "https://hawaiipublicschools.org/enrolling-in-school/homeschool/?highlight=homeschool"
         }
+      },
+      "legislation": {
+        "compMinAge": 6,
+        "compMaxAge": 18,
+        "yearsRequired": 12,
+        "legalized": 1989
       }
     },
     "Idaho": {
@@ -551,6 +617,12 @@
           "value": false,
           "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
         }
+      },
+      "legislation": {
+        "compMinAge": 7,
+        "compMaxAge": 16,
+        "yearsRequired": 9,
+        "legalized": 2015
       }
     },
     "Illinois": {
@@ -597,6 +669,12 @@
           "value": false,
           "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
         }
+      },
+      "legislation": {
+        "compMinAge": 6,
+        "compMaxAge": 17,
+        "yearsRequired": 11,
+        "legalized": 1950
       }
     },
     "Indiana": {
@@ -643,6 +721,12 @@
           "value": false,
           "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
         }
+      },
+      "legislation": {
+        "compMinAge": 7,
+        "compMaxAge": 18,
+        "yearsRequired": 11,
+        "legalized": 1904
       }
     },
     "Iowa": {
@@ -689,6 +773,12 @@
           "value": true,
           "source": "https://www.legis.iowa.gov/docs/ico/chapter/299A.pdf"
         }
+      },
+      "legislation": {
+        "compMinAge": 6,
+        "compMaxAge": 16,
+        "yearsRequired": 10,
+        "legalized": 1991
       }
     },
     "Kansas": {
@@ -735,6 +825,12 @@
           "value": false,
           "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
         }
+      },
+      "legislation": {
+        "compMinAge": 7,
+        "compMaxAge": 18,
+        "yearsRequired": 11,
+        "legalized": 1982
       }
     },
     "Kentucky": {
@@ -781,6 +877,12 @@
           "value": false,
           "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
         }
+      },
+      "legislation": {
+        "compMinAge": 6,
+        "compMaxAge": 18,
+        "yearsRequired": 12,
+        "legalized": 1948
       }
     },
     "Louisiana": {
@@ -827,6 +929,12 @@
           "value": true,
           "source": "https://law.justia.com/codes/louisiana/revised-statutes/title-17/rs-17-236-1/"
         }
+      },
+      "legislation": {
+        "compMinAge": 7,
+        "compMaxAge": 18,
+        "yearsRequired": 11,
+        "legalized": 1984
       }
     },
     "Maine": {
@@ -873,6 +981,12 @@
           "value": true,
           "source": "https://law.justia.com/codes/maine/title-20-a/part-3/chapter-211/subchapter-1/section-5001-a/"
         }
+      },
+      "legislation": {
+        "compMinAge": 6,
+        "compMaxAge": 17,
+        "yearsRequired": 11,
+        "legalized": 1983
       }
     },
     "Maryland": {
@@ -919,6 +1033,12 @@
           "value": false,
           "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
         }
+      },
+      "legislation": {
+        "compMinAge": 5,
+        "compMaxAge": 18,
+        "yearsRequired": 13,
+        "legalized": 1987
       }
     },
     "Massachusetts": {
@@ -965,6 +1085,12 @@
           "value": true,
           "source": "https://www.doe.mass.edu/homeschool/"
         }
+      },
+      "legislation": {
+        "compMinAge": 6,
+        "compMaxAge": 16,
+        "yearsRequired": 10,
+        "legalized": 1987
       }
     },
     "Michigan": {
@@ -1011,6 +1137,12 @@
           "value": false,
           "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
         }
+      },
+      "legislation": {
+        "compMinAge": 6,
+        "compMaxAge": 18,
+        "yearsRequired": 12,
+        "legalized": 1996
       }
     },
     "Minnesota": {
@@ -1057,6 +1189,12 @@
           "value": true,
           "source": "https://www.revisor.mn.gov/statutes/cite/120A.22"
         }
+      },
+      "legislation": {
+        "compMinAge": 7,
+        "compMaxAge": 17,
+        "yearsRequired": 10,
+        "legalized": 1987
       }
     },
     "Mississippi": {
@@ -1103,6 +1241,12 @@
           "value": false,
           "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
         }
+      },
+      "legislation": {
+        "compMinAge": 6,
+        "compMaxAge": 17,
+        "yearsRequired": 11,
+        "legalized": 1972
       }
     },
     "Missouri": {
@@ -1149,6 +1293,12 @@
           "value": false,
           "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
         }
+      },
+      "legislation": {
+        "compMinAge": 7,
+        "compMaxAge": 17,
+        "yearsRequired": 10,
+        "legalized": 1978
       }
     },
     "Montana": {
@@ -1195,6 +1345,12 @@
           "value": false,
           "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
         }
+      },
+      "legislation": {
+        "compMinAge": 7,
+        "compMaxAge": 16,
+        "yearsRequired": 9,
+        "legalized": 1983
       }
     },
     "Nebraska": {
@@ -1241,6 +1397,12 @@
           "value": false,
           "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
         }
+      },
+      "legislation": {
+        "compMinAge": 6,
+        "compMaxAge": 18,
+        "yearsRequired": 12,
+        "legalized": 1984
       }
     },
     "Nevada": {
@@ -1287,6 +1449,12 @@
           "value": false,
           "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
         }
+      },
+      "legislation": {
+        "compMinAge": 6,
+        "compMaxAge": 18,
+        "yearsRequired": 11,
+        "legalized": 1947
       }
     },
     "New Hampshire": {
@@ -1333,6 +1501,12 @@
           "value": false,
           "source": "https://law.justia.com/codes/new-hampshire/title-xv/chapter-193-a/section-193-a-6/"
         }
+      },
+      "legislation": {
+        "compMinAge": 6,
+        "compMaxAge": 18,
+        "yearsRequired": 12,
+        "legalized": 1990
       }
     },
     "New Jersey": {
@@ -1379,6 +1553,12 @@
           "value": false,
           "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
         }
+      },
+      "legislation": {
+        "compMinAge": 6,
+        "compMaxAge": 16,
+        "yearsRequired": 10,
+        "legalized": 1967
       }
     },
     "New Mexico": {
@@ -1425,6 +1605,12 @@
           "value": false,
           "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
         }
+      },
+      "legislation": {
+        "compMinAge": 5,
+        "compMaxAge": 18,
+        "yearsRequired": 13,
+        "legalized": 1985
       }
     },
     "New York": {
@@ -1471,6 +1657,12 @@
           "value": true,
           "source": "https://govt.westlaw.com/nycrr/Document/I3652de29c22211ddb29d8bee567fca9f?viewType=FullText&originationContext=documenttoc&transitionType=CategoryPageItem&contextData=(sc.Default)&bhcp=1"
         }
+      },
+      "legislation": {
+        "compMinAge": 6,
+        "compMaxAge": 16,
+        "yearsRequired": 10,
+        "legalized": 1987
       }
     },
     "North Carolina": {
@@ -1517,6 +1709,12 @@
           "value": false,
           "source": "https://www.doa.nc.gov/divisions/non-public-education/home-schools/standardized-testing"
         }
+      },
+      "legislation": {
+        "compMinAge": 7,
+        "compMaxAge": 16,
+        "yearsRequired": 9,
+        "legalized": 1988
       }
     },
     "North Dakota": {
@@ -1563,6 +1761,12 @@
           "value": true,
           "source": "https://codes.findlaw.com/nd/title-15-1-elementary-and-secondary-education/nd-cent-code-sect-15-1-23-08/"
         }
+      },
+      "legislation": {
+        "compMinAge": 7,
+        "compMaxAge": 16,
+        "yearsRequired": 9,
+        "legalized": 1989
       }
     },
     "Ohio": {
@@ -1609,6 +1813,12 @@
           "value": false,
           "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
         }
+      },
+      "legislation": {
+        "compMinAge": 6,
+        "compMaxAge": 18,
+        "yearsRequired": 12,
+        "legalized": 1989
       }
     },
     "Oklahoma": {
@@ -1655,6 +1865,12 @@
           "value": false,
           "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
         }
+      },
+      "legislation": {
+        "compMinAge": 5,
+        "compMaxAge": 18,
+        "yearsRequired": 13,
+        "legalized": 1907
       }
     },
     "Oregon": {
@@ -1701,6 +1917,12 @@
           "value": true,
           "source": "https://oregon.public.law/statutes/ors_339.035"
         }
+      },
+      "legislation": {
+        "compMinAge": 6,
+        "compMaxAge": 18,
+        "yearsRequired": 12,
+        "legalized": 1985
       }
     },
     "Pennsylvania": {
@@ -1747,6 +1969,12 @@
           "value": true,
           "source": "https://codes.findlaw.com/pa/title-24-ps-education/pa-st-sect-24-13-1327-1/"
         }
+      },
+      "legislation": {
+        "compMinAge": 6,
+        "compMaxAge": 18,
+        "yearsRequired": 12,
+        "legalized": 1949
       }
     },
     "Rhode Island": {
@@ -1793,6 +2021,12 @@
           "value": false,
           "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
         }
+      },
+      "legislation": {
+        "compMinAge": 6,
+        "compMaxAge": 18,
+        "yearsRequired": 12,
+        "legalized": 1984
       }
     },
     "South Carolina": {
@@ -1839,6 +2073,12 @@
           "value": true,
           "source": "https://law.justia.com/codes/south-carolina/title-59/chapter-65/section-59-65-40/"
         }
+      },
+      "legislation": {
+        "compMinAge": 5,
+        "compMaxAge": 17,
+        "yearsRequired": 12,
+        "legalized": 1988
       }
     },
     "South Dakota": {
@@ -1885,6 +2125,12 @@
           "value": false,
           "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
         }
+      },
+      "legislation": {
+        "compMinAge": 6,
+        "compMaxAge": 18,
+        "yearsRequired": 12,
+        "legalized": 1939
       }
     },
     "Tennessee": {
@@ -1931,6 +2177,12 @@
           "value": true,
           "source": "https://law.justia.com/codes/tennessee/title-49/chapter-6/part-30/section-49-6-3050/"
         }
+      },
+      "legislation": {
+        "compMinAge": 6,
+        "compMaxAge": 17,
+        "yearsRequired": 11,
+        "legalized": 1985
       }
     },
     "Texas": {
@@ -1977,6 +2229,12 @@
           "value": false,
           "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
         }
+      },
+      "legislation": {
+        "compMinAge": 6,
+        "compMaxAge": 19,
+        "yearsRequired": 13,
+        "legalized": 1987
       }
     },
     "Utah": {
@@ -2023,6 +2281,12 @@
           "value": false,
           "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
         }
+      },
+      "legislation": {
+        "compMinAge": 6,
+        "compMaxAge": 18,
+        "yearsRequired": 12,
+        "legalized": 2014
       }
     },
     "Vermont": {
@@ -2069,6 +2333,12 @@
           "value": false,
           "source": "https://education.vermont.gov/home-study"
         }
+      },
+      "legislation": {
+        "compMinAge": 6,
+        "compMaxAge": 16,
+        "yearsRequired": 10,
+        "legalized": 1987
       }
     },
     "Virginia": {
@@ -2115,6 +2385,12 @@
           "value": true,
           "source": "https://www.doe.virginia.gov/parents-students/for-parents/home-instruction"
         }
+      },
+      "legislation": {
+        "compMinAge": 5,
+        "compMaxAge": 18,
+        "yearsRequired": 13,
+        "legalized": 1984
       }
     },
     "Washington": {
@@ -2161,6 +2437,12 @@
           "value": true,
           "source": "https://law.justia.com/codes/washington/title-28a/chapter-28a-200/section-28a-200-010/"
         }
+      },
+      "legislation": {
+        "compMinAge": 8,
+        "compMaxAge": 18,
+        "yearsRequired": 10,
+        "legalized": 1985
       }
     },
     "West Virginia": {
@@ -2207,6 +2489,12 @@
           "value": true,
           "source": "https://law.justia.com/codes/west-virginia/chapter-18/article-8/section-18-8-1/"
         }
+      },
+      "legislation": {
+        "compMinAge": 6,
+        "compMaxAge": 17,
+        "yearsRequired": 11,
+        "legalized": 1987
       }
     },
     "Wisconsin": {
@@ -2253,6 +2541,12 @@
           "value": false,
           "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
         }
+      },
+      "legislation": {
+        "compMinAge": 6,
+        "compMaxAge": 18,
+        "yearsRequired": 12,
+        "legalized": 1983
       }
     },
     "Wyoming": {
@@ -2299,6 +2593,12 @@
           "value": false,
           "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
         }
+      },
+      "legislation": {
+        "compMinAge": 7,
+        "compMaxAge": 16,
+        "yearsRequired": 9,
+        "legalized": 1985
       }
     },
     "District of Columbia": {
@@ -2345,6 +2645,12 @@
           "value": false,
           "source": "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455"
         }
+      },
+      "legislation": {
+        "compMinAge": 5,
+        "compMaxAge": 18,
+        "yearsRequired": 13,
+        "legalized": 2008
       }
     }
   }
