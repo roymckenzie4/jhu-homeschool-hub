@@ -128,10 +128,14 @@ export function regulationCitation() {
 /**
  * Display the abbreviated school-year label for a starting year integer.
  * 2024 -> "2024-25". Used everywhere we render a year to the user.
+ *
+ * Joins with a non-breaking hyphen (U+2011, visually identical to "-") so a
+ * span never wraps mid-token ("1999-\n00") — in the UI or in the exported PNG
+ * labels. Display-only string; never parsed, filenamed, or split downstream.
  */
 export function schoolYearLabel(startYear) {
   const endSuffix = String((startYear + 1) % 100).padStart(2, "0");
-  return `${startYear}-${endSuffix}`;
+  return `${startYear}‑${endSuffix}`;
 }
 
 /**
