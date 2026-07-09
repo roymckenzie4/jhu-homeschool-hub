@@ -4,11 +4,9 @@
  * Mirrors EnrollmentPanel's shape so it drops into the same shell grid: a
  * summary CARD top-right beside the map, and the DATA zone (the wide, side-by-
  * side regulation comparison table) spanning full width below. Reads the cohort
- * from the shared selection and dispatches per-row removal back through it.
+ * from the shared selection; removal happens via the shared chips above the map.
  *
- * The card is a placeholder for now — the per-state regulation summary lands
- * here once its shape is settled against the real layout. All regulation data
- * comes through the policy loader, never the CSV directly.
+ * All regulation data comes through the policy loader, never the CSV directly.
  */
 
 import { useSelection } from "../state/selection.jsx";
@@ -20,17 +18,9 @@ import {
 } from "../config/layout.js";
 import PolicyCard from "./PolicyCard.jsx";
 import PolicyComparisonTable from "./PolicyComparisonTable.jsx";
-import { trackEvent } from "../lib/analytics.js";
 
 export default function PolicyPanel() {
-  const { selectedStates, toggleState } = useSelection();
-
-  // Removing a state from within the table logs under this topic, matching the
-  // shell map's selection events.
-  function removeState(name) {
-    toggleState(name);
-    trackEvent("state_select", { view: "policy", state: name });
-  }
+  const { selectedStates } = useSelection();
 
   return (
     <>
@@ -53,7 +43,6 @@ export default function PolicyPanel() {
         <PolicyComparisonTable
           selectedStates={selectedStates}
           policyByState={policyByState}
-          onRemove={removeState}
         />
       </div>
     </>

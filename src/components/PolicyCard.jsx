@@ -24,15 +24,39 @@ import { BY_NAME } from "../config/states.js";
 const HOMESCHOOL_HUB_BASE =
   "https://education.jhu.edu/edpolicy/policy-research-initiatives/homeschool-hub/states";
 
+const EM_DASH = "—";
+
+// Compulsory-schooling age range, e.g. "6–17"; em dash if either bound absent.
+function ageRange(min, max) {
+  return min == null || max == null ? EM_DASH : `${min}–${max}`;
+}
+
+function numberOrDash(n) {
+  return n == null ? EM_DASH : String(n);
+}
+
+// Compact one-line legislation summary for the comparison roster — skips any
+// missing piece rather than printing dashes inline. Terse (e.g. "ages 6–18 ·
+// 12 years · 1948") since it sits inline between the state name and its badge.
+function legislationLine(leg) {
+  const parts = [];
+  if (leg.compMinAge != null && leg.compMaxAge != null) {
+    parts.push(`ages ${leg.compMinAge}–${leg.compMaxAge}`);
+  }
+  if (leg.yearsRequired != null) parts.push(`${leg.yearsRequired} years`);
+  if (leg.legalized != null) parts.push(`${leg.legalized}`);
+  return parts.join(" · ");
+}
+
 const CARD_CLASS =
-  "flex flex-col border border-l-4 border-sable/10 border-l-heritage bg-white px-6 py-4 lg:h-full lg:overflow-y-auto";
+  "flex flex-col border border-l-4 border-sable/10 border-l-heritage bg-white px-5 py-3 lg:h-full lg:overflow-y-auto";
 
 // Level pill — heritage-warm fill per level, white text only on the darkest.
 function LevelBadge({ level }) {
   if (!level) return null;
   return (
     <span
-      className="inline-flex items-center rounded-full px-2 py-0.5 font-sans text-[11px] font-semibold"
+      className="inline-flex items-center rounded-full px-1.5 py-0.5 font-sans text-[10px] font-semibold"
       style={{
         backgroundColor: levelColor(level),
         color: level === "High" ? "#FFFFFF" : COLORS.sable,
@@ -40,6 +64,37 @@ function LevelBadge({ level }) {
     >
       {LEVELS[level].label}
     </span>
+  );
+}
+
+// Compulsory-schooling + legalization facts from the sheet's Legislation tab.
+// Absent on the CSV fallback (snapshot-only), so the block hides itself then.
+function LegislationFacts({ legislation }) {
+  if (!legislation) return null;
+  const { compMinAge, compMaxAge, yearsRequired, legalized } = legislation;
+  const rows = [
+    ["Compulsory age", ageRange(compMinAge, compMaxAge)],
+    ["Years required", numberOrDash(yearsRequired)],
+    ["Homeschooling legalized", numberOrDash(legalized)],
+  ];
+  return (
+    <>
+      <hr className="my-3 border-t border-sable/15" />
+      <p className="font-sans text-[11px] font-semibold uppercase tracking-widest text-sable/70">
+        State context
+      </p>
+      <ul className="mt-2 space-y-1.5">
+        {rows.map(([label, value]) => (
+          <li
+            key={label}
+            className="flex items-baseline justify-between font-sans text-xs"
+          >
+            <span className="text-sable/70">{label}</span>
+            <span className="font-semibold tabular-nums text-sable">{value}</span>
+          </li>
+        ))}
+      </ul>
+    </>
   );
 }
 
@@ -75,16 +130,16 @@ function Overview({ policyByState }) {
         State regulation
       </h3>
       <p className="mt-2 font-sans text-xs leading-snug text-sable/70">
-        How each state regulates homeschooling, across {REGULATION_COUNT} policy
-        areas in three groups.
+        How each state regulates homeschooling, across {REGULATION_COUNT}{" "}
+        regulations in three groups.
       </p>
 
-      <hr className="my-4 border-t border-sable/15" />
+      <hr className="my-3 border-t border-sable/15" />
 
       <p className="font-sans text-[11px] font-semibold uppercase tracking-widest text-sable/70">
         States by Regulation Level
       </p>
-      <ul className="mt-3 space-y-2">
+      <ul className="mt-2 space-y-1.5">
         {LEVEL_ORDER.map((level) => {
           const n = entries.filter((e) => e.level === level).length;
           return (
@@ -111,19 +166,23 @@ function Detail({ stateName, entry }) {
     <>
       <h3 className="font-sans text-lg font-semibold text-sable">{stateName}</h3>
 
+      {/* Profile-style level stat: the level as the anchor, count as the read. */}
       <div className="mt-3 flex items-center gap-2">
         <LevelBadge level={entry?.level} />
-        <span className="font-sans text-sm text-sable">
-          <span className="font-bold">
-            {entry?.total ?? 0} of {REGULATION_COUNT}
-          </span>{" "}
-          regulations in force
+        <span className="font-sans text-[15px] font-semibold text-sable">
+          {entry?.level ? `${LEVELS[entry.level].label} regulation` : "—"}
         </span>
       </div>
+      <p className="mt-1 font-sans text-xs text-sable/60">
+        {entry?.total ?? 0} of {REGULATION_COUNT} regulations in force
+      </p>
 
-      <hr className="my-4 border-t border-sable/15" />
+      <hr className="my-3 border-t border-sable/15" />
 
-      <ul className="space-y-2">
+      <p className="font-sans text-[11px] font-semibold uppercase tracking-widest text-sable/70">
+        Regulations
+      </p>
+      <ul className="mt-2 space-y-1.5">
         {REGULATION_GROUPS.map((group) => {
           const yes = group.regulations.filter(
             (r) => entry?.regulations?.[r.key]?.value,
@@ -143,8 +202,9 @@ function Detail({ stateName, entry }) {
         })}
       </ul>
 
-      <div className="mt-auto">
-        <hr className="mb-3 mt-3 border-t border-sable/15" />
+      <LegislationFacts legislation={entry?.legislation} />
+
+      <div className="mt-auto border-t border-sable/15 pt-2.5">
         <a
           href={`${HOMESCHOOL_HUB_BASE}/${slug}/`}
           target="_blank"
@@ -158,33 +218,40 @@ function Detail({ stateName, entry }) {
   );
 }
 
-// 2+ states: a compact roster — each state's level badge + count in force, in
-// selection order — paralleling the enrollment comparison leaderboard. The full
-// side-by-side breakdown lives in the table.
+// 2+ states: a compact roster, ONE line per state (name · muted legal context ·
+// badge + score) in selection order — orients quickly without turning into a
+// stack of mini-profiles. The full side-by-side breakdown lives in the table.
 function ComparisonSummary({ selectedStates, policyByState }) {
   return (
     <>
       <h3 className="font-sans text-lg font-semibold text-sable">
         Comparing {selectedStates.length} states
       </h3>
-      <p className="mt-2 font-sans text-xs leading-snug text-sable/70">
-        regulation level, of {REGULATION_COUNT} policy areas
+      {/* Muted key so the middle metadata (e.g. "ages 5–18 · 13 yrs · 2008")
+          is decodable without reading like a stiff table header. */}
+      <p className="mt-1.5 font-sans text-[11px] text-sable/45">
+        State · age range · years required · law year · level
       </p>
 
-      <hr className="my-4 border-t border-sable/15" />
+      <hr className="my-3 border-t border-sable/15" />
 
-      <ul className="space-y-2.5">
+      {/* Rows breathe through spacing, not rules — the source-linked table
+          below does the table job. */}
+      <ul className="space-y-2">
         {selectedStates.map((name) => {
           const entry = policyByState[name];
           return (
             <li
               key={name}
-              className="flex items-center gap-3 font-sans text-xs"
+              className="flex items-center gap-2 font-sans text-xs"
             >
-              <span className="truncate font-medium tracking-[0.03em] text-sable">
-                {name}
-              </span>
-              <span className="ml-auto flex shrink-0 items-center gap-2">
+              <span className="shrink-0 font-medium text-sable">{name}</span>
+              {entry?.legislation && (
+                <span className="flex-1 truncate text-[11px] tabular-nums text-sable/50">
+                  {legislationLine(entry.legislation)}
+                </span>
+              )}
+              <span className="ml-auto flex shrink-0 items-center gap-1.5">
                 <LevelBadge level={entry?.level} />
                 <span className="tabular-nums text-sable/60">
                   {entry?.total ?? 0}/{REGULATION_COUNT}
@@ -195,8 +262,8 @@ function ComparisonSummary({ selectedStates, policyByState }) {
         })}
       </ul>
 
-      <p className="mt-4 flex-1 font-sans text-xs leading-relaxed text-sable/60">
-        The table shows each state's requirements side by side.
+      <p className="mt-3 flex-1 font-sans text-xs leading-relaxed text-sable/60">
+        See the table below for source-linked requirements.
       </p>
     </>
   );

@@ -6,13 +6,13 @@
 
 import { X } from "lucide-react";
 
-export default function RemoveButton({ onClick, label }) {
+export default function RemoveButton({ onClick, label, className = "" }) {
   return (
     <button
       type="button"
       onClick={onClick}
       aria-label={label}
-      className="rounded-full p-0.5 text-sable/40 transition-colors hover:bg-sable/10 hover:text-sable"
+      className={`rounded-full p-0.5 text-sable/40 transition hover:bg-sable/10 hover:text-sable ${className}`}
     >
       <X className="h-3 w-3" aria-hidden="true" />
     </button>

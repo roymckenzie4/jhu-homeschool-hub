@@ -7,8 +7,8 @@
  * column. It sizes naturally to its rows — the fixed frame lives at the shell
  * level (see App), not here. Each regulation cell shows "Yes" (in force, in
  * heritage) or a muted "No"; either links to that rule's source statute when
- * the sheet provides one. The STATE cell carries a remove ✕, the Low/Med/High
- * badge, and the regulation count.
+ * the sheet provides one. The STATE cell anchors the name, with the Low/Med/High
+ * badge and regulation count as right-aligned metadata; removal is via the chips.
  *
  * Column widths are pinned so a long state name or "not reported" can never
  * reflow the grid. When nothing is selected, a prompt stands in for the table.
@@ -21,7 +21,6 @@
  * Props:
  *   - selectedStates string[]   states to show as rows, in selection order.
  *   - policyByState   object     shaped regulation data.
- *   - onRemove        (name)     remove a state from the comparison.
  */
 
 import {
@@ -44,7 +43,6 @@ import {
   enrollmentLatestYear,
   enrollmentInLatestYear,
 } from "../data/enrollmentLoader.js";
-import RemoveButton from "./RemoveButton.jsx";
 import {
   Tooltip,
   TooltipTrigger,
@@ -67,7 +65,7 @@ const DIVIDER = "border-l border-sable/10";
 
 // Pinned column widths so the grid never shifts with content — a long state
 // name ("District of Columbia") or "not reported" can't reflow the table.
-const STATE_COL = "w-[248px]";
+const STATE_COL = "w-[272px]";
 const HS_COL = "w-[104px]";
 
 // Neutral shade behind the State + Homeschoolers header cells, so the whole
@@ -116,7 +114,6 @@ function EmptyPrompt() {
 export default function PolicyComparisonTable({
   selectedStates,
   policyByState,
-  onRemove,
 }) {
   if (selectedStates.length === 0) return <EmptyPrompt />;
 
@@ -128,7 +125,7 @@ export default function PolicyComparisonTable({
           <TableRow className="border-b border-sable/15 hover:bg-transparent">
             <TableHead
               rowSpan={2}
-              className={`h-auto ${STATE_COL} px-2 py-1.5 align-bottom text-[11px] font-semibold uppercase tracking-widest text-sable/70 ${HEADER_TINT}`}
+              className={`h-auto ${STATE_COL} py-1.5 pl-3 pr-2 align-bottom text-[11px] font-semibold uppercase tracking-widest text-sable/70 ${HEADER_TINT}`}
             >
               State
             </TableHead>
@@ -184,23 +181,24 @@ export default function PolicyComparisonTable({
             return (
               <TableRow
                 key={name}
-                className="border-b border-sable/10 hover:bg-sable/[0.02]"
+                className="border-b border-sable/10 hover:bg-sable/[0.04]"
               >
-                <TableCell className={`${STATE_COL} px-2 py-1.5`}>
-                  <span className="flex items-center gap-1.5 whitespace-nowrap">
-                    <RemoveButton
-                      onClick={() => onRemove(name)}
-                      label={`Remove ${name}`}
-                    />
-                    <span className="font-sans font-medium text-sable">
+                <TableCell className={`${STATE_COL} py-1.5 pl-3 pr-2`}>
+                  {/* Name flush-left fills the row (flex-1), pushing the badge +
+                      score metadata flush to the right edge as one tight unit
+                      (score close to the badge). */}
+                  <span className="flex items-center whitespace-nowrap">
+                    <span className="flex-1 font-sans font-semibold text-sable">
                       {name}
                     </span>
-                    <LevelBadge level={entry?.level} />
-                    {entry && (
-                      <span className="font-sans text-[10px] tabular-nums text-sable/40">
-                        {entry.total}/{REGULATION_COUNT}
-                      </span>
-                    )}
+                    <span className="flex shrink-0 items-center gap-1">
+                      <LevelBadge level={entry?.level} />
+                      {entry && (
+                        <span className="font-sans text-[10px] tabular-nums tracking-normal text-sable/40">
+                          {entry.total}/{REGULATION_COUNT}
+                        </span>
+                      )}
+                    </span>
                   </span>
                 </TableCell>
 
@@ -210,11 +208,11 @@ export default function PolicyComparisonTable({
                   const hasSource =
                     cell?.source && cell.source !== PLACEHOLDER_SOURCE_URL;
                   const label = inForce ? "Yes" : "No";
-                  // In force reads in heritage; not-in-force stays muted. Either
-                  // links to its source when the sheet provides one; a slightly
-                  // stronger muted tone signals the "No" link is clickable.
+                  // In force reads in heritage (medium, not bold — the dotted
+                  // underline carries the "source link" signal instead of weight);
+                  // not-in-force stays muted, a touch stronger when it links out.
                   const tone = inForce
-                    ? "font-semibold text-heritage"
+                    ? "font-medium text-heritage"
                     : hasSource
                       ? "text-sable/50"
                       : "text-sable/30";
@@ -231,10 +229,10 @@ export default function PolicyComparisonTable({
                           target="_blank"
                           rel="noopener noreferrer"
                           aria-label={`${col.label} ${inForce ? "in force" : "not in force"} in ${name} — view source`}
-                          className={`font-sans text-xs underline decoration-transparent underline-offset-2 outline-none transition focus-visible:ring-2 focus-visible:ring-heritage ${tone} ${
+                          className={`font-sans text-xs underline decoration-dotted underline-offset-2 outline-none transition focus-visible:ring-2 focus-visible:ring-heritage ${tone} ${
                             inForce
-                              ? "hover:decoration-heritage/40"
-                              : "hover:decoration-sable/40"
+                              ? "decoration-heritage/40 hover:decoration-heritage"
+                              : "decoration-sable/30 hover:decoration-sable/50"
                           }`}
                         >
                           {label}
