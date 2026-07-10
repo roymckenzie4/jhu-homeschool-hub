@@ -11,7 +11,9 @@ export const COLORS = {
   heritage: "#002D72", // primary; choropleth ramp endpoint; card border
   spirit: "#68ACE5", // choropleth ramp start
   sable: "#31261D", // headline number, body text
-  gold: "#FF9E1B", // positive YoY indicator (JHU brand orange — more legible on white than the brand yellow)
+  selectionBorder: "#1F1A14", // crisp near-black border on a selected state (both map ramps)
+  gold: "#FF9E1B", // JHU brand orange (warm accent; category highlights)
+  growth: "#008767", // positive YoY indicator — JHU Homewood Green (WCAG-safe on white)
   brick: "#CF4520", // negative YoY indicator
   nonReportingGround: "#E5E5E5", // light gray under the diagonal stripes
   nonReportingStripe: "#CFCFCF", // stripe color for non-reporting states

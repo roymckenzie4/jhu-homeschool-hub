@@ -78,7 +78,7 @@ export function buildEnrollmentDescriptor(activeYear) {
         ? `${name}, ${v.toLocaleString()} reported homeschoolers`
         : `${name}, no reported data for ${schoolYearLabel(activeYear)}`;
     },
-    selectionStroke: COLORS.sable,
+    selectionStroke: COLORS.selectionBorder,
     legend: {
       label: `Students, ${schoolYearLabel(activeYear)}`,
       swatches,

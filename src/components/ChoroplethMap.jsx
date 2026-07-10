@@ -57,7 +57,7 @@
  *     reliably on a continental projection).
  */
 
-import { useEffect, useId, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { feature } from "topojson-client";
 import { BY_FIPS, BY_NAME, BY_POSTAL } from "../config/states.js";
 import { COLORS, labelColorForFill } from "../config/theme.js";
@@ -85,22 +85,23 @@ import { buildProjection } from "../lib/geoProjection.js";
 const VIEW_W = 760;
 const VIEW_H = 460;
 
+// Parsed TopoJSON FeatureCollection, shared across all ChoroplethMap instances.
+// The first geo map fetches and fills this; later instances (e.g. the export
+// copy) read it synchronously instead of re-fetching. Module scope = one fetch
+// per session, and no async race for the off-screen export snapshot.
+let cachedGeoFeatures = null;
+
 // DC sits inside MD on the projection, so we draw a separate marker with a
 // short leader line pointing to where DC really is.
 const DC_MARKER_RADIUS = 5;
 const DC_LEADER_LENGTH = 26;
 
-// Stroke weights. The "halo" the selected state shows around itself comes
-// from a blur filter (see <filter id="selection-lift">), not from a stroke —
-// that's what gives it a soft glow feel rather than a hard racing stripe.
-// Hover affordance and dim-on-selection are driven by CSS rules in
+// Stroke weights. A selected state is framed by a single crisp dark border
+// (STROKE_RING); the dim-on-selection supplies the figure/ground. Hover
+// affordance and dim-on-selection are driven by CSS rules in
 // `src/styles/index.css`.
 const STROKE_REST = 0.6; // white separator between resting states
-const STROKE_RING = 2.5; // selection ring on the overlay layer
-const STROKE_INNER = 2; // white inner line, clipped to the state's
-// interior so only the inner half (~1px) shows;
-// produces a crisp hairline of white between
-// the selection ring and the state fill
+const STROKE_RING = 2.5; // dark selection border on the overlay layer
 
 const DC_NAME = "District of Columbia";
 
@@ -139,7 +140,6 @@ export default function ChoroplethMap({
   // Shared <defs> ids, suffixed so two maps on one page never collide. Default
   // (empty) prefix yields the canonical ids the global CSS + legend swatch use.
   const nonReportingId = `non-reporting${idPrefix}`;
-  const selectionLiftId = `selection-lift${idPrefix}`;
   const hoverGlowId = `state-hover-glow${idPrefix}`;
   const tileHoverLiftId = `tile-hover-lift${idPrefix}`;
 
@@ -151,9 +151,11 @@ export default function ChoroplethMap({
     return f === "url(#non-reporting)" ? `url(#${nonReportingId})` : f;
   };
 
-  // TopoJSON is fetched once at mount (geo mode only). Until it loads the SVG
-  // renders empty. Tile mode is self-contained from config, so it never fetches.
-  const [features, setFeatures] = useState(null);
+  // TopoJSON is fetched once (geo mode only) and cached at module scope, so
+  // every later map instance — notably the off-screen PNG-export copy — starts
+  // with the shapes already in hand and paints synchronously. Without this the
+  // export copy raced its own async fetch and got snapshotted blank.
+  const [features, setFeatures] = useState(cachedGeoFeatures);
 
   // Name of the state under the cursor, or null. Set on mouseenter/mouseleave
   // (which fire only when the pointer crosses a state boundary — not on every
@@ -162,26 +164,22 @@ export default function ChoroplethMap({
   // which. The fill-darkening hover glow is separate and stays CSS-only.
   const [hoveredState, setHoveredState] = useState(null);
 
-  // Namespace clipPath ids so two ChoroplethMap instances on a page (unlikely
-  // here, but cheap insurance) don't collide. Plain string ids would silently
-  // bind the second map's clip to the first map's path.
-  const uid = useId();
-  const dcClipId = `dc-inner-clip-${uid}`;
-
   useEffect(() => {
-    if (isTile) return; // tile mode needs no projection data
+    if (isTile || features) return; // tile needs no data; skip if already cached
     const url = `${import.meta.env.BASE_URL}us-states-10m.json`;
     let cancelled = false;
     fetch(url)
       .then((r) => r.json())
       .then((topo) => {
         if (cancelled) return;
-        setFeatures(feature(topo, topo.objects.states));
+        const parsed = feature(topo, topo.objects.states);
+        cachedGeoFeatures = parsed; // share with every later instance
+        setFeatures(parsed);
       });
     return () => {
       cancelled = true;
     };
-  }, [isTile]);
+  }, [isTile, features]);
 
   // Projection + path generator are memoized inside buildProjection() against
   // the FeatureCollection identity, so re-renders are cheap.
@@ -195,6 +193,22 @@ export default function ChoroplethMap({
     if (!projected) return null;
     return projected.projection([-77.0369, 38.9072]);
   }, [projected]);
+
+  // Pre-generate each state's SVG path string once per projection, keyed by FIPS
+  // id. d3's path() is the expensive call; without this it re-ran for all ~50
+  // states on every hover (hover flips local state, which re-renders). Memoized
+  // on the projection identity so hovering is now just element reconciliation.
+  const statePaths = useMemo(() => {
+    if (!projected) return null;
+    const { path } = projected;
+    const out = {};
+    for (const f of features.features) {
+      const meta = BY_FIPS[f.id];
+      if (!meta || meta.name === DC_NAME) continue;
+      out[f.id] = path(f);
+    }
+    return out;
+  }, [projected, features]);
 
   // Pre-resolve the selected states' features (excluding DC, which renders as a
   // marker) so the overlay layer doesn't re-scan the feature list every render.
@@ -229,8 +243,9 @@ export default function ChoroplethMap({
         }
       : { "aria-hidden": true };
 
-  // Shared <defs>: the non-reporting stripe pattern and the selection/hover
-  // filters. Fixed ids, identical for both modes, referenced by fills and CSS.
+  // Shared <defs>: the non-reporting stripe pattern and the hover-glow filter
+  // (both modes), plus the tile-only hover-lift filter. Fixed ids, referenced
+  // by fills and CSS.
   const sharedDefs = (
     <defs>
       {/* Diagonal stripes for states that do not publicly report. */}
@@ -251,36 +266,6 @@ export default function ChoroplethMap({
           strokeWidth="2"
         />
       </pattern>
-
-      {/* Selection lift: three stacked feDropShadow primitives produce
-          (a) a tight, nearly opaque white halo right at the shape's edge,
-          (b) a softer wider white falloff that fades to nothing, and
-          (c) a low-opacity black drop-shadow for lift off the map.
-          The two whites give a visible halo on dark fills without reading
-          as a hard racing stripe. */}
-      <filter id={selectionLiftId} x="-30%" y="-30%" width="160%" height="160%">
-        <feDropShadow
-          dx="0"
-          dy="0"
-          stdDeviation="2"
-          floodColor="#FFFFFF"
-          floodOpacity="1"
-        />
-        <feDropShadow
-          dx="0"
-          dy="0"
-          stdDeviation="4"
-          floodColor="#FFFFFF"
-          floodOpacity="0.7"
-        />
-        <feDropShadow
-          dx="0"
-          dy="3"
-          stdDeviation="4"
-          floodColor="#000000"
-          floodOpacity="0.2"
-        />
-      </filter>
 
       {/* Hover affordance: a thin sable outer glow. Lives outside the shape so
           it can't be clipped by neighbours, and it reads on every fill (the
@@ -311,10 +296,10 @@ export default function ChoroplethMap({
         />
       </filter>
 
-      {/* Tile-mode hover lift: a stronger fill-darken than the geo glow plus a
-          real offset drop shadow, so a hovered tile reads as popping off the
-          grid (paired with a CSS scale — see .map-tile in index.css). Only the
-          tile map references it; geo keeps #state-hover-glow. */}
+      {/* Tile-mode hover lift: a stronger fill-darken plus a real offset drop
+          shadow, so a hovered tile reads as popping off the grid (paired with a
+          CSS scale — see .map-tile in index.css). Only the tile map references
+          it; geo keeps #state-hover-glow. */}
       {isTile && (
         <filter
           id={tileHoverLiftId}
@@ -533,7 +518,7 @@ export default function ChoroplethMap({
         Single base layer: every state rendered exactly once. Hover affordance
         comes from CSS so mouse movement does not trigger React renders. Selected
         states stay in this layer too (so they accept clicks and aren't dimmed),
-        but the overlay layer below paints their ring + shadow on top.
+        but the overlay layer below paints their dark border on top.
       */}
       <g className={hasSelection ? "map-base--has-selection" : ""}>
         {features.features.map((f) => {
@@ -551,7 +536,7 @@ export default function ChoroplethMap({
           return (
             <path
               key={f.id}
-              d={path(f)}
+              d={statePaths[f.id]}
               className={className}
               fill={resolveFill(name)}
               stroke="#FFFFFF"
@@ -567,53 +552,23 @@ export default function ChoroplethMap({
       </g>
 
       {/*
-        Selection overlay. Non-interactive so hit-testing still falls through
-        to the base layer. For each selected state, three stacked paths:
-          1. Filled path with the selection-lift filter — outer soft white
-             halo + drop shadow.
-          2. Stroke-only path in `selectionStroke` — the crisp selection ring,
-             centered on the state edge.
-          3. Stroke-only white path, clipped to the state's own interior so
-             only the inside half of the stroke shows — a hairline of white
-             between the ring and the state fill. Classic double-stroke
-             framing; makes the selection read as deliberate.
+        Selection overlay. Non-interactive so hit-testing still falls through to
+        the base layer. Each selected state is redrawn whole (fill + a single
+        crisp dark border) ON TOP of the base layer — this lifts it above any
+        neighbours that overpaint its edge in draw order, so the border can't be
+        clipped. The dim-on-selection (base layer) supplies the figure/ground.
       */}
       <g style={{ pointerEvents: "none" }}>
-        {selectedFeatures.map((f) => {
-          const name = BY_FIPS[f.id].name;
-          const d = path(f);
-          const clipId = `selection-inner-clip-${uid}-${f.id}`;
-          return (
-            <g key={f.id}>
-              <defs>
-                <clipPath id={clipId}>
-                  <path d={d} />
-                </clipPath>
-              </defs>
-              <path
-                d={d}
-                fill={resolveFill(name)}
-                stroke="none"
-                filter={`url(#${selectionLiftId})`}
-              />
-              <path
-                d={d}
-                fill="none"
-                stroke={selectionStroke}
-                strokeWidth={STROKE_RING}
-                strokeLinejoin="round"
-              />
-              <path
-                d={d}
-                fill="none"
-                stroke="#FFFFFF"
-                strokeWidth={STROKE_INNER}
-                strokeLinejoin="round"
-                clipPath={`url(#${clipId})`}
-              />
-            </g>
-          );
-        })}
+        {selectedFeatures.map((f) => (
+          <path
+            key={f.id}
+            d={statePaths[f.id]}
+            fill={resolveFill(BY_FIPS[f.id].name)}
+            stroke={selectionStroke}
+            strokeWidth={STROKE_RING}
+            strokeLinejoin="round"
+          />
+        ))}
       </g>
 
       {/* DC: leader line + marker circle. Click + hover handled directly here
@@ -650,48 +605,20 @@ export default function ChoroplethMap({
             />
           )}
           {dcSelected && (
-            <>
-              <defs>
-                <clipPath id={dcClipId}>
-                  <circle
-                    cx={dcPoint[0] + DC_LEADER_LENGTH}
-                    cy={dcPoint[1] + DC_LEADER_LENGTH}
-                    r={DC_MARKER_RADIUS}
-                  />
-                </clipPath>
-              </defs>
-              <circle
-                cx={dcPoint[0] + DC_LEADER_LENGTH}
-                cy={dcPoint[1] + DC_LEADER_LENGTH}
-                r={DC_MARKER_RADIUS}
-                fill={resolveFill(DC_NAME)}
-                stroke="none"
-                filter={`url(#${selectionLiftId})`}
-              />
-              <circle
-                cx={dcPoint[0] + DC_LEADER_LENGTH}
-                cy={dcPoint[1] + DC_LEADER_LENGTH}
-                r={DC_MARKER_RADIUS}
-                fill="none"
-                stroke={selectionStroke}
-                strokeWidth={STROKE_RING}
-              />
-              <circle
-                cx={dcPoint[0] + DC_LEADER_LENGTH}
-                cy={dcPoint[1] + DC_LEADER_LENGTH}
-                r={DC_MARKER_RADIUS}
-                fill="none"
-                stroke="#FFFFFF"
-                strokeWidth={STROKE_INNER}
-                clipPath={`url(#${dcClipId})`}
-              />
-            </>
+            <circle
+              cx={dcPoint[0] + DC_LEADER_LENGTH}
+              cy={dcPoint[1] + DC_LEADER_LENGTH}
+              r={DC_MARKER_RADIUS}
+              fill={resolveFill(DC_NAME)}
+              stroke={selectionStroke}
+              strokeWidth={STROKE_RING}
+            />
           )}
         </g>
       )}
 
       {/* On-hover abbreviation label — topmost layer so it clears fills and the
-          selection ring. Color follows the hovered state's own luminance (white
+          selection border. Color follows the hovered state's own luminance (white
           on dark fills, sable on light / no-data) for contrast without a heavy
           outline. Non-interactive so it never steals the hover from the state
           beneath it. */}

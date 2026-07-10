@@ -22,10 +22,12 @@
 
 // Which map the app renders. This is a build/config choice, NOT a user-facing
 // toggle: each deploy ships exactly one map so JHU can A/B the two URLs.
-// 'geo'  — geographic choropleth (mainline default)
-// 'tile' — square tile grid (the reorg branch flips this)
+// 'geo'  — geographic choropleth (JHU's pick; carries the tile map's stronger
+//          selection border + hover pop, ported into geo styling)
+// 'tile' — square tile grid (kept for reference; the grid config below still
+//          feeds it if MAP_MODE flips back)
 // One-line flip per deploy; greppable by name.
-export const MAP_MODE = "tile";
+export const MAP_MODE = "geo";
 
 // Grid dimensions. Drive the map's viewBox and label sizing in tile mode.
 export const GRID_COLS = 12;

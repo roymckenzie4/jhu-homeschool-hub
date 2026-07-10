@@ -10,6 +10,7 @@
   --color-spirit: #68ACE5;
   --color-sable: #31261D;
   --color-gold: #FF9E1B;
+  --color-growth: #008767;
   --color-brick: #CF4520;
 
   --font-sans: "Work Sans", system-ui, sans-serif;
@@ -65,6 +66,10 @@
    elsewhere in the app and lets the dev tools show the cascade cleanly. */
 .state-path {
   transition: opacity 180ms ease, filter 180ms ease;
+  /* Scale/pop grows the shape around its own center, not the SVG origin. Only
+     the tile map uses it, but it's harmless on geo paths. */
+  transform-box: fill-box;
+  transform-origin: center;
 }
 .state-path--clickable {
   cursor: pointer;
@@ -87,8 +92,11 @@
    state shape reads as a glitch. */
 .state-path--clickable:focus { outline: none; }
 .state-path--clickable:focus-visible { outline: none; }
+/* When any state is selected, fade the rest back so the selection reads by
+   contrast, not just by its border. 0.86 was too timid to notice; 0.65 sets the
+   selected states clearly apart while keeping the surrounding map readable. */
 .map-base--has-selection .state-path:not(.state-path--selected) {
-  opacity: 0.86;
+  opacity: 0.65;
 }
 /* Tile mode only: the hover "pop". The extra .map-tile class outranks the
    shared geo hover rule above, so swapping in #tile-hover-lift (a stronger
@@ -111,9 +119,10 @@
   .state-path {
     transition: none;
   }
-  /* Keep the darken/shadow feedback, drop the size change (a scale is motion). */
-  .map-tile.state-path--clickable:hover,
-  .map-tile.state-path--clickable:focus-visible {
+  /* Keep the darken/shadow feedback, drop the size change (a scale is motion).
+     Covers both the geo hover-pop and the tile pop. */
+  .state-path--clickable:hover,
+  .state-path--clickable:focus-visible {
     transform: none;
   }
 }

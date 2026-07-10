@@ -31,7 +31,7 @@ export const policyDescriptor = {
       ? `${name}, ${entry.level} regulation, ${entry.total} of ${REGULATION_COUNT} in force`
       : name;
   },
-  selectionStroke: COLORS.heritage,
+  selectionStroke: COLORS.selectionBorder,
   legend: {
     label: "Regulation level, Count in force",
     swatches: LEGEND_SWATCHES,

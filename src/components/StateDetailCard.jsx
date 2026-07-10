@@ -5,7 +5,7 @@
  * Layout top→bottom:
  *   1. State name
  *   2. Big headline number + two-line subtitle
- *   3. YoY chip (gold for positive, brick for negative) + national rank
+ *   3. YoY chip (green for positive, brick for negative) + national rank
  *   4. "Read more about homeschool context in [State] →" external link + back
  *
  * The state's trend graph and by-year table live in the shell's full-width data
@@ -99,13 +99,13 @@ export default function StateDetailCard({
             <div>
               <p
                 className={`font-sans text-xl font-semibold ${
-                  yoyPositive ? 'text-gold' : 'text-brick'
+                  yoyPositive ? 'text-growth' : 'text-brick'
                 }`}
               >
                 {formatYoY(yoy)}
               </p>
               <p className="mt-1 font-sans text-[11px] text-sable/60">
-                vs. {schoolYearLabel(year - 1)}
+                since {schoolYearLabel(year - 1)}
               </p>
             </div>
             <div>
