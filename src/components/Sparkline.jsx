@@ -14,9 +14,17 @@
  * Renders into 100% of its container; the parent sets the height.
  */
 
-import { Line, LineChart, ResponsiveContainer, YAxis } from 'recharts';
-import { COLORS, schoolYearLabel } from '../config/theme.js';
-import { niceTicks } from '../lib/niceScale.js';
+import {
+  Line,
+  LineChart,
+  ReferenceLine,
+  ResponsiveContainer,
+  XAxis,
+  YAxis,
+} from 'recharts';
+import { COLORS } from '../config/theme.js';
+import { niceTicks, nearestYear, yearAxisTicks } from '../lib/niceScale.js';
+import YearAxisTick from './YearAxisTick.jsx';
 
 /**
  * Inputs:
@@ -55,56 +63,79 @@ export default function Sparkline({ series, selectedYear }) {
   const domainLo = dataMin - pad;
   const domainHi = dataMax + pad;
 
+  // First / ~2020 / last year. Ticks come from the FULL series (nulls included),
+  // so the axis spans the whole timeline and a sparse state's line doesn't read
+  // as covering the entire span. Numeric axis positions each tick by true year;
+  // a dashed reference line marks the COVID year.
+  const years = series.map((d) => d.year);
+  const xTicks = yearAxisTicks(years);
+  const covidYear = nearestYear(years);
+
   return (
-    <div className="flex h-full flex-col">
-      <div className="min-h-0 flex-1">
-        <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={series} margin={{ top: 6, right: 8, bottom: 4, left: 0 }}>
-            <YAxis
-              domain={[domainLo, domainHi]}
-              ticks={niceTicks(domainLo, domainHi)}
-              width={40}
-              tickFormatter={(v) => compact.format(v)}
-              tick={{ fontSize: 10, fill: COLORS.sable, opacity: 0.5 }}
-              tickLine={false}
-              axisLine={{ stroke: COLORS.sable, strokeOpacity: 0.15 }}
-            />
-            <Line
-              type="linear"
-              dataKey="value"
-              stroke={COLORS.heritage}
-              strokeWidth={2}
-              connectNulls={false}
-              dot={(props) => {
-                const { cx, cy, payload, index } = props;
-                if (payload?.year !== selectedYear) return null;
-                if (payload.value == null) return null;
-                if (!Number.isFinite(cx) || !Number.isFinite(cy)) return null;
-                return (
-                  <circle
-                    key={`selected-${index}`}
-                    cx={cx}
-                    cy={cy}
-                    r={3.5}
-                    fill={COLORS.heritage}
-                    stroke="white"
-                    strokeWidth={1.5}
-                  />
-                );
-              }}
-              activeDot={false}
-              isAnimationActive={false}
-            />
-          </LineChart>
-        </ResponsiveContainer>
-      </div>
-      {/* Axis labels reflect the chart's full x-extent (the entire series), not
-          just the reporting subset — so a sparse state doesn't read as spanning
-          the whole axis. Left pad clears the y-axis gutter. */}
-      <div className="mt-1 flex justify-between whitespace-nowrap pl-10 font-sans text-[10px] text-sable/50">
-        <span>{schoolYearLabel(series[0].year)}</span>
-        <span>{schoolYearLabel(series[series.length - 1].year)}</span>
-      </div>
+    <div className="h-full">
+      <ResponsiveContainer width="100%" height="100%">
+        <LineChart data={series} margin={{ top: 6, right: 8, bottom: 0, left: 0 }}>
+          <YAxis
+            domain={[domainLo, domainHi]}
+            ticks={niceTicks(domainLo, domainHi)}
+            width={40}
+            tickFormatter={(v) => compact.format(v)}
+            tick={{ fontSize: 10, fill: COLORS.sable, opacity: 0.5 }}
+            tickLine={false}
+            axisLine={{ stroke: COLORS.sable, strokeOpacity: 0.15 }}
+          />
+          <XAxis
+            dataKey="year"
+            type="number"
+            domain={["dataMin", "dataMax"]}
+            ticks={xTicks}
+            interval={0}
+            height={18}
+            tick={
+              <YearAxisTick
+                firstYear={years[0]}
+                lastYear={years[years.length - 1]}
+                covidYear={covidYear}
+              />
+            }
+            tickLine={false}
+            axisLine={{ stroke: COLORS.sable, strokeOpacity: 0.15 }}
+          />
+          {/* COVID inflection marker, behind the line so the data stays clear. */}
+          <ReferenceLine
+            x={covidYear}
+            stroke={COLORS.sable}
+            strokeOpacity={0.25}
+            strokeDasharray="3 3"
+          />
+          <Line
+            type="linear"
+            dataKey="value"
+            stroke={COLORS.heritage}
+            strokeWidth={2}
+            connectNulls={false}
+            dot={(props) => {
+              const { cx, cy, payload, index } = props;
+              if (payload?.year !== selectedYear) return null;
+              if (payload.value == null) return null;
+              if (!Number.isFinite(cx) || !Number.isFinite(cy)) return null;
+              return (
+                <circle
+                  key={`selected-${index}`}
+                  cx={cx}
+                  cy={cy}
+                  r={3.5}
+                  fill={COLORS.heritage}
+                  stroke="white"
+                  strokeWidth={1.5}
+                />
+              );
+            }}
+            activeDot={false}
+            isAnimationActive={false}
+          />
+        </LineChart>
+      </ResponsiveContainer>
     </div>
   );
 }

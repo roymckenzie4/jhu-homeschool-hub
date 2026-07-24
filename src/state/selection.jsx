@@ -32,7 +32,9 @@ export function SelectionProvider({ children }) {
   // The drill-in lens over the cohort. Only consulted when 2+ are selected.
   const [focusedState, setFocusedState] = useState(null);
 
-  // Add/remove a state from the cohort. At the cap, adding more is ignored.
+  // Add/remove a state from the cohort. Adding drops any drill-in focus so a
+  // new selection returns to the full-cohort overview instead of staying pinned
+  // on the previously-focused state's detail. At the cap, adding is ignored.
   // Removing the currently-focused state clears the now-stale focus pointer.
   const toggleState = useCallback((name) => {
     setSelectedStates((prev) => {
@@ -41,6 +43,7 @@ export function SelectionProvider({ children }) {
         return prev.filter((n) => n !== name);
       }
       if (prev.length >= COMPARE_CAP) return prev;
+      setFocusedState(null);
       return [...prev, name];
     });
   }, []);

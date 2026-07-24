@@ -120,7 +120,7 @@ export default function App() {
         </h1>
         <p className="mt-2 max-w-4xl font-sans text-xs leading-relaxed text-sable/70">
           Explore enrollment trends and state-level policies. Select one state
-          for detail, or choose multiple to compare.
+          for detail, or compare up to six.
         </p>
       </header>
 

@@ -23,9 +23,17 @@
  *   highlighted:   string | null — the emphasized state (from the legend).
  */
 
-import { Line, LineChart, ResponsiveContainer, YAxis } from "recharts";
-import { COLORS, schoolYearLabel } from "../config/theme.js";
-import { niceTicks } from "../lib/niceScale.js";
+import {
+  Line,
+  LineChart,
+  ReferenceLine,
+  ResponsiveContainer,
+  XAxis,
+  YAxis,
+} from "recharts";
+import { COLORS } from "../config/theme.js";
+import { niceTicks, nearestYear, yearAxisTicks } from "../lib/niceScale.js";
+import YearAxisTick from "./YearAxisTick.jsx";
 
 // Fraction of the shared data range padded above/below so no line runs flush
 // against the top/bottom edge. Matches Sparkline.
@@ -64,47 +72,70 @@ export default function ComparisonTrend({ rows, states, colorForState, highlight
   const domainLo = dataMin - pad;
   const domainHi = dataMax + pad;
 
-  return (
-    <div className="flex h-full flex-col">
-      <div className="min-h-0 flex-1">
-        <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={rows} margin={{ top: 6, right: 8, bottom: 4, left: 0 }}>
-            <YAxis
-              domain={[domainLo, domainHi]}
-              ticks={niceTicks(domainLo, domainHi)}
-              width={40}
-              tickFormatter={(v) => compact.format(v)}
-              tick={{ fontSize: 10, fill: COLORS.sable, opacity: 0.5 }}
-              tickLine={false}
-              axisLine={{ stroke: COLORS.sable, strokeOpacity: 0.15 }}
-            />
-            {states.map((state) => {
-              const isOn = highlighted === state;
-              const dim = highlighted != null && !isOn;
-              return (
-                <Line
-                  key={state}
-                  type="linear"
-                  dataKey={state}
-                  stroke={colorForState(state)}
-                  strokeWidth={isOn ? 2.75 : 1.75}
-                  strokeOpacity={dim ? DIMMED_ALPHA : isOn ? 1 : REST_ALPHA}
-                  dot={false}
-                  activeDot={{ r: 3 }}
-                  connectNulls={false}
-                  isAnimationActive={false}
-                />
-              );
-            })}
-          </LineChart>
-        </ResponsiveContainer>
-      </div>
+  // First / ~2020 / last year, so the COVID inflection reads as a positioned
+  // label. Numeric x-axis places each tick at its true year, not by index; a
+  // dashed reference line at the COVID year marks the inflection outright.
+  const years = rows.map((r) => r.year);
+  const xTicks = yearAxisTicks(years);
+  const covidYear = nearestYear(years);
 
-      {/* Year range, matching Sparkline. Left pad clears the y-axis gutter. */}
-      <div className="mt-1 flex justify-between pl-10 font-sans text-[10px] text-sable/50">
-        <span>{schoolYearLabel(rows[0].year)}</span>
-        <span>{schoolYearLabel(rows[rows.length - 1].year)}</span>
-      </div>
+  return (
+    <div className="h-full">
+      <ResponsiveContainer width="100%" height="100%">
+        <LineChart data={rows} margin={{ top: 6, right: 8, bottom: 0, left: 0 }}>
+          <YAxis
+            domain={[domainLo, domainHi]}
+            ticks={niceTicks(domainLo, domainHi)}
+            width={40}
+            tickFormatter={(v) => compact.format(v)}
+            tick={{ fontSize: 10, fill: COLORS.sable, opacity: 0.5 }}
+            tickLine={false}
+            axisLine={{ stroke: COLORS.sable, strokeOpacity: 0.15 }}
+          />
+          <XAxis
+            dataKey="year"
+            type="number"
+            domain={["dataMin", "dataMax"]}
+            ticks={xTicks}
+            interval={0}
+            height={18}
+            tick={
+              <YearAxisTick
+                firstYear={years[0]}
+                lastYear={years[years.length - 1]}
+                covidYear={covidYear}
+              />
+            }
+            tickLine={false}
+            axisLine={{ stroke: COLORS.sable, strokeOpacity: 0.15 }}
+          />
+          {/* COVID inflection marker, behind the lines so data stays readable. */}
+          <ReferenceLine
+            x={covidYear}
+            stroke={COLORS.sable}
+            strokeOpacity={0.25}
+            strokeDasharray="3 3"
+          />
+          {states.map((state) => {
+            const isOn = highlighted === state;
+            const dim = highlighted != null && !isOn;
+            return (
+              <Line
+                key={state}
+                type="linear"
+                dataKey={state}
+                stroke={colorForState(state)}
+                strokeWidth={isOn ? 2.75 : 1.75}
+                strokeOpacity={dim ? DIMMED_ALPHA : isOn ? 1 : REST_ALPHA}
+                dot={false}
+                activeDot={{ r: 3 }}
+                connectNulls={false}
+                isAnimationActive={false}
+              />
+            );
+          })}
+        </LineChart>
+      </ResponsiveContainer>
     </div>
   );
 }

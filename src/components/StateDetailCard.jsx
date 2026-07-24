@@ -58,7 +58,7 @@ export default function StateDetailCard({
   // as a rank out of the reporting jurisdictions, with the caption naming the
   // metric (student count) so it isn't mistaken for some other ranking.
   const stateRankValue = `${ordinal(rank)} of ${reportingCount}`;
-  const stateRankLabel = "by reported count";
+  const stateRankLabel = "by reported enrollment";
   const slug = BY_NAME[stateName]?.slug ?? '';
   const isReporting = currentValue != null;
   const yoy = computeYoY(currentValue, previousValue);

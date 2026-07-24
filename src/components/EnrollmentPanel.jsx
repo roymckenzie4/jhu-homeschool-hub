@@ -297,7 +297,9 @@ export default function EnrollmentPanel({ activeYear }) {
                 />
               ) : (
                 <DataPlaceholder>
-                  Select a state to see its trend.
+                  {count === 0
+                    ? "Select a state to see its trend."
+                    : "No enrollment reported to plot."}
                 </DataPlaceholder>
               )}
             </div>

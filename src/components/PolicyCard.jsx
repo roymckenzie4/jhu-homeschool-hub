@@ -178,7 +178,7 @@ function Detail({ stateName, entry }) {
 
       <hr className={CARD_DIVIDER_CLASS} />
 
-      <p className={CARD_EYEBROW_CLASS}>Regulations</p>
+      <p className={CARD_EYEBROW_CLASS}>Regulations in force</p>
       <ul className={CARD_LIST_CLASS}>
         {REGULATION_GROUPS.map((group) => {
           const yes = group.regulations.filter(

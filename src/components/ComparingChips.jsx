@@ -84,7 +84,7 @@ export default function ComparingChips({
           a prompt rather than a blank strip. */}
       {count === 0 && (
         <span className="font-sans text-xs italic text-sable/45">
-          Select states on the map to compare
+          Select up to 6 states on the map to compare
         </span>
       )}
 

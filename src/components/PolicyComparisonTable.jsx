@@ -260,6 +260,10 @@ export default function PolicyComparisonTable({
           })}
         </TableBody>
       </Table>
+      {/* Clarifies the "n/10" score shown beside each state's level badge. */}
+      <p className="mt-1.5 pl-3 font-sans text-[11px] text-sable/45">
+        Score = regulations in force, of {REGULATION_COUNT} tracked.
+      </p>
     </TooltipProvider>
   );
 }
