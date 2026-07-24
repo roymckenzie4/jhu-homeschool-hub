@@ -21,6 +21,11 @@
  * Props:
  *   - selectedStates string[]   states to show as rows, in selection order.
  *   - policyByState   object     shaped regulation data.
+ *   - forExport       boolean    render for the static PNG snapshot: the
+ *                                interactive affordances (source-link cells,
+ *                                tooltip-trigger column headers) drop their
+ *                                dotted underlines and render as plain text,
+ *                                since nothing is clickable in a flat image.
  */
 
 import {
@@ -114,6 +119,7 @@ function EmptyPrompt() {
 export default function PolicyComparisonTable({
   selectedStates,
   policyByState,
+  forExport = false,
 }) {
   if (selectedStates.length === 0) return <EmptyPrompt />;
 
@@ -158,17 +164,21 @@ export default function PolicyComparisonTable({
                   col.isGroupStart ? DIVIDER : ""
                 }`}
               >
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <span
-                      tabIndex={0}
-                      className="cursor-help underline decoration-dotted decoration-sable/40 underline-offset-2 outline-none focus-visible:ring-1 focus-visible:ring-heritage"
-                    >
-                      {col.label}
-                    </span>
-                  </TooltipTrigger>
-                  <TooltipContent>{col.definition}</TooltipContent>
-                </Tooltip>
+                {forExport ? (
+                  <span>{col.label}</span>
+                ) : (
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <span
+                        tabIndex={0}
+                        className="cursor-help underline decoration-dotted decoration-sable/40 underline-offset-2 outline-none focus-visible:ring-1 focus-visible:ring-heritage"
+                      >
+                        {col.label}
+                      </span>
+                    </TooltipTrigger>
+                    <TooltipContent>{col.definition}</TooltipContent>
+                  </Tooltip>
+                )}
               </TableHead>
             ))}
           </TableRow>
@@ -223,7 +233,7 @@ export default function PolicyComparisonTable({
                         col.isGroupStart ? DIVIDER : ""
                       }`}
                     >
-                      {hasSource ? (
+                      {hasSource && !forExport ? (
                         <a
                           href={cell.source}
                           target="_blank"

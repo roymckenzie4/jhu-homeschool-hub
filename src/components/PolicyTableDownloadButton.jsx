@@ -90,6 +90,7 @@ export default function PolicyTableDownloadButton({
               <PolicyComparisonTable
                 selectedStates={selectedStates}
                 policyByState={policyByState}
+                forExport
               />
             </ChartExportCard>
           </div>
