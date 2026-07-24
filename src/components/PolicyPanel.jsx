@@ -16,11 +16,15 @@ import {
   DATA_SLOT_CLASS,
   DATA_ZONE_MIN_HEIGHT,
 } from "../config/layout.js";
+import { regulationCitation } from "../config/theme.js";
+import { REGULATION_COUNT } from "../config/policy.js";
 import PolicyCard from "./PolicyCard.jsx";
 import PolicyComparisonTable from "./PolicyComparisonTable.jsx";
+import PolicyTableDownloadButton from "./PolicyTableDownloadButton.jsx";
 
 export default function PolicyPanel() {
   const { selectedStates, clearAll } = useSelection();
+  const count = selectedStates.length;
 
   return (
     <>
@@ -41,6 +45,23 @@ export default function PolicyPanel() {
         className={`${DATA_SLOT_CLASS} flex flex-col`}
         style={{ minHeight: DATA_ZONE_MIN_HEIGHT }}
       >
+        {/* Heading row carries the Save (PNG) export, right-aligned — shown only
+            once a cohort exists, so the empty prompt stays uncluttered. */}
+        {count > 0 && (
+          <div className="mb-3 flex items-center justify-between gap-4">
+            <h2 className="font-sans text-[11px] font-semibold uppercase tracking-widest text-sable/70">
+              Regulations Compared
+            </h2>
+            <PolicyTableDownloadButton
+              selectedStates={selectedStates}
+              policyByState={policyByState}
+              title="State homeschool regulations compared"
+              subtitle={`Comparing ${count} ${count === 1 ? "state" : "states"} · regulations in force, of ${REGULATION_COUNT} tracked`}
+              citation={regulationCitation()}
+              filename="homeschool-regulations-comparison.png"
+            />
+          </div>
+        )}
         <PolicyComparisonTable
           selectedStates={selectedStates}
           policyByState={policyByState}

@@ -18,6 +18,10 @@
  *                    (Sparkline/ComparisonTrend) needs a bounded height; the map
  *                    sizes itself by aspect ratio, so it passes null to let the
  *                    content define its own height.
+ *   width            number | string — overrides the default frame width. The
+ *                    charts/map use the default; the wide regulation comparison
+ *                    table passes "fit-content" so its pinned columns define the
+ *                    frame rather than being clipped by it.
  *   children         the chart (or map + legend), filling the chart area.
  */
 
@@ -32,10 +36,11 @@ export default function ChartExportCard({
   legend,
   citation,
   chartHeight = DEFAULT_CHART_HEIGHT,
+  width = EXPORT_WIDTH,
   children,
 }) {
   return (
-    <div style={{ width: EXPORT_WIDTH }} className="bg-white p-8 font-sans text-sable">
+    <div style={{ width }} className="bg-white p-8 font-sans text-sable">
       <p className="text-[11px] font-bold uppercase tracking-widest text-heritage">
         Johns Hopkins University &middot; Homeschool Hub
       </p>
