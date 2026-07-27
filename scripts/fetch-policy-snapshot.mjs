@@ -19,11 +19,11 @@
  * leaves the last known-good snapshot in place rather than blanking the data.
  */
 
-import { writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, resolve } from "node:path";
 import { parseSheetsData } from "../src/data/parseSheetsData.js";
 import { parseLegislationData } from "../src/data/parseLegislationData.js";
+import { fetchGrid, fetchValues, requireKey, writeSnapshot } from "./lib/sheets.mjs";
 
 const SPREADSHEET_ID = "1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI";
 
@@ -37,10 +37,6 @@ const HEATMAP_FIELDS =
 // only the configured columns by header, so the wide range is harmless.
 const LEGISLATION_RANGE = "Legislation!A:R";
 
-// The key is HTTP-referrer restricted; send a matching Referer so the request is
-// accepted from a server (local or CI) where there's no browser origin.
-const REFERER = "https://roymckenzie4.github.io/";
-
 // Expected jurisdiction count (50 states + DC) — a mismatch on either tab means
 // the sheet shape drifted, so we refuse to overwrite the good snapshot.
 const EXPECTED_JURISDICTIONS = 51;
@@ -49,17 +45,6 @@ const OUT_PATH = resolve(
   dirname(fileURLToPath(import.meta.url)),
   "../src/data/policy-snapshot.json",
 );
-
-// Shared GET with the key + referrer; throws on any non-OK response so a failed
-// tab aborts the whole run before anything is written.
-async function fetchJson(url, key) {
-  url.searchParams.set("key", key);
-  const res = await fetch(url, { headers: { Referer: REFERER } });
-  if (!res.ok) {
-    throw new Error(`Sheets API ${res.status}: ${await res.text()}`);
-  }
-  return res.json();
-}
 
 // Guards a parsed tab against a shape drift before it's trusted for the merge.
 function assertJurisdictionCount(tab, byState) {
@@ -72,26 +57,17 @@ function assertJurisdictionCount(tab, byState) {
 }
 
 async function main() {
-  const key = process.env.SHEETS_API_KEY;
-  if (!key) {
-    throw new Error("SHEETS_API_KEY is not set");
-  }
+  const key = requireKey();
 
   // Heat Map — spreadsheets.get for the full cell model (per-cell source links).
-  const heatUrl = new URL(
-    `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}`,
+  const { byState } = parseSheetsData(
+    await fetchGrid(SPREADSHEET_ID, HEATMAP_RANGE, HEATMAP_FIELDS, key),
   );
-  heatUrl.searchParams.set("ranges", HEATMAP_RANGE);
-  heatUrl.searchParams.set("fields", HEATMAP_FIELDS);
-  const { byState } = parseSheetsData(await fetchJson(heatUrl, key));
 
   // Legislation — values.get, plain numbers (no links on this tab).
-  const legUrl = new URL(
-    `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${encodeURIComponent(
-      LEGISLATION_RANGE,
-    )}`,
+  const { byState: legByState } = parseLegislationData(
+    await fetchValues(SPREADSHEET_ID, LEGISLATION_RANGE, key),
   );
-  const { byState: legByState } = parseLegislationData(await fetchJson(legUrl, key));
 
   assertJurisdictionCount("Heat Map", byState);
   assertJurisdictionCount("Legislation", legByState);
@@ -101,8 +77,7 @@ async function main() {
     if (byState[name]) byState[name].legislation = facts;
   }
 
-  const snapshot = { generatedAt: new Date().toISOString(), byState };
-  writeFileSync(OUT_PATH, JSON.stringify(snapshot, null, 2) + "\n");
+  writeSnapshot(OUT_PATH, { byState });
 
   const links = Object.values(byState)
     .flatMap((s) => Object.values(s.regulations))

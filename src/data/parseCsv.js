@@ -1,31 +1,40 @@
 /**
- * Parses the wide-format school enrollment CSV published by the Homeschool Hub
+ * Parses the wide-format school enrollment data published by the Homeschool Hub
  * and pivots it into shapes the UI can consume directly.
  *
- * Input shape (as published):
- *   School Year, AR, CA, CO, ...
- *   1999-2000,  "11,038", , "9,719", ...
- *   ...
+ * Two entry points share one shaping core (shapeEnrollmentGrid):
+ *   - parseCsv(text)          — the bundled CSV fallback (d3 splits the text).
+ *   - shapeEnrollmentGrid(rows) — the live path: a 2-D grid of rows, matching
+ *                                 the Google Sheets values shape and the xlsx
+ *                                 workbook rows the snapshot script reads. Kept
+ *                                 pure (no xlsx here) so the app can import it
+ *                                 without pulling a build-only parser into the
+ *                                 bundle.
+ *
+ * Input shape (either path):
+ *   ["School Year", "AR", "CA", "CO", ...]   <- row 0, header (postal codes)
+ *   ["1999-2000",   11038,  null, 9719, ...] <- one row per school year
  *
  * Output:
  *   byState: { "Arkansas": { 2024: 35419, 2023: 27528, ... }, ... }
- *   years:   [2020, 2021, 2022, 2023, 2024] (sorted ascending, integers — start year)
+ *   years:   [1999, 2000, ... 2024] (sorted ascending, integers — start year)
  *
  * Normalization rules (per PLAN.md):
- *   - "35,419"   → 35419       (strip thousands separators and stray quotes)
- *   - "" / "   " → null         (preserves "not reporting" — never coerced to 0)
- *   - "2024-2025" → start year 2024 (internal int key; display label applied at render)
+ *   - "35,419" / 35419 → 35419   (strip thousands separators; numbers pass through)
+ *   - "" / "  " / blank → null     (preserves "not reporting" — never coerced to 0)
+ *   - "2024-2025" → start year 2024 (internal int key; display label at render)
  *   - The in-flight "2025-2026" row is dropped for this prototype (partial data).
  */
 
-import { csvParse } from "d3-dsv";
+import { csvParseRows } from "d3-dsv";
 import { BY_POSTAL } from "../config/states.js";
 
 // In-flight school year that the published data only partially covers.
-// Dropping this is intentional
+// Dropping this is intentional.
 const PARTIAL_YEAR_ROW = "2025-2026";
 
-/** Strip thousands separators and parse to a number, or null for empty cells. */
+/** Strip thousands separators and parse to a number, or null for a blank cell.
+ *  Handles both CSV strings ("11,038") and already-numeric cells (xlsx). */
 function normalizeCell(raw) {
   if (raw == null) return null;
   const trimmed = String(raw).trim();
@@ -44,40 +53,52 @@ function parseSchoolYear(label) {
 }
 
 /**
- * Parse the wide CSV string and return { byState, years }.
- * - `byState` is keyed by full state name (matches BY_NAME in config/states.js).
- * - Every state in BY_POSTAL gets an entry, even if all values are null.
+ * Shape a 2-D enrollment grid into { byState, years }.
+ * - Row 0 is the header: "School Year" then a postal code per column.
+ * - Each following row is a school year label then one value per state column,
+ *   positionally aligned to the header (short rows read as null past their end).
+ * - byState is keyed by full state name (matches BY_NAME in config/states.js);
+ *   only states present as columns get an entry, so a non-reporting state stays
+ *   absent rather than a row of nulls.
  */
-export function parseCsv(csvText) {
-  const rows = csvParse(csvText);
-  const columns = rows.columns.slice(1); // drop "School Year"
+export function shapeEnrollmentGrid(rows) {
+  if (!Array.isArray(rows) || rows.length < 2) {
+    throw new Error("enrollment grid has no data rows");
+  }
 
-  // Initialize byState with an empty bucket for every known postal so the
-  // shape is predictable downstream even for fully-empty states.
+  // Column postals in order (drop the leading "School Year" header cell).
+  const columns = rows[0].slice(1).map((c) => String(c ?? "").trim());
+
+  // One empty bucket per known column, so the shape is predictable downstream.
   const byState = {};
   for (const postal of columns) {
     const entry = BY_POSTAL[postal];
-    if (!entry) continue; // unknown column — skip defensively
-    byState[entry.name] = {};
+    if (entry) byState[entry.name] = {};
   }
 
   const years = new Set();
 
-  for (const row of rows) {
-    if (row["School Year"] === PARTIAL_YEAR_ROW) continue;
-    const startYear = parseSchoolYear(row["School Year"]);
+  for (const row of rows.slice(1)) {
+    const label = String(row[0] ?? "").trim();
+    if (label === PARTIAL_YEAR_ROW) continue;
+    const startYear = parseSchoolYear(label);
     if (startYear == null) continue;
     years.add(startYear);
 
-    for (const postal of columns) {
+    columns.forEach((postal, i) => {
       const entry = BY_POSTAL[postal];
-      if (!entry) continue;
-      byState[entry.name][startYear] = normalizeCell(row[postal]);
-    }
+      if (!entry) return; // unknown column — skip defensively
+      byState[entry.name][startYear] = normalizeCell(row[i + 1]);
+    });
   }
 
   return {
     byState,
     years: [...years].sort((a, b) => a - b),
   };
+}
+
+/** Parse the bundled wide CSV string into { byState, years }. */
+export function parseCsv(csvText) {
+  return shapeEnrollmentGrid(csvParseRows(csvText));
 }
