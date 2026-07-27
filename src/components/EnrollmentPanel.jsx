@@ -37,6 +37,7 @@ import { exportElementAsPng } from "../lib/exportImage.js";
 import { trackEvent } from "../lib/analytics.js";
 import StateDetailCard from "./StateDetailCard.jsx";
 import NationalOverviewCard from "./NationalOverviewCard.jsx";
+import OnboardingPanel from "./OnboardingPanel.jsx";
 import EnrollmentComparisonCard from "./EnrollmentComparisonCard.jsx";
 import EnrollmentTable from "./EnrollmentTable.jsx";
 import EnrollmentComparisonTable from "./EnrollmentComparisonTable.jsx";
@@ -237,6 +238,9 @@ export default function EnrollmentPanel({ activeYear }) {
           mode that has no single-state detail (overview, comparison, no-history
           states) shows same-height placeholders so the row never collapses. */}
       <div className={DATA_SLOT_CLASS} style={{ minHeight: DATA_ZONE_MIN_HEIGHT }}>
+        {count === 0 ? (
+          <OnboardingPanel />
+        ) : (
         <div className="grid grid-cols-1 gap-x-8 gap-y-6 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)]">
           <div>
             <h2 className="font-sans text-[11px] font-semibold uppercase tracking-widest text-sable/70">
@@ -258,9 +262,7 @@ export default function EnrollmentPanel({ activeYear }) {
                 />
               ) : (
                 <DataPlaceholder>
-                  {count === 0
-                    ? "Select a state to see its year-by-year enrollment."
-                    : "No year-by-year enrollment reported."}
+                  No year-by-year enrollment reported.
                 </DataPlaceholder>
               )}
             </div>
@@ -297,14 +299,13 @@ export default function EnrollmentPanel({ activeYear }) {
                 />
               ) : (
                 <DataPlaceholder>
-                  {count === 0
-                    ? "Select a state to see its trend."
-                    : "No enrollment reported to plot."}
+                  No enrollment reported to plot.
                 </DataPlaceholder>
               )}
             </div>
           </div>
         </div>
+        )}
       </div>
 
       {/* Off-screen export composition — the standalone card snapshotted to PNG

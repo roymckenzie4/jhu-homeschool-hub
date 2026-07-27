@@ -21,6 +21,7 @@ import { REGULATION_COUNT } from "../config/policy.js";
 import PolicyCard from "./PolicyCard.jsx";
 import PolicyComparisonTable from "./PolicyComparisonTable.jsx";
 import PolicyTableDownloadButton from "./PolicyTableDownloadButton.jsx";
+import OnboardingPanel from "./OnboardingPanel.jsx";
 
 export default function PolicyPanel() {
   const { selectedStates, clearAll } = useSelection();
@@ -62,10 +63,14 @@ export default function PolicyPanel() {
             />
           </div>
         )}
-        <PolicyComparisonTable
-          selectedStates={selectedStates}
-          policyByState={policyByState}
-        />
+        {count === 0 ? (
+          <OnboardingPanel />
+        ) : (
+          <PolicyComparisonTable
+            selectedStates={selectedStates}
+            policyByState={policyByState}
+          />
+        )}
       </div>
     </>
   );
