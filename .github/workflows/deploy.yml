@@ -83,22 +83,40 @@ jobs:
           # variable to enable analytics; unset = no tracking.
           VITE_GA_ID: ${{ vars.VITE_GA_ID }}
 
+      # Install reorg deps before the snapshot refreshes: the enrollment script
+      # reads the .xlsx with SheetJS and shares the CSV parser (d3-dsv), so
+      # node_modules must exist first.
+      - name: Install reorg deps
+        working-directory: reorg
+        run: npm ci
+
       # Refresh the regulation source-link snapshot from the JHU Google Sheet
-      # before building reorg (this branch is where the live-links feature
-      # lives; main doesn't have the fetch script). Non-fatal: on any failure
-      # — transient API outage, quota — the committed snapshot is used, so a
-      # bad fetch can never break the deploy.
+      # before building reorg (this branch is where the live-data feature lives;
+      # main doesn't have the fetch scripts). Non-fatal: on any failure — transient
+      # API outage, quota — the committed snapshot is used, so a bad fetch can
+      # never break the deploy.
       - name: Refresh regulation snapshot (reorg)
         working-directory: reorg
         run: node scripts/fetch-policy-snapshot.mjs || echo "snapshot refresh failed; using committed snapshot"
         env:
           SHEETS_API_KEY: ${{ secrets.SHEETS_API_KEY }}
 
+      # Refresh the enrollment snapshot from JHU's workbook (downloaded via the
+      # Drive API and read with SheetJS — see the script). Same non-fatal guard:
+      # on any failure the committed snapshot is used, so a bad fetch can't break
+      # the deploy.
+      - name: Refresh enrollment snapshot (reorg)
+        working-directory: reorg
+        run: node scripts/fetch-enrollment-snapshot.mjs || echo "snapshot refresh failed; using committed snapshot"
+        env:
+          SHEETS_API_KEY: ${{ secrets.SHEETS_API_KEY }}
+
       # reorg -> /new/ subdirectory. Nested base so its assets resolve under
       # /new/. No VITE_GA_ID: the preview build stays analytics-free for now.
+      # Deps are already installed above, so this is just the build.
       - name: Build reorg (/new/)
         working-directory: reorg
-        run: npm ci && npm run build
+        run: npm run build
         env:
           VITE_BASE: /jhu-homeschool-hub/new/
 
