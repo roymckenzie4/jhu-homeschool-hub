@@ -85,7 +85,8 @@ const GROUP_TINT = {
   assessment: "bg-sable/[0.05]",
 };
 
-/** Low/Med/High pill. White text on the dark High red; sable otherwise. */
+/** Low/Med/High pill. Sable text across all levels — the warm ramp (gold →
+ * orange → red-orange) is light enough that dark text clears WCAG AA on each. */
 function LevelBadge({ level }) {
   if (!level) return null;
   return (
@@ -93,7 +94,7 @@ function LevelBadge({ level }) {
       className="rounded-full px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide"
       style={{
         backgroundColor: levelColor(level),
-        color: level === "High" ? "#FFFFFF" : COLORS.sable,
+        color: COLORS.sable,
       }}
     >
       {LEVELS[level].label}

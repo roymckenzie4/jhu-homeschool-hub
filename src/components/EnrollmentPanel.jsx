@@ -203,6 +203,8 @@ export default function EnrollmentPanel({ activeYear }) {
           <NationalOverviewCard
             nationalTotal={yearStats.total}
             year={activeYear}
+            reportingCount={yearStats.reportingCount}
+            dcReported={byState["District of Columbia"]?.[activeYear] != null}
             topStates={topStates}
           />
         ) : detailState ? (
@@ -296,6 +298,7 @@ export default function EnrollmentPanel({ activeYear }) {
                   states={selectedStates}
                   colorForState={colorForState}
                   highlighted={highlighted}
+                  selectedYear={activeYear}
                 />
               ) : (
                 <DataPlaceholder>

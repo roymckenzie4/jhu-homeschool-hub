@@ -55,7 +55,9 @@ function legislationLine(leg) {
   return parts.join(" · ");
 }
 
-// Level pill — heritage-warm fill per level, white text only on the darkest.
+// Level pill — heritage-warm fill per level. Sable text across all three: the
+// warm ramp (gold → orange → red-orange) is light enough that dark text clears
+// WCAG AA on every level, where white would fail on the lighter two.
 function LevelBadge({ level }) {
   if (!level) return null;
   return (
@@ -63,7 +65,7 @@ function LevelBadge({ level }) {
       className="inline-flex items-center rounded-full px-1.5 py-0.5 font-sans text-[10px] font-semibold"
       style={{
         backgroundColor: levelColor(level),
-        color: level === "High" ? "#FFFFFF" : COLORS.sable,
+        color: COLORS.sable,
       }}
     >
       {LEVELS[level].label}
@@ -129,7 +131,7 @@ function Overview({ policyByState }) {
   const entries = Object.values(policyByState);
   return (
     <>
-      <h3 className={CARD_HEADING_CLASS}>State regulation</h3>
+      <h3 className={CARD_HEADING_CLASS}>State regulation heat map</h3>
       <p className="mt-2 font-sans text-xs leading-snug text-sable/70">
         How each state regulates homeschooling, across {REGULATION_COUNT}{" "}
         regulations in three groups.

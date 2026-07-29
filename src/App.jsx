@@ -114,9 +114,8 @@ export default function App() {
   return (
     <main className="mx-auto max-w-[1200px] px-8 py-4 lg:px-12 lg:py-6">
       <header>
-        <h1 className="font-sans text-3xl font-medium leading-[1.2] tracking-tight text-sable">
-          Homeschool data across <span className="font-bold">50 states</span> +
-          D.C.
+        <h1 className="font-sans text-3xl font-bold leading-[1.2] tracking-tight text-sable">
+          Homeschool data across the United States
         </h1>
         <p className="mt-2 max-w-4xl font-sans text-xs leading-relaxed text-sable/70">
           Explore enrollment trends and state-level policies. Select one state

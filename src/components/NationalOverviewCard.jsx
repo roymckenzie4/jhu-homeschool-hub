@@ -22,11 +22,24 @@ import SummaryCard, {
   CARD_CAVEAT_CLASS,
 } from "./SummaryCard.jsx";
 
+// 50 states + DC — the reporting denominator for the coverage line.
+const TOTAL_JURISDICTIONS = 51;
+
 export default function NationalOverviewCard({
   nationalTotal,
   year,
+  reportingCount,
+  dcReported,
   topStates,
 }) {
+  // Split the reporting tally into "N states (plus D.C.)" vs. the rest, so the
+  // headline total reads as a partial picture, not a complete national count.
+  const statesReporting = reportingCount - (dcReported ? 1 : 0);
+  const notReporting = TOTAL_JURISDICTIONS - reportingCount;
+  const reportingPhrase = dcReported
+    ? `${statesReporting} states plus D.C.`
+    : `${statesReporting} states`;
+
   return (
     <SummaryCard>
       <h3 className={CARD_HEADING_CLASS}>United States</h3>
@@ -36,6 +49,9 @@ export default function NationalOverviewCard({
       </p>
       <p className="mt-2 font-sans text-xs leading-snug text-sable">
         reported homeschool students, {schoolYearLabel(year)}
+      </p>
+      <p className="mt-1.5 font-sans text-xs leading-snug text-sable/70">
+        {reportingPhrase} reported this year. The other {notReporting} did not.
       </p>
 
       <hr className={CARD_DIVIDER_CLASS} />

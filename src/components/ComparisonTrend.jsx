@@ -21,6 +21,8 @@
  *   states:  string[] — selected states, in selection order (line order).
  *   colorForState: (name) => string — line color for a state.
  *   highlighted:   string | null — the emphasized state (from the legend).
+ *   selectedYear:  number — marked with a vertical guide line, the multi-line
+ *                  parallel to the single-state Sparkline's selected-year dot.
  */
 
 import {
@@ -50,7 +52,7 @@ const compact = new Intl.NumberFormat("en-US", {
 const REST_ALPHA = 0.8;
 const DIMMED_ALPHA = 0.15;
 
-export default function ComparisonTrend({ rows, states, colorForState, highlighted }) {
+export default function ComparisonTrend({ rows, states, colorForState, highlighted, selectedYear }) {
   // Shared vertical domain across every selected state's reported values, so
   // all lines sit on one honest scale. Padded so extremes clear the edges.
   const values = [];
@@ -116,6 +118,20 @@ export default function ComparisonTrend({ rows, states, colorForState, highlight
             strokeOpacity={0.25}
             strokeDasharray="3 3"
           />
+          {/* Selected-year guide — the multi-line parallel to the single-state
+              dot. Dashed sable so it reads as a soft neutral marker, not a hard
+              divider; drawn AFTER the COVID line so a 2020-21 selection sits
+              cleanly on top of it. Omitted in the PNG export (selectedYear
+              undefined there) — a republished graph has no "selected" year. */}
+          {selectedYear != null && (
+            <ReferenceLine
+              x={selectedYear}
+              stroke={COLORS.sable}
+              strokeOpacity={0.55}
+              strokeWidth={1.5}
+              strokeDasharray="4 4"
+            />
+          )}
           {states.map((state) => {
             const isOn = highlighted === state;
             const dim = highlighted != null && !isOn;
