@@ -1,20 +1,19 @@
 /**
- * Regulation (policy) topic — descriptor and footer content for the unified
- * shell.
+ * Regulation topic — descriptor and footer content for the unified shell.
  *
  * Mirrors enrollmentTopic, but the descriptor is a static CONSTANT: regulation
  * levels don't change with a year, so there's nothing to rebuild. The shell
  * feeds this descriptor to the shared map + legend + chip row exactly as it
- * feeds enrollment's. The comparison table lives in PolicyPanel.
+ * feeds enrollment's. The comparison table lives in RegulationPanel.
  */
 
-import { policyByState, policyCsvText } from "../data/policyLoader.js";
+import { regulationByState, regulationCsvText } from "../data/regulationLoader.js";
 import {
   LEVELS,
   LEVEL_ORDER,
   REGULATION_COUNT,
-  POLICY_DOWNLOAD_FILENAME,
-} from "../config/policy.js";
+  REGULATION_DOWNLOAD_FILENAME,
+} from "../config/regulation.js";
 import { COLORS, levelColor } from "../config/theme.js";
 
 // Legend swatches: one per level, colored + labeled with its count range.
@@ -23,10 +22,10 @@ const LEGEND_SWATCHES = LEVEL_ORDER.map((level) => ({
   label: `${LEVELS[level].label} ${LEVELS[level].range}`,
 }));
 
-export const policyDescriptor = {
-  fillForState: (name) => levelColor(policyByState[name]?.level),
+export const regulationDescriptor = {
+  fillForState: (name) => levelColor(regulationByState[name]?.level),
   ariaLabelForState: (name) => {
-    const entry = policyByState[name];
+    const entry = regulationByState[name];
     return entry
       ? `${name}, ${entry.level} regulation, ${entry.total} of ${REGULATION_COUNT} in force`
       : name;
@@ -41,14 +40,14 @@ export const policyDescriptor = {
       </span>
     ),
   },
-  dotColorForState: (name) => levelColor(policyByState[name]?.level),
+  dotColorForState: (name) => levelColor(regulationByState[name]?.level),
   metaForState: (name) =>
-    `${policyByState[name]?.total ?? 0}/${REGULATION_COUNT}`,
+    `${regulationByState[name]?.total ?? 0}/${REGULATION_COUNT}`,
 };
 
 // Live level distribution across all jurisdictions, computed once — keeps the
 // "About this data" counts honest against the dataset (never hard-coded).
-const LEVEL_DISTRIBUTION = Object.values(policyByState).reduce(
+const LEVEL_DISTRIBUTION = Object.values(regulationByState).reduce(
   (dist, entry) => {
     dist[entry.level] += 1;
     return dist;
@@ -57,7 +56,7 @@ const LEVEL_DISTRIBUTION = Object.values(policyByState).reduce(
 );
 
 // Footer content for the shared footer (placeholder copy; JHU owns final copy).
-export const policyFooter = {
+export const regulationFooter = {
   about: (
     <>
       Each state is scored across {REGULATION_COUNT} homeschool regulations
@@ -71,6 +70,6 @@ export const policyFooter = {
       dataset.
     </>
   ),
-  csvText: policyCsvText,
-  downloadFilename: POLICY_DOWNLOAD_FILENAME,
+  csvText: regulationCsvText,
+  downloadFilename: REGULATION_DOWNLOAD_FILENAME,
 };

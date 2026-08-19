@@ -1,5 +1,5 @@
 /**
- * Summary card for the Regulation tab — the policy counterpart to the
+ * Summary card for the Regulation tab — the regulation counterpart to the
  * enrollment card slot, so both tabs read as one tool. Emergent from the shared
  * selection, matching EnrollmentPanel's three modes:
  *   - 0 selected -> overview: the national Low/Medium/High split + a prompt.
@@ -9,7 +9,7 @@
  *
  * Shares the enrollment cards' frame (border + left bar + fill-the-map-height)
  * so it drops into the same slot at matching height. All regulation data is
- * passed in from PolicyPanel (via the loader); no lookup here beyond tallying.
+ * passed in from RegulationPanel (via the loader); no lookup here beyond tallying.
  */
 
 import {
@@ -17,7 +17,7 @@ import {
   REGULATION_COUNT,
   LEVELS,
   LEVEL_ORDER,
-} from "../config/policy.js";
+} from "../config/regulation.js";
 import { COLORS, levelColor } from "../config/theme.js";
 import { BY_NAME } from "../config/states.js";
 import SummaryCard, {
@@ -102,22 +102,22 @@ function LegislationFacts({ legislation }) {
   );
 }
 
-export default function PolicyCard({ selectedStates, policyByState, onClear }) {
+export default function RegulationCard({ selectedStates, regulationByState, onClear }) {
   const count = selectedStates.length;
 
   return (
     <SummaryCard>
       {count === 0 ? (
-        <Overview policyByState={policyByState} />
+        <Overview regulationByState={regulationByState} />
       ) : count === 1 ? (
         <Detail
           stateName={selectedStates[0]}
-          entry={policyByState[selectedStates[0]]}
+          entry={regulationByState[selectedStates[0]]}
         />
       ) : (
         <ComparisonSummary
           selectedStates={selectedStates}
-          policyByState={policyByState}
+          regulationByState={regulationByState}
           onClear={onClear}
         />
       )}
@@ -127,8 +127,8 @@ export default function PolicyCard({ selectedStates, policyByState, onClear }) {
 
 // National split across all jurisdictions, paralleling the enrollment overview's
 // leaderboard: how many states sit at each regulation level.
-function Overview({ policyByState }) {
-  const entries = Object.values(policyByState);
+function Overview({ regulationByState }) {
+  const entries = Object.values(regulationByState);
   return (
     <>
       <h3 className={CARD_HEADING_CLASS}>State regulation heat map</h3>
@@ -220,7 +220,7 @@ function Detail({ stateName, entry }) {
 // 2+ states: a compact roster, ONE line per state (name · muted legal context ·
 // badge + score) in selection order — orients quickly without turning into a
 // stack of mini-profiles. The full side-by-side breakdown lives in the table.
-function ComparisonSummary({ selectedStates, policyByState, onClear }) {
+function ComparisonSummary({ selectedStates, regulationByState, onClear }) {
   return (
     <>
       <div className="flex items-baseline justify-between">
@@ -247,7 +247,7 @@ function ComparisonSummary({ selectedStates, policyByState, onClear }) {
           below does the table job. */}
       <ul className="space-y-2">
         {selectedStates.map((name) => {
-          const entry = policyByState[name];
+          const entry = regulationByState[name];
           return (
             <li
               key={name}

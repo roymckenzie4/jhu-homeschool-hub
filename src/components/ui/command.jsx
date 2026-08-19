@@ -1,7 +1,7 @@
 /**
  * shadcn Command — the cmdk command-menu primitive wrapped with the project's
  * Tailwind tokens. Paired with Popover to make the searchable "+ add state"
- * combobox in the State policies view.
+ * combobox in the Regulation view.
  *
  * Trimmed from the full shadcn component: the Dialog-based CommandDialog
  * variant is omitted so this doesn't pull in a Dialog primitive we don't use.

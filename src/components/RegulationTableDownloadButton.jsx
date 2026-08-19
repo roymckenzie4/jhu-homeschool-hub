@@ -1,5 +1,5 @@
 /**
- * PolicyTableDownloadButton — "Save" export trigger for the regulation
+ * RegulationTableDownloadButton — "Save" export trigger for the regulation
  * comparison table.
  *
  * Reuses the shared chart-export mechanism (ChartExportCard frame + exportImage),
@@ -15,13 +15,13 @@
  *
  * Props:
  *   selectedStates  string[] — states shown as rows, mirrored from the shell.
- *   policyByState   object   — shaped regulation data.
+ *   regulationByState   object   — shaped regulation data.
  *   title, subtitle, citation, filename — export metadata.
  */
 
 import { useEffect, useRef, useState } from "react";
 import ChartExportCard from "./ChartExportCard.jsx";
-import PolicyComparisonTable from "./PolicyComparisonTable.jsx";
+import RegulationComparisonTable from "./RegulationComparisonTable.jsx";
 import DownloadPngButton from "./DownloadPngButton.jsx";
 import { exportElementAsPng } from "../lib/exportImage.js";
 import { trackEvent } from "../lib/analytics.js";
@@ -30,9 +30,9 @@ import { trackEvent } from "../lib/analytics.js";
 // hiccup can't hang the pending flag forever.
 const RENDER_TIMEOUT_MS = 3000;
 
-export default function PolicyTableDownloadButton({
+export default function RegulationTableDownloadButton({
   selectedStates,
-  policyByState,
+  regulationByState,
   title,
   subtitle,
   citation,
@@ -87,9 +87,9 @@ export default function PolicyTableDownloadButton({
               chartHeight={null}
               width="fit-content"
             >
-              <PolicyComparisonTable
+              <RegulationComparisonTable
                 selectedStates={selectedStates}
-                policyByState={policyByState}
+                regulationByState={regulationByState}
                 forExport
               />
             </ChartExportCard>

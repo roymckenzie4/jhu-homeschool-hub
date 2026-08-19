@@ -1,29 +1,29 @@
 /**
- * PolicyPanel — the regulation topic's card + data regions.
+ * RegulationPanel — the regulation topic's card + data regions.
  *
  * Mirrors EnrollmentPanel's shape so it drops into the same shell grid: a
  * summary CARD top-right beside the map, and the DATA zone (the wide, side-by-
  * side regulation comparison table) spanning full width below. Reads the cohort
  * from the shared selection; removal happens via the shared chips above the map.
  *
- * All regulation data comes through the policy loader, never the CSV directly.
+ * All regulation data comes through the regulation loader, never the CSV directly.
  */
 
 import { useSelection } from "../state/selection.jsx";
-import { policyByState } from "../data/policyLoader.js";
+import { regulationByState } from "../data/regulationLoader.js";
 import {
   CARD_SLOT_CLASS,
   DATA_SLOT_CLASS,
   DATA_ZONE_MIN_HEIGHT,
 } from "../config/layout.js";
 import { regulationCitation } from "../config/theme.js";
-import { REGULATION_COUNT } from "../config/policy.js";
-import PolicyCard from "./PolicyCard.jsx";
-import PolicyComparisonTable from "./PolicyComparisonTable.jsx";
-import PolicyTableDownloadButton from "./PolicyTableDownloadButton.jsx";
+import { REGULATION_COUNT } from "../config/regulation.js";
+import RegulationCard from "./RegulationCard.jsx";
+import RegulationComparisonTable from "./RegulationComparisonTable.jsx";
+import RegulationTableDownloadButton from "./RegulationTableDownloadButton.jsx";
 import OnboardingPanel from "./OnboardingPanel.jsx";
 
-export default function PolicyPanel() {
+export default function RegulationPanel() {
   const { selectedStates, clearAll } = useSelection();
   const count = selectedStates.length;
 
@@ -34,9 +34,9 @@ export default function PolicyPanel() {
           constant height across tabs. */}
       <div className={`${CARD_SLOT_CLASS} lg:relative`}>
         <div className="lg:absolute lg:inset-0">
-          <PolicyCard
+          <RegulationCard
             selectedStates={selectedStates}
-            policyByState={policyByState}
+            regulationByState={regulationByState}
             onClear={clearAll}
           />
         </div>
@@ -53,9 +53,9 @@ export default function PolicyPanel() {
             <h2 className="font-sans text-[11px] font-semibold uppercase tracking-widest text-sable/70">
               Regulations Compared
             </h2>
-            <PolicyTableDownloadButton
+            <RegulationTableDownloadButton
               selectedStates={selectedStates}
-              policyByState={policyByState}
+              regulationByState={regulationByState}
               title="State homeschool regulations compared"
               subtitle={`Comparing ${count} ${count === 1 ? "state" : "states"} · regulations in force, of ${REGULATION_COUNT} tracked`}
               citation={regulationCitation()}
@@ -66,9 +66,9 @@ export default function PolicyPanel() {
         {count === 0 ? (
           <OnboardingPanel />
         ) : (
-          <PolicyComparisonTable
+          <RegulationComparisonTable
             selectedStates={selectedStates}
-            policyByState={policyByState}
+            regulationByState={regulationByState}
           />
         )}
       </div>

@@ -4,7 +4,7 @@
  *
  * Unlike the "Heat Map" tab, these cells carry no source hyperlinks — plain
  * values — so the simpler values.get is used (a 2-D array of formatted strings)
- * rather than the full cell model parseSheetsData reads. Header-driven: maps
+ * rather than the full cell model parseHeatMapData reads. Header-driven: maps
  * each configured column's header string to its index, so a column reorder or
  * added columns on the tab don't break the read.
  *
@@ -22,7 +22,7 @@
  */
 
 import { BY_POSTAL } from "../config/states.js";
-import { LEGISLATION_COLUMNS } from "../config/policy.js";
+import { LEGISLATION_COLUMNS } from "../config/regulation.js";
 
 /** Trimmed cell text as a number, or null for a blank/non-numeric cell. */
 function toNumber(raw) {

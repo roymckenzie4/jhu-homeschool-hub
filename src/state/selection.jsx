@@ -22,7 +22,7 @@
  */
 
 import { createContext, useCallback, useContext, useMemo, useState } from "react";
-import { COMPARE_CAP } from "../config/policy.js";
+import { COMPARE_CAP } from "../config/regulation.js";
 
 const SelectionContext = createContext(null);
 

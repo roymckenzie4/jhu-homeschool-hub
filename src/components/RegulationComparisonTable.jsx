@@ -1,5 +1,5 @@
 /**
- * PolicyComparisonTable — the side-by-side regulation comparison.
+ * RegulationComparisonTable — the side-by-side regulation comparison.
  *
  * A plain table (same shape as the Enrollment table): states are rows, the 10
  * tracked regulations are columns grouped into Registration / Instruction /
@@ -12,7 +12,7 @@
  *
  * Column widths are pinned so a long state name or "not reported" can never
  * reflow the grid. When nothing is selected, a prompt stands in for the table.
- * The "About this data" copy lives in the shared footer (see topics/policyTopic).
+ * The "About this data" copy lives in the shared footer (see topics/regulationTopic).
  *
  * Source links come from the Google Sheet snapshot via the loader. Cells the
  * sheet has no link for (source is the placeholder) render as plain text rather
@@ -20,7 +20,7 @@
  *
  * Props:
  *   - selectedStates string[]   states to show as rows, in selection order.
- *   - policyByState   object     shaped regulation data.
+ *   - regulationByState   object     shaped regulation data.
  *   - forExport       boolean    render for the static PNG snapshot: the
  *                                interactive affordances (source-link cells,
  *                                tooltip-trigger column headers) drop their
@@ -41,7 +41,7 @@ import {
   REGULATION_COUNT,
   LEVELS,
   PLACEHOLDER_SOURCE_URL,
-} from "../config/policy.js";
+} from "../config/regulation.js";
 import { COLORS, levelColor, schoolYearLabel } from "../config/theme.js";
 import { formatNumber } from "../lib/format.js";
 import {
@@ -117,9 +117,9 @@ function EmptyPrompt() {
   );
 }
 
-export default function PolicyComparisonTable({
+export default function RegulationComparisonTable({
   selectedStates,
-  policyByState,
+  regulationByState,
   forExport = false,
 }) {
   if (selectedStates.length === 0) return <EmptyPrompt />;
@@ -187,7 +187,7 @@ export default function PolicyComparisonTable({
 
         <TableBody>
           {selectedStates.map((name) => {
-            const entry = policyByState[name];
+            const entry = regulationByState[name];
             const enrollment = enrollmentInLatestYear(name);
             return (
               <TableRow

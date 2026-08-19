@@ -7,7 +7,7 @@
  * components need (fill, aria label, legend, chip-dot color), so the shell
  * itself stays topic-agnostic. Enrollment's descriptor depends on the active
  * year — the map recolors as the year changes — so it's BUILT by a function
- * rather than frozen as a constant (contrast policyTopic, which is static).
+ * rather than frozen as a constant (contrast regulationTopic, which is static).
  *
  * The panel content (detail card, comparison, by-year table) lives in
  * EnrollmentPanel; this module owns only what the shell needs.

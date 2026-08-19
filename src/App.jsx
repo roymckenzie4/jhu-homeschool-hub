@@ -6,7 +6,7 @@
  * choropleth map + legend + chip row, and the active year; each topic supplies
  * a "descriptor" (its map/legend/chip coloring rules — see topics/*Topic) that
  * the shell feeds to those shared components. The topic-specific content below
- * the chip row is a swappable panel (EnrollmentPanel / PolicyPanel).
+ * the chip row is a swappable panel (EnrollmentPanel / RegulationPanel).
  *
  * The map stays MOUNTED across tab switches: switching topics only swaps the
  * descriptor, so the 50-state SVG recolors its fills instead of remounting and
@@ -23,7 +23,7 @@ import YearSelector from "./components/YearSelector.jsx";
 import MapDownloadButton from "./components/MapDownloadButton.jsx";
 import Footer from "./components/Footer.jsx";
 import EnrollmentPanel from "./components/EnrollmentPanel.jsx";
-import PolicyPanel from "./components/PolicyPanel.jsx";
+import RegulationPanel from "./components/RegulationPanel.jsx";
 import { useSelection } from "./state/selection.jsx";
 import { CHIPS_SLOT_CLASS } from "./config/layout.js";
 import {
@@ -40,14 +40,12 @@ import {
   OLDER_YEARS,
   DEFAULT_YEAR,
 } from "./topics/enrollmentTopic.jsx";
-import { policyDescriptor, policyFooter } from "./topics/policyTopic.jsx";
+import { regulationDescriptor, regulationFooter } from "./topics/regulationTopic.jsx";
 import { trackEvent } from "./lib/analytics.js";
 
-// Tab ids stay `policy` internally (the Policy-vs-Regulation naming split is
-// still an open question for JHU); the user-facing label is "Regulation".
 const TABS = [
   { id: "enrollment", label: "Enrollment" },
-  { id: "policy", label: "Regulation" },
+  { id: "regulation", label: "Regulation" },
 ];
 
 export default function App() {
@@ -72,20 +70,20 @@ export default function App() {
   }
 
   // The active topic's coloring/labeling rules for the shared map, legend, and
-  // chip row. Enrollment's depends on the year (rebuilt as it changes); policy's
-  // is static.
+  // chip row. Enrollment's depends on the year (rebuilt as it changes);
+  // regulation's is static.
   const enrollmentDescriptor = useMemo(
     () => buildEnrollmentDescriptor(activeYear),
     [activeYear],
   );
-  const descriptor = isEnrollment ? enrollmentDescriptor : policyDescriptor;
-  const footer = isEnrollment ? enrollmentFooter : policyFooter;
+  const descriptor = isEnrollment ? enrollmentDescriptor : regulationDescriptor;
+  const footer = isEnrollment ? enrollmentFooter : regulationFooter;
 
   // Chip dot color. When comparing on Enrollment (2+ states), a chip carries the
   // state's per-state COMPARISON color so it matches the trend line, table
   // header, and card dot — one identity color across every comparison surface.
   // Unselected states (the combobox rows) keep the topic's heatmap color; single
-  // / overview / Policy always use the descriptor's heatmap or level color.
+  // / overview / Regulation always use the descriptor's heatmap or level color.
   const chipDotColor =
     isEnrollment && selectedStates.length >= 2
       ? (name) => {
@@ -118,15 +116,15 @@ export default function App() {
           Homeschool data across the United States
         </h1>
         <p className="mt-2 max-w-4xl font-sans text-xs leading-relaxed text-sable/70">
-          Explore enrollment trends and state-level policies. Select one state
-          for detail, or compare up to six.
+          Explore enrollment trends and state-level regulations. Select one
+          state for detail, or compare up to six.
         </p>
       </header>
 
       {/* Tabs on the left; the year control (Enrollment) or a same-spot "as of"
-          label (Policy) on the right. Keeping the year here rather than on its
-          own row means the tab row's height governs — the row doesn't resize
-          when switching to Policy, which has no year control. */}
+          label (Regulation) on the right. Keeping the year here rather than on
+          its own row means the tab row's height governs — the row doesn't
+          resize when switching to Regulation, which has no year control. */}
       <div className="mt-4 flex items-center justify-between gap-4">
         <ViewTabs tabs={TABS} activeTab={activeTab} onChange={handleTabChange} />
         <div className="shrink-0">
@@ -213,7 +211,7 @@ export default function App() {
           aria-labelledby={`tab-${activeTab}`}
           className="contents"
         >
-          {isEnrollment ? <EnrollmentPanel activeYear={activeYear} /> : <PolicyPanel />}
+          {isEnrollment ? <EnrollmentPanel activeYear={activeYear} /> : <RegulationPanel />}
         </div>
       </div>
 

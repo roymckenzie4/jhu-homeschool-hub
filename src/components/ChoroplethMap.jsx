@@ -5,7 +5,7 @@
  * Each view supplies callbacks that map a state name to a fill, an
  * interactivity flag, and an accessible label, plus the set of currently
  * selected states. This lets the Enrollment view (single-select, blue quintile
- * ramp) and the State policies view (multi-select, categorical level ramp)
+ * ramp) and the Regulation view (multi-select, categorical level ramp)
  * share one map.
  *
  * Two render modes, chosen per deploy via `mode` (wired to config MAP_MODE),
@@ -28,7 +28,7 @@
  *   - onSelect          (name)             invoked when an interactive state
  *                       (or DC marker) is clicked / activated.
  *   - selectionStroke   string             ring color for selected states
- *                       (default sable; the policy view passes heritage blue).
+ *                       (default sable; the regulation view passes heritage blue).
  *   - isInteractive     (name) => boolean  whether a state accepts selection
  *                       (default: all). Non-interactive states are unfocusable
  *                       and hidden from assistive tech.

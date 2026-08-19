@@ -1,7 +1,7 @@
 /**
  * Shared frame + spacing tokens for the four summary cards that sit top-right
  * beside the map (NationalOverview / StateDetail / EnrollmentComparison on
- * Enrollment, PolicyCard on Regulation). One source so their internal rhythm —
+ * Enrollment, RegulationCard on Regulation). One source so their internal rhythm —
  * padding, top-space above the headline, divider margins, list and eyebrow
  * spacing — stays identical across selection modes and tab switches. The frame
  * string was copy-pasted across all four before, drifting between three

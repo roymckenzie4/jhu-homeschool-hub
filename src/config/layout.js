@@ -39,9 +39,10 @@ export const CHIPS_SLOT_CLASS = "lg:col-span-2 lg:row-start-2";
 export const DATA_SLOT_CLASS = "lg:col-span-2 lg:row-start-3";
 
 // Min-height the data zone reserves regardless of content, so switching topics
-// (or selecting a single state on Policy, where the table is one short row)
-// doesn't collapse the zone and resize the tool. Sized to the Enrollment data
-// zone's natural height (an eyebrow heading + ENROLLMENT_TABLE_HEIGHT body), so
-// Policy's shorter table reserves the same space with whitespace below rather
-// than fake rows. Provisional alongside TARGET_HEIGHT until real iframe dims.
+// (or selecting a single state on Regulation, where the table is one short
+// row) doesn't collapse the zone and resize the tool. Sized to the Enrollment
+// data zone's natural height (an eyebrow heading + ENROLLMENT_TABLE_HEIGHT
+// body), so Regulation's shorter table reserves the same space with
+// whitespace below rather than fake rows. Provisional alongside
+// TARGET_HEIGHT until real iframe dims.
 export const DATA_ZONE_MIN_HEIGHT = ENROLLMENT_TABLE_HEIGHT + 28;

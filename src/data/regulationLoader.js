@@ -1,5 +1,5 @@
 /**
- * Policy data loader — the single seam between the app and the regulation data.
+ * Regulation data loader — the single seam between the app and the regulation data.
  *
  * Components import shaped data from here, never the data files directly.
  *
@@ -16,11 +16,11 @@
 
 import csvText from "../../homeschool-hub-policy-data.csv?raw";
 import snapshot from "./policy-snapshot.json";
-import { parsePolicyCsv } from "./parsePolicyCsv.js";
+import { parseRegulationCsv } from "./parseRegulationCsv.js";
 
 // Raw CSV text, exposed for the view's "Download data (CSV)" affordance so the
 // download serves exactly the bundled source.
-export const policyCsvText = csvText;
+export const regulationCsvText = csvText;
 
 // A snapshot is usable only if it has a byState map with entries that carry
 // regulations — guards against a truncated or malformed JSON.
@@ -33,12 +33,12 @@ function isUsableSnapshot(snap) {
 
 // Shaped regulation data, keyed by full state name. Prefer the live snapshot;
 // fall back to the bundled CSV (placeholder links) if it's unavailable.
-export const policyByState = isUsableSnapshot(snapshot)
+export const regulationByState = isUsableSnapshot(snapshot)
   ? snapshot.byState
-  : parsePolicyCsv(csvText).byState;
+  : parseRegulationCsv(csvText).byState;
 
 // When the snapshot was pulled from the sheet (ISO string), or null on fallback.
 // Available for surfacing data freshness in the UI.
-export const policyGeneratedAt = isUsableSnapshot(snapshot)
+export const regulationGeneratedAt = isUsableSnapshot(snapshot)
   ? snapshot.generatedAt
   : null;

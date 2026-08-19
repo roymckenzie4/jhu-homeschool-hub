@@ -1,7 +1,7 @@
 /**
  * Parses the Homeschool Hub "Heat Map" tab as returned by the Google Sheets API
- * (`spreadsheets.get`) and shapes it identically to parsePolicyCsv, so the two
- * are interchangeable behind policyLoader.
+ * (`spreadsheets.get`) and shapes it identically to parseRegulationCsv, so the two
+ * are interchangeable behind regulationLoader.
  *
  * The reason this path exists at all: CSV export strips hyperlinks, but the
  * regulation cells carry a per-cell source statute link. The Sheets API returns
@@ -14,7 +14,7 @@
  *   row 0 is the header; row 0 col 0 is "State", the rest are column names that
  *   match REGULATION_KEYS (plus the derived Total / Level columns we ignore).
  *
- * Output matches parsePolicyCsv exactly:
+ * Output matches parseRegulationCsv exactly:
  *   byState: { "Alabama": { total, level, regulations: { key: { value, source } } } }
  *
  * Header-driven (maps column name -> index) rather than assuming fixed
@@ -28,7 +28,7 @@ import {
   REGULATION_KEYS,
   regulationLevel,
   PLACEHOLDER_SOURCE_URL,
-} from "../config/policy.js";
+} from "../config/regulation.js";
 
 /** A cell counts as "in force" only when it reads exactly YES (case-insensitive). */
 function isYes(raw) {
@@ -40,7 +40,7 @@ function cellText(cell) {
   return String(cell?.formattedValue ?? "").trim();
 }
 
-export function parseSheetsData(json) {
+export function parseHeatMapData(json) {
   const rowData = json?.sheets?.[0]?.data?.[0]?.rowData ?? [];
   if (rowData.length < 2) {
     throw new Error("Sheets response has no data rows");

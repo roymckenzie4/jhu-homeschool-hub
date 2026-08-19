@@ -4,7 +4,7 @@
  * View-agnostic: the caller supplies the swatches (color + range/category
  * label) and an optional trailing slot, so the same component serves the
  * Enrollment view (quintile value ranges + a "no public data" note) and the
- * State policies view (Low/Med/High categories + a helper note).
+ * Regulation view (Low/Med/High categories + a helper note).
  *
  * The label cluster is split into two stacked rows that mirror the swatch +
  * range-label stack: the primary label lines up with the swatch row, and an
