@@ -1,14 +1,10 @@
-# Builds BOTH deployed versions into a single GitHub Pages artifact:
-#   - `main`  -> site root        -> https://<user>.github.io/jhu-homeschool-hub/
-#   - `reorg` -> the /new/ subdir -> https://<user>.github.io/jhu-homeschool-hub/new/
+# Builds `main` and deploys it to GitHub Pages root:
+#   https://<user>.github.io/jhu-homeschool-hub/
 #
-# GitHub Pages serves one artifact for the whole site, so every deploy rebuilds
-# both branches from their current heads and stitches them together. A push to
-# either branch (or a manual run) redeploys the whole site. Each build sets its
-# own Vite `base` so asset URLs resolve under the right path.
-#
-# Collapsing the A/B later: merge reorg -> main, delete the reorg build + the
-# /new/ assemble step, and this returns to a single root build.
+# The reorg branch was an A/B preview built alongside main at /new/ while JHU
+# picked a direction; that collapsed once reorg merged into main (see
+# decisions.md, the reorg -> main merge). A static redirect stub at
+# public/new/index.html keeps reviewers' old /new/ links from 404ing.
 #
 # To enable: Settings -> Pages -> Source = "GitHub Actions".
 
@@ -16,12 +12,10 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [main, reorg]
+    branches: [main]
   # Manual "Run workflow" button, plus a weekly refresh so the regulation
-  # snapshot picks up JHU's sheet edits on its own. NOTE: GitHub only fires
-  # `schedule` and `workflow_dispatch` from the DEFAULT branch, so both stay
-  # dormant until this file lands on `main` (the reorg -> main merge). Until
-  # then the snapshot refreshes on every push to `reorg`.
+  # snapshot picks up JHU's sheet edits on its own. `schedule` and
+  # `workflow_dispatch` only fire from the DEFAULT branch, which this now is.
   workflow_dispatch:
   schedule:
     - cron: "0 12 * * 1" # Mondays, 12:00 UTC
@@ -49,90 +43,46 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      # Two checkouts into sibling folders so both branches can be built in
-      # one job. Pages serves a single artifact, so each deploy rebuilds both.
-      - name: Checkout main branch
+      - name: Checkout
         uses: actions/checkout@v4
-        with:
-          ref: main
-          path: main
-
-      - name: Checkout reorg branch
-        uses: actions/checkout@v4
-        with:
-          ref: reorg
-          path: reorg
 
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
           node-version: "22"
           cache: "npm"
-          # Both lockfiles, since the repo is checked out into subfolders.
-          cache-dependency-path: |
-            main/package-lock.json
-            reorg/package-lock.json
 
-      # main -> site root. VITE_BASE matches the repo path so assets resolve.
-      - name: Build main (root)
-        working-directory: main
-        run: npm ci && npm run build
-        env:
-          VITE_BASE: /jhu-homeschool-hub/
-          # GA4 Measurement ID for the live root build. Set the VITE_GA_ID repo
-          # variable to enable analytics; unset = no tracking.
-          VITE_GA_ID: ${{ vars.VITE_GA_ID }}
-
-      # Install reorg deps before the snapshot refreshes: the enrollment script
-      # reads the .xlsx with SheetJS and shares the CSV parser (d3-dsv), so
-      # node_modules must exist first.
-      - name: Install reorg deps
-        working-directory: reorg
+      - name: Install deps
         run: npm ci
 
       # Refresh the regulation source-link snapshot from the JHU Google Sheet
-      # before building reorg (this branch is where the live-data feature lives;
-      # main doesn't have the fetch scripts). Non-fatal: on any failure — transient
-      # API outage, quota — the committed snapshot is used, so a bad fetch can
-      # never break the deploy.
-      - name: Refresh regulation snapshot (reorg)
-        working-directory: reorg
+      # before building. Non-fatal: on any failure — transient API outage,
+      # quota — the committed snapshot is used, so a bad fetch can never
+      # break the deploy.
+      - name: Refresh regulation snapshot
         run: node scripts/fetch-policy-snapshot.mjs || echo "snapshot refresh failed; using committed snapshot"
         env:
           SHEETS_API_KEY: ${{ secrets.SHEETS_API_KEY }}
 
       # Refresh the enrollment snapshot from JHU's workbook (downloaded via the
-      # Drive API and read with SheetJS — see the script). Same non-fatal guard:
-      # on any failure the committed snapshot is used, so a bad fetch can't break
-      # the deploy.
-      - name: Refresh enrollment snapshot (reorg)
-        working-directory: reorg
+      # Drive API and read with SheetJS — see the script). Same non-fatal guard.
+      - name: Refresh enrollment snapshot
         run: node scripts/fetch-enrollment-snapshot.mjs || echo "snapshot refresh failed; using committed snapshot"
         env:
           SHEETS_API_KEY: ${{ secrets.SHEETS_API_KEY }}
 
-      # reorg -> /new/ subdirectory. Nested base so its assets resolve under
-      # /new/. No VITE_GA_ID: the preview build stays analytics-free for now.
-      # Deps are already installed above, so this is just the build.
-      - name: Build reorg (/new/)
-        working-directory: reorg
+      - name: Build
         run: npm run build
         env:
-          VITE_BASE: /jhu-homeschool-hub/new/
-
-      # Assemble one site: main at root, reorg nested under /new/. The `/.`
-      # copies dotfiles too. No .nojekyll needed (Actions artifacts skip Jekyll).
-      - name: Assemble combined site
-        run: |
-          mkdir -p site
-          cp -r main/dist/. site/
-          mkdir -p site/new
-          cp -r reorg/dist/. site/new/
+          VITE_BASE: /jhu-homeschool-hub/
+          # GA4 Measurement ID for the live build. Set the VITE_GA_ID repo
+          # variable to enable analytics; unset = no tracking.
+          VITE_GA_ID: ${{ vars.VITE_GA_ID }}
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: site
+          path: dist
 
   deploy:
     needs: build
