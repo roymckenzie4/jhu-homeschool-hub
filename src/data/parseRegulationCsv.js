@@ -1,6 +1,6 @@
 /**
  * Parses the homeschool regulation CSV published by the Homeschool Hub and
- * shapes it for the State policies view.
+ * shapes it for the Regulation view.
  *
  * Input shape (as published — one row per jurisdiction):
  *   State, Only 1 HS Option, Parent Notice, ..., Total # of Regulations, Regulation Level
@@ -37,14 +37,14 @@ import {
   REGULATION_KEYS,
   regulationLevel,
   PLACEHOLDER_SOURCE_URL,
-} from "../config/policy.js";
+} from "../config/regulation.js";
 
 /** A cell counts as "in force" only when it reads exactly YES (case-insensitive). */
 function isYes(raw) {
   return String(raw ?? "").trim().toUpperCase() === "YES";
 }
 
-export function parsePolicyCsv(csvText) {
+export function parseRegulationCsv(csvText) {
   const rows = csvParse(csvText);
   const byState = {};
 
@@ -58,7 +58,7 @@ export function parsePolicyCsv(csvText) {
     for (const key of REGULATION_KEYS) {
       const value = isYes(row[key]);
       if (value) total += 1;
-      // Every cell gets a source link — a placeholder for now (see policy.js).
+      // Every cell gets a source link — a placeholder for now (see regulation.js).
       regulations[key] = { value, source: PLACEHOLDER_SOURCE_URL };
     }
 

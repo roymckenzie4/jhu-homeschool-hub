@@ -1,7 +1,7 @@
 /**
  * shadcn Popover — Radix Popover primitive wrapped with the project's Tailwind
  * tokens. Used as the floating container for the "+ add state" combobox in the
- * State policies view.
+ * Regulation view.
  */
 
 import * as React from "react";

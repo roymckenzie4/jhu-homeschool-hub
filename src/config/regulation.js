@@ -1,5 +1,5 @@
 /**
- * Policy-domain configuration for the State policies view, in one place.
+ * Regulation-domain configuration for the Regulation tab, in one place.
  *
  * The 10 tracked homeschool regulations, grouped into the three categories the
  * comparison table renders (Registration / Instruction / Assessment). Each
@@ -134,14 +134,28 @@ export function regulationLevel(count) {
 // truth — the map toggle, the chip row, and the table all read this.
 export const COMPARE_CAP = 6;
 
-// Suggested filename when the user downloads the policy CSV from the view.
-export const POLICY_DOWNLOAD_FILENAME = "homeschool-hub-state-policies-2026.csv";
+/**
+ * Compulsory-schooling + legalization facts surfaced in the regulation card,
+ * pulled from the sheet's "Legislation" tab. Keys are the internal field names;
+ * values are the EXACT Legislation header strings (the parser reads cells by
+ * these — do not rename without updating the sheet, or vice versa). These are
+ * plain numbers on that tab (no source links), so they come via values.get.
+ */
+export const LEGISLATION_COLUMNS = {
+  compMinAge: "Comp min age",
+  compMaxAge: "Comp max age",
+  yearsRequired: "Years required",
+  legalized: "Legalized",
+};
+
+// Suggested filename when the user downloads the regulation CSV from the view.
+export const REGULATION_DOWNLOAD_FILENAME = "homeschool-hub-state-policies-2026.csv";
 
 /**
  * Placeholder source link for every regulation cell. The real per-cell source
  * statutes arrive later via the Google Sheets API path (CSV export strips the
  * rich-text hyperlinks); until then every cell points here so the link
- * affordance and data shape are already in place. See policyLoader.js.
+ * affordance and data shape are already in place. See regulationLoader.js.
  */
 export const PLACEHOLDER_SOURCE_URL =
   "https://docs.google.com/spreadsheets/d/1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI/edit?gid=1849991455#gid=1849991455";

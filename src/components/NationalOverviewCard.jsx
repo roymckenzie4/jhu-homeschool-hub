@@ -8,27 +8,41 @@
  *
  * Shares StateDetailCard's outer frame (border, left bar, lg:h-full) so it
  * drops into the same detail-panel slot at matching height. Inputs come
- * pre-shaped from EnrollmentView; no data lookup here beyond reading topStates.
+ * pre-shaped from EnrollmentPanel; no data lookup here beyond reading topStates.
  */
 
 import { Table, TableBody, TableCell, TableRow } from "./ui/table.jsx";
 import { formatNumber } from "../lib/format.js";
-import { schoolYearLabel, TRANSITION_MS } from "../config/theme.js";
+import { schoolYearLabel } from "../config/theme.js";
 import { BY_NAME } from "../config/states.js";
+import SummaryCard, {
+  CARD_HEADING_CLASS,
+  CARD_DIVIDER_CLASS,
+  CARD_EYEBROW_CLASS,
+  CARD_CAVEAT_CLASS,
+} from "./SummaryCard.jsx";
+
+// 50 states + DC — the reporting denominator for the coverage line.
+const TOTAL_JURISDICTIONS = 51;
 
 export default function NationalOverviewCard({
   nationalTotal,
   year,
+  reportingCount,
+  dcReported,
   topStates,
 }) {
+  // Split the reporting tally into "N states (plus D.C.)" vs. the rest, so the
+  // headline total reads as a partial picture, not a complete national count.
+  const statesReporting = reportingCount - (dcReported ? 1 : 0);
+  const notReporting = TOTAL_JURISDICTIONS - reportingCount;
+  const reportingPhrase = dcReported
+    ? `${statesReporting} states plus D.C.`
+    : `${statesReporting} states`;
+
   return (
-    <aside
-      className="flex flex-col border border-l-4 border-sable/10 border-l-heritage bg-white px-6 py-4 lg:h-full"
-      style={{ transitionDuration: `${TRANSITION_MS}ms` }}
-    >
-      <h3 className="font-sans text-lg font-semibold text-sable">
-        United States
-      </h3>
+    <SummaryCard>
+      <h3 className={CARD_HEADING_CLASS}>United States</h3>
 
       <p className="mt-3 font-sans text-4xl font-bold leading-none text-sable">
         {formatNumber(nationalTotal)}
@@ -36,26 +50,29 @@ export default function NationalOverviewCard({
       <p className="mt-2 font-sans text-xs leading-snug text-sable">
         reported homeschool students, {schoolYearLabel(year)}
       </p>
+      <p className="mt-1.5 font-sans text-xs leading-snug text-sable/70">
+        {reportingPhrase} reported this year. The other {notReporting} did not.
+      </p>
 
-      <hr className="my-4 border-t border-sable/15" />
+      <hr className={CARD_DIVIDER_CLASS} />
 
       {/* Leaderboard — a headerless, borderless table: quiet rank annotations
           pulled close to medium-weight names, bold right-aligned counts.
           Spacing (not row rules) separates the rows. */}
-      <p className="font-sans text-[11px] font-semibold uppercase tracking-widest text-sable/70">
+      <p className={CARD_EYEBROW_CLASS}>
         Highest Reported Counts, {schoolYearLabel(year)}
       </p>
-      <Table className="mt-6 font-sans text-xs">
+      <Table className="mt-2 font-sans text-xs">
         <TableBody>
           {topStates.map((s, i) => (
             <TableRow key={s.name} className="border-0 hover:bg-transparent">
-              <TableCell className="w-5 py-1 pr-1.5 text-right tabular-nums text-[11px] text-sable/35">
+              <TableCell className="w-5 py-1.5 pr-1.5 text-right tabular-nums text-[11px] text-sable/35">
                 {i + 1}
               </TableCell>
-              <TableCell className="py-1 pr-3 font-medium tracking-[0.03em] text-sable">
+              <TableCell className="py-1.5 pr-3 font-medium tracking-[0.03em] text-sable">
                 {BY_NAME[s.name]?.name ?? s.name}
               </TableCell>
-              <TableCell className="whitespace-nowrap py-1 text-right font-bold tabular-nums tracking-[0.03em] text-sable">
+              <TableCell className="whitespace-nowrap py-1.5 text-right font-bold tabular-nums tracking-[0.03em] text-sable">
                 {formatNumber(s.value)}
               </TableCell>
             </TableRow>
@@ -65,19 +82,10 @@ export default function NationalOverviewCard({
 
       {/* Caveat fills the remaining space and keeps the headline counts from
           being read as a true, complete total. */}
-      <p className="mt-4 flex-1 font-sans text-xs leading-relaxed text-sable/60">
-        States report homeschool enrollment in different ways, and many do not
-        report it at all. These figures reflect only what each state publicly
-        reports — a floor, not a complete count of homeschooling in any state or
-        nationwide.
+      <p className={CARD_CAVEAT_CLASS}>
+        States report homeschool enrollment differently and many not at all;
+        these counts are a floor, not a complete nationwide total.
       </p>
-
-      <div className="mt-auto">
-        <hr className="mb-3 mt-3 border-t border-sable/15" />
-        <p className="font-sans text-xs leading-relaxed text-sable/60">
-          Select a state on the map to see its detail.
-        </p>
-      </div>
-    </aside>
+    </SummaryCard>
   );
 }

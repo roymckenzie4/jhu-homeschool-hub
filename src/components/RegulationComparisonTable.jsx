@@ -1,25 +1,31 @@
 /**
- * PolicyComparisonTable — the side-by-side regulation comparison.
+ * RegulationComparisonTable — the side-by-side regulation comparison.
  *
  * A plain table (same shape as the Enrollment table): states are rows, the 10
  * tracked regulations are columns grouped into Registration / Instruction /
  * Assessment bands, followed by a Homeschoolers (latest-year enrollment)
- * column. It sizes naturally to its rows — the fixed frame lives at the view
- * level (see PolicyView), not here. Each regulation cell shows "Yes" (a link to
- * that rule's source) when in force, or a muted "No". The STATE cell carries a
- * remove ✕, the Low/Med/High badge, and the regulation count.
+ * column. It sizes naturally to its rows — the fixed frame lives at the shell
+ * level (see App), not here. Each regulation cell shows "Yes" (in force, in
+ * heritage) or a muted "No"; either links to that rule's source statute when
+ * the sheet provides one. The STATE cell anchors the name, with the Low/Med/High
+ * badge and regulation count as right-aligned metadata; removal is via the chips.
  *
  * Column widths are pinned so a long state name or "not reported" can never
  * reflow the grid. When nothing is selected, a prompt stands in for the table.
- * The "About this data" copy lives in the shared footer (see PolicyView).
+ * The "About this data" copy lives in the shared footer (see topics/regulationTopic).
  *
- * Source links are placeholders for now (see config/policy.js); the live
- * per-cell statutes arrive via the loader.
+ * Source links come from the Google Sheet snapshot via the loader. Cells the
+ * sheet has no link for (source is the placeholder) render as plain text rather
+ * than linking to the raw spreadsheet.
  *
  * Props:
  *   - selectedStates string[]   states to show as rows, in selection order.
- *   - policyByState   object     shaped regulation data.
- *   - onRemove        (name)     remove a state from the comparison.
+ *   - regulationByState   object     shaped regulation data.
+ *   - forExport       boolean    render for the static PNG snapshot: the
+ *                                interactive affordances (source-link cells,
+ *                                tooltip-trigger column headers) drop their
+ *                                dotted underlines and render as plain text,
+ *                                since nothing is clickable in a flat image.
  */
 
 import {
@@ -34,14 +40,14 @@ import {
   REGULATION_GROUPS,
   REGULATION_COUNT,
   LEVELS,
-} from "../config/policy.js";
+  PLACEHOLDER_SOURCE_URL,
+} from "../config/regulation.js";
 import { COLORS, levelColor, schoolYearLabel } from "../config/theme.js";
 import { formatNumber } from "../lib/format.js";
 import {
   enrollmentLatestYear,
   enrollmentInLatestYear,
 } from "../data/enrollmentLoader.js";
-import RemoveButton from "./RemoveButton.jsx";
 import {
   Tooltip,
   TooltipTrigger,
@@ -64,7 +70,7 @@ const DIVIDER = "border-l border-sable/10";
 
 // Pinned column widths so the grid never shifts with content — a long state
 // name ("District of Columbia") or "not reported" can't reflow the table.
-const STATE_COL = "w-[248px]";
+const STATE_COL = "w-[272px]";
 const HS_COL = "w-[104px]";
 
 // Neutral shade behind the State + Homeschoolers header cells, so the whole
@@ -79,7 +85,8 @@ const GROUP_TINT = {
   assessment: "bg-sable/[0.05]",
 };
 
-/** Low/Med/High pill. White text on the dark High red; sable otherwise. */
+/** Low/Med/High pill. Sable text across all levels — the warm ramp (gold →
+ * orange → red-orange) is light enough that dark text clears WCAG AA on each. */
 function LevelBadge({ level }) {
   if (!level) return null;
   return (
@@ -87,7 +94,7 @@ function LevelBadge({ level }) {
       className="rounded-full px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide"
       style={{
         backgroundColor: levelColor(level),
-        color: level === "High" ? "#FFFFFF" : COLORS.sable,
+        color: COLORS.sable,
       }}
     >
       {LEVELS[level].label}
@@ -95,21 +102,25 @@ function LevelBadge({ level }) {
   );
 }
 
-// Shown in place of the table when no states are selected yet.
+// Shown in place of the table when no states are selected yet. Fills the data
+// zone's reserved height (flex-1 in the panel's flex column) so it reads as a
+// deliberate empty state rather than a short box floating above whitespace.
 function EmptyPrompt() {
   return (
-    <div className="rounded border border-dashed border-sable/25 px-6 py-10 text-center font-sans text-sm text-sable/50">
-      Select states on the map — or use{" "}
-      <span className="font-medium text-sable/70">+ add state</span> — to compare
-      their regulations side by side.
+    <div className="flex flex-1 items-center justify-center rounded border border-dashed border-sable/25 px-6 py-10 text-center font-sans text-sm text-sable/50">
+      <p>
+        Select states on the map — or use{" "}
+        <span className="font-medium text-sable/70">+ add state</span> — to
+        compare their regulations side by side.
+      </p>
     </div>
   );
 }
 
-export default function PolicyComparisonTable({
+export default function RegulationComparisonTable({
   selectedStates,
-  policyByState,
-  onRemove,
+  regulationByState,
+  forExport = false,
 }) {
   if (selectedStates.length === 0) return <EmptyPrompt />;
 
@@ -121,7 +132,7 @@ export default function PolicyComparisonTable({
           <TableRow className="border-b border-sable/15 hover:bg-transparent">
             <TableHead
               rowSpan={2}
-              className={`h-auto ${STATE_COL} px-2 py-1.5 align-bottom text-[11px] font-semibold uppercase tracking-widest text-sable/70 ${HEADER_TINT}`}
+              className={`h-auto ${STATE_COL} py-1.5 pl-3 pr-2 align-bottom text-[11px] font-semibold uppercase tracking-widest text-sable/70 ${HEADER_TINT}`}
             >
               State
             </TableHead>
@@ -154,17 +165,21 @@ export default function PolicyComparisonTable({
                   col.isGroupStart ? DIVIDER : ""
                 }`}
               >
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <span
-                      tabIndex={0}
-                      className="cursor-help underline decoration-dotted decoration-sable/40 underline-offset-2 outline-none focus-visible:ring-1 focus-visible:ring-heritage"
-                    >
-                      {col.label}
-                    </span>
-                  </TooltipTrigger>
-                  <TooltipContent>{col.definition}</TooltipContent>
-                </Tooltip>
+                {forExport ? (
+                  <span>{col.label}</span>
+                ) : (
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <span
+                        tabIndex={0}
+                        className="cursor-help underline decoration-dotted decoration-sable/40 underline-offset-2 outline-none focus-visible:ring-1 focus-visible:ring-heritage"
+                      >
+                        {col.label}
+                      </span>
+                    </TooltipTrigger>
+                    <TooltipContent>{col.definition}</TooltipContent>
+                  </Tooltip>
+                )}
               </TableHead>
             ))}
           </TableRow>
@@ -172,34 +187,46 @@ export default function PolicyComparisonTable({
 
         <TableBody>
           {selectedStates.map((name) => {
-            const entry = policyByState[name];
+            const entry = regulationByState[name];
             const enrollment = enrollmentInLatestYear(name);
             return (
               <TableRow
                 key={name}
-                className="border-b border-sable/10 hover:bg-sable/[0.02]"
+                className="border-b border-sable/10 hover:bg-sable/[0.04]"
               >
-                <TableCell className={`${STATE_COL} px-2 py-1.5`}>
-                  <span className="flex items-center gap-1.5 whitespace-nowrap">
-                    <RemoveButton
-                      onClick={() => onRemove(name)}
-                      label={`Remove ${name}`}
-                    />
-                    <span className="font-sans font-medium text-sable">
+                <TableCell className={`${STATE_COL} py-1.5 pl-3 pr-2`}>
+                  {/* Name flush-left fills the row (flex-1), pushing the badge +
+                      score metadata flush to the right edge as one tight unit
+                      (score close to the badge). */}
+                  <span className="flex items-center whitespace-nowrap">
+                    <span className="flex-1 font-sans font-semibold text-sable">
                       {name}
                     </span>
-                    <LevelBadge level={entry?.level} />
-                    {entry && (
-                      <span className="font-sans text-[10px] tabular-nums text-sable/40">
-                        {entry.total}/{REGULATION_COUNT}
-                      </span>
-                    )}
+                    <span className="flex shrink-0 items-center gap-1">
+                      <LevelBadge level={entry?.level} />
+                      {entry && (
+                        <span className="font-sans text-[10px] tabular-nums tracking-normal text-sable/40">
+                          {entry.total}/{REGULATION_COUNT}
+                        </span>
+                      )}
+                    </span>
                   </span>
                 </TableCell>
 
                 {COLUMNS.map((col) => {
                   const cell = entry?.regulations[col.key];
                   const inForce = cell?.value;
+                  const hasSource =
+                    cell?.source && cell.source !== PLACEHOLDER_SOURCE_URL;
+                  const label = inForce ? "Yes" : "No";
+                  // In force reads in heritage (medium, not bold — the dotted
+                  // underline carries the "source link" signal instead of weight);
+                  // not-in-force stays muted, a touch stronger when it links out.
+                  const tone = inForce
+                    ? "font-medium text-heritage"
+                    : hasSource
+                      ? "text-sable/50"
+                      : "text-sable/30";
                   return (
                     <TableCell
                       key={col.key}
@@ -207,18 +234,24 @@ export default function PolicyComparisonTable({
                         col.isGroupStart ? DIVIDER : ""
                       }`}
                     >
-                      {inForce ? (
+                      {hasSource && !forExport ? (
                         <a
                           href={cell.source}
                           target="_blank"
                           rel="noopener noreferrer"
-                          aria-label={`${col.label} in force in ${name} — view source`}
-                          className="font-sans text-xs font-semibold text-heritage underline decoration-transparent underline-offset-2 outline-none transition hover:decoration-heritage/40 focus-visible:ring-2 focus-visible:ring-heritage"
+                          aria-label={`${col.label} ${inForce ? "in force" : "not in force"} in ${name} — view source`}
+                          className={`font-sans text-xs underline decoration-dotted underline-offset-2 outline-none transition focus-visible:ring-2 focus-visible:ring-heritage ${tone} ${
+                            inForce
+                              ? "decoration-heritage/40 hover:decoration-heritage"
+                              : "decoration-sable/30 hover:decoration-sable/50"
+                          }`}
                         >
-                          Yes
+                          {label}
                         </a>
                       ) : (
-                        <span className="font-sans text-xs text-sable/30">No</span>
+                        <span className={`font-sans text-xs ${tone}`}>
+                          {label}
+                        </span>
                       )}
                     </TableCell>
                   );
@@ -238,6 +271,10 @@ export default function PolicyComparisonTable({
           })}
         </TableBody>
       </Table>
+      {/* Clarifies the "n/10" score shown beside each state's level badge. */}
+      <p className="mt-1.5 pl-3 font-sans text-[11px] text-sable/45">
+        Score = regulations in force, of {REGULATION_COUNT} tracked.
+      </p>
     </TooltipProvider>
   );
 }

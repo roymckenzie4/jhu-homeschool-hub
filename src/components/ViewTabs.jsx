@@ -1,6 +1,6 @@
 /**
  * ViewTabs — top-level tab bar that switches between the Enrollment and State
- * policies views.
+ * Regulation views.
  *
  * Implemented as an ARIA tablist with roving tabindex and arrow-key
  * navigation, so the structure already satisfies the keyboard requirements of

@@ -96,7 +96,7 @@ export default function EnrollmentTable({ stateValues, years, activeYear }) {
                   yoy == null
                     ? 'text-sable/40'
                     : yoyPositive
-                    ? 'text-gold'
+                    ? 'text-growth'
                     : 'text-brick'
                 } ${isActive ? 'font-semibold' : ''}`}
               >

@@ -11,7 +11,9 @@ export const COLORS = {
   heritage: "#002D72", // primary; choropleth ramp endpoint; card border
   spirit: "#68ACE5", // choropleth ramp start
   sable: "#31261D", // headline number, body text
-  gold: "#FF9E1B", // positive YoY indicator (JHU brand orange — more legible on white than the brand yellow)
+  selectionBorder: "#1F1A14", // crisp near-black border on a selected state (both map ramps)
+  gold: "#FF9E1B", // JHU brand orange (warm accent; category highlights)
+  growth: "#008767", // positive YoY indicator — JHU Homewood Green (WCAG-safe on white)
   brick: "#CF4520", // negative YoY indicator
   nonReportingGround: "#E5E5E5", // light gray under the diagonal stripes
   nonReportingStripe: "#CFCFCF", // stripe color for non-reporting states
@@ -34,23 +36,44 @@ export const RAMP_STEPS = [
 ];
 
 /**
- * Categorical ramp for the State policies choropleth — the JHU Warm Accent
- * yellow→orange→red heat sequence, keyed by regulation level (see
- * config/policy.js). Straight from the brand guide; deliberately distinct from
- * the blue enrollment ramp so the two views never read as the same data.
+ * Categorical ramp for the Regulation choropleth — the JHU Warm Accent
+ * yellow→orange→red-orange heat sequence, keyed by regulation level (see
+ * config/regulation.js). Straight from the brand guide; deliberately distinct
+ * from the blue enrollment ramp so the two views never read as the same data.
  *
  * Single source of truth: the map fills, the legend swatches, and the chip /
  * badge dots all color through `levelColor` so they can never drift.
  */
-export const POLICY_RAMP = {
+export const REGULATION_RAMP = {
   Low: "#F1C400", // JHU Gold
   Medium: "#FF9E1B", // JHU Orange
-  High: "#CF4520", // JHU Red
+  High: "#F56600", // JHU Red-Orange
 };
 
 /** Fill color for a regulation level ("Low" | "Medium" | "High"). */
 export function levelColor(level) {
-  return POLICY_RAMP[level] ?? COLORS.nonReportingGround;
+  return REGULATION_RAMP[level] ?? COLORS.nonReportingGround;
+}
+
+/**
+ * Categorical line colors for the multi-line enrollment comparison — one per
+ * selected state, assigned by selection order. DISTINCT hues (not the sequential
+ * blue ramp) so overlapping trend lines stay tellable apart; brand blue / orange
+ * / red lead, then supplementary hues to reach the compare cap. Provisional
+ * pending design feedback on the comparison palette.
+ */
+export const COMPARISON_SERIES_COLORS = [
+  "#002D72", // heritage blue
+  "#FF9E1B", // brand orange
+  "#0E8A6B", // teal
+  "#CF4520", // brick red
+  "#6A4C93", // violet
+  "#68ACE5", // spirit blue
+];
+
+/** Line color for the Nth selected state in the comparison (wraps if needed). */
+export function comparisonColor(index) {
+  return COMPARISON_SERIES_COLORS[index % COMPARISON_SERIES_COLORS.length];
 }
 
 // sRGB relative luminance (WCAG) of a #rgb / #rrggbb color, 0 (black) to 1 (white).
@@ -90,13 +113,31 @@ export const LAST_UPDATED = "June 2026";
 export const DOWNLOAD_FILENAME =
   "homeschool-hub-state-enrollment-2000-2026.csv";
 
+// Source attribution baked into downloaded chart images. A republished graph
+// gets detached from the site (the audience is journalists/advocates pulling it
+// into articles), so the citation has to travel with the image. Placeholder
+// wording — JHU will supply final text.
+export const CHART_SOURCE_URL =
+  "education.jhu.edu/edpolicy/policy-research-initiatives/homeschool-hub";
+const CHART_SOURCE_RETRIEVED = "July 2026";
+export function enrollmentCitation(rangeLabel) {
+  return `Source: Homeschool Hub, Johns Hopkins University School of Education. Reported homeschool enrollment, ${rangeLabel}. Retrieved ${CHART_SOURCE_RETRIEVED} from ${CHART_SOURCE_URL}`;
+}
+export function regulationCitation() {
+  return `Source: Homeschool Hub, Johns Hopkins University School of Education. State homeschool regulations in force, current as of 2024–25. Retrieved ${CHART_SOURCE_RETRIEVED} from ${CHART_SOURCE_URL}`;
+}
+
 /**
  * Display the abbreviated school-year label for a starting year integer.
  * 2024 -> "2024-25". Used everywhere we render a year to the user.
+ *
+ * Joins with a non-breaking hyphen (U+2011, visually identical to "-") so a
+ * span never wraps mid-token ("1999-\n00") — in the UI or in the exported PNG
+ * labels. Display-only string; never parsed, filenamed, or split downstream.
  */
 export function schoolYearLabel(startYear) {
   const endSuffix = String((startYear + 1) % 100).padStart(2, "0");
-  return `${startYear}-${endSuffix}`;
+  return `${startYear}‑${endSuffix}`;
 }
 
 /**

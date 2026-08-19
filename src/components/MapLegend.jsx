@@ -4,7 +4,7 @@
  * View-agnostic: the caller supplies the swatches (color + range/category
  * label) and an optional trailing slot, so the same component serves the
  * Enrollment view (quintile value ranges + a "no public data" note) and the
- * State policies view (Low/Med/High categories + a helper note).
+ * Regulation view (Low/Med/High categories + a helper note).
  *
  * The label cluster is split into two stacked rows that mirror the swatch +
  * range-label stack: the primary label lines up with the swatch row, and an
@@ -29,7 +29,7 @@ export default function MapLegend({ label, swatches, trailing = null }) {
     <div className="flex flex-wrap items-start justify-between gap-x-6 gap-y-3 font-sans text-[11px] text-sable/70">
       <div className="flex items-start gap-4">
         <div className="flex flex-col gap-[3px]">
-          <span className="font-semibold uppercase tracking-widest text-sable/90 leading-3">
+          <span className="whitespace-nowrap font-semibold uppercase tracking-widest text-sable/90 leading-3">
             {primary}
           </span>
           {secondary && (

@@ -67,28 +67,58 @@ name. If the repo is ever renamed, update `base` in that file.
 
 ## Updating the data
 
-The source of truth is `homeschool-hub-state-summary-data.csv` at the repo
-root. It's stored in the exact wide format published by the Homeschool Hub:
-column one is the school year, every other column is a state, and cells
-are reported enrollment counts (empty when a state doesn't publicly report).
+Each of the two topics (enrollment, regulation) has **two data sources**: a
+**live snapshot** taken from JHU's source at build time (the source of truth
+when present), and a **bundled CSV** kept as a fallback. A loader module prefers
+the snapshot and falls back to the CSV, so the site can't break if a snapshot is
+ever missing. The CSV also backs each footer's "Download data (CSV)" button.
 
-To update with a new year's data:
+**The snapshots refresh automatically.** A weekly scheduled job (and every
+deploy) re-runs the fetch scripts against JHU's live source and rewrites the
+snapshot files. So in normal operation, **JHU edits their source and the site
+picks it up on the next refresh — no code change needed.** This needs the
+`SHEETS_API_KEY` secret set in the repo (already done).
 
-1. Replace `homeschool-hub-state-summary-data.csv` with the latest file.
-2. Run `npm run build` and confirm no warnings.
-3. Commit and push to `main`. The deploy workflow handles the rest.
+The sources:
 
-A few parsing notes worth knowing:
+| Topic | Live source | Snapshot file | Fetch script |
+|---|---|---|---|
+| Enrollment | JHU's `.xlsx` workbook in Google Drive, tab `All States` | `src/data/enrollment-snapshot.json` | `scripts/fetch-enrollment-snapshot.mjs` |
+| Regulation | JHU's Google Sheet (Heat Map + Legislation tabs) | `src/data/policy-snapshot.json` | `scripts/fetch-policy-snapshot.mjs` |
 
-- `src/data/parseCsv.js` pivots the wide CSV into an internal shape
-  (`{ stateName: { year: value } }`) that the components consume.
-- Empty cells become `null`, not `0` — this preserves the
-  "does not publicly report" signal on the map.
-- In-flight school years (e.g. a partial `2025-2026` row) are dropped
-  during parsing. The dropped year is logged with a comment in
-  `parseCsv.js`.
-- Year-over-year percentages and national rankings are derived from the
-  data at render time, not stored in the CSV.
+Both scripts share `scripts/lib/sheets.mjs` (the fetch plumbing). To refresh a
+snapshot by hand (needs the key in `.env.local`):
+
+```
+node --env-file=.env.local scripts/fetch-enrollment-snapshot.mjs
+node --env-file=.env.local scripts/fetch-policy-snapshot.mjs
+```
+
+To update the **bundled CSV fallback** (only matters if the live source is
+down): replace `homeschool-hub-state-summary-data.csv` (enrollment) or
+`homeschool-hub-policy-data.csv` (regulation) at the repo root, keeping the exact
+published wide format, then `npm run build` and commit.
+
+Notes worth knowing:
+
+- The enrollment source is an **uploaded Excel file, not a native Google
+  Sheet**, so it's downloaded whole via the Drive API and read with SheetJS
+  (`xlsx`) — a build-only dependency that never ships to the browser. This needs
+  the **Drive API enabled** on the API key's Google Cloud project. As long as JHU
+  **updates the file in place**, its Drive id stays stable; a delete-and-reupload
+  changes the id, which lives at the top of the enrollment fetch script.
+- `src/data/parseCsv.js` pivots the wide enrollment data into an internal shape
+  (`{ stateName: { year: value } }`); its `shapeEnrollmentGrid` is shared by both
+  the CSV and the live (xlsx) paths, so the rules below apply to both.
+- Empty cells become `null`, not `0` — this preserves the "does not publicly
+  report" signal on the map.
+- In-flight school years (e.g. a partial `2025-2026` row) are dropped during
+  parsing. The dropped year is logged with a comment in `parseCsv.js`.
+- Year-over-year percentages and national rankings are derived from the data at
+  render time, not stored.
+- Each fetch script **refuses to overwrite a good snapshot** if its fetch fails
+  or the source's shape drifts (e.g. far fewer states than expected), so a bad
+  edit upstream can't blank the site — it keeps serving the last good snapshot.
 
 ## Project layout
 
