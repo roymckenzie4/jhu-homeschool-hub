@@ -15,7 +15,6 @@
  * in both the enrollment and % change cells.
  */
 
-import { useEffect, useRef } from 'react';
 import {
   Table,
   TableBody,
@@ -28,6 +27,7 @@ import { computeYoY } from '../data/derive.js';
 import { formatNumber, formatYoY, yoyToneClass } from '../lib/format.js';
 import { schoolYearLabel } from '../config/theme.js';
 import { ENROLLMENT_TABLE_HEIGHT } from '../config/layout.js';
+import { useScrollActiveRowIntoView } from '../lib/useScrollActiveRowIntoView.js';
 
 // Sticky header cells sit on a white base so scrolling rows pass underneath,
 // with their own bottom border (the row border would scroll away with the row).
@@ -39,19 +39,16 @@ export default function EnrollmentTable({ stateValues, years, activeYear }) {
   const displayYears = [...years].sort((a, b) => b - a);
 
   // Bring the highlighted row into view when the active year changes so it's
-  // never stranded off-screen after picking an older year. `block: 'nearest'`
-  // is a no-op when the row is already visible, so the common case (recent
-  // year at the top) doesn't scroll.
-  const activeRowRef = useRef(null);
-  useEffect(() => {
-    activeRowRef.current?.scrollIntoView({ block: 'nearest' });
-  }, [activeYear]);
+  // never stranded off-screen after picking an older year — contained to the
+  // table's own scroll, never the page (see useScrollActiveRowIntoView).
+  const { activeRowRef, containerRef } = useScrollActiveRowIntoView(activeYear);
 
   return (
     <Table
       className="font-sans text-xs"
       containerStyle={{ height: ENROLLMENT_TABLE_HEIGHT }}
       containerLabel="Year-by-year enrollment"
+      containerRef={containerRef}
     >
       <TableHeader>
         <TableRow className="hover:bg-transparent">

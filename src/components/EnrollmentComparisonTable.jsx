@@ -18,7 +18,6 @@
  *   colorForState: (name) => string — header color per state.
  */
 
-import { useEffect, useRef } from "react";
 import {
   Table,
   TableBody,
@@ -31,6 +30,7 @@ import { formatNumber } from "../lib/format.js";
 import { schoolYearLabel } from "../config/theme.js";
 import { BY_NAME } from "../config/states.js";
 import { ENROLLMENT_TABLE_HEIGHT } from "../config/layout.js";
+import { useScrollActiveRowIntoView } from "../lib/useScrollActiveRowIntoView.js";
 
 const HEAD_CELL =
   "sticky top-0 z-10 h-7 bg-white px-3 border-b border-sable/15 font-sans text-[11px] font-semibold uppercase tracking-widest";
@@ -44,17 +44,16 @@ export default function EnrollmentComparisonTable({
   // Most recent year first, matching EnrollmentTable.
   const displayRows = [...rows].sort((a, b) => b.year - a.year);
 
-  // Keep the active-year row in view when the year changes.
-  const activeRowRef = useRef(null);
-  useEffect(() => {
-    activeRowRef.current?.scrollIntoView({ block: "nearest" });
-  }, [activeYear]);
+  // Keep the active-year row in view when the year changes — contained to the
+  // table's own scroll, never the page (see useScrollActiveRowIntoView).
+  const { activeRowRef, containerRef } = useScrollActiveRowIntoView(activeYear);
 
   return (
     <Table
       className="font-sans text-xs"
       containerStyle={{ height: ENROLLMENT_TABLE_HEIGHT }}
       containerLabel="Year-by-year enrollment comparison"
+      containerRef={containerRef}
     >
       <TableHeader>
         <TableRow className="hover:bg-transparent">

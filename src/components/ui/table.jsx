@@ -7,9 +7,16 @@ import { cn } from "@/lib/utils"
 // (WCAG 2.1.1: a scrollable region needs keyboard access independent of its
 // content's own focusable elements). A naturally-growing table never
 // scrolls, so it skips the extra tab stop rather than adding a no-op one.
+//
+// `containerRef` exposes the scrollable wrapper div itself (separate from
+// `ref`, which forwards to the inner <table>) — callers that scroll a row
+// into view need a handle on the actual scrolling element so they can clamp
+// scrollTop directly instead of native scrollIntoView, which can cascade to
+// the whole page (see EnrollmentTable.jsx).
 const Table = React.forwardRef(
-  ({ className, containerClassName, containerStyle, containerLabel, ...props }, ref) => (
+  ({ className, containerClassName, containerStyle, containerLabel, containerRef, ...props }, ref) => (
     <div
+      ref={containerRef}
       className={cn("relative w-full overflow-auto", containerClassName)}
       style={containerStyle}
       tabIndex={containerStyle ? 0 : undefined}
