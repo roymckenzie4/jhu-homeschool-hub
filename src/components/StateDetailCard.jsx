@@ -101,7 +101,7 @@ export default function StateDetailCard({
               >
                 {formatYoY(yoy)}
               </p>
-              <p className="mt-1 font-sans text-[11px] text-sable/60">
+              <p className="mt-1 font-sans text-[11px] text-sable/70">
                 since {schoolYearLabel(year - 1)}
               </p>
             </div>
@@ -109,7 +109,7 @@ export default function StateDetailCard({
               <p className="whitespace-nowrap font-sans text-xl font-semibold text-sable">
                 {stateRankValue}
               </p>
-              <p className="mt-1 whitespace-nowrap font-sans text-[11px] text-sable/60">
+              <p className="mt-1 whitespace-nowrap font-sans text-[11px] text-sable/70">
                 {stateRankLabel}
               </p>
             </div>
@@ -124,7 +124,7 @@ export default function StateDetailCard({
           <p className="mt-4 font-sans text-sm leading-snug text-sable">
             Not reported for {schoolYearLabel(year)}.
           </p>
-          <p className="mt-1 font-sans text-xs leading-snug text-sable/60">
+          <p className="mt-1 font-sans text-xs leading-snug text-sable/70">
             Last reported{' '}
             <span className="font-semibold text-sable">
               {formatNumber(lastReported.value)}
@@ -158,7 +158,7 @@ export default function StateDetailCard({
         <button
           type="button"
           onClick={onBack}
-          className="mt-2 block font-sans text-xs text-sable/60 underline-offset-4 hover:text-heritage hover:underline"
+          className="mt-2 block font-sans text-xs text-sable/70 underline-offset-4 hover:text-heritage hover:underline"
         >
           ← {backLabel}
         </button>

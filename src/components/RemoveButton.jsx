@@ -12,7 +12,7 @@ export default function RemoveButton({ onClick, label, className = "" }) {
       type="button"
       onClick={onClick}
       aria-label={label}
-      className={`rounded-full p-0.5 text-sable/40 transition hover:bg-sable/10 hover:text-sable ${className}`}
+      className={`rounded-full p-0.5 text-sable/70 transition hover:bg-sable/10 hover:text-sable ${className}`}
     >
       <X className="h-3 w-3" aria-hidden="true" />
     </button>

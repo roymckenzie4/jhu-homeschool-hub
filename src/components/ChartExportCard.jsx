@@ -45,7 +45,7 @@ export default function ChartExportCard({
         Johns Hopkins University &middot; Homeschool Hub
       </p>
       <h3 className="mt-2 text-2xl font-bold leading-tight">{title}</h3>
-      {subtitle && <p className="mt-1 text-sm text-sable/60">{subtitle}</p>}
+      {subtitle && <p className="mt-1 text-sm text-sable/70">{subtitle}</p>}
 
       {legend && <div className="mt-4">{legend}</div>}
 
@@ -53,7 +53,7 @@ export default function ChartExportCard({
         {children}
       </div>
 
-      <p className="mt-5 border-t border-sable/15 pt-3 text-[11px] leading-relaxed text-sable/50">
+      <p className="mt-5 border-t border-sable/15 pt-3 text-[11px] leading-relaxed text-sable/70">
         {citation}
       </p>
     </div>

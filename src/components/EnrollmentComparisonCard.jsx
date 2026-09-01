@@ -40,12 +40,12 @@ export default function EnrollmentComparisonCard({
         <button
           type="button"
           onClick={onClear}
-          className="font-sans text-xs text-sable/60 underline-offset-4 hover:text-heritage hover:underline"
+          className="font-sans text-xs text-sable/70 underline-offset-4 hover:text-heritage hover:underline"
         >
           Clear
         </button>
       </div>
-      <p className="mt-2 font-sans text-xs leading-snug text-sable/60">
+      <p className="mt-2 font-sans text-xs leading-snug text-sable/70">
         reported homeschool students, {schoolYearLabel(year)}
       </p>
 
@@ -72,7 +72,7 @@ export default function EnrollmentComparisonCard({
                 {row.value != null ? (
                   <span className="font-bold">{formatNumber(row.value)}</span>
                 ) : (
-                  <span className="text-sable/45">not reported</span>
+                  <span className="text-sable/70">not reported</span>
                 )}
               </TableCell>
               <TableCell className="w-0 whitespace-nowrap py-1.5 text-right">

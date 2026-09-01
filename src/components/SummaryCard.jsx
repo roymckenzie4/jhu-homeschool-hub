@@ -31,7 +31,7 @@ export const CARD_LIST_CLASS = "mt-2 space-y-2";
 
 // Trailing caveat/prompt that fills the card's remaining height.
 export const CARD_CAVEAT_CLASS =
-  "mt-4 flex-1 font-sans text-xs leading-relaxed text-sable/60";
+  "mt-4 flex-1 font-sans text-xs leading-relaxed text-sable/70";
 
 // Outer frame: border + heritage left bar, white fill, padding, and the shared
 // selection transition. lg:h-full pins it to the map's height; it scrolls

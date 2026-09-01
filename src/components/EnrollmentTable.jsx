@@ -32,7 +32,7 @@ import { ENROLLMENT_TABLE_HEIGHT } from '../config/layout.js';
 // Sticky header cells sit on a white base so scrolling rows pass underneath,
 // with their own bottom border (the row border would scroll away with the row).
 const HEAD_CELL =
-  'sticky top-0 z-10 h-7 bg-white px-3 border-b border-sable/15 font-sans text-[11px] font-semibold uppercase tracking-widest text-sable/60';
+  'sticky top-0 z-10 h-7 bg-white px-3 border-b border-sable/15 font-sans text-[11px] font-semibold uppercase tracking-widest text-sable/70';
 
 export default function EnrollmentTable({ stateValues, years, activeYear }) {
   // Most recent first.
@@ -51,6 +51,7 @@ export default function EnrollmentTable({ stateValues, years, activeYear }) {
     <Table
       className="font-sans text-xs"
       containerStyle={{ height: ENROLLMENT_TABLE_HEIGHT }}
+      containerLabel="Year-by-year enrollment"
     >
       <TableHeader>
         <TableRow className="hover:bg-transparent">

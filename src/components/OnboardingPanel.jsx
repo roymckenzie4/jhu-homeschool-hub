@@ -76,7 +76,7 @@ export default function OnboardingPanel() {
               </span>
               <span className="font-sans text-sm leading-snug">
                 <span className="font-semibold text-sable">{step.title}</span>
-                <span className="mt-0.5 block text-xs text-sable/60">
+                <span className="mt-0.5 block text-xs text-sable/70">
                   {step.detail}
                 </span>
               </span>

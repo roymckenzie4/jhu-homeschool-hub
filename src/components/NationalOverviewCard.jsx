@@ -66,7 +66,7 @@ export default function NationalOverviewCard({
         <TableBody>
           {topStates.map((s, i) => (
             <TableRow key={s.name} className="border-0 hover:bg-transparent">
-              <TableCell className="w-5 py-1.5 pr-1.5 text-right tabular-nums text-[11px] text-sable/35">
+              <TableCell className="w-5 py-1.5 pr-1.5 text-right tabular-nums text-[11px] text-sable/70">
                 {i + 1}
               </TableCell>
               <TableCell className="py-1.5 pr-3 font-medium tracking-[0.03em] text-sable">

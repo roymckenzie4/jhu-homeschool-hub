@@ -63,7 +63,7 @@ export default function ComparisonTrend({ rows, states, colorForState, highlight
   }
   if (values.length < 2) {
     return (
-      <div className="flex h-full items-center justify-center text-[10px] uppercase tracking-widest text-sable/40">
+      <div className="flex h-full items-center justify-center text-[10px] uppercase tracking-widest text-sable/70">
         not enough data to plot
       </div>
     );

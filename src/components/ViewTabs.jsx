@@ -13,16 +13,29 @@
  *   - onChange  (id)              invoked when a tab is activated.
  */
 
+import { useRef } from "react";
+
 export default function ViewTabs({ tabs, activeTab, onChange }) {
+  // Keyed by tab id so arrow-key handling can move DOM focus to the newly
+  // active button, not just flip its tabIndex/aria-selected. Without this the
+  // roving-tabindex re-render leaves focus stranded on the OLD button (now
+  // tabIndex=-1) — .focus() still works on a -1 element via script, it's just
+  // not reachable by sequential Tab, so this is safe to call directly.
+  const tabRefs = useRef({});
+
   // Left/Right arrows move between tabs and activate immediately, matching the
-  // common "automatic activation" tablist pattern.
+  // common "automatic activation" tablist pattern. Per the WAI-ARIA APG tabs
+  // pattern, focus must follow the selection so the visible focus ring and the
+  // active tab never disagree.
   function handleKeyDown(e) {
     const idx = tabs.findIndex((t) => t.id === activeTab);
     if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
       e.preventDefault();
       const dir = e.key === "ArrowRight" ? 1 : -1;
       const next = (idx + dir + tabs.length) % tabs.length;
-      onChange(tabs[next].id);
+      const nextTab = tabs[next];
+      onChange(nextTab.id);
+      tabRefs.current[nextTab.id]?.focus();
     }
   }
 
@@ -38,6 +51,7 @@ export default function ViewTabs({ tabs, activeTab, onChange }) {
         return (
           <button
             key={tab.id}
+            ref={(el) => (tabRefs.current[tab.id] = el)}
             id={`tab-${tab.id}`}
             role="tab"
             type="button"
@@ -51,7 +65,7 @@ export default function ViewTabs({ tabs, activeTab, onChange }) {
             className={`-mb-px rounded-t-md border-b-[3px] px-3 pb-2.5 pt-1.5 font-sans text-[15px] transition-[color,background-color] ${
               isActive
                 ? "border-heritage font-semibold text-heritage"
-                : "border-transparent font-medium text-sable/55 hover:bg-sable/5 hover:text-sable"
+                : "border-transparent font-medium text-sable/70 hover:bg-sable/5 hover:text-sable"
             }`}
           >
             {tab.label}

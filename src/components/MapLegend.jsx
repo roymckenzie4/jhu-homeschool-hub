@@ -33,7 +33,7 @@ export default function MapLegend({ label, swatches, trailing = null }) {
             {primary}
           </span>
           {secondary && (
-            <span className="text-[10px] leading-none text-sable/55 tabular-nums">
+            <span className="text-[10px] leading-none text-sable/70 tabular-nums">
               {secondary}
             </span>
           )}
@@ -48,7 +48,7 @@ export default function MapLegend({ label, swatches, trailing = null }) {
               />
             ))}
           </div>
-          <div className="flex gap-[2px] text-[10px] leading-none text-sable/55">
+          <div className="flex gap-[2px] text-[10px] leading-none text-sable/70">
             {swatches.map((s, i) => (
               <span key={i} className="block w-16 text-center tabular-nums">
                 {s.label}

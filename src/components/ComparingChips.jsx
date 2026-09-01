@@ -76,14 +76,14 @@ export default function ComparingChips({
 
   return (
     <div className="flex flex-wrap items-center gap-x-3 gap-y-2 border-t border-sable/15 pt-3">
-      <span className="font-sans text-[11px] font-semibold uppercase tracking-widest text-sable/60">
+      <span className="font-sans text-[11px] font-semibold uppercase tracking-widest text-sable/70">
         {label}
       </span>
 
       {/* Empty state keeps the row at full height (no layout jump) and reads as
           a prompt rather than a blank strip. */}
       {count === 0 && (
-        <span className="font-sans text-xs italic text-sable/45">
+        <span className="font-sans text-xs italic text-sable/70">
           Select up to 6 states on the map to compare
         </span>
       )}
@@ -106,7 +106,7 @@ export default function ComparingChips({
           <PopoverTrigger asChild>
             <button
               type="button"
-              className="rounded-full border border-dashed border-sable/30 px-3 py-1 font-sans text-xs text-sable/60 transition-colors hover:border-sable/50 hover:text-sable"
+              className="rounded-full border border-dashed border-sable/30 px-3 py-1 font-sans text-xs text-sable/70 transition-colors hover:border-sable/50 hover:text-sable"
             >
               + add state
             </button>
@@ -127,7 +127,7 @@ export default function ComparingChips({
                       <Dot color={dotColorForState(name)} />
                       <span className="flex-1">{name}</span>
                       {meta != null && (
-                        <span className="font-sans text-xs tabular-nums text-sable/45">
+                        <span className="font-sans text-xs tabular-nums text-sable/70">
                           {meta}
                         </span>
                       )}
@@ -141,14 +141,14 @@ export default function ComparingChips({
       )}
 
       <div className="ml-auto flex items-center gap-3">
-        <span className="font-sans text-xs tabular-nums text-sable/50">
+        <span className="font-sans text-xs tabular-nums text-sable/70">
           {count} / {COMPARE_CAP}
         </span>
         {count > 0 && (
           <button
             type="button"
             onClick={onClear}
-            className="font-sans text-xs text-sable/60 underline decoration-dashed decoration-sable/30 underline-offset-4 transition-colors hover:text-sable hover:decoration-sable/60"
+            className="font-sans text-xs text-sable/70 underline decoration-dashed decoration-sable/30 underline-offset-4 transition-colors hover:text-sable hover:decoration-sable/60"
           >
             Clear
           </button>

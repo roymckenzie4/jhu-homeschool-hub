@@ -54,19 +54,28 @@ export default function EnrollmentComparisonTable({
     <Table
       className="font-sans text-xs"
       containerStyle={{ height: ENROLLMENT_TABLE_HEIGHT }}
+      containerLabel="Year-by-year enrollment comparison"
     >
       <TableHeader>
         <TableRow className="hover:bg-transparent">
-          <TableHead className={`${HEAD_CELL} text-left text-sable/60`}>
+          <TableHead className={`${HEAD_CELL} text-left text-sable/70`}>
             Year
           </TableHead>
           {states.map((state) => (
-            <TableHead
-              key={state}
-              className={`${HEAD_CELL} text-right`}
-              style={{ color: colorForState(state) }}
-            >
-              {BY_NAME[state]?.postal ?? state}
+            <TableHead key={state} className={`${HEAD_CELL} text-right text-sable`}>
+              {/* A colored swatch (not colored text) carries the per-state color
+                  key here — matching ComparisonLegend. Some COMPARISON_SERIES_COLORS
+                  (the brand orange, spirit blue) fall well under 4.5:1 as text on
+                  white; as a small swatch next to full-contrast text, the same
+                  colors are fine (WCAG's text threshold doesn't apply to them). */}
+              <span className="inline-flex items-center justify-end gap-1.5">
+                <span
+                  className="h-0.5 w-3.5 shrink-0 rounded-full"
+                  style={{ backgroundColor: colorForState(state) }}
+                  aria-hidden="true"
+                />
+                {BY_NAME[state]?.postal ?? state}
+              </span>
             </TableHead>
           ))}
         </TableRow>
@@ -101,7 +110,7 @@ export default function EnrollmentComparisonTable({
                   {row[state] != null ? (
                     formatNumber(row[state])
                   ) : (
-                    <span className="text-sable/35">—</span>
+                    <span className="text-sable/70">—</span>
                   )}
                 </TableCell>
               ))}

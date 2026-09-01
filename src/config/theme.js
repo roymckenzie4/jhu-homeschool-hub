@@ -77,7 +77,9 @@ export function comparisonColor(index) {
 }
 
 // sRGB relative luminance (WCAG) of a #rgb / #rrggbb color, 0 (black) to 1 (white).
-function relativeLuminance(hex) {
+// Exported for the contrast-audit script (scripts/audit-contrast.mjs) in
+// addition to labelColorForFill below.
+export function relativeLuminance(hex) {
   const h = hex.replace("#", "");
   const full = h.length === 3 ? h.split("").map((c) => c + c).join("") : h;
   const channel = (i) => {
@@ -85,6 +87,31 @@ function relativeLuminance(hex) {
     return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
   };
   return 0.2126 * channel(0) + 0.7152 * channel(2) + 0.0722 * channel(4);
+}
+
+// WCAG contrast ratio between two #rgb / #rrggbb colors, 1 (no contrast) to 21.
+export function contrastRatio(hexA, hexB) {
+  const a = relativeLuminance(hexA);
+  const b = relativeLuminance(hexB);
+  return (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
+}
+
+// Alpha-composites a foreground hex color at `alpha` (0-1) over a solid hex
+// background, returning the resulting opaque hex — what a Tailwind
+// `text-sable/40`-style utility actually renders as against a given
+// background. Needed because relativeLuminance/contrastRatio above only take
+// solid colors; opacity-modified text isn't one until it's flattened onto
+// whatever's really behind it.
+export function compositeOver(fgHex, alpha, bgHex) {
+  const parse = (hex) => {
+    const h = hex.replace("#", "");
+    const full = h.length === 3 ? h.split("").map((c) => c + c).join("") : h;
+    return [0, 2, 4].map((i) => parseInt(full.slice(i, i + 2), 16));
+  };
+  const fg = parse(fgHex);
+  const bg = parse(bgHex);
+  const mixed = fg.map((c, i) => Math.round(alpha * c + (1 - alpha) * bg[i]));
+  return `#${mixed.map((c) => c.toString(16).padStart(2, "0")).join("")}`;
 }
 
 const SABLE_LUMINANCE = relativeLuminance(COLORS.sable);

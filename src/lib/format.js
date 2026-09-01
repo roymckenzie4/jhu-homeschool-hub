@@ -32,7 +32,7 @@ export function formatYoY(pct) {
  * muted treatment as "no data" (not brick): it's a flat trend, not a decline.
  */
 export function yoyToneClass(pct) {
-  if (pct == null || !Number.isFinite(pct) || pct === 0) return 'text-sable/40';
+  if (pct == null || !Number.isFinite(pct) || pct === 0) return 'text-sable/70';
   return pct > 0 ? 'text-growth' : 'text-brick';
 }
 

@@ -45,7 +45,7 @@ export default function Footer({ about, csvText, downloadFilename }) {
             Download data (CSV)
           </button>
         </div>
-        <p className="font-sans text-[10px] uppercase tracking-widest text-sable/40">
+        <p className="font-sans text-[10px] uppercase tracking-widest text-sable/70">
           Last updated {LAST_UPDATED} &middot; To be developed
         </p>
       </div>

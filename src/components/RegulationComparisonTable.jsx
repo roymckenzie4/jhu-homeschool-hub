@@ -60,11 +60,16 @@ import {
 
 // Flattened column model: each regulation with its group + a flag for the
 // first column of each group (which gets the left divider that separates bands).
+// `headerId` slugifies `key` (which holds spaces, e.g. "Parent Notice") into a
+// valid HTML id for the <th>/<td> headers association below — an id can't
+// contain whitespace, and `key` as-is would silently split into several
+// unmatched tokens inside a `headers="..."` attribute.
 const COLUMNS = REGULATION_GROUPS.flatMap((group) =>
   group.regulations.map((reg, i) => ({
     ...reg,
     groupId: group.id,
     isGroupStart: i === 0,
+    headerId: `col-reg-${reg.key.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`,
   })),
 );
 
@@ -110,7 +115,7 @@ function LevelBadge({ level }) {
 // deliberate empty state rather than a short box floating above whitespace.
 function EmptyPrompt() {
   return (
-    <div className="flex flex-1 items-center justify-center rounded border border-dashed border-sable/25 px-6 py-10 text-center font-sans text-sm text-sable/50">
+    <div className="flex flex-1 items-center justify-center rounded border border-dashed border-sable/25 px-6 py-10 text-center font-sans text-sm text-sable/70">
       <p>
         Select states on the map — or use{" "}
         <span className="font-medium text-sable/70">+ add state</span> — to
@@ -136,6 +141,8 @@ export default function RegulationComparisonTable({
           {/* Band row: STATE + the three regulation groups + Homeschoolers. */}
           <TableRow className="border-b border-sable/15 hover:bg-transparent">
             <TableHead
+              id="col-state"
+              scope="col"
               rowSpan={2}
               className={`h-auto ${STATE_COL} py-1.5 pl-3 pr-2 align-bottom text-[11px] font-semibold uppercase tracking-widest text-sable/70 ${HEADER_TINT}`}
             >
@@ -144,6 +151,8 @@ export default function RegulationComparisonTable({
             {REGULATION_GROUPS.map((group) => (
               <TableHead
                 key={group.id}
+                id={`col-group-${group.id}`}
+                scope="colgroup"
                 colSpan={group.regulations.length}
                 className={`h-auto px-2 py-1.5 text-center text-[11px] font-semibold uppercase tracking-widest text-sable/70 ${DIVIDER} ${GROUP_TINT[group.id]}`}
               >
@@ -151,22 +160,30 @@ export default function RegulationComparisonTable({
               </TableHead>
             ))}
             <TableHead
+              id="col-hs"
+              scope="col"
               rowSpan={2}
               className={`h-auto ${HS_COL} px-2 py-1.5 text-right align-bottom text-[11px] font-semibold uppercase tracking-widest text-sable/70 ${DIVIDER} ${HEADER_TINT}`}
             >
               Homeschoolers
-              <span className="block text-[9px] font-normal tracking-normal text-sable/45">
+              <span className="block text-[9px] font-normal tracking-normal text-sable/70">
                 {schoolYearLabel(enrollmentLatestYear)}
               </span>
             </TableHead>
           </TableRow>
-          {/* Regulation row: one column per tracked regulation. Each label
-              carries a definition tooltip (hover or keyboard focus). */}
+          {/* Regulation row: one column per tracked regulation, each `id`-ed so
+              body cells can point back to both this and their band header via
+              `headers` — a plain `scope="col"` isn't enough once a table has
+              two header levels (axe/HTML_CodeSniffer flags it: the th/td
+              relationship is ambiguous without an explicit headers/id link).
+              Each label carries a definition tooltip (hover or keyboard focus). */}
           <TableRow className="border-b border-sable/15 hover:bg-transparent">
             {COLUMNS.map((col) => (
               <TableHead
                 key={col.key}
-                className={`h-auto w-[64px] px-1 py-1.5 text-center align-bottom text-[10px] font-medium leading-tight text-sable/60 ${
+                id={col.headerId}
+                scope="col"
+                className={`h-auto w-[64px] px-1 py-1.5 text-center align-bottom text-[10px] font-medium leading-tight text-sable/70 ${
                   col.isGroupStart ? DIVIDER : ""
                 }`}
               >
@@ -199,7 +216,7 @@ export default function RegulationComparisonTable({
                 key={name}
                 className="border-b border-sable/10 hover:bg-sable/[0.04]"
               >
-                <TableCell className={`${STATE_COL} py-1.5 pl-3 pr-2`}>
+                <TableCell headers="col-state" className={`${STATE_COL} py-1.5 pl-3 pr-2`}>
                   {/* Name flush-left fills the row (flex-1), pushing the badge +
                       score metadata flush to the right edge as one tight unit
                       (score close to the badge). */}
@@ -210,7 +227,7 @@ export default function RegulationComparisonTable({
                     <span className="flex shrink-0 items-center gap-1">
                       <LevelBadge level={entry?.level} />
                       {entry && (
-                        <span className="font-sans text-[10px] tabular-nums tracking-normal text-sable/40">
+                        <span className="font-sans text-[10px] tabular-nums tracking-normal text-sable/70">
                           {entry.total}/{REGULATION_COUNT}
                         </span>
                       )}
@@ -224,17 +241,14 @@ export default function RegulationComparisonTable({
                   const hasSource =
                     cell?.source && cell.source !== PLACEHOLDER_SOURCE_URL;
                   const label = inForce ? "Yes" : "No";
-                  // In force reads in heritage (medium, not bold — the dotted
-                  // underline carries the "source link" signal instead of weight);
-                  // not-in-force stays muted, a touch stronger when it links out.
-                  const tone = inForce
-                    ? "font-medium text-heritage"
-                    : hasSource
-                      ? "text-sable/50"
-                      : "text-sable/30";
+                  // In force reads in heritage (medium, not bold); not-in-force
+                  // stays muted. Whether the cell links to a source is carried by
+                  // the dotted underline below (<a> vs. plain <span>), not by tone.
+                  const tone = inForce ? "font-medium text-heritage" : "text-sable/70";
                   return (
                     <TableCell
                       key={col.key}
+                      headers={`col-group-${col.groupId} ${col.headerId}`}
                       className={`px-1 py-1.5 text-center ${
                         col.isGroupStart ? DIVIDER : ""
                       }`}
@@ -263,10 +277,11 @@ export default function RegulationComparisonTable({
                 })}
 
                 <TableCell
+                  headers="col-hs"
                   className={`${HS_COL} px-2 py-1.5 text-right font-sans tabular-nums text-sable ${DIVIDER}`}
                 >
                   {enrollment == null ? (
-                    <span className="text-sable/40">not reported</span>
+                    <span className="text-sable/70">not reported</span>
                   ) : (
                     formatNumber(enrollment)
                   )}
@@ -277,7 +292,7 @@ export default function RegulationComparisonTable({
         </TableBody>
       </Table>
       {/* Clarifies the "n/10" score shown beside each state's level badge. */}
-      <p className="mt-1.5 pl-3 font-sans text-[11px] text-sable/45">
+      <p className="mt-1.5 pl-3 font-sans text-[11px] text-sable/70">
         Score = regulations in force, of {REGULATION_COUNT} tracked.
       </p>
     </TooltipProvider>

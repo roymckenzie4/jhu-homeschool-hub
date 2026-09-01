@@ -35,7 +35,7 @@ export const regulationDescriptor = {
     label: "Regulation level, Count in force",
     swatches: LEGEND_SWATCHES,
     trailing: (
-      <span className="whitespace-nowrap text-sable/55">
+      <span className="whitespace-nowrap text-sable/70">
         {REGULATION_COUNT} tracked regulations
       </span>
     ),

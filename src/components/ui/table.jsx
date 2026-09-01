@@ -2,11 +2,19 @@ import * as React from "react"
 
 import { cn } from "@/lib/utils"
 
+// `containerStyle` (a fixed height) signals an internally-scrolling table —
+// only those get a tab stop + accessible name on the scroll region itself
+// (WCAG 2.1.1: a scrollable region needs keyboard access independent of its
+// content's own focusable elements). A naturally-growing table never
+// scrolls, so it skips the extra tab stop rather than adding a no-op one.
 const Table = React.forwardRef(
-  ({ className, containerClassName, containerStyle, ...props }, ref) => (
+  ({ className, containerClassName, containerStyle, containerLabel, ...props }, ref) => (
     <div
       className={cn("relative w-full overflow-auto", containerClassName)}
       style={containerStyle}
+      tabIndex={containerStyle ? 0 : undefined}
+      role={containerStyle ? "region" : undefined}
+      aria-label={containerStyle ? containerLabel : undefined}
     >
       <table
         ref={ref}

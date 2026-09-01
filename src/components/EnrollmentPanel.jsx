@@ -350,7 +350,7 @@ export default function EnrollmentPanel({ activeYear }) {
 function DataPlaceholder({ children }) {
   return (
     <div
-      className="flex items-center justify-center px-3 text-center font-sans text-xs text-sable/40"
+      className="flex items-center justify-center px-3 text-center font-sans text-xs text-sable/70"
       style={{ height: ENROLLMENT_TABLE_HEIGHT }}
     >
       {children}

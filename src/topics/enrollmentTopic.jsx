@@ -83,7 +83,7 @@ export function buildEnrollmentDescriptor(activeYear) {
       label: `Students, ${schoolYearLabel(activeYear)}`,
       swatches,
       trailing: (
-        <div className="flex items-center gap-2 whitespace-nowrap text-sable/60">
+        <div className="flex items-center gap-2 whitespace-nowrap text-sable/70">
           {/* Self-contained stripe swatch (its own <defs>), mirroring
               ChoroplethMap's non-reporting pattern. Doesn't reference the map's
               pattern so it renders correctly inside the off-screen PNG export,

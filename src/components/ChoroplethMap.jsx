@@ -312,8 +312,8 @@ export default function ChoroplethMap({
     <svg
       viewBox={`0 0 ${VIEW_W} ${VIEW_H}`}
       className="block h-auto w-full"
-      role="img"
-      aria-label="US choropleth by state"
+      role="group"
+      aria-label="US choropleth by state — click or use Tab to select a state"
     >
       {sharedDefs}
 

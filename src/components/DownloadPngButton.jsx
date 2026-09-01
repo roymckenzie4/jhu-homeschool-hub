@@ -16,7 +16,7 @@ export default function DownloadPngButton({ onClick, className = "" }) {
       type="button"
       onClick={onClick}
       aria-label="Save as image"
-      className={`flex shrink-0 items-center gap-1 font-sans text-[11px] font-medium text-sable/55 hover:text-heritage ${className}`}
+      className={`flex shrink-0 items-center gap-1 font-sans text-[11px] font-medium text-sable/70 hover:text-heritage ${className}`}
     >
       <Download className="h-3 w-3" />
       Save

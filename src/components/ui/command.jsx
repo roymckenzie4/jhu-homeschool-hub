@@ -27,11 +27,11 @@ Command.displayName = CommandPrimitive.displayName;
 
 const CommandInput = React.forwardRef(({ className, ...props }, ref) => (
   <div className="flex items-center border-b border-sable/15 px-3" cmdk-input-wrapper="">
-    <Search className="mr-2 h-4 w-4 shrink-0 text-sable/40" aria-hidden="true" />
+    <Search className="mr-2 h-4 w-4 shrink-0 text-sable/70" aria-hidden="true" />
     <CommandPrimitive.Input
       ref={ref}
       className={cn(
-        "flex h-10 w-full bg-transparent py-3 font-sans text-sm outline-none placeholder:text-sable/40 disabled:cursor-not-allowed disabled:opacity-50",
+        "flex h-10 w-full bg-transparent py-3 font-sans text-sm outline-none placeholder:text-sable/70 disabled:cursor-not-allowed disabled:opacity-50",
         className,
       )}
       {...props}
@@ -52,7 +52,7 @@ CommandList.displayName = CommandPrimitive.List.displayName;
 const CommandEmpty = React.forwardRef((props, ref) => (
   <CommandPrimitive.Empty
     ref={ref}
-    className="py-6 text-center font-sans text-sm text-sable/50"
+    className="py-6 text-center font-sans text-sm text-sable/70"
     {...props}
   />
 ));

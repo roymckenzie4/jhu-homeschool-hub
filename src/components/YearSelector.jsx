@@ -42,7 +42,7 @@ export default function YearSelector({
 
   return (
     <div className="flex items-center">
-      <span className="mr-3 font-sans text-[11px] font-medium uppercase tracking-widest text-sable/60">
+      <span className="mr-3 font-sans text-[11px] font-medium uppercase tracking-widest text-sable/70">
         Year
       </span>
       <div className="flex">

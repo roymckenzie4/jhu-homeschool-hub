@@ -135,7 +135,7 @@ export default function App() {
               onChange={setActiveYear}
             />
           ) : (
-            <span className="font-sans text-[11px] font-medium uppercase tracking-widest text-sable/50">
+            <span className="font-sans text-[11px] font-medium uppercase tracking-widest text-sable/70">
               Regulations current as of 2024–25
             </span>
           )}
@@ -143,16 +143,28 @@ export default function App() {
       </div>
 
       {/*
-        Shell grid. On lg it's two columns across three rows: row 1 = the shared
-        map + legend top-left and the topic's summary card top-right; row 2 = the
-        shared selection chip strip, full-width under the map; row 3 = the topic's
-        data zone full-width below. The map fills its column (no gutters) and its
-        width is identical on both tabs, so switching topics recolors the mounted
-        map without resizing/reprojecting it. Card and data come from the active
-        topic's panel (CARD_SLOT_CLASS / DATA_SLOT_CLASS). On mobile the grid is
-        single-column: map -> chips -> card -> data.
+        Shell grid, and also the active tab's ARIA tabpanel — the map, legend,
+        and chip row are topic-specific content (they recolor/reselect per
+        topic), so they belong inside the panel boundary alongside the topic's
+        own card/data, not outside it. tabIndex={0} lets keyboard users land on
+        the panel directly after activating a tab, per the WAI-ARIA APG tabs
+        pattern. On lg the grid is two columns across three rows: row 1 = the
+        shared map + legend top-left and the topic's summary card top-right;
+        row 2 = the shared selection chip strip, full-width under the map; row
+        3 = the topic's data zone full-width below. The map fills its column
+        (no gutters) and its width is identical on both tabs, so switching
+        topics recolors the mounted map without resizing/reprojecting it. Card
+        and data come from the active topic's panel (CARD_SLOT_CLASS /
+        DATA_SLOT_CLASS). On mobile the grid is single-column: map -> chips ->
+        card -> data.
       */}
-      <div className={`mt-4 ${TWO_COLUMN_GRID_CLASS}`}>
+      <div
+        id={`panel-${activeTab}`}
+        role="tabpanel"
+        aria-labelledby={`tab-${activeTab}`}
+        tabIndex={0}
+        className={`mt-4 ${TWO_COLUMN_GRID_CLASS}`}
+      >
         <div className="lg:col-start-1 lg:row-start-1">
           {/* Shared, always-mounted map. Only the descriptor swaps per topic. */}
           <ChoroplethMap
@@ -199,17 +211,10 @@ export default function App() {
           />
         </div>
 
-        {/* Panel identity tracks the active tab. `contents` keeps the tabpanel
-            wrapper out of the grid box model so the panel's card/data children
-            place directly into the shell grid. */}
-        <div
-          id={`panel-${activeTab}`}
-          role="tabpanel"
-          aria-labelledby={`tab-${activeTab}`}
-          className="contents"
-        >
-          {isEnrollment ? <EnrollmentPanel activeYear={activeYear} /> : <RegulationPanel />}
-        </div>
+        {/* Panel content tracks the active tab. Each topic panel returns a
+            fragment (its card + data slot children), so they land directly in
+            the shell grid above (this div carries the tabpanel role/grid). */}
+        {isEnrollment ? <EnrollmentPanel activeYear={activeYear} /> : <RegulationPanel />}
       </div>
 
       <Footer

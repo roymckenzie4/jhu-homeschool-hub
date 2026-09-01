@@ -146,7 +146,7 @@ function Overview({ regulationByState }) {
           return (
             <li key={level} className="flex items-center gap-3 font-sans text-xs">
               <LevelBadge level={level} />
-              <span className="text-sable/60">{LEVELS[level].range} in force</span>
+              <span className="text-sable/70">{LEVELS[level].range} in force</span>
               <span className="ml-auto font-bold tabular-nums text-sable">{n}</span>
             </li>
           );
@@ -174,7 +174,7 @@ function Detail({ stateName, entry }) {
           {entry?.level ? `${LEVELS[entry.level].label} regulation` : "—"}
         </span>
       </div>
-      <p className="mt-1 font-sans text-xs text-sable/60">
+      <p className="mt-1 font-sans text-xs text-sable/70">
         {entry?.total ?? 0} of {REGULATION_COUNT} regulations in force
       </p>
 
@@ -194,7 +194,7 @@ function Detail({ stateName, entry }) {
               <span className="text-sable/70">{group.label}</span>
               <span className="tabular-nums text-sable">
                 <span className="font-semibold">{yes}</span>
-                <span className="text-sable/45"> / {group.regulations.length}</span>
+                <span className="text-sable/70"> / {group.regulations.length}</span>
               </span>
             </li>
           );
@@ -230,14 +230,14 @@ function ComparisonSummary({ selectedStates, regulationByState, onClear }) {
         <button
           type="button"
           onClick={onClear}
-          className="font-sans text-xs text-sable/60 underline-offset-4 hover:text-heritage hover:underline"
+          className="font-sans text-xs text-sable/70 underline-offset-4 hover:text-heritage hover:underline"
         >
           Clear
         </button>
       </div>
       {/* Muted key so the middle metadata (e.g. "ages 5–18 · 13 yrs · 2008")
           is decodable without reading like a stiff table header. */}
-      <p className="mt-1.5 font-sans text-[11px] text-sable/45">
+      <p className="mt-1.5 font-sans text-[11px] text-sable/70">
         State · age range · years required · law year · level
       </p>
 
@@ -255,13 +255,13 @@ function ComparisonSummary({ selectedStates, regulationByState, onClear }) {
             >
               <span className="shrink-0 font-medium text-sable">{name}</span>
               {entry?.legislation && (
-                <span className="flex-1 truncate text-[11px] tabular-nums text-sable/50">
+                <span className="flex-1 truncate text-[11px] tabular-nums text-sable/70">
                   {legislationLine(entry.legislation)}
                 </span>
               )}
               <span className="ml-auto flex shrink-0 items-center gap-1.5">
                 <LevelBadge level={entry?.level} />
-                <span className="tabular-nums text-sable/60">
+                <span className="tabular-nums text-sable/70">
                   {entry?.total ?? 0}/{REGULATION_COUNT}
                 </span>
               </span>
