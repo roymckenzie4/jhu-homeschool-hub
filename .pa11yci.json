@@ -1,0 +1,64 @@
+{
+  "defaults": {
+    "timeout": 30000,
+    "wait": 300,
+    "standard": "WCAG2AA",
+    "runners": ["axe", "htmlcs"],
+    "ignore": ["color-contrast"],
+    "chromeLaunchConfig": {
+      "args": ["--no-sandbox"]
+    }
+  },
+  "urls": [
+    {
+      "url": "http://localhost:4173/jhu-homeschool-hub/?scenario=enrollment-overview",
+      "actions": ["wait for element .state-path to be added"]
+    },
+    {
+      "url": "http://localhost:4173/jhu-homeschool-hub/?scenario=enrollment-detail",
+      "actions": [
+        "wait for element .state-path to be added",
+        "click element [aria-label^=\"California,\"]",
+        "wait for element [aria-pressed=\"true\"] to be added"
+      ]
+    },
+    {
+      "url": "http://localhost:4173/jhu-homeschool-hub/?scenario=enrollment-comparison",
+      "actions": [
+        "wait for element .state-path to be added",
+        "click element [aria-label^=\"California,\"]",
+        "click element [aria-label^=\"Texas,\"]",
+        "wait for element [aria-pressed=\"true\"] to be added"
+      ]
+    },
+    {
+      "url": "http://localhost:4173/jhu-homeschool-hub/?scenario=regulation-overview",
+      "actions": [
+        "wait for element .state-path to be added",
+        "click element #tab-regulation",
+        "wait for element #panel-regulation to be visible"
+      ]
+    },
+    {
+      "url": "http://localhost:4173/jhu-homeschool-hub/?scenario=regulation-detail",
+      "actions": [
+        "wait for element .state-path to be added",
+        "click element #tab-regulation",
+        "wait for element #panel-regulation to be visible",
+        "click element [aria-label^=\"California,\"]",
+        "wait for element [aria-pressed=\"true\"] to be added"
+      ]
+    },
+    {
+      "url": "http://localhost:4173/jhu-homeschool-hub/?scenario=regulation-comparison",
+      "actions": [
+        "wait for element .state-path to be added",
+        "click element #tab-regulation",
+        "wait for element #panel-regulation to be visible",
+        "click element [aria-label^=\"California,\"]",
+        "click element [aria-label^=\"Texas,\"]",
+        "wait for element [aria-pressed=\"true\"] to be added"
+      ]
+    }
+  ]
+}
