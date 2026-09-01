@@ -7,10 +7,17 @@
  * from the shared selection; removal happens via the shared chips above the map.
  *
  * All regulation data comes through the regulation loader, never the CSV directly.
+ * The comparison table's Homeschoolers column is the one cross-topic exception —
+ * it reads enrollment via enrollmentLoader, imported here (not in the table or
+ * its download button) so the dependency is visible at the topic layer.
  */
 
 import { useSelection } from "../state/selection.jsx";
 import { regulationByState } from "../data/regulationLoader.js";
+import {
+  enrollmentLatestYear,
+  enrollmentInLatestYear,
+} from "../data/enrollmentLoader.js";
 import {
   CARD_SLOT_CLASS,
   DATA_SLOT_CLASS,
@@ -56,6 +63,8 @@ export default function RegulationPanel() {
             <RegulationTableDownloadButton
               selectedStates={selectedStates}
               regulationByState={regulationByState}
+              enrollmentLatestYear={enrollmentLatestYear}
+              enrollmentInLatestYear={enrollmentInLatestYear}
               title="State homeschool regulations compared"
               subtitle={`Comparing ${count} ${count === 1 ? "state" : "states"} · regulations in force, of ${REGULATION_COUNT} tracked`}
               citation={regulationCitation()}
@@ -69,6 +78,8 @@ export default function RegulationPanel() {
           <RegulationComparisonTable
             selectedStates={selectedStates}
             regulationByState={regulationByState}
+            enrollmentLatestYear={enrollmentLatestYear}
+            enrollmentInLatestYear={enrollmentInLatestYear}
           />
         )}
       </div>

@@ -130,10 +130,6 @@ export function regulationLevel(count) {
   return "High";
 }
 
-// Maximum number of states that can be compared at once. Single source of
-// truth — the map toggle, the chip row, and the table all read this.
-export const COMPARE_CAP = 6;
-
 /**
  * Compulsory-schooling + legalization facts surfaced in the regulation card,
  * pulled from the sheet's "Legislation" tab. Keys are the internal field names;

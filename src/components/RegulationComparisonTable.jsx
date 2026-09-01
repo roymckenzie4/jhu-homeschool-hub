@@ -21,6 +21,13 @@
  * Props:
  *   - selectedStates string[]   states to show as rows, in selection order.
  *   - regulationByState   object     shaped regulation data.
+ *   - enrollmentLatestYear   number   most recent enrollment year, for the
+ *                                     Homeschoolers column header. Passed down
+ *                                     from RegulationPanel rather than imported
+ *                                     from enrollmentLoader here directly, so
+ *                                     the cross-topic dependency stays visible
+ *                                     at the topic layer (see RegulationPanel).
+ *   - enrollmentInLatestYear function(name) -> number|null, same reasoning.
  *   - forExport       boolean    render for the static PNG snapshot: the
  *                                interactive affordances (source-link cells,
  *                                tooltip-trigger column headers) drop their
@@ -44,10 +51,6 @@ import {
 } from "../config/regulation.js";
 import { COLORS, levelColor, schoolYearLabel } from "../config/theme.js";
 import { formatNumber } from "../lib/format.js";
-import {
-  enrollmentLatestYear,
-  enrollmentInLatestYear,
-} from "../data/enrollmentLoader.js";
 import {
   Tooltip,
   TooltipTrigger,
@@ -120,6 +123,8 @@ function EmptyPrompt() {
 export default function RegulationComparisonTable({
   selectedStates,
   regulationByState,
+  enrollmentLatestYear,
+  enrollmentInLatestYear,
   forExport = false,
 }) {
   if (selectedStates.length === 0) return <EmptyPrompt />;

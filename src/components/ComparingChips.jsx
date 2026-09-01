@@ -41,7 +41,7 @@ import {
   CommandEmpty,
   CommandItem,
 } from "./ui/command.jsx";
-import { COMPARE_CAP } from "../config/regulation.js";
+import { COMPARE_CAP } from "../config/selection.js";
 import { STATES } from "../config/states.js";
 import RemoveButton from "./RemoveButton.jsx";
 

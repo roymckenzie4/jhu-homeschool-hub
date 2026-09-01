@@ -25,7 +25,7 @@
  */
 
 import { computeYoY } from '../data/derive.js';
-import { formatNumber, formatYoY, ordinal } from '../lib/format.js';
+import { formatNumber, formatYoY, yoyToneClass, ordinal } from '../lib/format.js';
 import { schoolYearLabel } from '../config/theme.js';
 import { BY_NAME } from '../config/states.js';
 import SummaryCard, {
@@ -62,7 +62,6 @@ export default function StateDetailCard({
   const slug = BY_NAME[stateName]?.slug ?? '';
   const isReporting = currentValue != null;
   const yoy = computeYoY(currentValue, previousValue);
-  const yoyPositive = yoy != null && yoy > 0;
 
   return (
     <SummaryCard>
@@ -98,9 +97,7 @@ export default function StateDetailCard({
           <div className="grid grid-cols-2 gap-4">
             <div>
               <p
-                className={`font-sans text-xl font-semibold ${
-                  yoyPositive ? 'text-growth' : 'text-brick'
-                }`}
+                className={`font-sans text-xl font-semibold ${yoyToneClass(yoy)}`}
               >
                 {formatYoY(yoy)}
               </p>

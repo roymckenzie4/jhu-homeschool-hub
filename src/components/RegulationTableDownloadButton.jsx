@@ -16,6 +16,9 @@
  * Props:
  *   selectedStates  string[] — states shown as rows, mirrored from the shell.
  *   regulationByState   object   — shaped regulation data.
+ *   enrollmentLatestYear, enrollmentInLatestYear — forwarded straight through
+ *     to RegulationComparisonTable for its Homeschoolers column; sourced from
+ *     enrollmentLoader at the RegulationPanel level, not here (see that file).
  *   title, subtitle, citation, filename — export metadata.
  */
 
@@ -33,6 +36,8 @@ const RENDER_TIMEOUT_MS = 3000;
 export default function RegulationTableDownloadButton({
   selectedStates,
   regulationByState,
+  enrollmentLatestYear,
+  enrollmentInLatestYear,
   title,
   subtitle,
   citation,
@@ -90,6 +95,8 @@ export default function RegulationTableDownloadButton({
               <RegulationComparisonTable
                 selectedStates={selectedStates}
                 regulationByState={regulationByState}
+                enrollmentLatestYear={enrollmentLatestYear}
+                enrollmentInLatestYear={enrollmentInLatestYear}
                 forExport
               />
             </ChartExportCard>

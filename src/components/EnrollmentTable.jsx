@@ -25,7 +25,7 @@ import {
   TableRow,
 } from './ui/table.jsx';
 import { computeYoY } from '../data/derive.js';
-import { formatNumber, formatYoY } from '../lib/format.js';
+import { formatNumber, formatYoY, yoyToneClass } from '../lib/format.js';
 import { schoolYearLabel } from '../config/theme.js';
 import { ENROLLMENT_TABLE_HEIGHT } from '../config/layout.js';
 
@@ -65,7 +65,6 @@ export default function EnrollmentTable({ stateValues, years, activeYear }) {
           const prior = stateValues?.[year - 1] ?? null;
           const yoy = computeYoY(value, prior);
           const isActive = year === activeYear;
-          const yoyPositive = yoy != null && yoy > 0;
 
           return (
             <TableRow
@@ -92,13 +91,9 @@ export default function EnrollmentTable({ stateValues, years, activeYear }) {
                 {formatNumber(value)}
               </TableCell>
               <TableCell
-                className={`px-3 py-1.5 text-right tabular-nums ${
-                  yoy == null
-                    ? 'text-sable/40'
-                    : yoyPositive
-                    ? 'text-growth'
-                    : 'text-brick'
-                } ${isActive ? 'font-semibold' : ''}`}
+                className={`px-3 py-1.5 text-right tabular-nums ${yoyToneClass(
+                  yoy
+                )} ${isActive ? 'font-semibold' : ''}`}
               >
                 {formatYoY(yoy)}
               </TableCell>

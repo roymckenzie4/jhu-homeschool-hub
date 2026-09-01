@@ -27,6 +27,16 @@ export function formatYoY(pct) {
 }
 
 /**
+ * Text color class for a YoY figure — shared by the detail card and the
+ * enrollment table so the two never drift. An exact 0% change gets the same
+ * muted treatment as "no data" (not brick): it's a flat trend, not a decline.
+ */
+export function yoyToneClass(pct) {
+  if (pct == null || !Number.isFinite(pct) || pct === 0) return 'text-sable/40';
+  return pct > 0 ? 'text-growth' : 'text-brick';
+}
+
+/**
  * English ordinal suffix: 1 -> "1st", 2 -> "2nd", 3 -> "3rd", 4 -> "4th",
  * handles the 11/12/13 special cases correctly. Used for the national rank
  * display in the detail card.

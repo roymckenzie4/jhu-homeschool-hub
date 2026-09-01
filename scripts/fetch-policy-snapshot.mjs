@@ -21,7 +21,7 @@
 
 import { fileURLToPath } from "node:url";
 import { dirname, resolve } from "node:path";
-import { parseSheetsData } from "../src/data/parseSheetsData.js";
+import { parseHeatMapData } from "../src/data/parseHeatMapData.js";
 import { parseLegislationData } from "../src/data/parseLegislationData.js";
 import { fetchGrid, fetchValues, requireKey, writeSnapshot } from "./lib/sheets.mjs";
 
@@ -60,7 +60,7 @@ async function main() {
   const key = requireKey();
 
   // Heat Map — spreadsheets.get for the full cell model (per-cell source links).
-  const { byState } = parseSheetsData(
+  const { byState } = parseHeatMapData(
     await fetchGrid(SPREADSHEET_ID, HEATMAP_RANGE, HEATMAP_FIELDS, key),
   );
 

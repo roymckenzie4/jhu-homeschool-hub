@@ -50,7 +50,11 @@ export default function MapDownloadButton({
       const node = exportRef.current;
       const start = performance.now();
       while (!cancelled && performance.now() - start < RENDER_TIMEOUT_MS) {
-        if (node?.querySelector("svg path, svg rect")) break;
+        // .state-path marks an actual painted state shape (geo <path> or tile
+        // <rect>) — unlike a bare "svg path, svg rect" selector, this can't
+        // match the legend's always-present decorative swatch and report a
+        // false "painted" before the map's own async data has rendered.
+        if (node?.querySelector("svg .state-path")) break;
         await new Promise((r) => requestAnimationFrame(r));
       }
       // One more frame so fills and labels settle before capture.
