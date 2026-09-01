@@ -17,17 +17,16 @@
 import csvText from "../../homeschool-hub-state-summary-data.csv?raw";
 import snapshot from "./enrollment-snapshot.json";
 import { parseCsv } from "./parseCsv.js";
+import { hasUsableByState } from "./snapshotGuard.js";
 
 // Raw CSV text, exposed for the "Download data (CSV)" affordance.
 export const enrollmentCsvText = csvText;
 
-// A snapshot is usable only if it has a non-empty byState map and a years array
-// — guards against a truncated or malformed JSON.
+// A snapshot is usable only if it has a non-empty byState map (shared check)
+// and a non-empty years array — guards against a truncated or malformed JSON.
 function isUsableSnapshot(snap) {
-  const states = snap?.byState;
-  if (!states || typeof states !== "object") return false;
-  if (!Array.isArray(snap.years) || snap.years.length === 0) return false;
-  return Object.keys(states).length > 0;
+  if (!hasUsableByState(snap)) return false;
+  return Array.isArray(snap.years) && snap.years.length > 0;
 }
 
 // Shaped enrollment data, keyed by full state name. Prefer the live snapshot;

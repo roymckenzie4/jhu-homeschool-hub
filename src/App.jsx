@@ -25,14 +25,13 @@ import Footer from "./components/Footer.jsx";
 import EnrollmentPanel from "./components/EnrollmentPanel.jsx";
 import RegulationPanel from "./components/RegulationPanel.jsx";
 import { useSelection } from "./state/selection.jsx";
-import { CHIPS_SLOT_CLASS } from "./config/layout.js";
+import { CHIPS_SLOT_CLASS, TWO_COLUMN_GRID_CLASS } from "./config/layout.js";
 import {
   comparisonColor,
   schoolYearLabel,
   enrollmentCitation,
   regulationCitation,
 } from "./config/theme.js";
-import { MAP_MODE } from "./config/tileGrid.js";
 import {
   buildEnrollmentDescriptor,
   enrollmentFooter,
@@ -153,11 +152,10 @@ export default function App() {
         topic's panel (CARD_SLOT_CLASS / DATA_SLOT_CLASS). On mobile the grid is
         single-column: map -> chips -> card -> data.
       */}
-      <div className="mt-4 grid grid-cols-1 gap-x-8 gap-y-6 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)]">
+      <div className={`mt-4 ${TWO_COLUMN_GRID_CLASS}`}>
         <div className="lg:col-start-1 lg:row-start-1">
           {/* Shared, always-mounted map. Only the descriptor swaps per topic. */}
           <ChoroplethMap
-            mode={MAP_MODE}
             fillForState={descriptor.fillForState}
             ariaLabelForState={descriptor.ariaLabelForState}
             selectionStroke={descriptor.selectionStroke}
@@ -175,7 +173,6 @@ export default function App() {
                 <div className="flex items-center gap-5">
                   {descriptor.legend.trailing}
                   <MapDownloadButton
-                    mode={MAP_MODE}
                     descriptor={descriptor}
                     selectedStates={selectedStates}
                     title={mapExport.title}

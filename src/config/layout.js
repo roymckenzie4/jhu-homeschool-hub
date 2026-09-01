@@ -38,6 +38,13 @@ export const CARD_SLOT_CLASS = "lg:col-start-2 lg:row-start-1";
 export const CHIPS_SLOT_CLASS = "lg:col-span-2 lg:row-start-2";
 export const DATA_SLOT_CLASS = "lg:col-span-2 lg:row-start-3";
 
+// The 1.35:1 column ratio behind the shell's map/card row is deliberately
+// reused by the Enrollment data zone's table/graph row (see EnrollmentPanel),
+// so the map and the by-year table stay vertically aligned. One constant so
+// the two grids can't drift apart — App.jsx adds its own margin on top.
+export const TWO_COLUMN_GRID_CLASS =
+  "grid grid-cols-1 gap-x-8 gap-y-6 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)]";
+
 // Min-height the data zone reserves regardless of content, so switching topics
 // (or selecting a single state on Regulation, where the table is one short
 // row) doesn't collapse the zone and resize the tool. Sized to the Enrollment

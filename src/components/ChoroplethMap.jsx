@@ -8,18 +8,13 @@
  * ramp) and the Regulation view (multi-select, categorical level ramp)
  * share one map.
  *
- * Two render modes, chosen per deploy via `mode` (wired to config MAP_MODE),
- * NOT a user-facing toggle:
- *   - 'geo'  — geographic choropleth on a projected TopoJSON (default).
- *   - 'tile' — square tile grid (config/tileGrid.js); equal-size states so the
- *              small ones and DC are as clickable as Texas.
- * Both modes share the same fills, selection styling, legend, and the full
- * fillForState / selectedStates / onSelect / ariaLabelForState API — the only
- * difference is geometry (projected paths vs. grid rects).
+ * Geographic choropleth on a projected TopoJSON. (A square tile-grid render
+ * mode existed alongside this through the geo/tile A/B — JHU picked geo on
+ * 2026-07-10; the tile config and render path were removed 2026-09-01 once
+ * the choice was final. See git history if tile mode is ever reconsidered.)
  *
  * All d3-geo usage in this app is confined to this file and `lib/geoProjection.js`.
- * The TopoJSON file (~110KB) lives in /public and is fetched once at mount, in
- * geo mode only — tile mode is self-contained from config and skips the fetch.
+ * The TopoJSON file (~110KB) lives in /public and is fetched once at mount.
  *
  * Props:
  *   - fillForState      (name) => string   fill for a state: a color, or
@@ -34,7 +29,6 @@
  *                       and hidden from assistive tech.
  *   - ariaLabelForState (name) => string   accessible label for an interactive
  *                       state (default: the name alone).
- *   - mode              'geo' | 'tile'     geometry to render (default 'geo').
  *   - idPrefix          string             suffix appended to the shared <defs>
  *                       ids (pattern + filters). Default "" keeps the canonical
  *                       ids the global CSS and legend reference. A second map on
@@ -59,25 +53,8 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { feature } from "topojson-client";
-import { BY_FIPS, BY_NAME, BY_POSTAL } from "../config/states.js";
+import { BY_FIPS, BY_NAME } from "../config/states.js";
 import { COLORS, labelColorForFill } from "../config/theme.js";
-import {
-  GRID_COLS,
-  GRID_ROWS,
-  TILE_BOTTOM_PAD,
-  TILE_GAP,
-  TILE_GRID,
-  TILE_H,
-  TILE_HOVER_DARKEN,
-  TILE_HOVER_SCALE,
-  TILE_HOVER_SHADOW_BLUR,
-  TILE_HOVER_SHADOW_DY,
-  TILE_HOVER_SHADOW_OPACITY,
-  TILE_RADIUS,
-  TILE_SELECT_RING_W,
-  TILE_SELECT_STROKE,
-  TILE_W,
-} from "../config/tileGrid.js";
 import { buildProjection } from "../lib/geoProjection.js";
 
 // SVG viewBox dimensions. The map scales to its container via CSS; these
@@ -117,14 +94,6 @@ const HOVER_LABEL_ANCHORS = {
   Michigan: [-84.8, 43.4],
 };
 
-// Tile mode: the drawn tile (footprint minus the white channel) and its
-// always-on postal label. The label uses the same sable-glyph / white-halo
-// treatment as the geo hover label so it stays legible on both the light and
-// dark ends of the fill ramp.
-const TILE_DRAWN_W = TILE_W - TILE_GAP;
-const TILE_DRAWN_H = TILE_H - TILE_GAP;
-const TILE_LABEL_SIZE = 16;
-
 export default function ChoroplethMap({
   fillForState,
   selectedStates = [],
@@ -132,16 +101,12 @@ export default function ChoroplethMap({
   selectionStroke = COLORS.sable,
   isInteractive = () => true,
   ariaLabelForState = (name) => name,
-  mode = "geo",
   idPrefix = "",
 }) {
-  const isTile = mode === "tile";
-
   // Shared <defs> ids, suffixed so two maps on one page never collide. Default
   // (empty) prefix yields the canonical ids the global CSS + legend swatch use.
   const nonReportingId = `non-reporting${idPrefix}`;
   const hoverGlowId = `state-hover-glow${idPrefix}`;
-  const tileHoverLiftId = `tile-hover-lift${idPrefix}`;
 
   // Resolve a fill from the view's fillForState, mapping the non-reporting
   // sentinel to THIS instance's pattern id (fillForState returns the canonical
@@ -165,7 +130,7 @@ export default function ChoroplethMap({
   const [hoveredState, setHoveredState] = useState(null);
 
   useEffect(() => {
-    if (isTile || features) return; // tile needs no data; skip if already cached
+    if (features) return; // skip if already cached
     const url = `${import.meta.env.BASE_URL}us-states-10m.json`;
     let cancelled = false;
     fetch(url)
@@ -179,7 +144,7 @@ export default function ChoroplethMap({
     return () => {
       cancelled = true;
     };
-  }, [isTile, features]);
+  }, [features]);
 
   // Projection + path generator are memoized inside buildProjection() against
   // the FeatureCollection identity, so re-renders are cheap.
@@ -243,9 +208,8 @@ export default function ChoroplethMap({
         }
       : { "aria-hidden": true };
 
-  // Shared <defs>: the non-reporting stripe pattern and the hover-glow filter
-  // (both modes), plus the tile-only hover-lift filter. Fixed ids, referenced
-  // by fills and CSS.
+  // Shared <defs>: the non-reporting stripe pattern and the hover-glow filter.
+  // Fixed ids, referenced by fills and CSS.
   const sharedDefs = (
     <defs>
       {/* Diagonal stripes for states that do not publicly report. */}
@@ -291,173 +255,12 @@ export default function ChoroplethMap({
           dx="0"
           dy="0"
           stdDeviation="1.5"
-          floodColor="#31261D"
+          floodColor={COLORS.sable}
           floodOpacity="0.62"
         />
       </filter>
-
-      {/* Tile-mode hover lift: a stronger fill-darken plus a real offset drop
-          shadow, so a hovered tile reads as popping off the grid (paired with a
-          CSS scale — see .map-tile in index.css). Only the tile map references
-          it; geo keeps #state-hover-glow. */}
-      {isTile && (
-        <filter
-          id={tileHoverLiftId}
-          x="-30%"
-          y="-30%"
-          width="160%"
-          height="160%"
-        >
-          <feColorMatrix
-            in="SourceGraphic"
-            type="matrix"
-            values={`${TILE_HOVER_DARKEN} 0 0 0 0
-                    0 ${TILE_HOVER_DARKEN} 0 0 0
-                    0 0 ${TILE_HOVER_DARKEN} 0 0
-                    0 0 0 1 0`}
-            result="darkened"
-          />
-          <feDropShadow
-            in="darkened"
-            dx="0"
-            dy={TILE_HOVER_SHADOW_DY}
-            stdDeviation={TILE_HOVER_SHADOW_BLUR}
-            floodColor="#000000"
-            floodOpacity={TILE_HOVER_SHADOW_OPACITY}
-          />
-        </filter>
-      )}
     </defs>
   );
-
-  // Tile mode: one rounded rect per state on the config grid. Equal-size tiles
-  // mean small states and DC are ordinary click targets — no marker or callout.
-  // Selection ring/halo overlay parity with geo lands in the next step; this
-  // pass wires fills, always-on labels, hover (via shared CSS), and click.
-  if (isTile) {
-    // viewBox sized tight to the grid so it fills the container width edge to
-    // edge (no dead margin). The 13-wide grid already carries roughly geo's
-    // aspect ratio, so this lands at a comparable footprint. Empty cells (e.g.
-    // the Atlantic corner below RI) read as the map's natural silhouette.
-    const tileViewW = GRID_COLS * TILE_W;
-    const tileViewH = GRID_ROWS * TILE_H + TILE_BOTTOM_PAD;
-
-    // Precompute each tile's geometry/state once, then render in three z-ordered
-    // passes (fills → selection overlay → labels) so the selection halo never
-    // paints over a label.
-    const tiles = Object.entries(TILE_GRID).map(([postal, { row, col }]) => {
-      const name = BY_POSTAL[postal].name;
-      const interactive = isInteractive(name);
-      const isSelected = selectedStates.includes(name);
-      const x = col * TILE_W + TILE_GAP / 2;
-      const y = row * TILE_H + TILE_GAP / 2;
-      let className = "state-path map-tile";
-      if (interactive) className += " state-path--clickable";
-      if (isSelected) className += " state-path--selected";
-      return {
-        postal,
-        name,
-        fill: resolveFill(name),
-        isSelected,
-        className,
-        x,
-        y,
-        cx: x + TILE_DRAWN_W / 2,
-        cy: y + TILE_DRAWN_H / 2,
-      };
-    });
-
-    // Draw the hovered tile last so its lift shadow (and slight growth) isn't
-    // clipped by tiles that come later in grid order. Only reorders the base
-    // fills; the selection overlay and labels keep their own passes.
-    const baseTiles = hoveredState
-      ? [
-          ...tiles.filter((t) => t.name !== hoveredState),
-          ...tiles.filter((t) => t.name === hoveredState),
-        ]
-      : tiles;
-
-    return (
-      <svg
-        viewBox={`0 0 ${tileViewW} ${tileViewH}`}
-        className="block h-auto w-full"
-        role="img"
-        aria-label="US tile grid by state"
-        // Feeds the tile-hover scale in .map-tile (index.css) from config so the
-        // magic number stays in tileGrid.js.
-        style={{ "--tile-hover-scale": TILE_HOVER_SCALE }}
-      >
-        {sharedDefs}
-
-        {/* Base fills: one rect per state. Hover lift + dim-on-selection come
-            from the shared CSS (same classes as the geo paths, plus .map-tile
-            for the tile-only pop). */}
-        <g className={hasSelection ? "map-base--has-selection" : ""}>
-          {baseTiles.map(({ postal, name, fill, className, isSelected, x, y }) => (
-            <rect
-              key={postal}
-              x={x}
-              y={y}
-              width={TILE_DRAWN_W}
-              height={TILE_DRAWN_H}
-              rx={TILE_RADIUS}
-              className={className}
-              fill={fill}
-              onMouseEnter={() => setHoveredState(name)}
-              onMouseLeave={() => setHoveredState(null)}
-              {...interactionProps(name, isSelected)}
-            />
-          ))}
-        </g>
-
-        {/* Selection overlay: a crisp near-black border per selected tile,
-            framed by the white channel between tiles. Simpler than geo's white
-            halo + topic ring — on a square against white gaps a solid dark
-            border reads cleaner and stronger. Non-interactive so clicks fall
-            through to the base tile below. */}
-        <g style={{ pointerEvents: "none" }}>
-          {tiles
-            .filter((t) => t.isSelected)
-            .map(({ postal, x, y }) => (
-              <rect
-                key={postal}
-                x={x}
-                y={y}
-                width={TILE_DRAWN_W}
-                height={TILE_DRAWN_H}
-                rx={TILE_RADIUS}
-                fill="none"
-                stroke={TILE_SELECT_STROKE}
-                strokeWidth={TILE_SELECT_RING_W}
-                strokeLinejoin="round"
-              />
-            ))}
-        </g>
-
-        {/* Labels: topmost so the selection overlay never covers them. Color
-            follows each tile's luminance (white on dark, sable on light / no
-            data) for contrast without a heavy outline. */}
-        <g style={{ pointerEvents: "none" }}>
-          {tiles.map(({ postal, fill, cx, cy }) => (
-            <text
-              key={postal}
-              x={cx}
-              y={cy}
-              textAnchor="middle"
-              dominantBaseline="central"
-              fill={labelColorForFill(fill)}
-              fontFamily="Work Sans, sans-serif"
-              fontSize={TILE_LABEL_SIZE}
-              fontWeight={700}
-              letterSpacing="0.02em"
-            >
-              {postal}
-            </text>
-          ))}
-        </g>
-      </svg>
-    );
-  }
 
   if (!features || !projected) {
     return (

@@ -27,6 +27,7 @@ import {
   DATA_ZONE_MIN_HEIGHT,
   CARD_SLOT_CLASS,
   DATA_SLOT_CLASS,
+  TWO_COLUMN_GRID_CLASS,
 } from "../config/layout.js";
 import {
   comparisonColor,
@@ -243,7 +244,7 @@ export default function EnrollmentPanel({ activeYear }) {
         {count === 0 ? (
           <OnboardingPanel />
         ) : (
-        <div className="grid grid-cols-1 gap-x-8 gap-y-6 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)]">
+        <div className={TWO_COLUMN_GRID_CLASS}>
           <div>
             <h2 className="font-sans text-[11px] font-semibold uppercase tracking-widest text-sable/70">
               {detailState ? `${detailState}, by Year` : "Enrollment by Year"}

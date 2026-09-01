@@ -10,8 +10,8 @@
  * The off-screen ChartExportCard (a second copy of the real comparison table)
  * mounts ONLY while a download is in flight; the table's pinned columns run wider
  * than the default chart frame, so the frame is set to "fit-content" and lets the
- * table define the artifact width. On click it mounts, waits a frame for the
- * table to paint, snapshots, then unmounts.
+ * table define the artifact width. The paint-wait / snapshot / unmount flow
+ * itself lives in usePngExport (shared with MapDownloadButton).
  *
  * Props:
  *   selectedStates  string[] — states shown as rows, mirrored from the shell.
@@ -22,16 +22,10 @@
  *   title, subtitle, citation, filename — export metadata.
  */
 
-import { useEffect, useRef, useState } from "react";
 import ChartExportCard from "./ChartExportCard.jsx";
 import RegulationComparisonTable from "./RegulationComparisonTable.jsx";
 import DownloadPngButton from "./DownloadPngButton.jsx";
-import { exportElementAsPng } from "../lib/exportImage.js";
-import { trackEvent } from "../lib/analytics.js";
-
-// Cap on how long to wait for the export table to paint before giving up, so a
-// hiccup can't hang the pending flag forever.
-const RENDER_TIMEOUT_MS = 3000;
+import { usePngExport } from "../lib/usePngExport.js";
 
 export default function RegulationTableDownloadButton({
   selectedStates,
@@ -43,37 +37,17 @@ export default function RegulationTableDownloadButton({
   citation,
   filename,
 }) {
-  const exportRef = useRef(null);
-  const [pending, setPending] = useState(false);
-
-  // Runs once the off-screen card mounts: wait until the table has painted its
-  // rows, snapshot, then unmount. The table is pure DOM (no fetch/recharts), so
-  // this settles within a frame or two.
-  useEffect(() => {
-    if (!pending) return undefined;
-    let cancelled = false;
-    (async () => {
-      const node = exportRef.current;
-      const start = performance.now();
-      while (!cancelled && performance.now() - start < RENDER_TIMEOUT_MS) {
-        if (node?.querySelector("table tbody tr")) break;
-        await new Promise((r) => requestAnimationFrame(r));
-      }
-      // One more frame so borders and tints settle before capture.
-      await new Promise((r) => requestAnimationFrame(r));
-      if (cancelled || !exportRef.current) return;
-      await exportElementAsPng(exportRef.current, filename);
-      trackEvent("download", { file: filename });
-      if (!cancelled) setPending(false);
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, [pending, filename]);
+  // The table is pure DOM (no fetch/recharts), so this settles within a frame
+  // or two — "table tbody tr" is specific enough that nothing else in the
+  // export card could match it first.
+  const { exportRef, pending, startExport } = usePngExport(
+    "table tbody tr",
+    filename,
+  );
 
   return (
     <>
-      <DownloadPngButton onClick={() => setPending(true)} />
+      <DownloadPngButton onClick={startExport} />
 
       {/* Off-screen export copy — mounted only during an in-flight download
           (far left, no pointer events). "fit-content" lets the table's pinned

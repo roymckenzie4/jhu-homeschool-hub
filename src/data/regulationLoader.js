@@ -17,18 +17,19 @@
 import csvText from "../../homeschool-hub-policy-data.csv?raw";
 import snapshot from "./policy-snapshot.json";
 import { parseRegulationCsv } from "./parseRegulationCsv.js";
+import { hasUsableByState } from "./snapshotGuard.js";
 
 // Raw CSV text, exposed for the view's "Download data (CSV)" affordance so the
 // download serves exactly the bundled source.
 export const regulationCsvText = csvText;
 
-// A snapshot is usable only if it has a byState map with entries that carry
-// regulations — guards against a truncated or malformed JSON.
+// A snapshot is usable only if it has a non-empty byState map (shared check)
+// whose entries all carry regulations — guards against a truncated or
+// malformed JSON.
 function isUsableSnapshot(snap) {
-  const states = snap?.byState;
-  if (!states || typeof states !== "object") return false;
-  const names = Object.keys(states);
-  return names.length > 0 && names.every((n) => states[n]?.regulations);
+  if (!hasUsableByState(snap)) return false;
+  const states = snap.byState;
+  return Object.keys(states).every((n) => states[n]?.regulations);
 }
 
 // Shaped regulation data, keyed by full state name. Prefer the live snapshot;
