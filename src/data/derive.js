@@ -31,67 +31,6 @@ export function computeYoY(current, previous) {
 }
 
 /**
- * Largest fractional deviation from anchor seen across all states within a
- * given year window. Used to set a shared vertical scale on every state
- * sparkline so cross-state visual comparison is honest — equal-percent
- * swings render at equal heights.
- *
- * For each state, the "anchor" is its first reporting value within the
- * window (so a state that didn't report in the earliest displayed year
- * still gets a sensible local anchor rather than being excluded). For
- * every reporting year after that anchor, we take |value/anchor - 1| and
- * return the max.
- *
- * Returns 0 if no state has enough data to compute any deviation — callers
- * should treat that as "no scale," typically by falling back to a flat-line
- * presentation.
- */
-export function computeMaxDeviation(byState, windowYears) {
-  let max = 0;
-  for (const name of Object.keys(byState)) {
-    const values = byState[name];
-    // Find the first reporting year inside the window — that's the anchor.
-    let anchor = null;
-    for (const y of windowYears) {
-      if (values[y] != null) { anchor = values[y]; break; }
-    }
-    if (anchor == null || anchor === 0) continue;
-
-    for (const y of windowYears) {
-      const v = values[y];
-      if (v == null) continue;
-      const dev = Math.abs(v / anchor - 1);
-      if (dev > max) max = dev;
-    }
-  }
-  return max;
-}
-
-/**
- * Pick a centered window of years around a selected year, clamped to the
- * bounds of the available data so the result always has `size` entries
- * (assuming the underlying series is long enough).
- *
- * Default: 2 years on either side of the selected year. If the selection
- * sits near the start of the series, the window shifts forward; near the
- * end, it shifts backward. The selected year is always included.
- *
- * Returns an ascending array of year integers. Pass `years` as the full
- * ascending series from parseCsv.
- */
-export function windowAroundYear(years, selectedYear, size = 5) {
-  if (years.length <= size) return [...years];
-  const idx = years.indexOf(selectedYear);
-  if (idx === -1) return years.slice(-size);
-  const half = Math.floor(size / 2);
-  let start = idx - half;
-  let end = start + size;
-  if (start < 0) { end -= start; start = 0; }
-  if (end > years.length) { start -= end - years.length; end = years.length; }
-  return years.slice(start, end);
-}
-
-/**
  * Top N reporting states for a given year, by reported enrollment (descending).
  * Feeds the national-overview card's leaderboard. Ties break on name so the
  * order is stable across renders. Returns `[{ name, value }]`, shorter than N

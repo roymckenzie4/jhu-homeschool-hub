@@ -25,7 +25,10 @@ import {
   computeQuantileBreaks,
   rangeLabel,
   DOWNLOAD_FILENAME,
+  comparisonColor,
+  enrollmentCitation,
 } from "../config/theme.js";
+import { formatNumber } from "../lib/format.js";
 
 // Most recent five years pin as pills in the shell's year selector; older
 // years are reachable through its leading "More years" dropdown.
@@ -75,7 +78,7 @@ export function buildEnrollmentDescriptor(activeYear) {
     ariaLabelForState: (name) => {
       const v = valuesByState[name] ?? null;
       return v != null
-        ? `${name}, ${v.toLocaleString()} reported homeschoolers`
+        ? `${name}, ${formatNumber(v)} reported homeschoolers`
         : `${name}, no reported data for ${schoolYearLabel(activeYear)}`;
     },
     selectionStroke: COLORS.selectionBorder,
@@ -115,15 +118,32 @@ export function buildEnrollmentDescriptor(activeYear) {
       ),
     },
     // Chip dot is HTML, so a non-reporting state resolves to a solid grey —
-    // never the map's SVG stripe pattern.
-    dotColorForState: (name) => {
+    // never the map's SVG stripe pattern. When 2+ states are selected (the
+    // comparison mode), a chip's dot switches to its per-selection COMPARISON
+    // color so it matches the trend line / table header / card dot — one
+    // identity color across every comparison surface. `selectedStates` is
+    // optional context the shell passes in; regulation's descriptor ignores it.
+    dotColorForState: (name, { selectedStates } = {}) => {
+      if (selectedStates && selectedStates.length >= 2) {
+        const i = selectedStates.indexOf(name);
+        if (i >= 0) return comparisonColor(i);
+      }
       const v = valuesByState[name] ?? null;
       return v == null ? COLORS.nonReportingStripe : fillForValue(v, breaks);
     },
     // Combobox per-row meta: the active-year count, or a dash when unreported.
     metaForState: (name) => {
       const v = valuesByState[name] ?? null;
-      return v == null ? "—" : v.toLocaleString();
+      return formatNumber(v);
+    },
+    // Title/subtitle/citation/filename for the map's PNG export, so a
+    // downloaded map stays attributable after republication.
+    mapExport: {
+      title: "Reported homeschool enrollment",
+      subtitle: `By state · ${schoolYearLabel(activeYear)}`,
+      citation: enrollmentCitation(schoolYearLabel(activeYear)),
+      // Spring year by convention (2024-25 -> 2025).
+      filename: `homeschool-enrollment-map-${activeYear + 1}.png`,
     },
   };
 }

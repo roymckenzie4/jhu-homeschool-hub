@@ -114,8 +114,6 @@ export function compositeOver(fgHex, alpha, bgHex) {
   return `#${mixed.map((c) => c.toString(16).padStart(2, "0")).join("")}`;
 }
 
-const SABLE_LUMINANCE = relativeLuminance(COLORS.sable);
-
 /**
  * Readable label color (white or sable) for a given map fill, picking whichever
  * has the higher WCAG contrast against the fill. Used for the always-on tile
@@ -125,9 +123,9 @@ const SABLE_LUMINANCE = relativeLuminance(COLORS.sable);
  */
 export function labelColorForFill(fill) {
   if (typeof fill !== "string" || !fill.startsWith("#")) return COLORS.sable;
-  const L = relativeLuminance(fill);
-  const contrast = (a, b) => (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
-  return contrast(L, 1) >= contrast(L, SABLE_LUMINANCE) ? "#FFFFFF" : COLORS.sable;
+  return contrastRatio(fill, "#FFFFFF") >= contrastRatio(fill, COLORS.sable)
+    ? "#FFFFFF"
+    : COLORS.sable;
 }
 
 // Standard transition for selection/fill changes.
@@ -146,6 +144,11 @@ export const DOWNLOAD_FILENAME =
 // wording — JHU will supply final text.
 export const CHART_SOURCE_URL =
   "education.jhu.edu/edpolicy/policy-research-initiatives/homeschool-hub";
+
+// Base for the per-state "Read more" link on both detail cards — same domain
+// as CHART_SOURCE_URL, one path segment deeper.
+export const HOMESCHOOL_HUB_BASE =
+  "https://education.jhu.edu/edpolicy/policy-research-initiatives/homeschool-hub/states";
 const CHART_SOURCE_RETRIEVED = "July 2026";
 export function enrollmentCitation(rangeLabel) {
   return `Source: Homeschool Hub, Johns Hopkins University School of Education. Reported homeschool enrollment, ${rangeLabel}. Retrieved ${CHART_SOURCE_RETRIEVED} from ${CHART_SOURCE_URL}`;

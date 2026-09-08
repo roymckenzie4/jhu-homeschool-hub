@@ -35,17 +35,8 @@ import {
 } from "recharts";
 import { COLORS } from "../config/theme.js";
 import { niceTicks, nearestYear, yearAxisTicks } from "../lib/niceScale.js";
+import { compactNumber, paddedDomain } from "../lib/trendChart.js";
 import YearAxisTick from "./YearAxisTick.jsx";
-
-// Fraction of the shared data range padded above/below so no line runs flush
-// against the top/bottom edge. Matches Sparkline.
-const DOMAIN_PAD = 0.15;
-
-// Compact axis ticks: 12,345 -> "12K".
-const compact = new Intl.NumberFormat("en-US", {
-  notation: "compact",
-  maximumFractionDigits: 1,
-});
 
 // Line alpha at rest (slightly transparent so overlaps read), the fade for
 // non-highlighted lines while one is emphasized, and the emphasized alpha.
@@ -68,11 +59,7 @@ export default function ComparisonTrend({ rows, states, colorForState, highlight
       </div>
     );
   }
-  const dataMin = Math.min(...values);
-  const dataMax = Math.max(...values);
-  const pad = (dataMax - dataMin || dataMax || 1) * DOMAIN_PAD;
-  const domainLo = dataMin - pad;
-  const domainHi = dataMax + pad;
+  const [domainLo, domainHi] = paddedDomain(values);
 
   // First / ~2020 / last year, so the COVID inflection reads as a positioned
   // label. Numeric x-axis places each tick at its true year, not by index; a
@@ -89,7 +76,7 @@ export default function ComparisonTrend({ rows, states, colorForState, highlight
             domain={[domainLo, domainHi]}
             ticks={niceTicks(domainLo, domainHi)}
             width={40}
-            tickFormatter={(v) => compact.format(v)}
+            tickFormatter={(v) => compactNumber.format(v)}
             tick={{ fontSize: 10, fill: COLORS.sable, opacity: 0.5 }}
             tickLine={false}
             axisLine={{ stroke: COLORS.sable, strokeOpacity: 0.15 }}

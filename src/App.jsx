@@ -27,12 +27,6 @@ import RegulationPanel from "./components/RegulationPanel.jsx";
 import { useSelection } from "./state/selection.jsx";
 import { CHIPS_SLOT_CLASS, TWO_COLUMN_GRID_CLASS } from "./config/layout.js";
 import {
-  comparisonColor,
-  schoolYearLabel,
-  enrollmentCitation,
-  regulationCitation,
-} from "./config/theme.js";
-import {
   buildEnrollmentDescriptor,
   enrollmentFooter,
   RECENT_YEARS,
@@ -78,35 +72,12 @@ export default function App() {
   const descriptor = isEnrollment ? enrollmentDescriptor : regulationDescriptor;
   const footer = isEnrollment ? enrollmentFooter : regulationFooter;
 
-  // Chip dot color. When comparing on Enrollment (2+ states), a chip carries the
-  // state's per-state COMPARISON color so it matches the trend line, table
-  // header, and card dot — one identity color across every comparison surface.
-  // Unselected states (the combobox rows) keep the topic's heatmap color; single
-  // / overview / Regulation always use the descriptor's heatmap or level color.
-  const chipDotColor =
-    isEnrollment && selectedStates.length >= 2
-      ? (name) => {
-          const i = selectedStates.indexOf(name);
-          return i >= 0 ? comparisonColor(i) : descriptor.dotColorForState(name);
-        }
-      : descriptor.dotColorForState;
-
-  // Topic-aware title/subtitle/citation/filename for the map's PNG export, so a
-  // downloaded map stays attributable after republication.
-  const mapExport = isEnrollment
-    ? {
-        title: "Reported homeschool enrollment",
-        subtitle: `By state · ${schoolYearLabel(activeYear)}`,
-        // Spring year by convention (2024-25 -> 2025).
-        citation: enrollmentCitation(schoolYearLabel(activeYear)),
-        filename: `homeschool-enrollment-map-${activeYear + 1}.png`,
-      }
-    : {
-        title: "State homeschool regulation",
-        subtitle: "Regulation level by state · current as of 2024–25",
-        citation: regulationCitation(),
-        filename: "homeschool-regulation-map.png",
-      };
+  // Chip dot color, threaded through the active topic's own descriptor rather
+  // than special-cased here — enrollment's dotColorForState switches to the
+  // per-selection COMPARISON color once 2+ states are selected (so a chip
+  // matches the trend line / table header / card dot); regulation's ignores
+  // the selection context and always colors by level.
+  const chipDotColor = (name) => descriptor.dotColorForState(name, { selectedStates });
 
   return (
     <main className="mx-auto max-w-[1200px] px-8 py-4 lg:px-12 lg:py-6">
@@ -187,10 +158,10 @@ export default function App() {
                   <MapDownloadButton
                     descriptor={descriptor}
                     selectedStates={selectedStates}
-                    title={mapExport.title}
-                    subtitle={mapExport.subtitle}
-                    citation={mapExport.citation}
-                    filename={mapExport.filename}
+                    title={descriptor.mapExport.title}
+                    subtitle={descriptor.mapExport.subtitle}
+                    citation={descriptor.mapExport.citation}
+                    filename={descriptor.mapExport.filename}
                   />
                 </div>
               }

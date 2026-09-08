@@ -31,10 +31,8 @@ import { BY_NAME } from '../config/states.js';
 import SummaryCard, {
   CARD_HEADING_CLASS,
   CARD_DIVIDER_CLASS,
+  ReadMoreLink,
 } from './SummaryCard.jsx';
-
-const HOMESCHOOL_HUB_BASE =
-  'https://education.jhu.edu/edpolicy/policy-research-initiatives/homeschool-hub/states';
 
 export default function StateDetailCard({
   stateName,
@@ -145,14 +143,7 @@ export default function StateDetailCard({
       */}
       <div className="mt-auto">
         <hr className={CARD_DIVIDER_CLASS} />
-        <a
-          href={`${HOMESCHOOL_HUB_BASE}/${slug}/`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="block font-sans text-xs font-medium text-heritage underline-offset-4 hover:underline"
-        >
-          Read more about {stateName} →
-        </a>
+        <ReadMoreLink stateName={stateName} slug={slug} />
         {/* Back control. Muted so it reads as secondary to the heritage
             "Read more" link above it. Label + target set by the caller. */}
         <button

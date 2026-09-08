@@ -12,7 +12,7 @@
  * card to its own heading / hr / eyebrow / list / caveat so those match too.
  */
 
-import { TRANSITION_MS } from "../config/theme.js";
+import { TRANSITION_MS, HOMESCHOOL_HUB_BASE } from "../config/theme.js";
 
 // Section heading — state name / "Comparing N states" / "State regulation".
 export const CARD_HEADING_CLASS = "font-sans text-lg font-semibold text-sable";
@@ -38,6 +38,38 @@ export const CARD_CAVEAT_CLASS =
 // internally only if a mode would overflow.
 const FRAME_CLASS =
   "flex flex-col border border-l-4 border-sable/10 border-l-heritage bg-white px-6 py-3 lg:h-full lg:overflow-y-auto";
+
+// Per-state "Read more about homeschool context in [State] →" external link,
+// shared by StateDetailCard and RegulationCard's Detail. Each caller wraps it
+// in its own bottom-of-card container, since that markup differs slightly
+// between the two.
+export function ReadMoreLink({ stateName, slug }) {
+  return (
+    <a
+      href={`${HOMESCHOOL_HUB_BASE}/${slug}/`}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="block font-sans text-xs font-medium text-heritage underline-offset-4 hover:underline"
+    >
+      Read more about {stateName} →
+    </a>
+  );
+}
+
+// "Clear" text button for a comparison card header (StateDetailCard's sibling
+// comparison cards). Distinct from ComparingChips' dashed-underline Clear,
+// which sits in the shared chip row rather than a card heading.
+export function ClearLink({ onClick }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="font-sans text-xs text-sable/70 underline-offset-4 hover:text-heritage hover:underline"
+    >
+      Clear
+    </button>
+  );
+}
 
 export default function SummaryCard({ children }) {
   return (

@@ -15,7 +15,7 @@
  * focus/back transitions.
  */
 
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import { useSelection } from "../state/selection.jsx";
 import {
   enrollmentByState as byState,
@@ -34,8 +34,7 @@ import {
   schoolYearLabel,
   enrollmentCitation,
 } from "../config/theme.js";
-import { exportElementAsPng } from "../lib/exportImage.js";
-import { trackEvent } from "../lib/analytics.js";
+import { usePngExport } from "../lib/usePngExport.js";
 import StateDetailCard from "./StateDetailCard.jsx";
 import NationalOverviewCard from "./NationalOverviewCard.jsx";
 import OnboardingPanel from "./OnboardingPanel.jsx";
@@ -150,10 +149,11 @@ export default function EnrollmentPanel({ activeYear }) {
   const showDetailData = detailState && hasHistory;
 
   // Chart export (PNG download). A composed ChartExportCard is mounted off-screen
-  // holding whichever chart is currently shown; the download button snapshots it.
-  // Only single-state and comparison modes have a chart to export.
+  // holding whichever chart is currently shown, only while a download is in
+  // flight; usePngExport (shared with the map/table download buttons) owns the
+  // paint-wait / snapshot / unmount flow. Only single-state and comparison
+  // modes have a chart to export.
   const exportable = showDetailData || isComparing;
-  const chartExportRef = useRef(null);
   const spanLabel = `${schoolYearLabel(years[0])} to ${schoolYearLabel(years[years.length - 1])}`;
 
   // Title/subtitle/filename/legend for the off-screen export card, per mode. The
@@ -186,11 +186,11 @@ export default function EnrollmentPanel({ activeYear }) {
     exportFilename = `homeschool-enrollment-${detailState.toLowerCase().replace(/\s+/g, "-")}.png`;
   }
 
-  const handleDownloadChart = async () => {
-    if (!chartExportRef.current) return;
-    await exportElementAsPng(chartExportRef.current, exportFilename);
-    trackEvent("download", { file: exportFilename });
-  };
+  // The chart is pure client-rendered Recharts SVG (no fetch), but Recharts'
+  // ResponsiveContainer needs a layout pass before it draws the line — poll
+  // for the actual painted curve, not just the frame around it.
+  const { exportRef: chartExportRef, pending: exportPending, startExport } =
+    usePngExport("svg .recharts-line-curve", exportFilename);
 
   return (
     <>
@@ -288,7 +288,7 @@ export default function EnrollmentPanel({ activeYear }) {
                   onTogglePin={togglePin}
                 />
               )}
-              {exportable && <DownloadPngButton onClick={handleDownloadChart} />}
+              {exportable && <DownloadPngButton onClick={startExport} />}
             </div>
             <div className="mt-3" style={{ height: ENROLLMENT_TABLE_HEIGHT }}>
               {showDetailData ? (
@@ -313,9 +313,10 @@ export default function EnrollmentPanel({ activeYear }) {
       </div>
 
       {/* Off-screen export composition — the standalone card snapshotted to PNG
-          on download. Kept out of the live layout (fixed, far left) so it never
-          affects the on-screen look; recharts sizes fine inside its fixed box. */}
-      {exportable && (
+          on download. Mounted only while a download is in flight (matches the
+          map/table download buttons); kept out of the live layout (fixed, far
+          left) so it never affects the on-screen look while it's up. */}
+      {exportPending && (
         <div
           aria-hidden="true"
           style={{ position: "fixed", left: -99999, top: 0, pointerEvents: "none" }}

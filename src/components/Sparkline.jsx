@@ -24,6 +24,7 @@ import {
 } from 'recharts';
 import { COLORS } from '../config/theme.js';
 import { niceTicks, nearestYear, yearAxisTicks } from '../lib/niceScale.js';
+import { compactNumber, paddedDomain } from '../lib/trendChart.js';
 import YearAxisTick from './YearAxisTick.jsx';
 
 /**
@@ -31,16 +32,6 @@ import YearAxisTick from './YearAxisTick.jsx';
  *   series: Array<{ year: number, value: number | null }> ascending by year.
  *   selectedYear: number — the year to mark with a dot on the line.
  */
-
-// Fraction of the data range added above and below so the top/bottom points
-// don't sit flush against the chart edges. Matches ComparisonTrend.
-const DOMAIN_PAD = 0.15;
-
-// Compact axis ticks: 12,345 -> "12K".
-const compact = new Intl.NumberFormat('en-US', {
-  notation: 'compact',
-  maximumFractionDigits: 1,
-});
 
 export default function Sparkline({ series, selectedYear }) {
   // Drop entries with no value before computing the domain so it reflects the
@@ -57,11 +48,7 @@ export default function Sparkline({ series, selectedYear }) {
   // Fit the vertical domain to this state's own range, padded so the extremes
   // don't touch the edges. A flat series falls back to padding around the value.
   const values = reporting.map((d) => d.value);
-  const dataMin = Math.min(...values);
-  const dataMax = Math.max(...values);
-  const pad = (dataMax - dataMin || dataMax || 1) * DOMAIN_PAD;
-  const domainLo = dataMin - pad;
-  const domainHi = dataMax + pad;
+  const [domainLo, domainHi] = paddedDomain(values);
 
   // First / ~2020 / last year. Ticks come from the FULL series (nulls included),
   // so the axis spans the whole timeline and a sparse state's line doesn't read
@@ -79,7 +66,7 @@ export default function Sparkline({ series, selectedYear }) {
             domain={[domainLo, domainHi]}
             ticks={niceTicks(domainLo, domainHi)}
             width={40}
-            tickFormatter={(v) => compact.format(v)}
+            tickFormatter={(v) => compactNumber.format(v)}
             tick={{ fontSize: 10, fill: COLORS.sable, opacity: 0.5 }}
             tickLine={false}
             axisLine={{ stroke: COLORS.sable, strokeOpacity: 0.15 }}

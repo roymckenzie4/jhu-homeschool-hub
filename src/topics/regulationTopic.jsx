@@ -14,7 +14,7 @@ import {
   REGULATION_COUNT,
   REGULATION_DOWNLOAD_FILENAME,
 } from "../config/regulation.js";
-import { COLORS, levelColor } from "../config/theme.js";
+import { COLORS, levelColor, regulationCitation } from "../config/theme.js";
 
 // Legend swatches: one per level, colored + labeled with its count range.
 const LEGEND_SWATCHES = LEVEL_ORDER.map((level) => ({
@@ -40,9 +40,17 @@ export const regulationDescriptor = {
       </span>
     ),
   },
+  // Second arg (comparison-selection context) is enrollment-only; regulation
+  // always colors by level regardless of how many states are selected.
   dotColorForState: (name) => levelColor(regulationByState[name]?.level),
   metaForState: (name) =>
     `${regulationByState[name]?.total ?? 0}/${REGULATION_COUNT}`,
+  mapExport: {
+    title: "State homeschool regulation",
+    subtitle: "Regulation level by state · current as of 2024–25",
+    citation: regulationCitation(),
+    filename: "homeschool-regulation-map.png",
+  },
 };
 
 // Live level distribution across all jurisdictions, computed once — keeps the

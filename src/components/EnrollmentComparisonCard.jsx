@@ -22,7 +22,9 @@ import SummaryCard, {
   CARD_HEADING_CLASS,
   CARD_DIVIDER_CLASS,
   CARD_CAVEAT_CLASS,
+  ClearLink,
 } from "./SummaryCard.jsx";
+import { Dot } from "./ComparingChips.jsx";
 
 export default function EnrollmentComparisonCard({
   rows,
@@ -37,13 +39,7 @@ export default function EnrollmentComparisonCard({
         <h3 className={CARD_HEADING_CLASS}>
           Comparing {rows.length} states
         </h3>
-        <button
-          type="button"
-          onClick={onClear}
-          className="font-sans text-xs text-sable/70 underline-offset-4 hover:text-heritage hover:underline"
-        >
-          Clear
-        </button>
+        <ClearLink onClick={onClear} />
       </div>
       <p className="mt-2 font-sans text-xs leading-snug text-sable/70">
         reported homeschool students, {schoolYearLabel(year)}
@@ -60,11 +56,7 @@ export default function EnrollmentComparisonCard({
               <TableCell className="py-1.5 pr-3 font-medium tracking-[0.03em] text-sable">
                 <span className="inline-flex items-center gap-2">
                   {/* Color key shared with the trend lines + table columns. */}
-                  <span
-                    className="h-2 w-2 shrink-0 rounded-full"
-                    style={{ backgroundColor: colorForState(row.name) }}
-                    aria-hidden="true"
-                  />
+                  <Dot color={colorForState(row.name)} />
                   {BY_NAME[row.name]?.name ?? row.name}
                 </span>
               </TableCell>

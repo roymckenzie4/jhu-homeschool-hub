@@ -26,10 +26,9 @@ import SummaryCard, {
   CARD_EYEBROW_CLASS,
   CARD_LIST_CLASS,
   CARD_CAVEAT_CLASS,
+  ReadMoreLink,
+  ClearLink,
 } from "./SummaryCard.jsx";
-
-const HOMESCHOOL_HUB_BASE =
-  "https://education.jhu.edu/edpolicy/policy-research-initiatives/homeschool-hub/states";
 
 const EM_DASH = "—";
 
@@ -204,14 +203,7 @@ function Detail({ stateName, entry }) {
       <LegislationFacts legislation={entry?.legislation} />
 
       <div className="mt-auto border-t border-sable/15 pt-2.5">
-        <a
-          href={`${HOMESCHOOL_HUB_BASE}/${slug}/`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="block font-sans text-xs font-medium text-heritage underline-offset-4 hover:underline"
-        >
-          Read more about {stateName} →
-        </a>
+        <ReadMoreLink stateName={stateName} slug={slug} />
       </div>
     </>
   );
@@ -227,13 +219,7 @@ function ComparisonSummary({ selectedStates, regulationByState, onClear }) {
         <h3 className={CARD_HEADING_CLASS}>
           Comparing {selectedStates.length} states
         </h3>
-        <button
-          type="button"
-          onClick={onClear}
-          className="font-sans text-xs text-sable/70 underline-offset-4 hover:text-heritage hover:underline"
-        >
-          Clear
-        </button>
+        <ClearLink onClick={onClear} />
       </div>
       {/* Muted key so the middle metadata (e.g. "ages 5–18 · 13 yrs · 2008")
           is decodable without reading like a stiff table header. */}

@@ -45,8 +45,9 @@ import { COMPARE_CAP } from "../config/selection.js";
 import { STATES } from "../config/states.js";
 import RemoveButton from "./RemoveButton.jsx";
 
-// Small colored dot, shared by the chips and the combobox rows.
-function Dot({ color }) {
+// Small colored dot, shared by the chips and the combobox rows (and, via
+// export, EnrollmentComparisonCard's row color key).
+export function Dot({ color }) {
   return (
     <span
       className="h-2 w-2 shrink-0 rounded-full"
