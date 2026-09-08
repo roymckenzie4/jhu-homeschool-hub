@@ -7,14 +7,24 @@
  * feeds enrollment's. The comparison table lives in RegulationPanel.
  */
 
-import { regulationByState, regulationCsvText } from "../data/regulationLoader.js";
+import {
+  regulationByState,
+  regulationCsvText,
+  regulationGeneratedAt,
+} from "../data/regulationLoader.js";
 import {
   LEVELS,
   LEVEL_ORDER,
   REGULATION_COUNT,
   REGULATION_DOWNLOAD_FILENAME,
 } from "../config/regulation.js";
-import { COLORS, levelColor, regulationCitation } from "../config/theme.js";
+import {
+  COLORS,
+  levelColor,
+  regulationCitation,
+  LAST_UPDATED,
+} from "../config/theme.js";
+import { formatUpdatedDate } from "../lib/format.js";
 
 // Legend swatches: one per level, colored + labeled with its count range.
 const LEGEND_SWATCHES = LEVEL_ORDER.map((level) => ({
@@ -80,4 +90,5 @@ export const regulationFooter = {
   ),
   csvText: regulationCsvText,
   downloadFilename: REGULATION_DOWNLOAD_FILENAME,
+  lastUpdated: formatUpdatedDate(regulationGeneratedAt, LAST_UPDATED),
 };

@@ -131,7 +131,10 @@ export function labelColorForFill(fill) {
 // Standard transition for selection/fill changes.
 export const TRANSITION_MS = 200;
 
-// Hardcoded footer label — easy to bump when new data is loaded.
+// Fallback footer "last updated" label for the rare case a topic's snapshot
+// fetch has ever failed and the app is running on the bundled CSV, which
+// carries no fetch timestamp. The normal path shows the real snapshot date
+// (see enrollmentGeneratedAt / regulationGeneratedAt) instead of this.
 export const LAST_UPDATED = "June 2026";
 
 // Suggested filename when the user downloads the source CSV from the footer.

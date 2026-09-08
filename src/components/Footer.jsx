@@ -12,7 +12,6 @@
  */
 
 import { useEffect, useRef, useState } from 'react';
-import { LAST_UPDATED } from '../config/theme.js';
 import { downloadCsv } from '../lib/download.js';
 import { trackEvent } from '../lib/analytics.js';
 
@@ -25,8 +24,11 @@ import { trackEvent } from '../lib/analytics.js';
  *   - about            ReactNode  the "About this data" disclosure copy.
  *   - csvText          string     CSV to download.
  *   - downloadFilename string     suggested filename for the download.
+ *   - lastUpdated      string     formatted date the active topic's snapshot
+ *                                 was last fetched (see enrollmentTopic.jsx /
+ *                                 regulationTopic.jsx).
  */
-export default function Footer({ about, csvText, downloadFilename }) {
+export default function Footer({ about, csvText, downloadFilename, lastUpdated }) {
   return (
     <footer className="mt-3 border-t border-sable/10 pt-3">
       <div className="flex flex-wrap items-center justify-between gap-4">
@@ -46,7 +48,7 @@ export default function Footer({ about, csvText, downloadFilename }) {
           </button>
         </div>
         <p className="font-sans text-[10px] uppercase tracking-widest text-sable/70">
-          Last updated {LAST_UPDATED} &middot; To be developed
+          Last updated {lastUpdated}
         </p>
       </div>
     </footer>

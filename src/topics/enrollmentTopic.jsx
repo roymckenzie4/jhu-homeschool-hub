@@ -17,6 +17,7 @@ import {
   enrollmentByState as byState,
   enrollmentYears as years,
   enrollmentCsvText,
+  enrollmentGeneratedAt,
 } from "../data/enrollmentLoader.js";
 import {
   RAMP_STEPS,
@@ -27,8 +28,9 @@ import {
   DOWNLOAD_FILENAME,
   comparisonColor,
   enrollmentCitation,
+  LAST_UPDATED,
 } from "../config/theme.js";
-import { formatNumber } from "../lib/format.js";
+import { formatNumber, formatUpdatedDate } from "../lib/format.js";
 
 // Most recent five years pin as pills in the shell's year selector; older
 // years are reachable through its leading "More years" dropdown.
@@ -160,4 +162,5 @@ export const enrollmentFooter = {
   ),
   csvText: enrollmentCsvText,
   downloadFilename: DOWNLOAD_FILENAME,
+  lastUpdated: formatUpdatedDate(enrollmentGeneratedAt, LAST_UPDATED),
 };

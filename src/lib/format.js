@@ -37,6 +37,22 @@ export function yoyToneClass(pct) {
 }
 
 /**
+ * Format a snapshot's `generatedAt` ISO timestamp for the footer's "Last
+ * updated" line, e.g. "September 1, 2026". Falls back to `fallback` (the
+ * bundled-CSV case, where there's no snapshot timestamp to show) when `iso`
+ * is null/unparseable.
+ */
+export function formatUpdatedDate(iso, fallback) {
+  const date = iso ? new Date(iso) : null;
+  if (!date || Number.isNaN(date.getTime())) return fallback;
+  return date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+}
+
+/**
  * English ordinal suffix: 1 -> "1st", 2 -> "2nd", 3 -> "3rd", 4 -> "4th",
  * handles the 11/12/13 special cases correctly. Used for the national rank
  * display in the detail card.

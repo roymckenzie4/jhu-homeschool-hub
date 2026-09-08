@@ -192,6 +192,7 @@ export default function App() {
         about={footer.about}
         csvText={footer.csvText}
         downloadFilename={footer.downloadFilename}
+        lastUpdated={footer.lastUpdated}
       />
     </main>
   );
