@@ -45,6 +45,24 @@ export const DATA_SLOT_CLASS = "lg:col-span-2 lg:row-start-3";
 export const TWO_COLUMN_GRID_CLASS =
   "grid grid-cols-1 gap-x-8 gap-y-6 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)]";
 
+// State Explorer: fixed aspect-ratio box for the sub-state map slot (row 1,
+// paired with a plain-text state headline — see StateExplorerPanel). Reused
+// for EVERY state, whether it has a real map or not, so that row's height
+// never changes when switching states — a state with no published boundaries
+// renders a placeholder in the same box rather than collapsing the row.
+// Deliberately the SAME aspect ratio as ChoroplethMap's national map
+// (760x460, not exported from there since it's the only other consumer) —
+// two reasons: it keeps this row the same height as the equivalent row on
+// Enrollment/Regulation when switching tabs, and it's a wide-enough ratio to
+// stay short at this column's width (a taller/more-portrait ratio, tried
+// first, made row 1 noticeably taller than the rest of the app — a real
+// problem given the whole tool has to fit a fixed-height iframe). The
+// tradeoff is more visible letterboxing around portrait-leaning states
+// (Georgia, Louisiana) than a state-tuned ratio would have — acceptable for
+// a fixed, predictable frame.
+export const EXPLORER_MAP_VIEW_W = 760;
+export const EXPLORER_MAP_VIEW_H = 460;
+
 // Min-height the data zone reserves regardless of content, so switching topics
 // (or selecting a single state on Regulation, where the table is one short
 // row) doesn't collapse the zone and resize the tool. Sized to the Enrollment

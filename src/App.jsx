@@ -15,7 +15,15 @@
  */
 
 import { useMemo, useState } from "react";
+import { ChevronDown } from "lucide-react";
 import ViewTabs from "./components/ViewTabs.jsx";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./components/ui/select.jsx";
 import ChoroplethMap from "./components/ChoroplethMap.jsx";
 import MapLegend from "./components/MapLegend.jsx";
 import ComparingChips from "./components/ComparingChips.jsx";
@@ -24,6 +32,7 @@ import MapDownloadButton from "./components/MapDownloadButton.jsx";
 import Footer from "./components/Footer.jsx";
 import EnrollmentPanel from "./components/EnrollmentPanel.jsx";
 import RegulationPanel from "./components/RegulationPanel.jsx";
+import StateExplorerPanel from "./components/StateExplorerPanel.jsx";
 import { useSelection } from "./state/selection.jsx";
 import { CHIPS_SLOT_CLASS, TWO_COLUMN_GRID_CLASS } from "./config/layout.js";
 import {
@@ -34,19 +43,28 @@ import {
   DEFAULT_YEAR,
 } from "./topics/enrollmentTopic.jsx";
 import { regulationDescriptor, regulationFooter } from "./topics/regulationTopic.jsx";
+import {
+  EXPLORER_STATES,
+  DEFAULT_EXPLORER_STATE,
+} from "./data/stateExplorerMockData.js";
 import { trackEvent } from "./lib/analytics.js";
 
 const TABS = [
   { id: "enrollment", label: "Enrollment" },
   { id: "regulation", label: "Regulation" },
+  { id: "explorer", label: "State Explorer" },
 ];
 
 export default function App() {
   const [activeTab, setActiveTab] = useState("enrollment");
   const [activeYear, setActiveYear] = useState(DEFAULT_YEAR);
+  // Phase 2 concept only — see stateExplorerMockData.js. Not part of the
+  // shared cross-topic selection; the explorer is inherently single-state.
+  const [explorerState, setExplorerState] = useState(DEFAULT_EXPLORER_STATE);
   const { selectedStates, toggleState, clearAll } = useSelection();
 
   const isEnrollment = activeTab === "enrollment";
+  const isExplorer = activeTab === "explorer";
 
   // Toggle instead of a router, so each switch is sent as its own event for
   // view usage to show up in analytics.
@@ -105,6 +123,28 @@ export default function App() {
               activeYear={activeYear}
               onChange={setActiveYear}
             />
+          ) : isExplorer ? (
+            <div className="flex items-center">
+              <span className="mr-3 font-sans text-[11px] font-medium uppercase tracking-widest text-sable/70">
+                Explore
+              </span>
+              <Select value={explorerState} onValueChange={setExplorerState}>
+                <SelectTrigger
+                  aria-label="Choose a state"
+                  className="whitespace-nowrap rounded border border-sable/20 bg-white px-2.5 py-1 font-sans text-xs tabular-nums text-sable transition hover:bg-sable/5"
+                >
+                  <SelectValue />
+                  <ChevronDown className="h-3 w-3 opacity-70" aria-hidden />
+                </SelectTrigger>
+                <SelectContent align="end">
+                  {Object.entries(EXPLORER_STATES).map(([key, s]) => (
+                    <SelectItem key={key} value={key}>
+                      {s.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           ) : (
             <span className="font-sans text-[11px] font-medium uppercase tracking-widest text-sable/70">
               Regulations current as of 2024–25
@@ -129,71 +169,93 @@ export default function App() {
         DATA_SLOT_CLASS). On mobile the grid is single-column: map -> chips ->
         card -> data.
       */}
-      <div
-        id={`panel-${activeTab}`}
-        role="tabpanel"
-        aria-labelledby={`tab-${activeTab}`}
-        tabIndex={0}
-        className={`mt-4 ${TWO_COLUMN_GRID_CLASS}`}
-      >
-        <div className="lg:col-start-1 lg:row-start-1">
-          {/* Shared, always-mounted map. Only the descriptor swaps per topic. */}
-          <ChoroplethMap
-            fillForState={descriptor.fillForState}
-            ariaLabelForState={descriptor.ariaLabelForState}
-            selectionStroke={descriptor.selectionStroke}
-            selectedStates={selectedStates}
-            onSelect={selectState}
-          />
-          {/* Legend fills the row on its own (flex-wrap justify-between with a
-              trailing slot). The PNG button rides in that trailing slot next to
-              the topic note so it doesn't steal width and force a wrap. */}
-          <div className="mt-2">
-            <MapLegend
-              label={descriptor.legend.label}
-              swatches={descriptor.legend.swatches}
-              trailing={
-                <div className="flex items-center gap-5">
-                  {descriptor.legend.trailing}
-                  <MapDownloadButton
-                    descriptor={descriptor}
-                    selectedStates={selectedStates}
-                    title={descriptor.mapExport.title}
-                    subtitle={descriptor.mapExport.subtitle}
-                    citation={descriptor.mapExport.citation}
-                    filename={descriptor.mapExport.filename}
-                  />
-                </div>
-              }
+      {isExplorer ? (
+        // State Explorer is inherently single-state, so it skips the shared
+        // US map + comparison-cohort chip row entirely rather than forcing
+        // those into a shape that doesn't fit — see StateExplorerPanel.jsx.
+        <div
+          id={`panel-${activeTab}`}
+          role="tabpanel"
+          aria-labelledby={`tab-${activeTab}`}
+          tabIndex={0}
+          className="mt-4"
+        >
+          <StateExplorerPanel stateKey={explorerState} />
+        </div>
+      ) : (
+        <div
+          id={`panel-${activeTab}`}
+          role="tabpanel"
+          aria-labelledby={`tab-${activeTab}`}
+          tabIndex={0}
+          className={`mt-4 ${TWO_COLUMN_GRID_CLASS}`}
+        >
+          <div className="lg:col-start-1 lg:row-start-1">
+            {/* Shared, always-mounted map. Only the descriptor swaps per topic. */}
+            <ChoroplethMap
+              fillForState={descriptor.fillForState}
+              ariaLabelForState={descriptor.ariaLabelForState}
+              selectionStroke={descriptor.selectionStroke}
+              selectedStates={selectedStates}
+              onSelect={selectState}
+            />
+            {/* Legend fills the row on its own (flex-wrap justify-between with a
+                trailing slot). The PNG button rides in that trailing slot next to
+                the topic note so it doesn't steal width and force a wrap. */}
+            <div className="mt-2">
+              <MapLegend
+                label={descriptor.legend.label}
+                swatches={descriptor.legend.swatches}
+                trailing={
+                  <div className="flex items-center gap-5">
+                    {descriptor.legend.trailing}
+                    <MapDownloadButton
+                      descriptor={descriptor}
+                      selectedStates={selectedStates}
+                      title={descriptor.mapExport.title}
+                      subtitle={descriptor.mapExport.subtitle}
+                      citation={descriptor.mapExport.citation}
+                      filename={descriptor.mapExport.filename}
+                    />
+                  </div>
+                }
+              />
+            </div>
+          </div>
+
+          {/* Selection chips — full-width strip under the map, above the data. */}
+          <div className={CHIPS_SLOT_CLASS}>
+            <ComparingChips
+              selectedStates={selectedStates}
+              dotColorForState={chipDotColor}
+              metaForState={descriptor.metaForState}
+              onAdd={selectState}
+              onRemove={selectState}
+              onClear={clearAll}
+              label="Viewing"
             />
           </div>
+
+          {/* Panel content tracks the active tab. Each topic panel returns a
+              fragment (its card + data slot children), so they land directly in
+              the shell grid above (this div carries the tabpanel role/grid). */}
+          {isEnrollment ? <EnrollmentPanel activeYear={activeYear} /> : <RegulationPanel />}
         </div>
+      )}
 
-        {/* Selection chips — full-width strip under the map, above the data. */}
-        <div className={CHIPS_SLOT_CLASS}>
-          <ComparingChips
-            selectedStates={selectedStates}
-            dotColorForState={chipDotColor}
-            metaForState={descriptor.metaForState}
-            onAdd={selectState}
-            onRemove={selectState}
-            onClear={clearAll}
-            label="Viewing"
-          />
-        </div>
-
-        {/* Panel content tracks the active tab. Each topic panel returns a
-            fragment (its card + data slot children), so they land directly in
-            the shell grid above (this div carries the tabpanel role/grid). */}
-        {isEnrollment ? <EnrollmentPanel activeYear={activeYear} /> : <RegulationPanel />}
-      </div>
-
-      <Footer
-        about={footer.about}
-        csvText={footer.csvText}
-        downloadFilename={footer.downloadFilename}
-        lastUpdated={footer.lastUpdated}
-      />
+      {!isExplorer && (
+        <Footer
+          about={footer.about}
+          csvText={footer.csvText}
+          downloadFilename={footer.downloadFilename}
+          lastUpdated={footer.lastUpdated}
+        />
+      )}
+      {isExplorer && (
+        <p className="mt-3 border-t border-sable/10 pt-3 font-sans text-[10px] uppercase tracking-widest text-sable/70">
+          Concept only — not connected to live data
+        </p>
+      )}
     </main>
   );
 }
