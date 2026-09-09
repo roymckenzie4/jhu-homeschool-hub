@@ -43,7 +43,12 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { feature } from "topojson-client";
-import { ReadMoreLink } from "./SummaryCard.jsx";
+import {
+  ReadMoreLink,
+  CARD_DIVIDER_CLASS,
+  CARD_EYEBROW_CLASS,
+  CARD_LIST_CLASS,
+} from "./SummaryCard.jsx";
 import {
   Table,
   TableHeader,
@@ -52,10 +57,17 @@ import {
   TableRow,
   TableCell,
 } from "./ui/table.jsx";
-import { RAMP_STEPS, COLORS, comparisonColor } from "../config/theme.js";
+import {
+  RAMP_STEPS,
+  COLORS,
+  comparisonColor,
+  computeQuantileBreaks,
+  rangeLabel,
+} from "../config/theme.js";
 import { formatNumber } from "../lib/format.js";
 import { buildStateProjection } from "../lib/geoProjection.js";
 import { BY_NAME } from "../config/states.js";
+import MapLegend from "./MapLegend.jsx";
 import {
   ENROLLMENT_TABLE_HEIGHT,
   DATA_ZONE_MIN_HEIGHT,
@@ -77,21 +89,24 @@ const SECTION_HEADING_CLASS =
 const geoFileByState = { GA: "ga-counties.json", LA: "la-districts.json" };
 const geoCache = new Map();
 
-function tileColor(value, max) {
-  if (value == null || max <= 0) return COLORS.nonReportingGround;
-  const pct = value / max;
-  if (pct > 0.75) return RAMP_STEPS[4];
-  if (pct > 0.5) return RAMP_STEPS[3];
-  if (pct > 0.25) return RAMP_STEPS[2];
-  if (pct > 0.08) return RAMP_STEPS[1];
-  return RAMP_STEPS[0];
+// Same quantile-bucket logic as the national map's fillForValue (see
+// topics/enrollmentTopic.jsx) — reused rather than reinvented, so the two
+// maps' color language reads as one system. `breaks` comes from
+// computeQuantileBreaks over the state's own region values, so the ramp
+// reflects THIS state's real spread, not a hardcoded percent-of-max split.
+function fillForValue(value, breaks) {
+  if (value == null || !breaks) return COLORS.nonReportingGround;
+  for (let i = 0; i < RAMP_STEPS.length; i += 1) {
+    if (value <= breaks[i + 1]) return RAMP_STEPS[i];
+  }
+  return RAMP_STEPS[RAMP_STEPS.length - 1];
 }
 
 // Sub-state map, fit to EXPLORER_MAP_VIEW_W/H and filling its aspect-ratio
 // parent box (h-full/w-full) the same way the national ChoroplethMap fills
 // its own column — so this box and NoMapPlaceholder below are interchangeable
 // at the exact same footprint.
-function RegionMap({ stateKey, regions, max }) {
+function RegionMap({ stateKey, regions, breaks }) {
   const [topo, setTopo] = useState(geoCache.get(stateKey) ?? null);
 
   // Always resolves `topo` to match the CURRENT stateKey, not just fetches on
@@ -161,7 +176,7 @@ function RegionMap({ stateKey, regions, max }) {
           <path
             key={f.id}
             d={path(f)}
-            fill={tileColor(value, max)}
+            fill={fillForValue(value, breaks)}
             stroke="#fff"
             strokeWidth={0.5}
           >
@@ -179,13 +194,69 @@ function RegionMap({ stateKey, regions, max }) {
 // Fills the same aspect-ratio box as RegionMap for a state with no published
 // sub-state boundaries — an honest "we don't have this" rather than a faked
 // map or an empty gap, at the identical footprint so the row never resizes.
+// Plain text, no border/shading — matches DataPlaceholder's treatment below
+// rather than standing out as its own kind of empty state.
 function NoMapPlaceholder({ stateName, geoUnit }) {
   return (
-    <div className="flex h-full items-center justify-center rounded border border-dashed border-sable/15 bg-sable/[0.02] px-8 text-center">
+    <div className="flex h-full items-center justify-center px-8 text-center">
       <p className="font-sans text-xs leading-relaxed text-sable/70">
         No {geoUnit ?? "sub-state"} boundaries published for {stateName} yet.
       </p>
     </div>
+  );
+}
+
+// Ordered (key, label) pairs for the "State context" list — the four
+// access/funding variables from JHU's Legislation sheet that were requested
+// early on (see running-notes.md, the "additional policy fields" ask) but
+// never built anywhere, since the standalone Policy view they were floated
+// for was deliberately never built either (too much for what it'd answer —
+// see decisions.md 2026-07-09).
+const STATE_CONTEXT_FIELDS = [
+  ["sportsAccess", "Sports access"],
+  ["courseAccess", "Course access"],
+  ["extracurricularAccess", "Extracurriculars"],
+  ["publicFunding", "Public funding"],
+];
+
+// Reuses SummaryCard's own "State context" list convention (eyebrow + a
+// label/value row list) byte-for-byte — see RegulationCard's
+// LegislationFacts — rather than inventing new styling for the same kind of
+// content. A field with a `url` (only Georgia's, for now — illustrating
+// where a real per-cell source link would go once this is a real loader,
+// same as the Regulation heat map's links) renders as a link instead of
+// plain text; everything else stays plain, matching how ReadMoreLink is the
+// only other link in this whole headline.
+function StateContextList({ context }) {
+  if (!context) return null;
+  return (
+    <>
+      <hr className={CARD_DIVIDER_CLASS} />
+      <p className={CARD_EYEBROW_CLASS}>State context</p>
+      <ul className={CARD_LIST_CLASS}>
+        {STATE_CONTEXT_FIELDS.map(([key, label]) => {
+          const field = context[key];
+          if (!field) return null;
+          return (
+            <li key={key} className="flex items-baseline justify-between font-sans text-xs">
+              <span className="text-sable/70">{label}</span>
+              {field.url ? (
+                <a
+                  href={field.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-semibold text-heritage underline-offset-4 hover:underline"
+                >
+                  {field.value}
+                </a>
+              ) : (
+                <span className="font-semibold text-sable">{field.value}</span>
+              )}
+            </li>
+          );
+        })}
+      </ul>
+    </>
   );
 }
 
@@ -206,18 +277,14 @@ function ExplorerHeadline({ state, slug }) {
       </p>
       <p className="mt-2 font-sans text-sm leading-relaxed text-sable">
         reported homeschool students, {state.year}
-        {state.geoUnit && (
-          <span className="text-sable/70">
-            {" "}
-            — {state.reporting} {state.geoLabel} reporting.
-          </span>
-        )}
       </p>
-      {!state.geoUnit && (
-        <p className="mt-2 font-sans text-sm leading-relaxed text-sable/70">
-          No sub-state breakdown reported yet.
-        </p>
-      )}
+      <p className="font-sans text-sm leading-relaxed text-sable/70">
+        {state.geoUnit
+          ? `${state.reporting} ${state.geoLabel} reporting.`
+          : "No sub-state breakdown reported yet."}
+      </p>
+
+      <StateContextList context={state.context} />
 
       <div className="mt-4">
         <ReadMoreLink stateName={state.name} slug={slug} />
@@ -292,7 +359,20 @@ export default function StateExplorerPanel({ stateKey }) {
   const [pickedDemo, setPickedDemo] = useState(demoKeys[0] ?? null);
   const activeDemo = demoKeys.includes(pickedDemo) ? pickedDemo : demoKeys[0] ?? null;
 
-  const max = state.regions ? Math.max(...state.regions.map((r) => r.value)) : 0;
+  // Quantile breaks over THIS state's own region values, shared by the map's
+  // fill (fillForValue) and the legend's swatch range labels — computed once
+  // here so the two can never drift apart, same reasoning as
+  // buildEnrollmentDescriptor sharing one `breaks` between the national
+  // map's fill and its legend.
+  const regionBreaks = state.regions
+    ? computeQuantileBreaks(state.regions.map((r) => r.value))
+    : null;
+  const legendSwatches = regionBreaks
+    ? RAMP_STEPS.map((color, i) => ({
+        color,
+        label: rangeLabel(regionBreaks, i, RAMP_STEPS.length),
+      }))
+    : [];
   const slug = BY_NAME[state.name]?.slug ?? "";
   const unitLabel = state.geoUnit
     ? state.geoUnit[0].toUpperCase() + state.geoUnit.slice(1)
@@ -308,11 +388,18 @@ export default function StateExplorerPanel({ stateKey }) {
           selected — and identical to Enrollment/Regulation's own map row,
           since it's the same aspect ratio. */}
       <div className={`${TWO_COLUMN_GRID_CLASS} lg:items-center`}>
-        <div style={{ aspectRatio: `${EXPLORER_MAP_VIEW_W} / ${EXPLORER_MAP_VIEW_H}` }}>
-          {state.hasRealGeo ? (
-            <RegionMap stateKey={stateKey} regions={state.regions} max={max} />
-          ) : (
-            <NoMapPlaceholder stateName={state.name} geoUnit={state.geoUnit} />
+        <div>
+          <div style={{ aspectRatio: `${EXPLORER_MAP_VIEW_W} / ${EXPLORER_MAP_VIEW_H}` }}>
+            {state.hasRealGeo ? (
+              <RegionMap stateKey={stateKey} regions={state.regions} breaks={regionBreaks} />
+            ) : (
+              <NoMapPlaceholder stateName={state.name} geoUnit={state.geoUnit} />
+            )}
+          </div>
+          {state.hasRealGeo && (
+            <div className="mt-4">
+              <MapLegend label={`Students, ${state.year}`} swatches={legendSwatches} />
+            </div>
           )}
         </div>
 
