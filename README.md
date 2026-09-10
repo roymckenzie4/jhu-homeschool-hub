@@ -1,7 +1,7 @@
 # JHU Homeschool Hub — State Data Dashboard
 
 An interactive single-page dashboard for the Johns Hopkins University
-Homeschool Hub team. One tool, two topics behind a tab switcher:
+Homeschool Hub team. One tool, three tabs:
 
 - **Enrollment** — a US choropleth shaded by reported homeschool enrollment,
   a year selector, a national overview, single-state detail (headline number,
@@ -11,12 +11,21 @@ Homeschool Hub team. One tool, two topics behind a tab switcher:
   homeschool regulations each state enforces (Low/Medium/High), with the same
   single-state and up-to-six comparison modes, source-linked requirements, and
   compulsory-schooling/legalization context per state.
+- **State Explorer** — a single-state drill-in to county/district-level data
+  (where a state publishes it) alongside demographic subgroup breakdowns
+  (where a state reports them). Counties/districts are click-to-compare, up to
+  six, the same spirit as the national map's state comparison: click a
+  shape on the map or a name in the table to add/remove it, or search by name
+  via the table's own "+ add" control. Still a Phase 2 concept — see
+  `StateExplorerPanel.jsx`'s doc comment for the current data-shape caveats
+  and what's deliberately not built yet.
 
-Both topics share one map, one state-selection cohort, and one visual system —
-selecting states on Enrollment and switching to Regulation keeps the same
-states selected. Every chart and the map itself can be downloaded as a
-citation-stamped PNG; the underlying data can be downloaded as CSV from the
-footer.
+Enrollment and Regulation share one map, one state-selection cohort, and one
+visual system — selecting states on Enrollment and switching to Regulation
+keeps the same states selected. State Explorer is inherently single-state, so
+it keeps its own separate region-selection cohort. Every chart and the map
+itself can be downloaded as a citation-stamped PNG; the underlying data can be
+downloaded as CSV from the footer.
 
 **Live demo:** https://roymckenzie4.github.io/jhu-homeschool-hub/
 
@@ -236,3 +245,11 @@ tooling.
 - **Regulation has no per-state comparison drill-in** the way Enrollment does
   (Enrollment's comparison table has a "View detail →" per row; Regulation's
   does not yet).
+- **State Explorer's county/district table assumes one row per region** —
+  clicking a region's name toggles it in/out of the comparison. Once real
+  per-county history lands and the table is expected to pivot to a
+  year-by-year view for the selected region(s), that row-per-region shape
+  goes away, and "remove" will need to move to a per-column control instead
+  (see the doc comment in `StateExplorerPanel.jsx`). The map click and the
+  table's "+ add" search aren't affected — only the table's own
+  click-to-remove needs to move.

@@ -63,6 +63,16 @@ export const TWO_COLUMN_GRID_CLASS =
 export const EXPLORER_MAP_VIEW_W = 760;
 export const EXPLORER_MAP_VIEW_H = 460;
 
+// Reserved height for the map legend's own box under EXPLORER_MAP_VIEW_W/H —
+// always held open in row 1's left column, whether the legend renders
+// (Georgia, Louisiana — real boundaries) or not (Hawaii, Delaware —
+// NoMapPlaceholder). Excludes the wrapping div's mt-4 top margin (16px),
+// which still applies on its own regardless of this height — the combined
+// 41px (16 margin + 25 box) is what was measured (getBoundingClientRect)
+// as the actual gap between states with and without a legend before this
+// fix existed; this constant is just the box's share of that 41px.
+export const EXPLORER_LEGEND_SLOT_HEIGHT = 25;
+
 // Min-height the data zone reserves regardless of content, so switching topics
 // (or selecting a single state on Regulation, where the table is one short
 // row) doesn't collapse the zone and resize the tool. Sized to the Enrollment

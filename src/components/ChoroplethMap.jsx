@@ -54,8 +54,15 @@
 import { useEffect, useMemo, useState } from "react";
 import { feature } from "topojson-client";
 import { BY_FIPS, BY_NAME } from "../config/states.js";
-import { COLORS, labelColorForFill } from "../config/theme.js";
+import {
+  COLORS,
+  labelColorForFill,
+  MAP_STROKE_REST,
+  MAP_SELECTION_STROKE_WIDTH,
+} from "../config/theme.js";
 import { buildProjection } from "../lib/geoProjection.js";
+import { buildInteractionProps } from "../lib/mapInteraction.js";
+import MapHoverGlow from "./MapHoverGlow.jsx";
 
 // SVG viewBox dimensions. The map scales to its container via CSS; these
 // numbers just set the internal coordinate system the projection fits into.
@@ -72,13 +79,6 @@ let cachedGeoFeatures = null;
 // short leader line pointing to where DC really is.
 const DC_MARKER_RADIUS = 5;
 const DC_LEADER_LENGTH = 26;
-
-// Stroke weights. A selected state is framed by a single crisp dark border
-// (STROKE_RING); the dim-on-selection supplies the figure/ground. Hover
-// affordance and dim-on-selection are driven by CSS rules in
-// `src/styles/index.css`.
-const STROKE_REST = 0.6; // white separator between resting states
-const STROKE_RING = 2.5; // dark selection border on the overlay layer
 
 const DC_NAME = "District of Columbia";
 
@@ -192,21 +192,7 @@ export default function ChoroplethMap({
   // the tile rects — one definition so the three keyboard/click surfaces can't
   // drift apart. Enter and Space both select, matching native <button>.
   const interactionProps = (name, isSelected) =>
-    isInteractive(name)
-      ? {
-          role: "button",
-          tabIndex: 0,
-          "aria-label": ariaLabelForState(name),
-          "aria-pressed": isSelected,
-          onClick: () => onSelect(name),
-          onKeyDown: (e) => {
-            if (e.key === "Enter" || e.key === " ") {
-              e.preventDefault();
-              onSelect(name);
-            }
-          },
-        }
-      : { "aria-hidden": true };
+    buildInteractionProps({ name, isSelected, isInteractive, onSelect, ariaLabelForState });
 
   // Shared <defs>: the non-reporting stripe pattern and the hover-glow filter.
   // Fixed ids, referenced by fills and CSS.
@@ -231,34 +217,7 @@ export default function ChoroplethMap({
         />
       </pattern>
 
-      {/* Hover affordance: a thin sable outer glow. Lives outside the shape so
-          it can't be clipped by neighbours, and it reads on every fill (the
-          brightness shift on its own disappears against the dark fills). */}
-      <filter id={hoverGlowId} x="-10%" y="-10%" width="120%" height="120%">
-        {/* Darken the source fill by ~10% (equivalent to CSS brightness(0.90))
-            before the drop shadow renders. Doing the brightness shift here —
-            rather than chaining it in the CSS `filter` shorthand alongside
-            url(#state-hover-glow) — works around a WebKit bug where Safari
-            silently drops the whole filter when a url() reference is combined
-            with a filter function like brightness(). */}
-        <feColorMatrix
-          in="SourceGraphic"
-          type="matrix"
-          values="0.90 0 0 0 0
-                  0 0.90 0 0 0
-                  0 0 0.90 0 0
-                  0 0 0 1 0"
-          result="darkened"
-        />
-        <feDropShadow
-          in="darkened"
-          dx="0"
-          dy="0"
-          stdDeviation="1.5"
-          floodColor={COLORS.sable}
-          floodOpacity="0.62"
-        />
-      </filter>
+      <MapHoverGlow id={hoverGlowId} />
     </defs>
   );
 
@@ -343,7 +302,7 @@ export default function ChoroplethMap({
               className={className}
               fill={resolveFill(name)}
               stroke="#FFFFFF"
-              strokeWidth={STROKE_REST}
+              strokeWidth={MAP_STROKE_REST}
               // Hover label tracks all states, reporting or not — the point is
               // to identify the state under the cursor regardless of data.
               onMouseEnter={() => setHoveredState(name)}
@@ -368,7 +327,7 @@ export default function ChoroplethMap({
             d={statePaths[f.id]}
             fill={resolveFill(BY_FIPS[f.id].name)}
             stroke={selectionStroke}
-            strokeWidth={STROKE_RING}
+            strokeWidth={MAP_SELECTION_STROKE_WIDTH}
             strokeLinejoin="round"
           />
         ))}
@@ -404,7 +363,7 @@ export default function ChoroplethMap({
               r={DC_MARKER_RADIUS}
               fill={resolveFill(DC_NAME)}
               stroke="#FFFFFF"
-              strokeWidth={STROKE_REST}
+              strokeWidth={MAP_STROKE_REST}
             />
           )}
           {dcSelected && (
@@ -414,7 +373,7 @@ export default function ChoroplethMap({
               r={DC_MARKER_RADIUS}
               fill={resolveFill(DC_NAME)}
               stroke={selectionStroke}
-              strokeWidth={STROKE_RING}
+              strokeWidth={MAP_SELECTION_STROKE_WIDTH}
             />
           )}
         </g>

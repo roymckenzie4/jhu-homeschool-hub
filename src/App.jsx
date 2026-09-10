@@ -14,7 +14,7 @@
  * context, so a cohort built on one topic survives a switch to the other.
  */
 
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { ChevronDown } from "lucide-react";
 import ViewTabs from "./components/ViewTabs.jsx";
 import {
@@ -47,6 +47,8 @@ import {
   EXPLORER_STATES,
   DEFAULT_EXPLORER_STATE,
 } from "./data/stateExplorerMockData.js";
+import { STATES } from "./config/states.js";
+import { COMPARE_CAP } from "./config/selection.js";
 import { trackEvent } from "./lib/analytics.js";
 
 const TABS = [
@@ -62,6 +64,32 @@ export default function App() {
   // shared cross-topic selection; the explorer is inherently single-state.
   const [explorerState, setExplorerState] = useState(DEFAULT_EXPLORER_STATE);
   const { selectedStates, toggleState, clearAll } = useSelection();
+
+  // State Explorer's region-comparison cohort. Lives here (NOT inside
+  // StateExplorerPanel, and NOT the cross-topic SelectionProvider above) so
+  // it survives switching away from the State Explorer tab and back — the
+  // shell unmounts StateExplorerPanel entirely on tab switch (unlike
+  // ChoroplethMap, which stays mounted), so any state that lived inside it
+  // was lost on every round trip. A region name only means something within
+  // its own state's map, so this stays a separate cohort from selectedStates
+  // rather than joining the shared context.
+  const [selectedRegions, setSelectedRegions] = useState([]);
+
+  // Reset when the explored state itself changes (the dropdown, not the tab)
+  // — two different states can share a region name (e.g. both having a
+  // "Washington" county/parish), so a stale name has to be cleared explicitly.
+  useEffect(() => {
+    setSelectedRegions([]);
+  }, [explorerState]);
+
+  const toggleRegion = useCallback((name) => {
+    setSelectedRegions((prev) => {
+      if (prev.includes(name)) return prev.filter((n) => n !== name);
+      if (prev.length >= COMPARE_CAP) return prev;
+      return [...prev, name];
+    });
+  }, []);
+  const clearRegions = useCallback(() => setSelectedRegions([]), []);
 
   const isEnrollment = activeTab === "enrollment";
   const isExplorer = activeTab === "explorer";
@@ -96,6 +124,19 @@ export default function App() {
   // matches the trend line / table header / card dot); regulation's ignores
   // the selection context and always colors by level.
   const chipDotColor = (name) => descriptor.dotColorForState(name, { selectedStates });
+
+  // States still available to add via the chip row's combobox: everything
+  // minus the current cohort, alphabetical by display name. Lives here (not
+  // inside ComparingChips) so that component stays ignorant of where the full
+  // item list comes from — State Explorer's region cohort computes its own
+  // available list the same way, from its own source.
+  const availableStates = useMemo(
+    () =>
+      STATES.map((s) => s.name)
+        .filter((name) => !selectedStates.includes(name))
+        .sort((a, b) => a.localeCompare(b)),
+    [selectedStates],
+  );
 
   return (
     <main className="mx-auto max-w-[1200px] px-8 py-4 lg:px-12 lg:py-6">
@@ -180,7 +221,12 @@ export default function App() {
           tabIndex={0}
           className="mt-4"
         >
-          <StateExplorerPanel stateKey={explorerState} />
+          <StateExplorerPanel
+            stateKey={explorerState}
+            selectedRegions={selectedRegions}
+            onToggleRegion={toggleRegion}
+            onClearRegions={clearRegions}
+          />
         </div>
       ) : (
         <div
@@ -226,9 +272,10 @@ export default function App() {
           {/* Selection chips — full-width strip under the map, above the data. */}
           <div className={CHIPS_SLOT_CLASS}>
             <ComparingChips
-              selectedStates={selectedStates}
-              dotColorForState={chipDotColor}
-              metaForState={descriptor.metaForState}
+              selectedItems={selectedStates}
+              availableItems={availableStates}
+              dotColorForItem={chipDotColor}
+              metaForItem={descriptor.metaForState}
               onAdd={selectState}
               onRemove={selectState}
               onClear={clearAll}

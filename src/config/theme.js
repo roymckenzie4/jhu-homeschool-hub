@@ -131,6 +131,14 @@ export function labelColorForFill(fill) {
 // Standard transition for selection/fill changes.
 export const TRANSITION_MS = 200;
 
+// Choropleth stroke weights, shared by the national map and State Explorer's
+// county/district map. A selected shape is framed by a single crisp dark
+// border (MAP_SELECTION_STROKE_WIDTH) on a non-interactive overlay layer; the
+// resting weight (MAP_STROKE_REST) is just the white separator between
+// unselected shapes. Dim-on-selection is CSS, not a stroke change.
+export const MAP_STROKE_REST = 0.6;
+export const MAP_SELECTION_STROKE_WIDTH = 2.5;
+
 // Fallback footer "last updated" label for the rare case a topic's snapshot
 // fetch has ever failed and the app is running on the bundled CSV, which
 // carries no fetch timestamp. The normal path shows the real snapshot date
