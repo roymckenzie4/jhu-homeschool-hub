@@ -73,6 +73,17 @@ export const EXPLORER_MAP_VIEW_H = 460;
 // fix existed; this constant is just the box's share of that 41px.
 export const EXPLORER_LEGEND_SLOT_HEIGHT = 25;
 
+// Reserved height for the headline's "State context" block (divider +
+// eyebrow + up to 4 rows), held open whether a state has context data or
+// not. Only Georgia/Louisiana/Hawaii/Delaware have this hand-entered — every
+// other state doesn't, so without a reserved slot the headline was visibly
+// shorter for them and, centered against the map via lg:items-center,
+// shifted the whole name/number block's vertical position when switching
+// states. Computed from the CARD_DIVIDER/EYEBROW/LIST classes
+// (my-3 divider + one eyebrow line + 4 rows at space-y-2), not yet confirmed
+// against a real render — nudge this if it's visibly off by a few px.
+export const EXPLORER_CONTEXT_SLOT_HEIGHT = 152;
+
 // Min-height the data zone reserves regardless of content, so switching topics
 // (or selecting a single state on Regulation, where the table is one short
 // row) doesn't collapse the zone and resize the tool. Sized to the Enrollment

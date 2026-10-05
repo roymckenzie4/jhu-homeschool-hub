@@ -84,6 +84,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { feature } from "topojson-client";
+import { ChevronDown } from "lucide-react";
 import {
   ReadMoreLink,
   CARD_DIVIDER_CLASS,
@@ -99,6 +100,13 @@ import {
   TableCell,
 } from "./ui/table.jsx";
 import { Popover, PopoverTrigger, PopoverContent } from "./ui/popover.jsx";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./ui/select.jsx";
 import {
   Command,
   CommandInput,
@@ -128,9 +136,10 @@ import {
   EXPLORER_MAP_VIEW_W,
   EXPLORER_MAP_VIEW_H,
   EXPLORER_LEGEND_SLOT_HEIGHT,
+  EXPLORER_CONTEXT_SLOT_HEIGHT,
   TWO_COLUMN_GRID_CLASS,
 } from "../config/layout.js";
-import { EXPLORER_STATES, valueForYear } from "../data/stateExplorerMockData.js";
+import { EXPLORER_STATES, valueForYear } from "../data/stateExplorerLoader.js";
 
 // Section-heading convention shared by Enrollment/Regulation's data-zone
 // headings (see EnrollmentPanel.jsx) — kept local here since this page's data
@@ -141,7 +150,19 @@ const SECTION_HEADING_CLASS =
 // Real per-state boundary files, fetched once and cached module-level
 // (survives remounts/tab switches) — mirrors ChoroplethMap's national-map
 // fetch pattern. Only Georgia and Louisiana exist today; see the file header.
-const geoFileByState = { GA: "ga-counties.json", LA: "la-districts.json" };
+const geoFileByState = {
+  GA: "ga-counties.json",
+  LA: "la-districts.json",
+  AR: "ar-counties.json",
+  FL: "fl-counties.json",
+  MD: "md-counties.json",
+  MN: "mn-counties.json",
+  MT: "mt-counties.json",
+  ND: "nd-counties.json",
+  NE: "ne-counties.json",
+  OH: "oh-counties.json",
+  WA: "wa-counties.json",
+};
 const geoCache = new Map();
 
 // Plural form of a geo unit noun for combobox/empty-state copy — not a
@@ -371,9 +392,13 @@ const STATE_CONTEXT_FIELDS = [
 // plain text; everything else stays plain, matching how ReadMoreLink is the
 // only other link in this whole headline.
 function StateContextList({ context }) {
-  if (!context) return null;
+  // Reserves EXPLORER_CONTEXT_SLOT_HEIGHT whether or not this state has
+  // context data — most states don't (see the constant's own comment) —
+  // so the headline's total height, and therefore its centered position
+  // against the map, doesn't shift when switching to/from one that does.
+  if (!context) return <div style={{ minHeight: EXPLORER_CONTEXT_SLOT_HEIGHT }} />;
   return (
-    <>
+    <div style={{ minHeight: EXPLORER_CONTEXT_SLOT_HEIGHT }}>
       <hr className={CARD_DIVIDER_CLASS} />
       <p className={CARD_EYEBROW_CLASS}>State context</p>
       <ul className={CARD_LIST_CLASS}>
@@ -399,7 +424,7 @@ function StateContextList({ context }) {
           );
         })}
       </ul>
-    </>
+    </div>
   );
 }
 
@@ -410,16 +435,43 @@ function StateContextList({ context }) {
 // than its own thing. Centers vertically against the map via the row's own
 // lg:items-center (see the grid below) rather than stretching to fill it —
 // there's no visible box here that would look broken if it didn't.
-function ExplorerHeadline({ state, slug }) {
+function ExplorerHeadline({
+  state,
+  slug,
+  displayTotal,
+  activeYear,
+  availableYears,
+  onPickYear,
+}) {
   return (
     <div>
       <h3 className="font-sans text-2xl font-bold text-sable">{state.name}</h3>
 
       <p className="mt-3 font-sans text-4xl font-bold leading-none text-sable">
-        {formatNumber(state.total)}
+        {formatNumber(displayTotal)}
       </p>
       <p className="mt-2 font-sans text-sm leading-relaxed text-sable">
-        reported homeschool students, {state.year}
+        reported homeschool students,{" "}
+        {availableYears.length > 1 ? (
+          <Select value={activeYear} onValueChange={onPickYear}>
+            <SelectTrigger
+              aria-label="Choose a year"
+              className="inline-flex h-auto w-auto gap-0.5 border-none p-0 font-sans text-sm text-sable underline decoration-sable/40 underline-offset-2 hover:decoration-sable/70 focus:ring-0"
+            >
+              <SelectValue />
+              <ChevronDown className="h-3 w-3 opacity-70" aria-hidden />
+            </SelectTrigger>
+            <SelectContent align="start">
+              {availableYears.map((y) => (
+                <SelectItem key={y} value={y}>
+                  {y}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        ) : (
+          activeYear
+        )}
       </p>
       <p className="font-sans text-sm leading-relaxed text-sable/70">
         {state.geoUnit
@@ -444,12 +496,23 @@ const REGION_HEAD_CELL =
   "sticky top-0 z-10 h-7 bg-white px-3 border-b border-sable/15 font-sans text-[11px] font-semibold uppercase tracking-widest text-sable/70";
 
 function RegionTable({ regions, unitLabel, height, selectedRegions = [], onToggleRegion }) {
+  // Re-sorts by value on every render rather than trusting incoming order:
+  // `regions` is only pre-sorted for ONE year (whichever was latest when the
+  // snapshot was built — see stateExplorerMockData.js / the build script),
+  // so once the year selector can show an older year, that fixed order would
+  // silently mislabel #1 for any year where the ranking actually differs.
+  // Nulls (not reported) sort last, same as a real 0 would.
+  const ranked = useMemo(
+    () =>
+      [...regions]
+        .sort((a, b) => (b.value ?? 0) - (a.value ?? 0))
+        .map((r, i) => ({ ...r, rank: i + 1 })),
+    [regions],
+  );
   // Selected regions pinned to the top so comparing several doesn't require
-  // scrolling to find them, but each row keeps its TRUE state-wide rank (the
-  // "#" column) rather than being renumbered by its new position — this is a
-  // regroup, not a re-rank. `regions` arrives pre-sorted by value descending
-  // (see stateExplorerMockData.js), so the original index is the real rank.
-  const ranked = useMemo(() => regions.map((r, i) => ({ ...r, rank: i + 1 })), [regions]);
+  // scrolling to find them, but each row keeps its rank from above (the "#"
+  // column) rather than being renumbered by its new position — this is a
+  // regroup, not a re-rank.
   const ordered = useMemo(() => {
     if (selectedRegions.length === 0) return ranked;
     const selected = ranked.filter((r) => selectedRegions.includes(r.name));
@@ -468,15 +531,20 @@ function RegionTable({ regions, unitLabel, height, selectedRegions = [], onToggl
 
   return (
     <Table
-      className="font-sans text-xs"
+      className="table-fixed font-sans text-xs"
       containerStyle={{ height }}
       containerLabel={`Students by ${unitLabel}`}
     >
+      {/* Explicit widths on every column (not just "#") — table-auto sizes
+          each column to its widest cell, so without this the name/Students
+          columns quietly shifted a few px between states depending on each
+          state's longest name or largest number (e.g. Minnesota vs.
+          Colorado). table-fixed + widths here makes every state identical. */}
       <TableHeader>
         <TableRow className="hover:bg-transparent">
           <TableHead className={`${REGION_HEAD_CELL} w-8 text-right`}>#</TableHead>
           <TableHead className={`${REGION_HEAD_CELL} text-left`}>{unitLabel}</TableHead>
-          <TableHead className={`${REGION_HEAD_CELL} text-right`}>Students</TableHead>
+          <TableHead className={`${REGION_HEAD_CELL} w-20 text-right`}>Students</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -498,17 +566,22 @@ function RegionTable({ regions, unitLabel, height, selectedRegions = [], onToggl
               <TableCell className="px-3 py-1.5 text-right tabular-nums text-[11px] text-sable/70">
                 {r.rank ?? "—"}
               </TableCell>
-              <TableCell className="px-3 py-1.5 font-medium text-sable">
+              <TableCell className="max-w-0 px-3 py-1.5 font-medium text-sable">
                 {/* A real <button>, not the <tr> itself, so the table's
                     row/cell semantics stay intact for assistive tech — same
                     pattern EnrollmentComparisonCard's "View detail →" uses
                     for a per-row action. Click toggles selection on/off,
-                    standing in for a chip's ✕ now that there's no chip row. */}
+                    standing in for a chip's ✕ now that there's no chip row.
+                    truncate + title: table-fixed gives this column a fixed
+                    width, so a long real name (e.g. "Gallup-McKinley County
+                    Schools") needs to clip with an ellipsis instead of
+                    forcing the row to wrap or the column to grow. */}
                 <button
                   type="button"
                   onClick={() => onToggleRegion(r.name)}
                   aria-pressed={isSelected}
-                  className="text-left decoration-sable/40 underline-offset-2 hover:underline"
+                  title={r.name}
+                  className="block w-full truncate text-left decoration-sable/40 underline-offset-2 hover:underline"
                 >
                   {r.name}
                 </button>
@@ -517,7 +590,11 @@ function RegionTable({ regions, unitLabel, height, selectedRegions = [], onToggl
                 {r.value > 0 ? (
                   formatNumber(r.value)
                 ) : (
-                  <span className="text-sable/70">not reported</span>
+                  // "—" not "not reported": the fixed-width Students column
+                  // (see table-fixed above) wrapped that phrase to two lines.
+                  <span className="text-sable/70" title="Not reported">
+                    —
+                  </span>
                 )}
               </TableCell>
             </TableRow>
@@ -614,19 +691,42 @@ export default function StateExplorerPanel({
   const [pickedDemo, setPickedDemo] = useState(demoKeys[0] ?? null);
   const activeDemo = demoKeys.includes(pickedDemo) ? pickedDemo : demoKeys[0] ?? null;
 
-  // Resolves each region's year-keyed `values` down to a flat value for THIS
-  // state's active year — the one seam that knows about the multi-year shape.
-  // RegionMap/RegionTable/RegionComparisonList all consume this flat form, so
-  // adding a year selector later only changes what's passed here, not those
-  // components.
+  // Every year that appears in ANY region's `values` for this state, plus
+  // state.year itself (covers the no-regions case, e.g. Delaware). Same
+  // self-heal pattern as pickedDemo above — switching to a state that
+  // doesn't have the previously-picked year falls back to its own latest
+  // year rather than erroring.
+  const availableYears = useMemo(() => {
+    const years = new Set([state.year]);
+    for (const r of state.regions ?? []) for (const y of Object.keys(r.values)) years.add(y);
+    return [...years].sort();
+  }, [state.regions, state.year]);
+  const [pickedYear, setPickedYear] = useState(state.year);
+  const activeYear = availableYears.includes(pickedYear) ? pickedYear : state.year;
+
+  // This was the one seam the multi-year `values` shape was always built
+  // for (see valueForYear's own doc comment) — RegionMap/RegionTable both
+  // already just consume whatever flat value shows up here, no changes
+  // needed there to support picking an older year.
   const regionsForDisplay = useMemo(
     () =>
       state.regions?.map((r) => ({
         name: r.name,
-        value: valueForYear(r, state.year),
+        value: valueForYear(r, activeYear),
       })) ?? null,
-    [state.regions, state.year],
+    [state.regions, activeYear],
   );
+
+  // Headline number for the active year. state.total is the TRUE verified
+  // total (matches JHU's own published figures) but only FOR state.year —
+  // stepping to an older year falls back to summing this state's own
+  // regions for that year, a real but partial number (same "floor, not
+  // ceiling" caveat Georgia's county-matched total already carries) rather
+  // than a second real total this snapshot doesn't store per year.
+  const displayTotal =
+    activeYear === state.year
+      ? state.total
+      : (regionsForDisplay?.reduce((sum, r) => sum + (r.value ?? 0), 0) ?? state.total);
 
   // Quantile breaks over THIS state's own region values, shared by the map's
   // fill (fillForValue) and the legend's swatch range labels — computed once
@@ -690,12 +790,19 @@ export default function StateExplorerPanel({
               same height whether this state has a real map or not. */}
           <div className="mt-4" style={{ height: EXPLORER_LEGEND_SLOT_HEIGHT }}>
             {state.hasRealGeo && (
-              <MapLegend label={`Students, ${state.year}`} swatches={legendSwatches} />
+              <MapLegend label={`Students, ${activeYear}`} swatches={legendSwatches} />
             )}
           </div>
         </div>
 
-        <ExplorerHeadline state={state} slug={slug} />
+        <ExplorerHeadline
+          state={state}
+          slug={slug}
+          displayTotal={displayTotal}
+          activeYear={activeYear}
+          availableYears={availableYears}
+          onPickYear={setPickedYear}
+        />
       </div>
 
       {/* Row 2 — data zone: ranked region table left, demographic breakdown
@@ -703,9 +810,14 @@ export default function StateExplorerPanel({
           table/graph row. */}
       <div className={`mt-6 ${TWO_COLUMN_GRID_CLASS}`} style={{ minHeight: DATA_ZONE_MIN_HEIGHT }}>
         <div>
-          <div className="flex items-center justify-between gap-4">
+          {/* Fixed h-7 (matches RegionTable's own header-cell height) so this
+              row's height doesn't depend on whether RegionAddControl renders
+              — Delaware has no regions at all, so without a fixed height its
+              heading sat a few px higher than every other state's, whose
+              taller control+heading row pushes the centered heading down. */}
+          <div className="flex h-7 items-center justify-between gap-4">
             <h2 className={SECTION_HEADING_CLASS}>
-              Students by {state.geoUnit ?? "region"}, {state.year}
+              Students by {state.geoUnit ?? "region"}, {activeYear}
             </h2>
             {/* Always rendered when this state has regions at all (not
                 gated on a selection existing) — reachable before any click,
@@ -750,7 +862,11 @@ export default function StateExplorerPanel({
               duplicate it with today's single-year data; a real per-region
               trend chart is the honest thing to build here once historical
               data exists, not before). */}
-          <div className="flex items-center justify-between gap-4">
+          {/* Same fixed h-7 as the region table's heading row, and for the
+              same reason — a state with no demographics at all (demoKeys
+              empty) shouldn't get a shorter heading row than one with
+              category pills. */}
+          <div className="flex h-7 items-center justify-between gap-4">
             <h2 className={SECTION_HEADING_CLASS}>Reported subgroups</h2>
             {/* Category pills sit in the heading row, trailing — same spot
                 ComparisonLegend occupies next to Enrollment's "Trends"

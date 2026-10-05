@@ -46,7 +46,7 @@ import { regulationDescriptor, regulationFooter } from "./topics/regulationTopic
 import {
   EXPLORER_STATES,
   DEFAULT_EXPLORER_STATE,
-} from "./data/stateExplorerMockData.js";
+} from "./data/stateExplorerLoader.js";
 import { STATES } from "./config/states.js";
 import { COMPARE_CAP } from "./config/selection.js";
 import { trackEvent } from "./lib/analytics.js";
@@ -178,11 +178,13 @@ export default function App() {
                   <ChevronDown className="h-3 w-3 opacity-70" aria-hidden />
                 </SelectTrigger>
                 <SelectContent align="end">
-                  {Object.entries(EXPLORER_STATES).map(([key, s]) => (
-                    <SelectItem key={key} value={key}>
-                      {s.name}
-                    </SelectItem>
-                  ))}
+                  {Object.entries(EXPLORER_STATES)
+                    .sort(([, a], [, b]) => a.name.localeCompare(b.name))
+                    .map(([key, s]) => (
+                      <SelectItem key={key} value={key}>
+                        {s.name}
+                      </SelectItem>
+                    ))}
                 </SelectContent>
               </Select>
             </div>
