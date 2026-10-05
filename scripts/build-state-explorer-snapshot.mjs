@@ -35,7 +35,7 @@ import { writeSnapshot } from "./lib/sheets.mjs";
 import { STATES } from "../src/config/states.js";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
-const SOURCE_PATH = resolve(
+export const SOURCE_PATH = resolve(
   HERE,
   "../../notes/2026-10-02-combined-state-data-from-jhu-expanded.xlsx",
 );
@@ -44,12 +44,12 @@ const GEO_DIR = resolve(HERE, "../public/state-explorer-geo");
 const GA_GEO_PATH = resolve(GEO_DIR, "ga-counties.json");
 const LA_GEO_PATH = resolve(GEO_DIR, "la-districts.json");
 
-const NAME_BY_POSTAL = Object.fromEntries(STATES.map((s) => [s.postal, s.name]));
+export const NAME_BY_POSTAL = Object.fromEntries(STATES.map((s) => [s.postal, s.name]));
 
 // School-year label matching the rest of the app's convention (e.g. 2024 ->
 // "2024–25") so merged regions key identically to the hand-entered years
 // already in stateExplorerMockData.js.
-function yearLabel(fallYear) {
+export function yearLabel(fallYear) {
   return `${fallYear}–${String(fallYear + 1).slice(-2)}`;
 }
 
@@ -59,7 +59,7 @@ function plural(unit) {
 
 // us-atlas/TIGER geometry names, read straight out of the committed topojson
 // rather than hardcoded, so this stays correct if the geo files ever change.
-function geoNames(path) {
+export function geoNames(path) {
   const topo = JSON.parse(readFileSync(path, "utf8"));
   const obj = Object.values(topo.objects)[0];
   return new Set(obj.geometries.map((g) => g.properties.name));
@@ -156,7 +156,7 @@ function countyGeoPath(abbr) {
 
 // States with a real published boundary file + a name-normalization function
 // to join the workbook's raw unit names to that geometry.
-const MAP_MATCHED = {
+export const MAP_MATCHED = {
   GA: { nameField: "district ", geoUnit: "county", mapName: mapGaName, geoPath: GA_GEO_PATH },
   LA: { nameField: "district ", geoUnit: "district", mapName: mapLaName, geoPath: LA_GEO_PATH },
   AR: { nameField: "lcounty", geoUnit: "county", geoPath: countyGeoPath("ar") },
@@ -178,16 +178,27 @@ for (const [code, cfg] of Object.entries(MAP_MATCHED)) {
 // pattern as Hawaii's hand-entered card. `nameField` is whichever raw column
 // actually holds that state's reporting unit (checked directly per state —
 // see decisions.md).
-const LIST_ONLY = {
+export const LIST_ONLY = {
   SC: { nameField: "district ", geoUnit: "district" },
   SD: { nameField: "district ", geoUnit: "district" },
-  NC: { nameField: "district ", geoUnit: "district" },
+  // Labeled "district " in the raw column, but its 100 distinct names are
+  // North Carolina's actual 100 counties (confirmed against JHU's own
+  // tracking sheet, which lists NC's disaggregation category as "County") —
+  // same column-name-doesn't-match-content situation as PA below, just the
+  // other direction. Display label only; the data/matching is unaffected.
+  NC: { nameField: "district ", geoUnit: "county" },
   NY: { nameField: "district ", geoUnit: "district" },
   // PA's raw "lcounty" column is ~500 distinct values — real Pennsylvania has
   // 67 counties but ~500 school districts, so despite the column name this
   // is clearly district-level granularity; labeled accordingly.
   PA: { nameField: "lcounty", geoUnit: "district" },
-  TN: { nameField: "district ", geoUnit: "district" },
+  // JHU's own tracking sheet flags TN explicitly: "'independent' HS should
+  // be the only counts, remove 'church school' and 'totals'" — TN is the
+  // only state in the workbook where total_enrollment_ count is actually
+  // church_related + independent_hs added together (confirmed: matches for
+  // all but 2 of ~900 rows). The real homeschool count is independent_hs
+  // alone. See decisions.md, 2026-10-05 ("Genny's tracking sheet" entry).
+  TN: { nameField: "district ", geoUnit: "district", countField: "independent_hs" },
   ME: { nameField: "district ", geoUnit: "district" },
   CO: { nameField: "district ", geoUnit: "district" },
   WY: { nameField: "district ", geoUnit: "district" },
@@ -283,6 +294,35 @@ function extractDemographics(latestYearRows) {
   return demographics;
 }
 
+// Every column that can hold a reporting unit's place name, across all 27
+// states — a row is the state's own designated grand-total for its year if
+// EVERY one of these is blank, or holds an explicit rollup sentinel (Georgia
+// has no state-level row of its own, but other states do: a Montana/North
+// Carolina/Tennessee row with every geography column blank; a Minnesota row
+// tagged lcounty="All"/district="Total"). See isGrandTotalRow below.
+const GEO_COLUMNS = ["sau_name", "lea", "lcounty", "district ", "town ", "lcity"];
+const TOTAL_SENTINELS = new Set(["all", "total", "totals", "statewide", "grand total"]);
+
+function isGrandTotalRow(row) {
+  return GEO_COLUMNS.every((col) => {
+    const v = (row[col] ?? "").toString().trim();
+    return v === "" || TOTAL_SENTINELS.has(v.toLowerCase());
+  });
+}
+
+// Maine is the one state (confirmed via a full state-by-state audit,
+// 2026-10-05) that reports TWO disagreeing whole-state totals every year
+// back to 2019, not a simple duplicate — one series always carries a full
+// age breakdown, the other never does, and they can disagree by a lot (68%
+// apart in 2019). Flagged back to JHU to find out which is authoritative —
+// Roy's working theory meanwhile is that the age-profiled series likely
+// excludes areas that don't report by age (i.e. undercounts), so prefer
+// whichever grand-total candidate has NO age breakdown until that's
+// resolved. See decisions.md, 2026-10-05.
+function hasAgeBreakdown(row) {
+  return Object.keys(row).some((k) => k.startsWith("age") && typeof row[k] === "number");
+}
+
 // One state's rows -> { year, total, reporting, regions, demographics }.
 // Map mode (`validNames` set) only counts a row toward `regions` if its
 // normalized name matches the geometry; list mode (`validNames` null) takes
@@ -293,32 +333,72 @@ function extractDemographics(latestYearRows) {
 // (consolidations, renames, early-year spelling) to union the whole history
 // without padding the table with dead entries. Each current region still
 // carries its real multi-year `values` wherever history exists.
-function shapeState({ rows, nameField, mapName, validNames, pinnedYear }) {
-  const yearTotals = new Map(); // ALL rows, matched or not — the real headline total
-  const matchedCountByYear = new Map();
-  const rowsByYear = new Map(); // for demographics, keyed by raw sy_fall
+export function shapeState({
+  rows,
+  nameField,
+  mapName,
+  validNames,
+  pinnedYear,
+  countField = "total_enrollment_ count",
+}) {
+  const rowsByYear = new Map(); // every dated row, keyed by raw sy_fall — also feeds demographics below
+  for (const row of rows) {
+    const year = row.sy_fall;
+    if (year == null) continue;
+    (rowsByYear.get(year) ?? rowsByYear.set(year, []).get(year)).push(row);
+  }
+
+  // The real headline total, per year. Several states' sheets turned out to
+  // report the SAME students more than once per year — a dedicated rollup
+  // row that already IS the whole-state total (see isGrandTotalRow), or two
+  // full parallel geography tiers for the same population (Arkansas reports
+  // every homeschooler once by county AND once by district, no rollup row at
+  // all). Blindly summing every row double-counted both cases (caught via a
+  // full state-by-state audit, 2026-10-05 — Montana showed 19,576 against a
+  // real total of 9,788). Fix: prefer a state/year's own rollup row when one
+  // exists; otherwise sum only the rows reported at THIS state's configured
+  // nameField tier, ignoring any row named only in some OTHER geography
+  // column (a different, redundant tier reporting the same population).
+  const yearTotals = new Map();
+  for (const [year, yearRows] of rowsByYear) {
+    const grandTotalCandidates = yearRows.filter(
+      (r) => isGrandTotalRow(r) && typeof r[countField] === "number",
+    );
+    const grandTotalRow =
+      grandTotalCandidates.find((r) => !hasAgeBreakdown(r)) ?? grandTotalCandidates[0];
+    if (grandTotalRow) {
+      yearTotals.set(year, grandTotalRow[countField]);
+      continue;
+    }
+    let sum = 0;
+    for (const r of yearRows) {
+      const raw = r[nameField];
+      const total = r[countField];
+      if (raw && raw.trim() && typeof total === "number") sum += total;
+    }
+    yearTotals.set(year, sum);
+  }
+
+  // Unique matched NAMES per year, not raw matched ROWS — a county can have
+  // several raw rows (e.g. several districts inside it), and counting rows
+  // instead of names inflated the UI's "N of M counties reporting" past M
+  // (caught live: Minnesota showed "322 of 87 counties reporting").
+  const matchedNamesByYear = new Map();
   const normalized = []; // { year, name, total } for every matched row
 
   for (const row of rows) {
     const year = row.sy_fall;
     if (year == null) continue;
-    // Demographics can live on a row with no total of its own (New Mexico
-    // tags a demographic category's full breakdown onto a row with its name
-    // field set to the category's label instead of a place, total blank) —
-    // record every dated row for demographics before the total check below
-    // skips it for the total/regions purposes.
-    (rowsByYear.get(year) ?? rowsByYear.set(year, []).get(year)).push(row);
 
-    const total = row["total_enrollment_ count"];
+    const total = row[countField];
     if (typeof total !== "number") continue;
-    yearTotals.set(year, (yearTotals.get(year) ?? 0) + total);
 
     const raw = row[nameField];
     if (!raw || !raw.trim()) continue;
     const name = mapName ? mapName(raw.trim()) : raw.trim();
     if (validNames && !validNames.has(name)) continue;
 
-    matchedCountByYear.set(year, (matchedCountByYear.get(year) ?? 0) + 1);
+    (matchedNamesByYear.get(year) ?? matchedNamesByYear.set(year, new Set()).get(year)).add(name);
     normalized.push({ year, name, total });
   }
 
@@ -355,7 +435,7 @@ function shapeState({ rows, nameField, mapName, validNames, pinnedYear }) {
   return {
     year: latestLabel,
     total: yearTotals.get(latestYear),
-    reportingCount: matchedCountByYear.get(latestYear),
+    reportingCount: matchedNamesByYear.get(latestYear)?.size ?? 0,
     regions,
     demographics: extractDemographics(rowsByYear.get(latestYear) ?? []),
   };
@@ -386,6 +466,7 @@ function buildListOnly(rows, code, cfg) {
     mapName: null,
     validNames: null,
     pinnedYear: cfg.pinnedYear,
+    countField: cfg.countField,
   });
   return {
     ...shaped,
@@ -446,4 +527,6 @@ function main() {
   }
 }
 
-main();
+// Guarded so other scripts (e.g. audit-state-explorer-totals.mjs) can import
+// this module's exports for reuse without triggering a full rebuild.
+if (import.meta.url === `file://${process.argv[1]}`) main();
