@@ -139,7 +139,7 @@ import {
   EXPLORER_CONTEXT_SLOT_HEIGHT,
   TWO_COLUMN_GRID_CLASS,
 } from "../config/layout.js";
-import { EXPLORER_STATES, valueForYear } from "../data/stateExplorerLoader.js";
+import { valueForYear } from "../data/stateExplorerMockData.js";
 
 // Section-heading convention shared by Enrollment/Regulation's data-zone
 // headings (see EnrollmentPanel.jsx) — kept local here since this page's data
@@ -677,12 +677,13 @@ function RegionAddControl({ selectedCount, availableItems, valueByName, onAdd, o
 }
 
 export default function StateExplorerPanel({
+  states,
   stateKey,
   selectedRegions,
   onToggleRegion,
   onClearRegions,
 }) {
-  const state = EXPLORER_STATES[stateKey];
+  const state = states[stateKey];
   const demoKeys = Object.keys(state.demographics);
 
   // Not reset via useEffect on stateKey change — self-heals instead: if the

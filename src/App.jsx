@@ -43,10 +43,7 @@ import {
   DEFAULT_YEAR,
 } from "./topics/enrollmentTopic.jsx";
 import { regulationDescriptor, regulationFooter } from "./topics/regulationTopic.jsx";
-import {
-  EXPLORER_STATES,
-  DEFAULT_EXPLORER_STATE,
-} from "./data/stateExplorerLoader.js";
+import { DEFAULT_EXPLORER_STATE } from "./data/stateExplorerMockData.js";
 import { STATES } from "./config/states.js";
 import { COMPARE_CAP } from "./config/selection.js";
 import { trackEvent } from "./lib/analytics.js";
@@ -64,6 +61,14 @@ export default function App() {
   // shared cross-topic selection; the explorer is inherently single-state.
   const [explorerState, setExplorerState] = useState(DEFAULT_EXPLORER_STATE);
   const { selectedStates, toggleState, clearAll } = useSelection();
+
+  // State Explorer's per-state data comes from a ~1.7MB generated snapshot
+  // (state-explorer-snapshot.json, 25 states x multi-year history) — a static
+  // import would bundle that into every page load regardless of whether this
+  // tab is ever opened. Loaded on demand instead, the first time the tab is
+  // actually activated, and cached in state so switching tabs back and forth
+  // doesn't re-fetch it.
+  const [explorerStates, setExplorerStates] = useState(null);
 
   // State Explorer's region-comparison cohort. Lives here (NOT inside
   // StateExplorerPanel, and NOT the cross-topic SelectionProvider above) so
@@ -93,6 +98,17 @@ export default function App() {
 
   const isEnrollment = activeTab === "enrollment";
   const isExplorer = activeTab === "explorer";
+
+  useEffect(() => {
+    if (!isExplorer || explorerStates) return;
+    let cancelled = false;
+    import("./data/stateExplorerLoader.js").then(({ EXPLORER_STATES }) => {
+      if (!cancelled) setExplorerStates(EXPLORER_STATES);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [isExplorer, explorerStates]);
 
   // Toggle instead of a router, so each switch is sent as its own event for
   // view usage to show up in analytics.
@@ -169,24 +185,28 @@ export default function App() {
               <span className="mr-3 font-sans text-[11px] font-medium uppercase tracking-widest text-sable/70">
                 Explore
               </span>
-              <Select value={explorerState} onValueChange={setExplorerState}>
-                <SelectTrigger
-                  aria-label="Choose a state"
-                  className="whitespace-nowrap rounded border border-sable/20 bg-white px-2.5 py-1 font-sans text-xs tabular-nums text-sable transition hover:bg-sable/5"
-                >
-                  <SelectValue />
-                  <ChevronDown className="h-3 w-3 opacity-70" aria-hidden />
-                </SelectTrigger>
-                <SelectContent align="end">
-                  {Object.entries(EXPLORER_STATES)
-                    .sort(([, a], [, b]) => a.name.localeCompare(b.name))
-                    .map(([key, s]) => (
-                      <SelectItem key={key} value={key}>
-                        {s.name}
-                      </SelectItem>
-                    ))}
-                </SelectContent>
-              </Select>
+              {explorerStates ? (
+                <Select value={explorerState} onValueChange={setExplorerState}>
+                  <SelectTrigger
+                    aria-label="Choose a state"
+                    className="whitespace-nowrap rounded border border-sable/20 bg-white px-2.5 py-1 font-sans text-xs tabular-nums text-sable transition hover:bg-sable/5"
+                  >
+                    <SelectValue />
+                    <ChevronDown className="h-3 w-3 opacity-70" aria-hidden />
+                  </SelectTrigger>
+                  <SelectContent align="end">
+                    {Object.entries(explorerStates)
+                      .sort(([, a], [, b]) => a.name.localeCompare(b.name))
+                      .map(([key, s]) => (
+                        <SelectItem key={key} value={key}>
+                          {s.name}
+                        </SelectItem>
+                      ))}
+                  </SelectContent>
+                </Select>
+              ) : (
+                <span className="font-sans text-xs text-sable/70">Loading states…</span>
+              )}
             </div>
           ) : (
             <span className="font-sans text-[11px] font-medium uppercase tracking-widest text-sable/70">
@@ -223,12 +243,17 @@ export default function App() {
           tabIndex={0}
           className="mt-4"
         >
-          <StateExplorerPanel
-            stateKey={explorerState}
-            selectedRegions={selectedRegions}
-            onToggleRegion={toggleRegion}
-            onClearRegions={clearRegions}
-          />
+          {explorerStates ? (
+            <StateExplorerPanel
+              states={explorerStates}
+              stateKey={explorerState}
+              selectedRegions={selectedRegions}
+              onToggleRegion={toggleRegion}
+              onClearRegions={clearRegions}
+            />
+          ) : (
+            <p className="font-sans text-sm text-sable/70">Loading state data…</p>
+          )}
         </div>
       ) : (
         <div
