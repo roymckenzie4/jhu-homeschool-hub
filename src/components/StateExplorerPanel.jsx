@@ -162,6 +162,19 @@ const geoFileByState = {
   NE: "ne-counties.json",
   OH: "oh-counties.json",
   WA: "wa-counties.json",
+  NC: "nc-counties.json",
+  SC: "sc-districts.json",
+  SD: "sd-districts.json",
+  NY: "ny-districts.json",
+  PA: "pa-districts.json",
+  TN: "tn-districts.json",
+  CO: "co-districts.json",
+  WY: "wy-districts.json",
+  RI: "ri-districts.json",
+  MA: "ma-towns.json",
+  NH: "nh-districts.json",
+  NM: "nm-districts.json",
+  WI: "wi-districts.json",
 };
 const geoCache = new Map();
 
@@ -265,17 +278,29 @@ function RegionMap({ stateKey, regions, breaks, selectedRegions, onToggleRegion,
   // every hook in a component must run on every render regardless of early
   // returns, or React throws (violates the Rules of Hooks: the geo-not-ready
   // render would call fewer hooks than the geo-ready one).
+  // `d` (the SVG path string) is resolved here too, not inline in the render
+  // below — it used to be recomputed by calling `path(f)` fresh on every
+  // single render for every feature, which is real work (full geometry-to-
+  // string serialization) for a state with hundreds of regions (New York's
+  // 680). Clicking to select a region changes `selectedRegions`, which
+  // re-renders this component but doesn't change any feature's geometry —
+  // so the string only needs computing once per feature, not once per
+  // feature per click. Caught as the likely cause of New York staying
+  // "unusably slow" even after simplifying file size; see decisions.md
+  // (2026-10-06).
   const resolvedFeatures = useMemo(() => {
-    if (!geo) return [];
+    if (!geo || !projected) return [];
+    const { path } = projected;
     return geo.features.map((f) => {
       const lower = f.properties?.name?.toLowerCase();
       return {
         feature: f,
         name: regionByLower.get(lower) ?? f.properties?.name,
         value: valueByName.get(lower) ?? null,
+        d: path(f),
       };
     });
-  }, [geo, regionByLower, valueByName]);
+  }, [geo, projected, regionByLower, valueByName]);
 
   if (!geo || !projected) {
     return (
@@ -285,7 +310,6 @@ function RegionMap({ stateKey, regions, breaks, selectedRegions, onToggleRegion,
     );
   }
 
-  const { path } = projected;
   const hasSelection = selectedRegions.length > 0;
 
   return (
@@ -299,11 +323,12 @@ function RegionMap({ stateKey, regions, breaks, selectedRegions, onToggleRegion,
         <MapHoverGlow />
       </defs>
 
-      {/* Base layer: every region rendered once, dimmed as a group once
-          anything is selected (map-base--has-selection, same global CSS rule
-          the national map uses) — see index.css. */}
-      <g className={hasSelection ? "map-base--has-selection" : ""}>
-        {resolvedFeatures.map(({ feature: f, name, value }) => {
+      {/* Base layer: every region rendered once. Dimming when something's
+          selected is NOT done per-path here (unlike the national map) — see
+          the single overlay rect below instead, and index.css's
+          .region-dim-overlay comment for why. */}
+      <g>
+        {resolvedFeatures.map(({ feature: f, name, value, d }) => {
           const isSelected = selectedRegions.includes(name);
           const className = `state-path state-path--clickable${
             isSelected ? " state-path--selected" : ""
@@ -311,7 +336,7 @@ function RegionMap({ stateKey, regions, breaks, selectedRegions, onToggleRegion,
           return (
             <path
               key={f.id}
-              d={path(f)}
+              d={d}
               className={className}
               fill={fillForValue(value, breaks)}
               stroke="#fff"
@@ -334,16 +359,31 @@ function RegionMap({ stateKey, regions, breaks, selectedRegions, onToggleRegion,
         })}
       </g>
 
+      {/* Single dim overlay standing in for per-path opacity — see
+          index.css's .region-dim-overlay comment. Sits above the base layer
+          (dimming everything, selected regions included) but below the
+          selection-ring overlay next, which redraws selected regions back
+          at full strength on top. */}
+      <rect
+        x={0}
+        y={0}
+        width={EXPLORER_MAP_VIEW_W}
+        height={EXPLORER_MAP_VIEW_H}
+        fill="white"
+        pointerEvents="none"
+        className={`region-dim-overlay${hasSelection ? " region-dim-overlay--active" : ""}`}
+      />
+
       {/* Selection overlay: each selected region redrawn on top with a single
           crisp ring, so its border can't be clipped by a neighbor drawn later
           in the base layer — same technique as ChoroplethMap. */}
       <g style={{ pointerEvents: "none" }}>
         {resolvedFeatures
           .filter(({ name }) => selectedRegions.includes(name))
-          .map(({ feature: f, value }) => (
+          .map(({ feature: f, value, d }) => (
             <path
               key={f.id}
-              d={path(f)}
+              d={d}
               fill={fillForValue(value, breaks)}
               stroke={COLORS.sable}
               strokeWidth={MAP_SELECTION_STROKE_WIDTH}

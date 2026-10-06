@@ -154,6 +154,117 @@ function countyGeoPath(abbr) {
   return resolve(GEO_DIR, `${abbr}-counties.json`);
 }
 
+// School-district (and MA's towns) boundaries for 12 states — real per-state
+// Census TIGER downloads (Unified/Elementary/Secondary School District
+// products, or County Subdivisions for MA's towns), combined+pruned+
+// simplified with mapshaper the same way as the county states above, e.g.:
+//   npx mapshaper -i tl_2023_47_unsd.zip tl_2023_47_elsd.zip \
+//     tl_2023_47_scsd.zip combine-files -filter-fields GEOID,NAME,STATEFP \
+//     "target=*" -merge-layers target=tl_2023_47_unsd,tl_2023_47_elsd,\
+//     tl_2023_47_scsd -simplify 8% keep-shapes \
+//     -o public/state-explorer-geo/tn-districts.json format=topojson \
+//     id-field=GEOID
+// (FIPS codes from src/config/states.js; some states only have a UNSD file,
+// no ELSD/SCSD — Census 404s those, skip them.) Several of these downloads
+// included a Census placeholder feature for area (usually water/federal
+// land) not assigned to any real district/town — "School District Not
+// Defined" in 8 of the 12 district states (NH/NY/PA/RI/SC/TN/WI/WY; CO/NM/SD
+// didn't have it), "County subdivisions not defined" (x6, one per coastal
+// county) in MA's COUSUB-based towns file. Not a real selectable place,
+// unlike a real-but-unmatched name (e.g. Georgia's 3 real counties with no
+// reported data) — stripped out of the committed geo files directly (filter
+// any `properties.name` matching /not defined/i out of the topojson
+// object's `geometries` array). Filter it at the mapshaper step for any
+// future state built this way (NAME doesn't support regex in mapshaper's
+// `-filter`, so match the exact string(s) seen so far instead), e.g. add
+// `-filter 'NAME != "School District Not Defined"'` before `-merge-layers`,
+// rather than post-processing the output.
+// Workbook names are far
+// noisier against real district names than county names ever were — every
+// kind of abbreviation (SD/Sch Dist/CSD/SSD/UHS/Co.), spelled-out vs.
+// shorthand numbering ("District One" vs "1", "29J" vs "29-J"), and (for
+// Wisconsin specifically) the same fixed-length-column truncation Nebraska's
+// counties had. districtNormKey below handles all of that generically;
+// `allowPrefix` turns on the truncation fallback where needed. Found and
+// tuned by diffing each state's full raw name list against its real
+// geometry's name list, same method as the county states — see decisions.md
+// (2026-10-06, boundary files for the remaining list-only states).
+function districtNormKey(raw) {
+  const WORD_NUM = {
+    one: "1", two: "2", three: "3", four: "4", five: "5",
+    six: "6", seven: "7", eight: "8", nine: "9", ten: "10",
+  };
+  let s = raw.toLowerCase();
+  s = s.replace(/\(non-op\)/g, " ");
+  s = s.replace(/[.#]/g, " ");
+  s = s.replace(/\bco\b/g, "county");
+  s = s.replace(/\bmt\b/g, "mount");
+  s = s.replace(/\bst\b/g, "saint");
+  s = s.replace(/\bplt\b/g, "plantation");
+  s = s.replace(/&/g, "and");
+  s = s.replace(/\b(one|two|three|four|five|six|seven|eight|nine|ten)\b/g, (m) => WORD_NUM[m]);
+  s = s.replace(/\bno\b/g, " ");
+  s = s.replace(/\bj(\d)/g, "$1");
+  // strip standalone procedural/governance-type noise words — not county/
+  // city, which still distinguish real entities within a state's own list
+  s = s.replace(
+    /\b(school|schools|sch|district|dist|sd|csd|usd|isd|ssd|uhs|unified|public|municipal|independent|consolidated|regional|cooperative|coop|community|town|city|county|the|of|union|high|joint|special|elementary|system|area)\b/g,
+    " ",
+  );
+  s = s.replace(/[^a-z0-9 ]/g, " ");
+  s = s.replace(/\s+/g, " ").trim();
+  // collapse digit<->single-letter adjacency noise (e.g. "29 j" / "29-j")
+  s = s.replace(/(\d) ([a-z])\b/g, "$1$2");
+  s = s.replace(/\b([a-z]) (\d)/g, "$1$2");
+  return s;
+}
+// New York City's raw rows use NYC DOE's own internal numbering ("NEW YORK
+// CITY GEOGRAPHIC DISTRICT #1" .. "#32") for its 32 community districts —
+// an NYC-internal administrative scheme with no federal TIGER equivalent;
+// Census treats the whole city as ONE unified school district. Collapsing
+// all 32 raw names onto that single real name lets the existing SUM-not-
+// overwrite logic in shapeState (built for Washington's county-contains-
+// many-districts case) combine them into one real NYC region instead of
+// 32 silently-dropped names — the single biggest chunk of NY's gap.
+const NY_PREPROCESS = (raw) =>
+  /^NEW YORK CITY GEOGRAPHIC DISTRICT/i.test(raw) ? "New York City Department Of Education" : raw;
+
+// Nashville and Clarksville are consolidated city-county governments, so
+// their real TIGER school-district names don't contain "Davidson"/
+// "Montgomery" at all — not an abbreviation issue districtNormKey can
+// generalize, just two real, different legal names worth hardcoding (same
+// shape as Louisiana's special cases above). These two account for nearly
+// all of TN's unmatched total.
+const TN_SPECIAL_CASES = {
+  "Montgomery Co.": "Clarksville-Montgomery County School System",
+  "Davidson Co.": "Metropolitan Nashville Public School District",
+};
+
+function buildDistrictMapper(geoPath, { allowPrefix = false, preprocess } = {}) {
+  const names = [...geoNames(geoPath)];
+  const byKey = new Map(names.map((n) => [districtNormKey(n), n]));
+  const byTightKey = new Map(names.map((n) => [districtNormKey(n).replace(/\s+/g, ""), n]));
+  const keys = [...byKey.keys()];
+  return function mapDistrictName(rawInput) {
+    const raw = preprocess ? preprocess(rawInput) : rawInput;
+    const key = districtNormKey(raw);
+    if (byKey.has(key)) return byKey.get(key);
+    const tight = key.replace(/\s+/g, "");
+    if (byTightKey.has(tight)) return byTightKey.get(tight);
+    if (allowPrefix) {
+      // raw is the truncated/dirty side (fixed-length column cuts mid-word,
+      // leaving a stray suffix fragment) — geo is clean and shorter, so
+      // check geo-is-prefix-of-raw, not the other way around.
+      const prefixMatches = keys.filter((k) => k.length >= 4 && key.startsWith(k));
+      if (prefixMatches.length === 1) return byKey.get(prefixMatches[0]);
+    }
+    return raw;
+  };
+}
+function districtGeoPath(abbr, unit = "districts") {
+  return resolve(GEO_DIR, `${abbr}-${unit}.json`);
+}
+
 // States with a real published boundary file + a name-normalization function
 // to join the workbook's raw unit names to that geometry.
 export const MAP_MATCHED = {
@@ -168,9 +279,76 @@ export const MAP_MATCHED = {
   NE: { nameField: "lcounty", geoUnit: "county", geoPath: countyGeoPath("ne") },
   OH: { nameField: "lcounty", geoUnit: "county", geoPath: countyGeoPath("oh") },
   WA: { nameField: "lcounty", geoUnit: "county", geoPath: countyGeoPath("wa") },
+  // Labeled "district " in the raw column, but its 100 distinct names are
+  // North Carolina's actual 100 counties (confirmed against JHU's own
+  // tracking sheet, which lists NC's disaggregation category as "County").
+  NC: { nameField: "district ", geoUnit: "county", geoPath: countyGeoPath("nc") },
+  // Real match rates against each state's actual boundary file, found by
+  // diffing the full raw-name list against the geometry's name list (same
+  // method as every state above) — all strong (86-100%); the remainder in
+  // each case is genuine ambiguous/non-geographic entries (charter
+  // academies, special-ed districts, abbreviated codes that drop a
+  // distinguishing digit), not a normalization bug. See decisions.md
+  // (2026-10-06).
+  SC: { nameField: "district ", geoUnit: "district", geoPath: districtGeoPath("sc") }, // 91.7%
+  SD: { nameField: "district ", geoUnit: "district", geoPath: districtGeoPath("sd") }, // 92.6%
+  NY: {
+    nameField: "district ",
+    geoUnit: "district",
+    geoPath: districtGeoPath("ny"),
+    _preprocess: NY_PREPROCESS,
+  }, // 92.5% before the NYC collapse fix, see decisions.md (2026-10-06)
+  // PA's raw "lcounty" column is ~500 distinct values — real Pennsylvania has
+  // 67 counties but ~500 school districts, so despite the column name this
+  // is clearly district-level granularity; labeled accordingly.
+  PA: { nameField: "lcounty", geoUnit: "district", geoPath: districtGeoPath("pa") }, // 99.4%
+  // JHU's own tracking sheet flags TN explicitly: "'independent' HS should
+  // be the only counts, remove 'church school' and 'totals'" — TN is the
+  // only state in the workbook where total_enrollment_ count is actually
+  // church_related + independent_hs added together (confirmed: matches for
+  // all but 2 of ~900 rows). The real homeschool count is independent_hs
+  // alone. See decisions.md, 2026-10-05 ("Genny's tracking sheet" entry).
+  TN: {
+    nameField: "district ",
+    geoUnit: "district",
+    countField: "independent_hs",
+    geoPath: districtGeoPath("tn"),
+    _preprocess: (raw) => TN_SPECIAL_CASES[raw] ?? raw,
+  }, // 97.9% before the Nashville/Clarksville fix, see decisions.md (2026-10-06)
+  CO: { nameField: "district ", geoUnit: "district", geoPath: districtGeoPath("co") }, // 86.0%
+  WY: { nameField: "district ", geoUnit: "district", geoPath: districtGeoPath("wy") }, // 94.1%
+  RI: { nameField: "district ", geoUnit: "district", geoPath: districtGeoPath("ri") }, // 100%
+  MA: { nameField: "town ", geoUnit: "town", geoPath: districtGeoPath("ma", "towns") }, // 99.4%
+  NH: { nameField: "district ", geoUnit: "district", geoPath: districtGeoPath("nh") }, // 98.2%
+  // NM's 2020 rows carry the richest statewide demographics in the whole
+  // workbook (full K-12 grade, 3-way gender, 7-way race — checked against
+  // its own total, all three sum close to it) but its real district rows
+  // stop reporting demographics after that year, same situation as Hawaii's
+  // hand-entered card — pin the whole card to 2020 rather than show a newer,
+  // demographic-less total next to an older breakdown.
+  NM: {
+    nameField: "district ",
+    geoUnit: "district",
+    pinnedYear: 2020,
+    geoPath: districtGeoPath("nm"),
+  }, // 95.5%
+  // Wisconsin's raw column truncates to a fixed length (same issue Nebraska's
+  // counties had) — the generic mapper's prefix-match fallback handles it.
+  WI: {
+    nameField: "district ",
+    geoUnit: "district",
+    geoPath: districtGeoPath("wi"),
+    _allowPrefix: true,
+  }, // 99.3%
 };
 for (const [code, cfg] of Object.entries(MAP_MATCHED)) {
-  if (!cfg.mapName) cfg.mapName = buildCountyMapper(cfg.geoPath, code);
+  if (cfg.mapName) continue;
+  cfg.mapName = cfg.geoPath.includes("-counties.json")
+    ? buildCountyMapper(cfg.geoPath, code)
+    : buildDistrictMapper(cfg.geoPath, {
+        allowPrefix: cfg._allowPrefix,
+        preprocess: cfg._preprocess,
+      });
 }
 
 // States with clean, simple rows (one row per unit per year, numeric totals)
@@ -179,43 +357,16 @@ for (const [code, cfg] of Object.entries(MAP_MATCHED)) {
 // actually holds that state's reporting unit (checked directly per state —
 // see decisions.md).
 export const LIST_ONLY = {
-  SC: { nameField: "district ", geoUnit: "district" },
-  SD: { nameField: "district ", geoUnit: "district" },
-  // Labeled "district " in the raw column, but its 100 distinct names are
-  // North Carolina's actual 100 counties (confirmed against JHU's own
-  // tracking sheet, which lists NC's disaggregation category as "County") —
-  // same column-name-doesn't-match-content situation as PA below, just the
-  // other direction. Display label only; the data/matching is unaffected.
-  NC: { nameField: "district ", geoUnit: "county" },
-  NY: { nameField: "district ", geoUnit: "district" },
-  // PA's raw "lcounty" column is ~500 distinct values — real Pennsylvania has
-  // 67 counties but ~500 school districts, so despite the column name this
-  // is clearly district-level granularity; labeled accordingly.
-  PA: { nameField: "lcounty", geoUnit: "district" },
-  // JHU's own tracking sheet flags TN explicitly: "'independent' HS should
-  // be the only counts, remove 'church school' and 'totals'" — TN is the
-  // only state in the workbook where total_enrollment_ count is actually
-  // church_related + independent_hs added together (confirmed: matches for
-  // all but 2 of ~900 rows). The real homeschool count is independent_hs
-  // alone. See decisions.md, 2026-10-05 ("Genny's tracking sheet" entry).
-  TN: { nameField: "district ", geoUnit: "district", countField: "independent_hs" },
+  // Maine is the one state where a boundary file genuinely isn't a simple
+  // name-normalization problem: its raw rows report per TOWN, but a real
+  // standalone Census school-district polygon only exists for SOME towns —
+  // others are only covered as part of a multi-town Community School
+  // District (e.g. "Five Town CSD"), with no town-to-CSD crosswalk in this
+  // workbook or anywhere easy to derive one from. Matching would need real
+  // Maine DOE administrative data, not string cleanup. Attempted and
+  // abandoned 2026-10-06 (55.7% match, structural not cosmetic) — see
+  // decisions.md.
   ME: { nameField: "district ", geoUnit: "district" },
-  CO: { nameField: "district ", geoUnit: "district" },
-  WY: { nameField: "district ", geoUnit: "district" },
-  RI: { nameField: "district ", geoUnit: "district" },
-  MA: { nameField: "town ", geoUnit: "town" },
-  NH: { nameField: "district ", geoUnit: "district" },
-  // Both were in the original drop; first pass had the wrong column (their
-  // real per-district rows use "district ", not "lcounty") so every row
-  // failed to match a name and both zero-regioned out.
-  // NM's 2020 rows carry the richest statewide demographics in the whole
-  // workbook (full K-12 grade, 3-way gender, 7-way race — checked against
-  // its own total, all three sum close to it) but its real district rows
-  // stop reporting demographics after that year, same situation as Hawaii's
-  // hand-entered card — pin the whole card to 2020 rather than show a newer,
-  // demographic-less total next to an older breakdown.
-  NM: { nameField: "district ", geoUnit: "district", pinnedYear: 2020 },
-  WI: { nameField: "district ", geoUnit: "district" },
 };
 
 // Grade demographics, shared across every state. Sums whatever grade columns
@@ -448,6 +599,8 @@ function buildMapMatched(rows, code, cfg) {
     nameField: cfg.nameField,
     mapName: cfg.mapName,
     validNames,
+    pinnedYear: cfg.pinnedYear,
+    countField: cfg.countField,
   });
   return {
     ...shaped,

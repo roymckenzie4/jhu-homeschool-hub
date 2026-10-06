@@ -65,7 +65,7 @@
    Keeping them global also matches how Tailwind utilities are applied
    elsewhere in the app and lets the dev tools show the cascade cleanly. */
 .state-path {
-  transition: opacity 180ms ease, filter 180ms ease;
+  transition: opacity 180ms ease;
 }
 .state-path--clickable {
   cursor: pointer;
@@ -96,6 +96,30 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .state-path {
+    transition: none;
+  }
+}
+
+/* State Explorer's RegionMap dim effect — NOT the per-path opacity rule
+   above. A state like New York has 680 regions; animating `opacity` on all
+   of them at once (toggled via the same `:not(.state-path--selected)`
+   pattern ChoroplethMap uses, fine at 50 states) was itself a real,
+   separate performance problem, same root cause as the `filter`-transition
+   fix above but hitting `opacity` instead once that one was fixed. Replaced
+   per-path dimming with a single white overlay rect animated instead — one
+   element regardless of region count. A solid white rect at 0.35 opacity on
+   top produces the identical visual blend as the old per-path `opacity:
+   0.65` (both are "35% white, 65% original color" by the same math), just
+   without needing 680 separate transitions. See decisions.md, 2026-10-06. */
+.region-dim-overlay {
+  opacity: 0;
+  transition: opacity 180ms ease;
+}
+.region-dim-overlay--active {
+  opacity: 0.35;
+}
+@media (prefers-reduced-motion: reduce) {
+  .region-dim-overlay {
     transition: none;
   }
 }
