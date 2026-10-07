@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-01T17:01:08.139Z",
+  "generatedAt": "2026-10-07T16:34:13.666Z",
   "byState": {
     "Alabama": {
       "total": 4,
@@ -51,6 +51,22 @@
         "compMaxAge": 17,
         "yearsRequired": 11,
         "legalized": 1982
+      },
+      "context": {
+        "sportsAccess": {
+          "value": "Yes",
+          "url": "https://www.ahsaa.com/Portals/0/PDF%27s/AHSAA/Home%20School/Memo-%20for%20link%20to%20Non-traditional%20school%20laws%20changes.pdf?ver=2016-04-12-170214-927"
+        },
+        "courseAccess": {
+          "value": "No"
+        },
+        "extracurricularAccess": {
+          "value": "No"
+        },
+        "publicFunding": {
+          "value": "Yes",
+          "url": "https://www.edchoice.org/school-choice/programs/creating-hope-opportunity-for-our-students-education/"
+        }
       }
     },
     "Alaska": {
@@ -103,6 +119,24 @@
         "compMaxAge": 16,
         "yearsRequired": 9,
         "legalized": 1997
+      },
+      "context": {
+        "sportsAccess": {
+          "value": "Yes",
+          "url": "https://law.justia.com/codes/alaska/title-14/chapter-30/article-8/section-14-30-365/"
+        },
+        "courseAccess": {
+          "value": "Yes",
+          "url": "https://www.akleg.gov/basis/statutes.asp#14.03.095"
+        },
+        "extracurricularAccess": {
+          "value": "Yes",
+          "url": "https://law.justia.com/codes/alaska/title-14/chapter-30/article-8/section-14-30-365/"
+        },
+        "publicFunding": {
+          "value": "Yes",
+          "url": "https://www.edchoice.org/school-choice/programs/correspondence-school-allotment-program/"
+        }
       }
     },
     "Arizona": {
@@ -155,6 +189,23 @@
         "compMaxAge": 16,
         "yearsRequired": 10,
         "legalized": 1982
+      },
+      "context": {
+        "sportsAccess": {
+          "value": "Yes",
+          "url": "https://www.azleg.gov/ars/15/00802-01.htm"
+        },
+        "courseAccess": {
+          "value": "No"
+        },
+        "extracurricularAccess": {
+          "value": "Yes",
+          "url": "https://www.azleg.gov/ars/15/00802-01.htm"
+        },
+        "publicFunding": {
+          "value": "Yes",
+          "url": "https://www.edchoice.org/school-choice/programs/arizona-empowerment-scholarship-accounts/"
+        }
       }
     },
     "Arkansas": {
@@ -207,6 +258,22 @@
         "compMaxAge": 17,
         "yearsRequired": 12,
         "legalized": 1985
+      },
+      "context": {
+        "sportsAccess": {
+          "value": "No"
+        },
+        "courseAccess": {
+          "value": "Yes",
+          "url": "https://law.justia.com/codes/arkansas/2020/title-6/subtitle-2/chapter-18/subchapter-2/section-6-18-232/"
+        },
+        "extracurricularAccess": {
+          "value": "No"
+        },
+        "publicFunding": {
+          "value": "Yes",
+          "url": "https://www.edchoice.org/school-choice/programs/arkansas-childrens-educational-freedom-account-program/"
+        }
       }
     },
     "California": {
@@ -259,6 +326,23 @@
         "compMaxAge": 18,
         "yearsRequired": 12,
         "legalized": 2008
+      },
+      "context": {
+        "sportsAccess": {
+          "value": "No",
+          "url": "https://www.cifstate.org/governance/constitution/300_Series.pdf"
+        },
+        "courseAccess": {
+          "value": "Maybe",
+          "url": "https://www.cde.ca.gov/sp/ps/schoolingathomefaq.asp"
+        },
+        "extracurricularAccess": {
+          "value": "Maybe",
+          "url": "https://www.cde.ca.gov/sp/ps/schoolingathomefaq.asp"
+        },
+        "publicFunding": {
+          "value": "No"
+        }
       }
     },
     "Colorado": {
@@ -311,6 +395,23 @@
         "compMaxAge": 17,
         "yearsRequired": 11,
         "legalized": 1973
+      },
+      "context": {
+        "sportsAccess": {
+          "value": "Yes",
+          "url": "https://ed.cde.state.co.us/choice/homeschool-law"
+        },
+        "courseAccess": {
+          "value": "Maybe",
+          "url": "https://ed.cde.state.co.us/choice/homeschool-law"
+        },
+        "extracurricularAccess": {
+          "value": "Yes",
+          "url": "https://ed.cde.state.co.us/choice/homeschool-law"
+        },
+        "publicFunding": {
+          "value": "No"
+        }
       }
     },
     "Connecticut": {
@@ -363,6 +464,20 @@
         "compMaxAge": 18,
         "yearsRequired": 13,
         "legalized": 1990
+      },
+      "context": {
+        "sportsAccess": {
+          "value": "No"
+        },
+        "courseAccess": {
+          "value": "No"
+        },
+        "extracurricularAccess": {
+          "value": "No"
+        },
+        "publicFunding": {
+          "value": "No"
+        }
       }
     },
     "Delaware": {
@@ -415,6 +530,22 @@
         "compMaxAge": 16,
         "yearsRequired": 11,
         "legalized": 1997
+      },
+      "context": {
+        "sportsAccess": {
+          "value": "No",
+          "url": "https://education.delaware.gov/families/k12/homeschools-and-private-schools/frequently-asked-questions-faqs/#agereqs"
+        },
+        "courseAccess": {
+          "value": "No"
+        },
+        "extracurricularAccess": {
+          "value": "No",
+          "url": "https://education.delaware.gov/families/k12/homeschools-and-private-schools/frequently-asked-questions-faqs/#agereqs"
+        },
+        "publicFunding": {
+          "value": "No"
+        }
       }
     },
     "Florida": {
@@ -467,6 +598,24 @@
         "compMaxAge": 16,
         "yearsRequired": 10,
         "legalized": 1985
+      },
+      "context": {
+        "sportsAccess": {
+          "value": "Yes",
+          "url": "https://www.leg.state.fl.us/Statutes/index.cfm?App_mode=Display_Statute&Search_String=&URL=1000-1099/1006/Sections/1006.15.html"
+        },
+        "courseAccess": {
+          "value": "Maybe",
+          "url": "https://www.leg.state.fl.us/Statutes/index.cfm?App_mode=Display_Statute&URL=1000-1099/1002/Sections/1002.41.html"
+        },
+        "extracurricularAccess": {
+          "value": "Yes",
+          "url": "https://www.leg.state.fl.us/Statutes/index.cfm?App_mode=Display_Statute&Search_String=&URL=1000-1099/1006/Sections/1006.15.html"
+        },
+        "publicFunding": {
+          "value": "Yes",
+          "url": "https://www.edchoice.org/school-choice/programs/florida-tax-credit-scholarship-program/"
+        }
       }
     },
     "Georgia": {
@@ -519,6 +668,24 @@
         "compMaxAge": 16,
         "yearsRequired": 10,
         "legalized": 1984
+      },
+      "context": {
+        "sportsAccess": {
+          "value": "Maybe",
+          "url": "https://lor2.gadoe.org/gadoe/file/56c31133-0376-4498-88bd-c7a39072dfe6/1/Dexter%20Mosely%20Act%20-%20Guidance.pdf"
+        },
+        "courseAccess": {
+          "value": "Maybe",
+          "url": "https://lor2.gadoe.org/gadoe/file/56c31133-0376-4498-88bd-c7a39072dfe6/1/Dexter%20Mosely%20Act%20-%20Guidance.pdf"
+        },
+        "extracurricularAccess": {
+          "value": "Maybe",
+          "url": "https://lor2.gadoe.org/gadoe/file/56c31133-0376-4498-88bd-c7a39072dfe6/1/Dexter%20Mosely%20Act%20-%20Guidance.pdf"
+        },
+        "publicFunding": {
+          "value": "Yes",
+          "url": "https://www.edchoice.org/school-choice/programs/georgia-promise-scholarship/"
+        }
       }
     },
     "Hawaii": {
@@ -571,6 +738,20 @@
         "compMaxAge": 18,
         "yearsRequired": 12,
         "legalized": 1989
+      },
+      "context": {
+        "sportsAccess": {
+          "value": "No"
+        },
+        "courseAccess": {
+          "value": "No"
+        },
+        "extracurricularAccess": {
+          "value": "No"
+        },
+        "publicFunding": {
+          "value": "No"
+        }
       }
     },
     "Idaho": {
@@ -623,6 +804,24 @@
         "compMaxAge": 16,
         "yearsRequired": 9,
         "legalized": 2015
+      },
+      "context": {
+        "sportsAccess": {
+          "value": "Yes",
+          "url": "https://legislature.idaho.gov/statutesrules/idstat/title33/t33ch2/sect33-203/#:~:text=Idaho%20Statutes&text=33%2D203.,school%2C%20for%20dual%20enrollment%20purposes."
+        },
+        "courseAccess": {
+          "value": "Yes",
+          "url": "https://legislature.idaho.gov/statutesrules/idstat/title33/t33ch2/sect33-203/#:~:text=Idaho%20Statutes&text=33%2D203.,school%2C%20for%20dual%20enrollment%20purposes."
+        },
+        "extracurricularAccess": {
+          "value": "Yes",
+          "url": "https://legislature.idaho.gov/statutesrules/idstat/title33/t33ch2/sect33-203/#:~:text=Idaho%20Statutes&text=33%2D203.,school%2C%20for%20dual%20enrollment%20purposes."
+        },
+        "publicFunding": {
+          "value": "Yes",
+          "url": "https://www.edchoice.org/school-choice/programs/idaho-parental-choice-tax-credit/"
+        }
       }
     },
     "Illinois": {
@@ -675,6 +874,24 @@
         "compMaxAge": 17,
         "yearsRequired": 11,
         "legalized": 1950
+      },
+      "context": {
+        "sportsAccess": {
+          "value": "No",
+          "url": "https://www.isbe.net/Documents/Illinois-Homeschooling.pdf"
+        },
+        "courseAccess": {
+          "value": "Yes",
+          "url": "https://ilga.gov/documents/legislation/ilcs/documents/010500050K10-20.24.htm"
+        },
+        "extracurricularAccess": {
+          "value": "No",
+          "url": "https://www.isbe.net/Documents/Illinois-Homeschooling.pdf"
+        },
+        "publicFunding": {
+          "value": "Yes",
+          "url": "https://www.edchoice.org/school-choice/programs/illinois-tax-credits-for-educational-expenses/"
+        }
       }
     },
     "Indiana": {
@@ -727,6 +944,24 @@
         "compMaxAge": 18,
         "yearsRequired": 11,
         "legalized": 1904
+      },
+      "context": {
+        "sportsAccess": {
+          "value": "Maybe",
+          "url": "https://iga.in.gov/laws/2022/ic/titles/20#20-33-2-12"
+        },
+        "courseAccess": {
+          "value": "Maybe",
+          "url": "https://iga.in.gov/laws/2022/ic/titles/20#20-33-2-12"
+        },
+        "extracurricularAccess": {
+          "value": "Maybe",
+          "url": "https://iga.in.gov/laws/2022/ic/titles/20#20-33-2-12"
+        },
+        "publicFunding": {
+          "value": "Yes",
+          "url": "https://www.edchoice.org/school-choice/programs/indiana-private-schoolhomeschool-deduction/"
+        }
       }
     },
     "Iowa": {
@@ -779,6 +1014,24 @@
         "compMaxAge": 16,
         "yearsRequired": 10,
         "legalized": 1991
+      },
+      "context": {
+        "sportsAccess": {
+          "value": "Yes",
+          "url": "https://www.legis.iowa.gov/docs/code/299A.8.pdf"
+        },
+        "courseAccess": {
+          "value": "Yes",
+          "url": "https://www.legis.iowa.gov/docs/code/299A.8.pdf"
+        },
+        "extracurricularAccess": {
+          "value": "Yes",
+          "url": "https://www.legis.iowa.gov/docs/code/299A.8.pdf"
+        },
+        "publicFunding": {
+          "value": "Yes",
+          "url": "https://www.edchoice.org/school-choice/programs/iowa-tuition-and-textbook-tax-credit/"
+        }
       }
     },
     "Kansas": {
@@ -831,6 +1084,23 @@
         "compMaxAge": 18,
         "yearsRequired": 11,
         "legalized": 1982
+      },
+      "context": {
+        "sportsAccess": {
+          "value": "Yes",
+          "url": "https://ksrevisor.gov/statutes/chapters/ch72/072_031_0020.html"
+        },
+        "courseAccess": {
+          "value": "Yes",
+          "url": "https://ksrevisor.gov/statutes/chapters/ch72/072_031_0020.html"
+        },
+        "extracurricularAccess": {
+          "value": "Yes",
+          "url": "https://ksrevisor.gov/statutes/chapters/ch72/072_031_0020.html"
+        },
+        "publicFunding": {
+          "value": "No"
+        }
       }
     },
     "Kentucky": {
@@ -883,6 +1153,23 @@
         "compMaxAge": 18,
         "yearsRequired": 12,
         "legalized": 1948
+      },
+      "context": {
+        "sportsAccess": {
+          "value": "Maybe",
+          "url": "https://www.education.ky.gov/federal/fed/Documents/Kentucky%20Homeschool%20Information%20Packet.pdf"
+        },
+        "courseAccess": {
+          "value": "Maybe",
+          "url": "https://www.education.ky.gov/federal/fed/Documents/Kentucky%20Homeschool%20Information%20Packet.pdf"
+        },
+        "extracurricularAccess": {
+          "value": "Maybe",
+          "url": "https://www.education.ky.gov/federal/fed/Documents/Kentucky%20Homeschool%20Information%20Packet.pdf"
+        },
+        "publicFunding": {
+          "value": "No"
+        }
       }
     },
     "Louisiana": {
@@ -935,6 +1222,23 @@
         "compMaxAge": 18,
         "yearsRequired": 11,
         "legalized": 1984
+      },
+      "context": {
+        "sportsAccess": {
+          "value": "Yes",
+          "url": "https://law.justia.com/codes/louisiana/revised-statutes/title-17/rs-17-176-2/"
+        },
+        "courseAccess": {
+          "value": "No"
+        },
+        "extracurricularAccess": {
+          "value": "Yes",
+          "url": "https://law.justia.com/codes/louisiana/revised-statutes/title-17/rs-17-176-2/"
+        },
+        "publicFunding": {
+          "value": "Yes",
+          "url": "https://www.edchoice.org/school-choice/programs/louisiana-elementary-and-secondary-school-tuition-deduction/"
+        }
       }
     },
     "Maine": {
@@ -987,6 +1291,23 @@
         "compMaxAge": 17,
         "yearsRequired": 11,
         "legalized": 1983
+      },
+      "context": {
+        "sportsAccess": {
+          "value": "Yes",
+          "url": "https://www.mainelegislature.org/legis/statutes/20-A/title20-Asec5021.html"
+        },
+        "courseAccess": {
+          "value": "Yes",
+          "url": "https://www.mainelegislature.org/legis/statutes/20-A/title20-Asec5021.html"
+        },
+        "extracurricularAccess": {
+          "value": "Yes",
+          "url": "https://www.mainelegislature.org/legis/statutes/20-A/title20-Asec5021.html"
+        },
+        "publicFunding": {
+          "value": "No"
+        }
       }
     },
     "Maryland": {
@@ -1039,6 +1360,23 @@
         "compMaxAge": 18,
         "yearsRequired": 13,
         "legalized": 1987
+      },
+      "context": {
+        "sportsAccess": {
+          "value": "No",
+          "url": "https://marylandpublicschools.org/about/documents/dsfss/sssp/homeinstruct/home-instruction-faq-a.pdf"
+        },
+        "courseAccess": {
+          "value": "No",
+          "url": "https://marylandpublicschools.org/about/documents/dsfss/sssp/homeinstruct/home-instruction-faq-a.pdf"
+        },
+        "extracurricularAccess": {
+          "value": "No",
+          "url": "https://marylandpublicschools.org/about/documents/dsfss/sssp/homeinstruct/home-instruction-faq-a.pdf"
+        },
+        "publicFunding": {
+          "value": "No"
+        }
       }
     },
     "Massachusetts": {
@@ -1091,6 +1429,21 @@
         "compMaxAge": 16,
         "yearsRequired": 10,
         "legalized": 1987
+      },
+      "context": {
+        "sportsAccess": {
+          "value": "Yes",
+          "url": "https://www.miaa.net/sites/default/files/2024-04/miaa-handbook-23-25.pdf"
+        },
+        "courseAccess": {
+          "value": "No"
+        },
+        "extracurricularAccess": {
+          "value": "No"
+        },
+        "publicFunding": {
+          "value": "No"
+        }
       }
     },
     "Michigan": {
@@ -1143,6 +1496,22 @@
         "compMaxAge": 18,
         "yearsRequired": 12,
         "legalized": 1996
+      },
+      "context": {
+        "sportsAccess": {
+          "value": "Maybe",
+          "url": "https://www.michigan.gov/mde/-/media/Project/Websites/mde/OFM/Grants/NonPublic--Home-Schools/home_schools_122555_7.pdf?rev=d1a9f867700c4f6f82c5e0b291a2f5c5&hash=96D9A5E52736551F1395E439AEAC982E"
+        },
+        "courseAccess": {
+          "value": "No"
+        },
+        "extracurricularAccess": {
+          "value": "Yes",
+          "url": "https://www.legislature.mi.gov/Laws/MCL?objectName=MCL-388-1766B"
+        },
+        "publicFunding": {
+          "value": "No"
+        }
       }
     },
     "Minnesota": {
@@ -1195,6 +1564,23 @@
         "compMaxAge": 17,
         "yearsRequired": 10,
         "legalized": 1987
+      },
+      "context": {
+        "sportsAccess": {
+          "value": "Yes",
+          "url": "https://www.revisor.mn.gov/statutes/cite/123b.49"
+        },
+        "courseAccess": {
+          "value": "No"
+        },
+        "extracurricularAccess": {
+          "value": "Yes",
+          "url": "https://www.revisor.mn.gov/statutes/cite/123b.49"
+        },
+        "publicFunding": {
+          "value": "Yes",
+          "url": "https://www.edchoice.org/school-choice/programs/minnesota-k-12-education-credit/"
+        }
       }
     },
     "Mississippi": {
@@ -1247,6 +1633,20 @@
         "compMaxAge": 17,
         "yearsRequired": 11,
         "legalized": 1972
+      },
+      "context": {
+        "sportsAccess": {
+          "value": "No"
+        },
+        "courseAccess": {
+          "value": "No"
+        },
+        "extracurricularAccess": {
+          "value": "No"
+        },
+        "publicFunding": {
+          "value": "No"
+        }
       }
     },
     "Missouri": {
@@ -1299,6 +1699,24 @@
         "compMaxAge": 17,
         "yearsRequired": 10,
         "legalized": 1978
+      },
+      "context": {
+        "sportsAccess": {
+          "value": "Yes",
+          "url": "https://revisor.mo.gov/main/OneSection.aspx?section=167.790&bid=57177&hl="
+        },
+        "courseAccess": {
+          "value": "Yes",
+          "url": "https://revisor.mo.gov/main/OneSection.aspx?section=167.031&bid=54626&hl="
+        },
+        "extracurricularAccess": {
+          "value": "Yes",
+          "url": "https://revisor.mo.gov/main/OneSection.aspx?section=167.790&bid=57177&hl="
+        },
+        "publicFunding": {
+          "value": "Yes",
+          "url": "https://treasurer.mo.gov/MOScholars/"
+        }
       }
     },
     "Montana": {
@@ -1351,6 +1769,24 @@
         "compMaxAge": 16,
         "yearsRequired": 9,
         "legalized": 1983
+      },
+      "context": {
+        "sportsAccess": {
+          "value": "Yes",
+          "url": "https://archive.legmt.gov/bills/mca/title_0200/chapter_0050/part_0010/section_0120/0200-0050-0010-0120.html"
+        },
+        "courseAccess": {
+          "value": "Yes",
+          "url": "https://archive.legmt.gov/bills/mca/title_0200/chapter_0050/part_0010/section_0010/0200-0050-0010-0010.html"
+        },
+        "extracurricularAccess": {
+          "value": "Yes",
+          "url": "https://archive.legmt.gov/bills/mca/title_0200/chapter_0050/part_0010/section_0120/0200-0050-0010-0120.html"
+        },
+        "publicFunding": {
+          "value": "Yes",
+          "url": "https://www.edchoice.org/school-choice/programs/montana-special-needs-equal-opportunity-education-savings-account-program/"
+        }
       }
     },
     "Nebraska": {
@@ -1403,6 +1839,23 @@
         "compMaxAge": 18,
         "yearsRequired": 12,
         "legalized": 1984
+      },
+      "context": {
+        "sportsAccess": {
+          "value": "Yes",
+          "url": "https://nebraskalegislature.gov/laws/statutes.php?statute=79-2,136"
+        },
+        "courseAccess": {
+          "value": "Yes",
+          "url": "https://nebraskalegislature.gov/laws/statutes.php?statute=79-2,136"
+        },
+        "extracurricularAccess": {
+          "value": "Yes",
+          "url": "https://nebraskalegislature.gov/laws/statutes.php?statute=79-2,136"
+        },
+        "publicFunding": {
+          "value": "No"
+        }
       }
     },
     "Nevada": {
@@ -1455,6 +1908,23 @@
         "compMaxAge": 18,
         "yearsRequired": 11,
         "legalized": 1947
+      },
+      "context": {
+        "sportsAccess": {
+          "value": "Yes",
+          "url": "https://www.leg.state.nv.us/Division/Legal/LawLibrary/NRS/NRS-392.html"
+        },
+        "courseAccess": {
+          "value": "Yes",
+          "url": "https://www.leg.state.nv.us/Division/Legal/LawLibrary/NRS/NRS-392.html"
+        },
+        "extracurricularAccess": {
+          "value": "Yes",
+          "url": "https://www.leg.state.nv.us/Division/Legal/LawLibrary/NRS/NRS-392.html"
+        },
+        "publicFunding": {
+          "value": "No"
+        }
       }
     },
     "New Hampshire": {
@@ -1507,6 +1977,24 @@
         "compMaxAge": 18,
         "yearsRequired": 12,
         "legalized": 1990
+      },
+      "context": {
+        "sportsAccess": {
+          "value": "Yes",
+          "url": "https://gc.nh.gov/rsa/html/XV/193/193-1-c.htm"
+        },
+        "courseAccess": {
+          "value": "Yes",
+          "url": "https://gc.nh.gov/rsa/html/XV/193/193-1-c.htm"
+        },
+        "extracurricularAccess": {
+          "value": "Yes",
+          "url": "https://gc.nh.gov/rsa/html/XV/193/193-1-c.htm"
+        },
+        "publicFunding": {
+          "value": "Yes",
+          "url": "https://www.edchoice.org/school-choice/programs/education-freedom-account-program/"
+        }
       }
     },
     "New Jersey": {
@@ -1559,6 +2047,23 @@
         "compMaxAge": 16,
         "yearsRequired": 10,
         "legalized": 1967
+      },
+      "context": {
+        "sportsAccess": {
+          "value": "Maybe",
+          "url": "https://www.njsiaa.org/sites/default/files/documents/2025-09/njsiaa-constitution-25-26-final.pdf"
+        },
+        "courseAccess": {
+          "value": "Maybe",
+          "url": "https://www.nj.gov/education/safety/nontraditional/faq_homeschool.shtml"
+        },
+        "extracurricularAccess": {
+          "value": "Maybe",
+          "url": "https://www.nj.gov/education/safety/nontraditional/faq_homeschool.shtml"
+        },
+        "publicFunding": {
+          "value": "No"
+        }
       }
     },
     "New Mexico": {
@@ -1611,6 +2116,23 @@
         "compMaxAge": 18,
         "yearsRequired": 13,
         "legalized": 1985
+      },
+      "context": {
+        "sportsAccess": {
+          "value": "Maybe",
+          "url": "https://law.justia.com/codes/new-mexico/chapter-22/article-8/section-22-8-23-8/"
+        },
+        "courseAccess": {
+          "value": "Maybe",
+          "url": "https://web.ped.nm.gov/bureaus/options-for-parents-and-families/home-schooling/frequently-asked-questions/"
+        },
+        "extracurricularAccess": {
+          "value": "Maybe",
+          "url": "https://law.justia.com/codes/new-mexico/chapter-22/article-8/section-22-8-23-8/"
+        },
+        "publicFunding": {
+          "value": "No"
+        }
       }
     },
     "New York": {
@@ -1663,6 +2185,22 @@
         "compMaxAge": 16,
         "yearsRequired": 10,
         "legalized": 1987
+      },
+      "context": {
+        "sportsAccess": {
+          "value": "No",
+          "url": "https://www.nysed.gov/nonpublic-schools/home-instruction-questions-and-answers"
+        },
+        "courseAccess": {
+          "value": "No"
+        },
+        "extracurricularAccess": {
+          "value": "Maybe",
+          "url": "https://www.nysed.gov/nonpublic-schools/home-instruction-questions-and-answers"
+        },
+        "publicFunding": {
+          "value": "No"
+        }
       }
     },
     "North Carolina": {
@@ -1715,6 +2253,21 @@
         "compMaxAge": 16,
         "yearsRequired": 9,
         "legalized": 1988
+      },
+      "context": {
+        "sportsAccess": {
+          "value": "No"
+        },
+        "courseAccess": {
+          "value": "No"
+        },
+        "extracurricularAccess": {
+          "value": "No"
+        },
+        "publicFunding": {
+          "value": "Yes",
+          "url": "https://www.edchoice.org/school-choice/programs/personal-education-student-account-for-children-with-disabilities/"
+        }
       }
     },
     "North Dakota": {
@@ -1767,6 +2320,23 @@
         "compMaxAge": 16,
         "yearsRequired": 9,
         "legalized": 1989
+      },
+      "context": {
+        "sportsAccess": {
+          "value": "Yes",
+          "url": "https://ndlegis.gov/cencode/t15-1c23.html"
+        },
+        "courseAccess": {
+          "value": "Maybe",
+          "url": "https://ndlegis.gov/cencode/t15-1c23.html"
+        },
+        "extracurricularAccess": {
+          "value": "Yes",
+          "url": "https://ndlegis.gov/cencode/t15-1c23.html"
+        },
+        "publicFunding": {
+          "value": "No"
+        }
       }
     },
     "Ohio": {
@@ -1819,6 +2389,24 @@
         "compMaxAge": 18,
         "yearsRequired": 12,
         "legalized": 1989
+      },
+      "context": {
+        "sportsAccess": {
+          "value": "Yes",
+          "url": "https://codes.ohio.gov/ohio-revised-code/section-3313.5312"
+        },
+        "courseAccess": {
+          "value": "Maybe",
+          "url": "https://codes.ohio.gov/ohio-revised-code/section-3365.02"
+        },
+        "extracurricularAccess": {
+          "value": "Yes",
+          "url": "https://codes.ohio.gov/ohio-revised-code/section-3313.5312"
+        },
+        "publicFunding": {
+          "value": "Yes",
+          "url": "https://www.edchoice.org/school-choice/programs/k-12-home-education-tax-credit/"
+        }
       }
     },
     "Oklahoma": {
@@ -1871,6 +2459,24 @@
         "compMaxAge": 18,
         "yearsRequired": 13,
         "legalized": 1907
+      },
+      "context": {
+        "sportsAccess": {
+          "value": "No",
+          "url": "https://law.justia.com/cases/federal/district-courts/FSupp/942/511/1885226/"
+        },
+        "courseAccess": {
+          "value": "No",
+          "url": "https://law.justia.com/cases/federal/district-courts/FSupp/942/511/1885226/"
+        },
+        "extracurricularAccess": {
+          "value": "No",
+          "url": "https://law.justia.com/cases/federal/district-courts/FSupp/942/511/1885226/"
+        },
+        "publicFunding": {
+          "value": "Yes",
+          "url": "https://www.edchoice.org/school-choice/programs/oklahoma-parental-choice-tax-credit-act/"
+        }
       }
     },
     "Oregon": {
@@ -1923,6 +2529,22 @@
         "compMaxAge": 18,
         "yearsRequired": 12,
         "legalized": 1985
+      },
+      "context": {
+        "sportsAccess": {
+          "value": "Yes",
+          "url": "https://www.oregonlegislature.gov/bills_laws/ors/ors339.html"
+        },
+        "courseAccess": {
+          "value": "No"
+        },
+        "extracurricularAccess": {
+          "value": "Yes",
+          "url": "https://www.oregonlegislature.gov/bills_laws/ors/ors339.html"
+        },
+        "publicFunding": {
+          "value": "No"
+        }
       }
     },
     "Pennsylvania": {
@@ -1975,6 +2597,23 @@
         "compMaxAge": 18,
         "yearsRequired": 12,
         "legalized": 1949
+      },
+      "context": {
+        "sportsAccess": {
+          "value": "Yes",
+          "url": "https://codes.findlaw.com/pa/title-24-ps-education/pa-st-sect-24-13-1327-1/"
+        },
+        "courseAccess": {
+          "value": "Yes",
+          "url": "https://codes.findlaw.com/pa/title-24-ps-education/pa-st-sect-24-13-1327-1/"
+        },
+        "extracurricularAccess": {
+          "value": "Yes",
+          "url": "https://codes.findlaw.com/pa/title-24-ps-education/pa-st-sect-24-13-1327-1/"
+        },
+        "publicFunding": {
+          "value": "No"
+        }
       }
     },
     "Rhode Island": {
@@ -2027,6 +2666,23 @@
         "compMaxAge": 18,
         "yearsRequired": 12,
         "legalized": 1984
+      },
+      "context": {
+        "sportsAccess": {
+          "value": "Maybe",
+          "url": "https://ride.ri.gov/students-families/education-programs/home-schooling"
+        },
+        "courseAccess": {
+          "value": "Maybe",
+          "url": "https://ride.ri.gov/students-families/education-programs/home-schooling"
+        },
+        "extracurricularAccess": {
+          "value": "Maybe",
+          "url": "https://ride.ri.gov/students-families/education-programs/home-schooling"
+        },
+        "publicFunding": {
+          "value": "No"
+        }
       }
     },
     "South Carolina": {
@@ -2079,6 +2735,24 @@
         "compMaxAge": 17,
         "yearsRequired": 12,
         "legalized": 1988
+      },
+      "context": {
+        "sportsAccess": {
+          "value": "Yes",
+          "url": "https://law.justia.com/codes/south-carolina/title-59/chapter-63/section-59-63-100/"
+        },
+        "courseAccess": {
+          "value": "Maybe",
+          "url": "https://ed.sc.gov/districts-schools/state-accountability/home-schooling/home-school-faq/"
+        },
+        "extracurricularAccess": {
+          "value": "Yes",
+          "url": "https://law.justia.com/codes/south-carolina/title-59/chapter-63/section-59-63-100/"
+        },
+        "publicFunding": {
+          "value": "Yes",
+          "url": "https://www.edchoice.org/school-choice/programs/south-carolina-education-scholarship-trust-fund-program/"
+        }
       }
     },
     "South Dakota": {
@@ -2131,6 +2805,23 @@
         "compMaxAge": 18,
         "yearsRequired": 12,
         "legalized": 1939
+      },
+      "context": {
+        "sportsAccess": {
+          "value": "Yes",
+          "url": "https://sdlegislature.gov/Statutes/13-36-7"
+        },
+        "courseAccess": {
+          "value": "Yes",
+          "url": "https://sdlegislature.gov/Statutes/13-28-51"
+        },
+        "extracurricularAccess": {
+          "value": "Yes",
+          "url": "https://sdlegislature.gov/Statutes/13-36-7"
+        },
+        "publicFunding": {
+          "value": "No"
+        }
       }
     },
     "Tennessee": {
@@ -2183,6 +2874,24 @@
         "compMaxAge": 17,
         "yearsRequired": 11,
         "legalized": 1985
+      },
+      "context": {
+        "sportsAccess": {
+          "value": "Yes",
+          "url": "https://cms-files.tssaa.org/documents/tssaa/2025-26/handbook/2025TSSAABylaws.pdf"
+        },
+        "courseAccess": {
+          "value": "Maybe",
+          "url": "https://www.tn.gov/content/dam/tn/education/nonpublic/Frequently_Asked_Questions_Home_School.pdf"
+        },
+        "extracurricularAccess": {
+          "value": "Maybe",
+          "url": "https://www.tn.gov/content/dam/tn/education/nonpublic/Frequently_Asked_Questions_Home_School.pdf"
+        },
+        "publicFunding": {
+          "value": "Yes",
+          "url": "https://www.edchoice.org/school-choice/programs/individualized-education-account-program/"
+        }
       }
     },
     "Texas": {
@@ -2235,6 +2944,23 @@
         "compMaxAge": 19,
         "yearsRequired": 13,
         "legalized": 1987
+      },
+      "context": {
+        "sportsAccess": {
+          "value": "Yes",
+          "url": "https://law.justia.com/codes/texas/2022/education-code/title-2/subtitle-f/chapter-33/subchapter-d/section-33-0832-d-1/"
+        },
+        "courseAccess": {
+          "value": "No"
+        },
+        "extracurricularAccess": {
+          "value": "Yes",
+          "url": "https://law.justia.com/codes/texas/2022/education-code/title-2/subtitle-f/chapter-33/subchapter-d/section-33-0832-d-1/"
+        },
+        "publicFunding": {
+          "value": "Yes",
+          "url": "https://www.edchoice.org/school-choice/programs/texas-education-savings-account-program/"
+        }
       }
     },
     "Utah": {
@@ -2287,6 +3013,24 @@
         "compMaxAge": 18,
         "yearsRequired": 12,
         "legalized": 2014
+      },
+      "context": {
+        "sportsAccess": {
+          "value": "Yes",
+          "url": "https://le.utah.gov/xcode/Title53G/Chapter6/53G-6-S703.html?v=C53G-6-S703_2023050320230503"
+        },
+        "courseAccess": {
+          "value": "Yes",
+          "url": "https://le.utah.gov/xcode/Title53G/Chapter6/53G-6-S702.html?v=C53G-6-S702_2020051220200512"
+        },
+        "extracurricularAccess": {
+          "value": "Yes",
+          "url": "https://le.utah.gov/xcode/Title53G/Chapter6/53G-6-S703.html?v=C53G-6-S703_2023050320230503"
+        },
+        "publicFunding": {
+          "value": "Yes",
+          "url": "https://www.edchoice.org/school-choice/programs/utah-fits-all-scholarship-program/"
+        }
       }
     },
     "Vermont": {
@@ -2339,6 +3083,23 @@
         "compMaxAge": 16,
         "yearsRequired": 10,
         "legalized": 1987
+      },
+      "context": {
+        "sportsAccess": {
+          "value": "Yes",
+          "url": "https://regulations.justia.com/states/vermont/agency-22/sub-agency-000/chapter-009/section-22-000-009/"
+        },
+        "courseAccess": {
+          "value": "Yes",
+          "url": "https://regulations.justia.com/states/vermont/agency-22/sub-agency-000/chapter-009/section-22-000-009/"
+        },
+        "extracurricularAccess": {
+          "value": "Yes",
+          "url": "https://regulations.justia.com/states/vermont/agency-22/sub-agency-000/chapter-009/section-22-000-009/"
+        },
+        "publicFunding": {
+          "value": "No"
+        }
       }
     },
     "Virginia": {
@@ -2391,6 +3152,23 @@
         "compMaxAge": 18,
         "yearsRequired": 13,
         "legalized": 1984
+      },
+      "context": {
+        "sportsAccess": {
+          "value": "Maybe",
+          "url": "https://www.doe.virginia.gov/parents-students/for-parents/home-instruction"
+        },
+        "courseAccess": {
+          "value": "Maybe",
+          "url": "https://www.doe.virginia.gov/parents-students/for-parents/home-instruction"
+        },
+        "extracurricularAccess": {
+          "value": "Maybe",
+          "url": "https://www.doe.virginia.gov/parents-students/for-parents/home-instruction"
+        },
+        "publicFunding": {
+          "value": "No"
+        }
       }
     },
     "Washington": {
@@ -2443,6 +3221,23 @@
         "compMaxAge": 18,
         "yearsRequired": 10,
         "legalized": 1985
+      },
+      "context": {
+        "sportsAccess": {
+          "value": "Yes",
+          "url": "https://www.wiaawi.org/Portals/0/PDF/Eligibility/WIAARules2025-26.pdf"
+        },
+        "courseAccess": {
+          "value": "Yes",
+          "url": "https://app.leg.wa.gov/RCW/default.aspx?cite=28A.150.350"
+        },
+        "extracurricularAccess": {
+          "value": "Yes",
+          "url": "https://www.wiaawi.org/Portals/0/PDF/Eligibility/WIAARules2025-26.pdf"
+        },
+        "publicFunding": {
+          "value": "No"
+        }
       }
     },
     "West Virginia": {
@@ -2495,6 +3290,24 @@
         "compMaxAge": 17,
         "yearsRequired": 11,
         "legalized": 1987
+      },
+      "context": {
+        "sportsAccess": {
+          "value": "Maybe",
+          "url": "https://law.justia.com/codes/west-virginia/chapter-18/article-2/section-18-2-25/"
+        },
+        "courseAccess": {
+          "value": "Maybe",
+          "url": "https://code.wvlegislature.gov/18-8-1/"
+        },
+        "extracurricularAccess": {
+          "value": "Maybe",
+          "url": "https://law.justia.com/codes/west-virginia/chapter-18/article-2/section-18-2-25/"
+        },
+        "publicFunding": {
+          "value": "Yes",
+          "url": "https://www.edchoice.org/school-choice/programs/hope-scholarship-program/"
+        }
       }
     },
     "Wisconsin": {
@@ -2547,6 +3360,23 @@
         "compMaxAge": 18,
         "yearsRequired": 12,
         "legalized": 1983
+      },
+      "context": {
+        "sportsAccess": {
+          "value": "Yes",
+          "url": "https://docs.legis.wisconsin.gov/statutes/statutes/118/133"
+        },
+        "courseAccess": {
+          "value": "Yes",
+          "url": "https://docs.legis.wisconsin.gov/statutes/statutes/118/53"
+        },
+        "extracurricularAccess": {
+          "value": "Yes",
+          "url": "https://docs.legis.wisconsin.gov/statutes/statutes/118/133"
+        },
+        "publicFunding": {
+          "value": "No"
+        }
       }
     },
     "Wyoming": {
@@ -2599,6 +3429,24 @@
         "compMaxAge": 16,
         "yearsRequired": 9,
         "legalized": 1985
+      },
+      "context": {
+        "sportsAccess": {
+          "value": "Yes",
+          "url": "https://law.justia.com/codes/wyoming/title-21/chapter-4/article-5/section-21-4-506/"
+        },
+        "courseAccess": {
+          "value": "Maybe",
+          "url": "https://law.justia.com/codes/wyoming/title-21/chapter-20/article-2/section-21-20-201/"
+        },
+        "extracurricularAccess": {
+          "value": "Yes",
+          "url": "https://law.justia.com/codes/wyoming/title-21/chapter-4/article-5/section-21-4-506/"
+        },
+        "publicFunding": {
+          "value": "Yes",
+          "url": "https://www.edchoice.org/school-choice/programs/wyoming-education-savings-account-program/"
+        }
       }
     },
     "District of Columbia": {
@@ -2651,6 +3499,21 @@
         "compMaxAge": 18,
         "yearsRequired": 13,
         "legalized": 2008
+      },
+      "context": {
+        "sportsAccess": {
+          "value": "Maybe",
+          "url": "https://osse.dc.gov/sites/default/files/dc/sites/osse/service_content/attachments/Homeschool%20Information%20For%20District%20of%20Columbia%20Families.updated.pdf"
+        },
+        "courseAccess": {
+          "value": "No"
+        },
+        "extracurricularAccess": {
+          "value": "No"
+        },
+        "publicFunding": {
+          "value": "No"
+        }
       }
     }
   }

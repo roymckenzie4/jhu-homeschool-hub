@@ -4,11 +4,12 @@
  * (built by scripts/build-state-explorer-snapshot.mjs) covers more states,
  * more years, and better demographics than the original hand-entered
  * stateExplorerMockData.js. For a code the snapshot covers, everything comes
- * from the snapshot except `context` — the workbook has no access/funding
- * fields, so that one stays hand-entered (or null for a state never hand-
- * entered at all). Hawaii/Delaware's workbook rows are too messy to trust
- * unreviewed (see the build script) — they pass through from the mock file
- * untouched.
+ * from the snapshot except `context` — the access/funding ("State context")
+ * facts don't live in that workbook at all; they come from the Legislation
+ * Google Sheet's access/funding columns, same source already wired up for
+ * the Regulation view, via regulationLoader.js. Hawaii/Delaware's workbook
+ * rows are too messy to trust unreviewed (see the build script) — they pass
+ * through from the mock file untouched, aside from `context`.
  */
 
 import {
@@ -17,12 +18,14 @@ import {
   DEFAULT_EXPLORER_STATE,
 } from "./stateExplorerMockData.js";
 import snapshot from "./state-explorer-snapshot.json";
+import { regulationByState } from "./regulationLoader.js";
+import { BY_POSTAL } from "../config/states.js";
 
 export const EXPLORER_STATES = Object.fromEntries(
   [...new Set([...Object.keys(HAND_ENTERED), ...Object.keys(snapshot.states)])].map((code) => {
-    const live = snapshot.states[code];
-    if (!live) return [code, HAND_ENTERED[code]];
-    return [code, { ...live, context: HAND_ENTERED[code]?.context ?? null }];
+    const base = snapshot.states[code] ?? HAND_ENTERED[code];
+    const context = regulationByState[BY_POSTAL[code]?.name]?.context ?? null;
+    return [code, { ...base, context }];
   }),
 );
 

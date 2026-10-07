@@ -75,12 +75,12 @@ export const EXPLORER_LEGEND_SLOT_HEIGHT = 25;
 
 // Reserved height for the headline's "State context" block (divider +
 // eyebrow + up to 4 rows), held open whether a state has context data or
-// not. Only Georgia/Louisiana/Hawaii/Delaware have this hand-entered — every
-// other state doesn't, so without a reserved slot the headline was visibly
-// shorter for them and, centered against the map via lg:items-center,
-// shifted the whole name/number block's vertical position when switching
-// states. Computed from the CARD_DIVIDER/EYEBROW/LIST classes
-// (my-3 divider + one eyebrow line + 4 rows at space-y-2), not yet confirmed
+// not. Now populated for essentially every state (sourced live from the
+// Legislation sheet via regulationLoader.js) — the reserved slot still
+// matters for any state the sheet doesn't cover, so the headline doesn't
+// shift, centered against the map via lg:items-center, when switching to/
+// from one. Computed from the CARD_DIVIDER/EYEBROW/LIST classes (my-3
+// divider + one eyebrow line + 4 rows at space-y-2), not yet confirmed
 // against a real render — nudge this if it's visibly off by a few px.
 export const EXPLORER_CONTEXT_SLOT_HEIGHT = 152;
 

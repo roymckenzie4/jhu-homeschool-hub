@@ -415,7 +415,9 @@ function NoMapPlaceholder({ stateName, geoUnit }) {
 // early on (see running-notes.md, the "additional policy fields" ask) but
 // never built anywhere, since the standalone Policy view they were floated
 // for was deliberately never built either (too much for what it'd answer —
-// see decisions.md 2026-07-09).
+// see decisions.md 2026-07-09). Values come via regulationLoader.js (same
+// Legislation sheet the Regulation view reads), merged in per state by
+// stateExplorerLoader.js.
 const STATE_CONTEXT_FIELDS = [
   ["sportsAccess", "Sports access"],
   ["courseAccess", "Course access"],
@@ -426,11 +428,10 @@ const STATE_CONTEXT_FIELDS = [
 // Reuses SummaryCard's own "State context" list convention (eyebrow + a
 // label/value row list) byte-for-byte — see RegulationCard's
 // LegislationFacts — rather than inventing new styling for the same kind of
-// content. A field with a `url` (only Georgia's, for now — illustrating
-// where a real per-cell source link would go once this is a real loader,
-// same as the Regulation heat map's links) renders as a link instead of
-// plain text; everything else stays plain, matching how ReadMoreLink is the
-// only other link in this whole headline.
+// content. A field with a `url` (a real per-cell source link off the
+// Legislation sheet, same as the Regulation heat map's links) renders as a
+// link instead of plain text; a field with no sourced link stays plain,
+// matching how ReadMoreLink is the only other link in this whole headline.
 function StateContextList({ context }) {
   // Reserves EXPLORER_CONTEXT_SLOT_HEIGHT whether or not this state has
   // context data — most states don't (see the constant's own comment) —

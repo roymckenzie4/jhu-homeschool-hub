@@ -134,14 +134,32 @@ export function regulationLevel(count) {
  * Compulsory-schooling + legalization facts surfaced in the regulation card,
  * pulled from the sheet's "Legislation" tab. Keys are the internal field names;
  * values are the EXACT Legislation header strings (the parser reads cells by
- * these — do not rename without updating the sheet, or vice versa). These are
- * plain numbers on that tab (no source links), so they come via values.get.
+ * these — do not rename without updating the sheet, or vice versa). Plain
+ * numbers on that tab, read via the cell model same as ACCESS_COLUMNS below
+ * (no per-cell links on these four, but the per-cell hyperlinks on the access
+ * columns mean the whole tab now needs the richer read either way).
  */
 export const LEGISLATION_COLUMNS = {
   compMinAge: "Comp min age",
   compMaxAge: "Comp max age",
   yearsRequired: "Years required",
   legalized: "Legalized",
+};
+
+/**
+ * Access/funding facts — "State context" in both RegulationCard and State
+ * Explorer — also from the Legislation tab. Unlike LEGISLATION_COLUMNS, these
+ * cells carry real per-cell source hyperlinks (statute text, EdChoice program
+ * pages), same shape as the Heat Map tab's regulation cells. The sheet's
+ * values are YES/NO/MAYBE; parseLegislationData title-cases them for display.
+ * The tab's "Access Notes" column (editorial scratch, not sourced per-field)
+ * is deliberately not read here.
+ */
+export const ACCESS_COLUMNS = {
+  sportsAccess: "Sport access",
+  courseAccess: "Course access",
+  extracurricularAccess: "Extra access",
+  publicFunding: "Funding",
 };
 
 // Suggested filename when the user downloads the regulation CSV from the view.

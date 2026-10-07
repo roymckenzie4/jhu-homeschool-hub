@@ -34,17 +34,10 @@
  * than Hawaii/Delaware — checked directly (grade/gender/race columns are
  * blank for every other one of JHU's 9 draft states).
  *
- * Each state also has a `context` block — sports/course/extracurricular
- * access + public funding, the remaining "access/funding info" JHU asked for
- * early on (see running-notes.md) but was never built anywhere, since the
- * standalone Policy view it was originally floated for never got built
- * either. Real values, hand-entered (not yet in a documented sheet column
- * the way the Legislation tab's 4 existing fields are — same "hand-entered
- * for now" caveat as everything else in this file). Only
- * Georgia's fields carry a real source `url`, to illustrate where a real
- * per-field link will go once this is a real loader (same pattern as the
- * Regulation heat map's per-cell source links) — the other three states'
- * fields are plain values for now.
+ * No `context` ("State context": sports/course/extracurricular access +
+ * public funding) block here anymore — that now comes live from the
+ * Legislation Google Sheet via regulationLoader.js (stateExplorerLoader.js
+ * merges it in for every state), so it doesn't need hand-entering here at all.
  *
  * Each region carries `values`, a year -> count map, rather than a flat
  * `value` — even though every state here only has one year populated today.
@@ -100,17 +93,6 @@ export const EXPLORER_STATES = {
         { label: "Female", pct: 48 },
       ],
     },
-    // Access/funding context — from the Legislation sheet's remaining fields
-    // (requested early on, never built into any view; see StateExplorerPanel
-    // .jsx's StateContextList). No source link for Hawaii yet — only
-    // Georgia's are wired in, to illustrate where a real per-field source
-    // link will go once this is a real loader.
-    context: {
-      sportsAccess: { value: "No" },
-      courseAccess: { value: "No" },
-      extracurricularAccess: { value: "No" },
-      publicFunding: { value: "No" },
-    },
   },
   DE: {
     name: "Delaware",
@@ -142,12 +124,6 @@ export const EXPLORER_STATES = {
         { label: "Multiracial", pct: 12 },
         { label: "Other / not specified", pct: 12 },
       ],
-    },
-    context: {
-      sportsAccess: { value: "No" },
-      courseAccess: { value: "No" },
-      extracurricularAccess: { value: "No" },
-      publicFunding: { value: "No" },
     },
   },
   GA: {
@@ -340,30 +316,6 @@ export const EXPLORER_STATES = {
     ],
     // No demographic breakdown anywhere in JHU's draft for Georgia.
     demographics: {},
-    // Real source links — the only state with these wired in, to
-    // illustrate the eventual per-field link pattern (same idea as the
-    // Regulation heat map's per-cell source links) without building the
-    // actual loader today. Sports/course/extracurricular access all cite the
-    // same guidance doc (the Dexter Mosely Act governs all three); public
-    // funding cites a separate program page.
-    context: {
-      sportsAccess: {
-        value: "Maybe",
-        url: "https://lor2.gadoe.org/gadoe/file/56c31133-0376-4498-88bd-c7a39072dfe6/1/Dexter%20Mosely%20Act%20-%20Guidance.pdf",
-      },
-      courseAccess: {
-        value: "Maybe",
-        url: "https://lor2.gadoe.org/gadoe/file/56c31133-0376-4498-88bd-c7a39072dfe6/1/Dexter%20Mosely%20Act%20-%20Guidance.pdf",
-      },
-      extracurricularAccess: {
-        value: "Maybe",
-        url: "https://lor2.gadoe.org/gadoe/file/56c31133-0376-4498-88bd-c7a39072dfe6/1/Dexter%20Mosely%20Act%20-%20Guidance.pdf",
-      },
-      publicFunding: {
-        value: "Yes",
-        url: "https://www.edchoice.org/school-choice/programs/georgia-promise-scholarship/",
-      },
-    },
   },
   LA: {
     name: "Louisiana",
@@ -475,12 +427,6 @@ export const EXPLORER_STATES = {
     // for it at all (unlike Georgia's empty state, which is at least
     // consistent with Georgia's own real blank columns).
     demographics: {},
-    context: {
-      sportsAccess: { value: "Yes" },
-      courseAccess: { value: "No" },
-      extracurricularAccess: { value: "Yes" },
-      publicFunding: { value: "Yes" },
-    },
   },
 };
 

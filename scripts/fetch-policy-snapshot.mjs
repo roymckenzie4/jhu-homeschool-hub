@@ -3,10 +3,14 @@
  * (src/data/policy-snapshot.json) covering the two tabs the app needs:
  *
  *   - "Heat Map"    -> the 10 regulation booleans + per-cell source hyperlinks.
- *                      Uses spreadsheets.get (the full cell model), since CSV /
- *                      values.get strip the links, which is the whole point.
- *   - "Legislation" -> compulsory-schooling + legalization facts, plain numbers.
- *                      No links on this tab, so the simpler values.get is used.
+ *   - "Legislation" -> compulsory-schooling + legalization facts (plain
+ *                      numbers) AND access/funding "State context" facts
+ *                      (sports/course/extracurricular access, public funding —
+ *                      these carry real per-cell source hyperlinks, same shape
+ *                      as the Heat Map tab).
+ *
+ * Both tabs use spreadsheets.get (the full cell model) — CSV / values.get
+ * strip hyperlinks, which both tabs now carry on at least some columns.
  *
  * The two tabs are merged by state into one byState map, so the app imports a
  * single snapshot synchronously — no client key, no runtime Google dependency.
@@ -23,7 +27,7 @@ import { fileURLToPath } from "node:url";
 import { dirname, resolve } from "node:path";
 import { parseHeatMapData } from "../src/data/parseHeatMapData.js";
 import { parseLegislationData } from "../src/data/parseLegislationData.js";
-import { fetchGrid, fetchValues, requireKey, writeSnapshot } from "./lib/sheets.mjs";
+import { fetchGrid, requireKey, writeSnapshot } from "./lib/sheets.mjs";
 
 const SPREADSHEET_ID = "1A_FkMY7CQlIns2DP7RsTtmtiOKkyfPYSwKlzzusyrkI";
 
@@ -33,9 +37,11 @@ const HEATMAP_RANGE = "Heat Map!A:M";
 const HEATMAP_FIELDS =
   "sheets.data.rowData.values(formattedValue,hyperlink,textFormatRuns.format.link.uri)";
 
-// Legislation: cols A–R cover State + the legislation fields; the parser reads
+// Legislation: cols A–R cover State + the legislation + access/funding fields
+// (R is "Access Notes", read but ignored by the parser); the parser reads
 // only the configured columns by header, so the wide range is harmless.
 const LEGISLATION_RANGE = "Legislation!A:R";
+const LEGISLATION_FIELDS = "sheets.data.rowData.values(formattedValue,hyperlink)";
 
 // Expected jurisdiction count (50 states + DC) — a mismatch on either tab means
 // the sheet shape drifted, so we refuse to overwrite the good snapshot.
@@ -64,17 +70,20 @@ async function main() {
     await fetchGrid(SPREADSHEET_ID, HEATMAP_RANGE, HEATMAP_FIELDS, key),
   );
 
-  // Legislation — values.get, plain numbers (no links on this tab).
+  // Legislation — full cell model, for the access/funding columns' links.
   const { byState: legByState } = parseLegislationData(
-    await fetchValues(SPREADSHEET_ID, LEGISLATION_RANGE, key),
+    await fetchGrid(SPREADSHEET_ID, LEGISLATION_RANGE, LEGISLATION_FIELDS, key),
   );
 
   assertJurisdictionCount("Heat Map", byState);
   assertJurisdictionCount("Legislation", legByState);
 
-  // Merge the legislation facts onto each state's regulation entry.
-  for (const [name, facts] of Object.entries(legByState)) {
-    if (byState[name]) byState[name].legislation = facts;
+  // Merge the legislation + access/funding facts onto each state's entry.
+  for (const [name, entry] of Object.entries(legByState)) {
+    if (byState[name]) {
+      byState[name].legislation = entry.legislation;
+      byState[name].context = entry.context;
+    }
   }
 
   writeSnapshot(OUT_PATH, { byState });
@@ -82,9 +91,13 @@ async function main() {
   const links = Object.values(byState)
     .flatMap((s) => Object.values(s.regulations))
     .filter((r) => !r.source.includes("docs.google.com/spreadsheets")).length;
+  const contextLinks = Object.values(byState)
+    .flatMap((s) => Object.values(s.context ?? {}))
+    .filter((f) => f.url).length;
   console.log(
     `Wrote ${OUT_PATH}\n  ${Object.keys(byState).length} jurisdictions, ` +
-      `${links} real source links, legislation facts merged`,
+      `${links} real source links, legislation facts merged, ` +
+      `${contextLinks} access/funding source links`,
   );
 }
 
