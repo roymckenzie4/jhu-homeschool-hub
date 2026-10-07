@@ -149,7 +149,12 @@ const SECTION_HEADING_CLASS =
 
 // Real per-state boundary files, fetched once and cached module-level
 // (survives remounts/tab switches) — mirrors ChoroplethMap's national-map
-// fetch pattern. Only Georgia and Louisiana exist today; see the file header.
+// fetch pattern. Every MAP_MATCHED state from build-state-explorer-snapshot.mjs
+// needs an entry here too — a state present in the snapshot but missing from
+// this list silently shows whichever OTHER state's map was fetched last
+// (this component stays mounted across state switches; the fetch for a
+// missing filename fails with no .catch(), so `topo` never updates) rather
+// than erroring — caught live for Maine, 2026-10-07.
 const geoFileByState = {
   GA: "ga-counties.json",
   LA: "la-districts.json",
@@ -175,6 +180,7 @@ const geoFileByState = {
   NH: "nh-districts.json",
   NM: "nm-districts.json",
   WI: "wi-districts.json",
+  ME: "me-districts.json",
 };
 const geoCache = new Map();
 

@@ -22,17 +22,18 @@
  * few percent, expected given the different collection efforts — worth a
  * heads-up if asked, not a bug.
  *
- * The four states genuinely differ in what JHU's draft has for them (not a
- * designed "cover every combination" exercise — this is just what's real):
- * Hawaii has both a real sub-state breakdown (by HIDOE complex area) AND
- * demographics (gender), but only through school year 2022–23 — 2024/2025
- * have a state total but no complex-area breakdown that year, so Hawaii's
- * card uses 2022–23 throughout for internal consistency rather than mixing
- * years. Delaware has real demographics (grade + race) but NO sub-state
- * breakdown anywhere in the draft. Georgia and Louisiana have real sub-state
- * breakdowns but NO demographics anywhere in the draft, for any state, other
- * than Hawaii/Delaware — checked directly (grade/gender/race columns are
- * blank for every other one of JHU's 9 draft states).
+ * Hawaii moved to the real pipeline (LIST_ONLY in
+ * build-state-explorer-snapshot.mjs) 2026-10-07 — same "no real federal
+ * geography" reasoning as before, but now sourced from the expanded
+ * workbook with 4 years of real complex-area history instead of one
+ * hand-typed year. The remaining three states genuinely differ in what
+ * JHU's draft has for them (not a designed "cover every combination"
+ * exercise — this is just what's real): Delaware has real demographics
+ * (grade + race) but its "sub-state breakdown" is homeschool FAMILY counts
+ * by district, not student counts — a real unit mismatch against every
+ * other state's map, flagged to Roy 2026-10-07, not yet resolved. Georgia
+ * and Louisiana have real sub-state breakdowns but NO demographics anywhere
+ * in the draft.
  *
  * No `context` ("State context": sports/course/extracurricular access +
  * public funding) block here anymore — that now comes live from the
@@ -54,46 +55,6 @@ export function valueForYear(region, year) {
 }
 
 export const EXPLORER_STATES = {
-  HI: {
-    name: "Hawaii",
-    total: 4901,
-    // Most recent year with a real per-complex-area breakdown in the draft
-    // (2024/2025 have a state total + demographics but no area breakdown
-    // that year) — using 2022–23 throughout this card, not just for the
-    // regions, so the headline number and the region list agree.
-    year: "2022–23",
-    // No map for Hawaii: its "districts" are HIDOE "complex areas," an
-    // internal administrative division — checked, and the real federal
-    // source (Census/NCES TIGER school-district boundaries) has exactly ONE
-    // feature for Hawaii ("Hawaii Department of Education", the whole state
-    // as a single legal district). Complex-area boundaries aren't published
-    // federal geography, so there's no real shape to draw — the ranked list
-    // below is real information on its own; a fabricated map would not be.
-    geoUnit: "district",
-    geoLabel: "districts",
-    // All 7 of Hawaii's real geographic complex areas have a row this year
-    // (a separate "Charter" row also exists in the draft but isn't a
-    // geographic area, so it's excluded from this list — not a reporting gap).
-    reporting: "7 of 7",
-    regions: [
-      { name: "Central", values: { "2022–23": 942 } },
-      { name: "Leeward", values: { "2022–23": 723 } },
-      { name: "Hawaii", values: { "2022–23": 667 } },
-      { name: "Windward", values: { "2022–23": 397 } },
-      { name: "Maui", values: { "2022–23": 389 } },
-      { name: "Honolulu", values: { "2022–23": 284 } },
-      { name: "Kauai", values: { "2022–23": 201 } },
-    ],
-    // Real gender split from the 2022–23 aggregate row (male 2,551 / female
-    // 2,349 of 4,901 total) — no third "not specified" category exists in
-    // JHU's draft for Hawaii, unlike an earlier illustrative pass here.
-    demographics: {
-      gender: [
-        { label: "Male", pct: 52 },
-        { label: "Female", pct: 48 },
-      ],
-    },
-  },
   DE: {
     name: "Delaware",
     total: 3920,

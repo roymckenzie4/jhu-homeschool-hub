@@ -178,7 +178,14 @@ function countyGeoPath(abbr) {
 // future state built this way (NAME doesn't support regex in mapshaper's
 // `-filter`, so match the exact string(s) seen so far instead), e.g. add
 // `-filter 'NAME != "School District Not Defined"'` before `-merge-layers`,
-// rather than post-processing the output.
+// rather than post-processing the output. TN specifically also needs one
+// more follow-up step after a fresh rebuild: `node
+// scripts/merge-tn-enclave-districts.mjs` — this TIGER product splits a
+// handful of TN districts' secondary-only zone into a separate "<Base> in
+// <City>" polygon where it falls inside a town with its own K-8 city
+// district (real, different administrative zones, not duplicates — see that
+// script's own header comment and decisions.md 2026-10-07), which JHU's raw
+// data never reports separately from the parent county.
 // Workbook names are far
 // noisier against real district names than county names ever were — every
 // kind of abbreviation (SD/Sch Dist/CSD/SSD/UHS/Co.), spelled-out vs.
@@ -189,7 +196,7 @@ function countyGeoPath(abbr) {
 // tuned by diffing each state's full raw name list against its real
 // geometry's name list, same method as the county states — see decisions.md
 // (2026-10-06, boundary files for the remaining list-only states).
-function districtNormKey(raw) {
+export function districtNormKey(raw) {
   const WORD_NUM = {
     one: "1", two: "2", three: "3", four: "4", five: "5",
     six: "6", seven: "7", eight: "8", nine: "9", ten: "10",
@@ -201,6 +208,7 @@ function districtNormKey(raw) {
   s = s.replace(/\bmt\b/g, "mount");
   s = s.replace(/\bst\b/g, "saint");
   s = s.replace(/\bplt\b/g, "plantation");
+  s = s.replace(/\bhbr\b/g, "harbor");
   s = s.replace(/&/g, "and");
   s = s.replace(/\b(one|two|three|four|five|six|seven|eight|nine|ten)\b/g, (m) => WORD_NUM[m]);
   s = s.replace(/\bno\b/g, " ");
@@ -413,6 +421,34 @@ export const MAP_MATCHED = {
     geoPath: districtGeoPath("wi"),
     _allowPrefix: true,
   }, // 99.3%
+  // Maine's raw rows mostly match real TIGER names directly (single-town
+  // units like "Acton Public Schools" -> "Acton"). The real gap is Maine's
+  // modern "RSU NN" (Regional School Unit) numbering, which TIGER doesn't
+  // know at all — Census's school-district product still uses Maine's
+  // pre-2007-consolidation "School Administrative District NN" names and
+  // numbers. Most RSUs kept their predecessor MSAD's number, so extracting
+  // it and rewriting to TIGER's real name resolves most of the gap — but
+  // NOT reliably from the RSU number alone (9 of 48 checked compound names
+  // have a RSU number that genuinely differs from its own MSAD alias, e.g.
+  // "RSU 79/MSAD 01"), so an explicit "/MSAD NN" alias is always preferred
+  // over the RSU number when both appear in the raw name. Where a raw name
+  // is RSU-only with no real SAD match (a newly-formed, post-2007
+  // consolidation with no single legacy predecessor — about 21 of Maine's
+  // ~78 RSUs), this correctly falls through to unmatched rather than
+  // guessing. Previously list-only ("structurally blocked" — see decisions.md
+  // 2026-10-06); re-investigated and fixed 2026-10-07 after Roy questioned
+  // that framing — 87.8% of names / 81.1% of the real population matches.
+  ME: {
+    nameField: "district ",
+    geoUnit: "district",
+    geoPath: districtGeoPath("me"),
+    _preprocess: (raw) => {
+      const msad = /msad\s*0*(\d+)/i.exec(raw);
+      const rsu = /^rsu\s*0*(\d+)/i.exec(raw);
+      const num = msad ? msad[1] : rsu ? rsu[1] : null;
+      return num == null ? raw : `School Administrative District ${num.padStart(2, "0")}`;
+    },
+  }, // 87.8%
 };
 for (const [code, cfg] of Object.entries(MAP_MATCHED)) {
   if (cfg.mapName) continue;
@@ -430,16 +466,23 @@ for (const [code, cfg] of Object.entries(MAP_MATCHED)) {
 // actually holds that state's reporting unit (checked directly per state —
 // see decisions.md).
 export const LIST_ONLY = {
-  // Maine is the one state where a boundary file genuinely isn't a simple
-  // name-normalization problem: its raw rows report per TOWN, but a real
-  // standalone Census school-district polygon only exists for SOME towns —
-  // others are only covered as part of a multi-town Community School
-  // District (e.g. "Five Town CSD"), with no town-to-CSD crosswalk in this
-  // workbook or anywhere easy to derive one from. Matching would need real
-  // Maine DOE administrative data, not string cleanup. Attempted and
-  // abandoned 2026-10-06 (55.7% match, structural not cosmetic) — see
-  // decisions.md.
-  ME: { nameField: "district ", geoUnit: "district" },
+  // Hawaii's "districts" are HIDOE "complex areas" (an internal
+  // administrative division, not a real federal/TIGER boundary — confirmed
+  // the real Census source has exactly ONE feature for Hawaii, the whole
+  // state as a single legal district), so list-only is permanent here, not
+  // a placeholder. Real complex-area rows + age/gender demographics only
+  // exist 2019–2022; other years in the workbook are a bare state total
+  // with no breakdown at all. Pinned to 2022 (richest, last such year) for
+  // the default view/demographics — same shape as New Mexico's pinnedYear.
+  // "Charter" is a real raw row (real students) but not a geographic
+  // complex area — excluded from the region list, same as the original
+  // hand-entered card did, so it doesn't look like one of the 7 real areas.
+  HI: {
+    nameField: "district ",
+    geoUnit: "district",
+    pinnedYear: 2022,
+    excludeNames: new Set(["Charter"]),
+  },
 };
 
 // Grade demographics, shared across every state. Sums whatever grade columns
@@ -547,6 +590,13 @@ function hasAgeBreakdown(row) {
   return Object.keys(row).some((k) => k.startsWith("age") && typeof row[k] === "number");
 }
 
+// Any grade/gender/race column extractDemographics below would actually use.
+function hasAnyDemographics(row) {
+  return Object.keys(row).some(
+    (k) => /^(grade|gender_sex|race)/.test(k) && typeof row[k] === "number",
+  );
+}
+
 // One state's rows -> { year, total, reporting, regions, demographics }.
 // Map mode (`validNames` set) only counts a row toward `regions` if its
 // normalized name matches the geometry; list mode (`validNames` null) takes
@@ -564,6 +614,7 @@ export function shapeState({
   validNames,
   pinnedYear,
   countField = "total_enrollment_ count",
+  excludeNames,
 }) {
   const rowsByYear = new Map(); // every dated row, keyed by raw sy_fall — also feeds demographics below
   for (const row of rows) {
@@ -619,6 +670,7 @@ export function shapeState({
 
     const raw = row[nameField];
     if (!raw || !raw.trim()) continue;
+    if (excludeNames?.has(raw.trim())) continue; // real students, but not a geographic region
     const name = mapName ? mapName(raw.trim()) : raw.trim();
     if (validNames && !validNames.has(name)) continue;
 
@@ -656,12 +708,34 @@ export function shapeState({
     .map(([name, values]) => ({ name, values }))
     .sort((a, b) => (b.values[latestLabel] ?? 0) - (a.values[latestLabel] ?? 0));
 
+  // Demographics prefer the state's own blank-geography ("statewide") rows
+  // when any of them carry real grade/gender/race data — a single
+  // authoritative measurement, not a geographic breakdown — falling back to
+  // summing the named sub-region rows only when no statewide row has it.
+  // NEVER both: confirmed (2026-10-07) that Hawaii's statewide row and its 7
+  // complex-area + Charter rows independently carry the SAME overlapping
+  // gender data (the complex areas are a subset of the same population the
+  // statewide row already counts), so summing both silently doubled every
+  // demographic value — invisible in the shipped percentages only because
+  // the two sources happened to share almost the same ratio. Checked every
+  // other state already showing demographics (AR/MT/NC/SC/SD/NH/NM/WI)
+  // before shipping this: none of them has both a statewide row AND named
+  // rows independently carrying the same columns, so this produces
+  // byte-identical output for all of them — only Hawaii's underlying sums
+  // change (the displayed percentages don't, since they were already
+  // coincidentally right). See decisions.md, 2026-10-07.
+  const yearRows = rowsByYear.get(latestYear) ?? [];
+  const statewideDemoRows = yearRows.filter((r) => isGrandTotalRow(r) && hasAnyDemographics(r));
+  const demoRows = statewideDemoRows.length
+    ? statewideDemoRows
+    : yearRows.filter((r) => !isGrandTotalRow(r));
+
   return {
     year: latestLabel,
     total: yearTotals.get(latestYear),
     reportingCount: matchedNamesByYear.get(latestYear)?.size ?? 0,
     regions,
-    demographics: extractDemographics(rowsByYear.get(latestYear) ?? []),
+    demographics: extractDemographics(demoRows),
   };
 }
 
@@ -693,6 +767,7 @@ function buildListOnly(rows, code, cfg) {
     validNames: null,
     pinnedYear: cfg.pinnedYear,
     countField: cfg.countField,
+    excludeNames: cfg.excludeNames,
   });
   return {
     ...shaped,
