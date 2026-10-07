@@ -235,18 +235,85 @@ const NY_PREPROCESS = (raw) =>
 // generalize, just two real, different legal names worth hardcoding (same
 // shape as Louisiana's special cases above). These two account for nearly
 // all of TN's unmatched total.
+//
+// Franklin/Johnson/Union are a different problem: TN genuinely has two real
+// districts sharing each base name (a County district and a City/Special
+// district), and districtNormKey's stopword stripping collapses both raw
+// names AND both real geo names to the same key ("franklin"/"johnson"/
+// "union" — "county"/"city"/"special" are all stopwords). Found via
+// buildDistrictMapper's new collision guard below: Franklin's "losing" side
+// (whichever geo name didn't win the ambiguous key) was silently showing no
+// data at all — reported live by Roy for Franklin specifically; Johnson/
+// Union have the identical shape, caught by generalizing the fix rather than
+// patching Franklin alone. All six raw spellings are stable and distinct
+// across every year 2013–2024 (no ambiguous bare "Franklin"-only row the way
+// PA has — see PA's own unfixed collisions below), so a straight raw-string
+// map resolves all three cleanly.
 const TN_SPECIAL_CASES = {
   "Montgomery Co.": "Clarksville-Montgomery County School System",
   "Davidson Co.": "Metropolitan Nashville Public School District",
+  "Franklin County": "Franklin County School District", // 2013–2016 spelling
+  "Franklin Co.": "Franklin County School District", // 2017+ spelling
+  "Franklin Special": "Franklin Special School District", // 2013–2016 spelling
+  "Franklin SSD": "Franklin Special School District", // 2017+ spelling
+  "Johnson City": "Johnson City School District",
+  "Johnson County": "Johnson County School District", // 2013–2016 spelling
+  "Johnson Co.": "Johnson County School District", // 2017+ spelling
+  "Union City": "Union City School District",
+  "Union County": "Union County School District", // 2013–2016 spelling
+  "Union Co.": "Union County School District", // 2017+ spelling
 };
+
+// New Hampshire's one colliding pair: "Exeter School District" and "Exeter
+// Regional Cooperative School District" both reduce to "exeter" (same
+// stopword-collision shape as TN above). The raw sheet's second variant is
+// spelled "Exeter Region Cooperative" (no trailing "-al"), which doesn't even
+// reach the collision — districtNormKey only strips "regional", not
+// "region", so it was simply never matching anything at all. Hardcoding both
+// raw spellings fixes the collision and the vocabulary gap in one step.
+const NH_SPECIAL_CASES = {
+  Exeter: "Exeter School District",
+  "Exeter Region Cooperative": "Exeter Regional Cooperative School District",
+};
+
+// Builds a name -> geo-name map, skipping (not overwriting) any key two
+// DIFFERENT real names both reduce to — e.g. TN's "Franklin County School
+// District" and "Franklin Special School District" both normalize to
+// "franklin". A plain Map silently keeps whichever name got inserted last,
+// so the loser never matches anything — exactly the bug Roy caught for
+// Franklin. Dropping the key for every colliding name instead means an
+// un-special-cased collision falls through to "no match" (visible in the
+// audit as a real gap) rather than silently merging two different places'
+// data onto one polygon.
+function buildAmbiguitySafeKeyMap(names, keyFn) {
+  const map = new Map();
+  const seenKeys = new Map(); // key -> the name that currently owns it
+  for (const name of names) {
+    const key = keyFn(name);
+    if (map.has(key) && seenKeys.get(key) !== name) {
+      map.delete(key); // ambiguous — more than one real name shares this key
+      continue;
+    }
+    map.set(key, name);
+    seenKeys.set(key, name);
+  }
+  return map;
+}
 
 function buildDistrictMapper(geoPath, { allowPrefix = false, preprocess } = {}) {
   const names = [...geoNames(geoPath)];
-  const byKey = new Map(names.map((n) => [districtNormKey(n), n]));
-  const byTightKey = new Map(names.map((n) => [districtNormKey(n).replace(/\s+/g, ""), n]));
+  // Exact match (case/whitespace-insensitive) on the real name itself, before
+  // any stopword normalization — the escape hatch a `preprocess` hardcoded
+  // to a specific real name needs, since that real name may share its
+  // normalized key with another real name (see buildAmbiguitySafeKeyMap).
+  const byExact = new Map(names.map((n) => [n.toLowerCase().trim(), n]));
+  const byKey = buildAmbiguitySafeKeyMap(names, districtNormKey);
+  const byTightKey = buildAmbiguitySafeKeyMap(names, (n) => districtNormKey(n).replace(/\s+/g, ""));
   const keys = [...byKey.keys()];
   return function mapDistrictName(rawInput) {
     const raw = preprocess ? preprocess(rawInput) : rawInput;
+    const exact = byExact.get(raw.toLowerCase().trim());
+    if (exact) return exact;
     const key = districtNormKey(raw);
     if (byKey.has(key)) return byKey.get(key);
     const tight = key.replace(/\s+/g, "");
@@ -319,7 +386,12 @@ export const MAP_MATCHED = {
   WY: { nameField: "district ", geoUnit: "district", geoPath: districtGeoPath("wy") }, // 94.1%
   RI: { nameField: "district ", geoUnit: "district", geoPath: districtGeoPath("ri") }, // 100%
   MA: { nameField: "town ", geoUnit: "town", geoPath: districtGeoPath("ma", "towns") }, // 99.4%
-  NH: { nameField: "district ", geoUnit: "district", geoPath: districtGeoPath("nh") }, // 98.2%
+  NH: {
+    nameField: "district ",
+    geoUnit: "district",
+    geoPath: districtGeoPath("nh"),
+    _preprocess: (raw) => NH_SPECIAL_CASES[raw] ?? raw,
+  }, // 98.2%
   // NM's 2020 rows carry the richest statewide demographics in the whole
   // workbook (full K-12 grade, 3-way gender, 7-way race — checked against
   // its own total, all three sum close to it) but its real district rows
