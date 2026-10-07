@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-07T18:42:09.707Z",
+  "generatedAt": "2026-10-07T19:11:39.038Z",
   "source": "/Users/roymckenzie/Active/work/jhu/notes/2026-10-02-combined-state-data-from-jhu-expanded.xlsx",
   "states": {
     "GA": {
@@ -41947,7 +41947,7 @@
       "geoUnit": "district",
       "geoLabel": "districts",
       "hasRealGeo": true,
-      "reporting": "140 of 157"
+      "reporting": "140 of 141"
     },
     "CO": {
       "year": "2025–26",
