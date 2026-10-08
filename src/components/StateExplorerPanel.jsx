@@ -139,7 +139,7 @@ import {
   EXPLORER_CONTEXT_SLOT_HEIGHT,
   TWO_COLUMN_GRID_CLASS,
 } from "../config/layout.js";
-import { valueForYear } from "../data/stateExplorerMockData.js";
+import { valueForYear, codeForYear } from "../data/stateExplorerMockData.js";
 
 // Section-heading convention shared by Enrollment/Regulation's data-zone
 // headings (see EnrollmentPanel.jsx) — kept local here since this page's data
@@ -247,6 +247,15 @@ function RegionMap({ stateKey, regions, breaks, selectedRegions, onToggleRegion,
     return map;
   }, [regions]);
 
+  // Verbatim suppression code (e.g. "<10") for a region with no real number
+  // this year — read alongside valueByName so the map's accessible name can
+  // say "masked" instead of implying the region simply didn't report.
+  const codeByName = useMemo(() => {
+    const map = new Map();
+    for (const r of regions) map.set(r.name.toLowerCase(), r.code);
+    return map;
+  }, [regions]);
+
   // Canonical mock-data name for a topo feature's (lowercased) name — the
   // identity the map, RegionTable, and the comparison list all key selection
   // off, since the topo file's `properties.name` and the mock data's `name`
@@ -303,10 +312,11 @@ function RegionMap({ stateKey, regions, breaks, selectedRegions, onToggleRegion,
         feature: f,
         name: regionByLower.get(lower) ?? f.properties?.name,
         value: valueByName.get(lower) ?? null,
+        code: codeByName.get(lower) ?? null,
         d: path(f),
       };
     });
-  }, [geo, projected, regionByLower, valueByName]);
+  }, [geo, projected, regionByLower, valueByName, codeByName]);
 
   if (!geo || !projected) {
     return (
@@ -334,11 +344,12 @@ function RegionMap({ stateKey, regions, breaks, selectedRegions, onToggleRegion,
           the single overlay rect below instead, and index.css's
           .region-dim-overlay comment for why. */}
       <g>
-        {resolvedFeatures.map(({ feature: f, name, value, d }) => {
+        {resolvedFeatures.map(({ feature: f, name, value, code, d }) => {
           const isSelected = selectedRegions.includes(name);
           const className = `state-path state-path--clickable${
             isSelected ? " state-path--selected" : ""
           }`;
+          const valueLabel = value != null ? formatNumber(value) : code;
           return (
             <path
               key={f.id}
@@ -352,13 +363,12 @@ function RegionMap({ stateKey, regions, breaks, selectedRegions, onToggleRegion,
                 isSelected,
                 isInteractive: () => true,
                 onSelect: onToggleRegion,
-                ariaLabelForState: () =>
-                  value != null ? `${name}: ${formatNumber(value)}` : name,
+                ariaLabelForState: () => (valueLabel ? `${name}: ${valueLabel}` : name),
               })}
             >
               <title>
                 {f.properties?.name}
-                {value != null ? `: ${formatNumber(value)}` : ""}
+                {valueLabel ? `: ${valueLabel}` : ""}
               </title>
             </path>
           );
@@ -522,7 +532,10 @@ function ExplorerHeadline({
       </p>
       <p className="font-sans text-sm leading-relaxed text-sable/70">
         {state.geoUnit
-          ? `${state.reporting} ${state.geoLabel} reporting.`
+          ? // reportingByYear tracks the year selector; state.reporting (the
+            // snapshot's default/latest-year string) is the fallback for any
+            // hand-entered state that predates that field.
+            `${state.reportingByYear?.[activeYear] ?? state.reporting} ${state.geoLabel} reporting.`
           : "No sub-state breakdown reported yet."}
       </p>
 
@@ -636,6 +649,13 @@ function RegionTable({ regions, unitLabel, height, selectedRegions = [], onToggl
               <TableCell className="px-3 py-1.5 text-right tabular-nums text-sable">
                 {r.value > 0 ? (
                   formatNumber(r.value)
+                ) : r.code ? (
+                  // The raw sheet has a real row for this region, but a code
+                  // instead of a count (e.g. "<10") — shown verbatim rather
+                  // than folded into the same dash a plain unmatched/
+                  // non-reporting region gets. Who applied the code and what
+                  // exactly it means isn't confirmed, so no tooltip guesses.
+                  <span>{r.code}</span>
                 ) : (
                   // "—" not "not reported": the fixed-width Students column
                   // (see table-fixed above) wrapped that phrase to two lines.
@@ -692,12 +712,14 @@ function RegionAddControl({ selectedCount, availableItems, valueByName, onAdd, o
               <CommandList>
                 <CommandEmpty>No {itemNounPlural} found.</CommandEmpty>
                 {availableItems.map((name) => {
-                  const v = valueByName.get(name);
+                  const entry = valueByName.get(name);
                   return (
                     <CommandItem key={name} value={name} onSelect={() => onAdd(name)}>
                       <span className="flex-1">{name}</span>
                       <span className="font-sans text-xs tabular-nums text-sable/70">
-                        {v > 0 ? formatNumber(v) : "not reported"}
+                        {entry?.value > 0
+                          ? formatNumber(entry.value)
+                          : entry?.code ?? "not reported"}
                       </span>
                     </CommandItem>
                   );
@@ -746,7 +768,10 @@ export default function StateExplorerPanel({
   // year rather than erroring.
   const availableYears = useMemo(() => {
     const years = new Set([state.year]);
-    for (const r of state.regions ?? []) for (const y of Object.keys(r.values)) years.add(y);
+    for (const r of state.regions ?? []) {
+      for (const y of Object.keys(r.values)) years.add(y);
+      for (const y of Object.keys(r.codes ?? {})) years.add(y);
+    }
     return [...years].sort();
   }, [state.regions, state.year]);
   const [pickedYear, setPickedYear] = useState(state.year);
@@ -761,6 +786,10 @@ export default function StateExplorerPanel({
       state.regions?.map((r) => ({
         name: r.name,
         value: valueForYear(r, activeYear),
+        // Verbatim suppression code (e.g. "<10") for a region JHU reported
+        // but masked — null for a real number and for a plain unmatched gap
+        // alike, so those two keep reading as "—" same as before.
+        code: codeForYear(r, activeYear),
       })) ?? null,
     [state.regions, activeYear],
   );
@@ -805,7 +834,7 @@ export default function StateExplorerPanel({
     [regionsForDisplay, selectedRegions],
   );
   const valueByRegionName = useMemo(
-    () => new Map((regionsForDisplay ?? []).map((r) => [r.name, r.value])),
+    () => new Map((regionsForDisplay ?? []).map((r) => [r.name, { value: r.value, code: r.code }])),
     [regionsForDisplay],
   );
 

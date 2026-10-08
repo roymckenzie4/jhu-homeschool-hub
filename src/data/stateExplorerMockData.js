@@ -54,6 +54,14 @@ export function valueForYear(region, year) {
   return region.values[year] ?? null;
 }
 
+// Verbatim suppression code for a given year (e.g. "<10"), or null if this
+// region has a real number for that year, or simply never reported one.
+// `codes` is only populated by the real build pipeline — hand-entered mock
+// regions never have it, hence the `?.`.
+export function codeForYear(region, year) {
+  return region.codes?.[year] ?? null;
+}
+
 export const EXPLORER_STATES = {
   DE: {
     name: "Delaware",

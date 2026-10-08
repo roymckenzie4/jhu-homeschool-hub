@@ -631,6 +631,29 @@ function hasAnyDemographics(row) {
   );
 }
 
+// Raw count cells aren't all real numbers (checked directly against the
+// 2026-10-02 workbook, ~78k rows): most non-numeric values are either a real
+// number typed as text (1,194 cells, e.g. "12") or an explicit non-response
+// ("Did Not Report", "NA", a bare "-" — 124 cells, no usable info at all) —
+// but 1,863 cells use a real suppression convention (small-cell masking) and
+// still carry genuine information: "<10", "*", "masked". Both the numeric-
+// string case and the suppression case were previously indistinguishable
+// from a blank cell (typeof check failed, row silently dropped, same as
+// never having reported) — the former silently lost real counts, the latter
+// lost real-but-masked ones. Returns null for anything with no usable value.
+const SUPPRESSION_CODES = new Set(["<10", "*", "masked"]);
+
+function parseCount(raw) {
+  if (typeof raw === "number") return { value: raw, code: null };
+  if (typeof raw !== "string") return null;
+  const trimmed = raw.trim();
+  if (trimmed === "") return null;
+  const asNumber = Number(trimmed);
+  if (!Number.isNaN(asNumber)) return { value: asNumber, code: null };
+  if (SUPPRESSION_CODES.has(trimmed.toLowerCase())) return { value: null, code: trimmed };
+  return null; // "Did Not Report", "NA", "-", or anything unrecognized
+}
+
 // One state's rows -> { year, total, reporting, regions, demographics }.
 // Map mode (`validNames` set) only counts a row toward `regions` if its
 // normalized name matches the geometry; list mode (`validNames` null) takes
@@ -671,19 +694,23 @@ export function shapeState({
   const yearTotals = new Map();
   for (const [year, yearRows] of rowsByYear) {
     const grandTotalCandidates = yearRows.filter(
-      (r) => isGrandTotalRow(r) && typeof r[countField] === "number",
+      (r) => isGrandTotalRow(r) && parseCount(r[countField])?.value != null,
     );
     const grandTotalRow =
       grandTotalCandidates.find((r) => !hasAgeBreakdown(r)) ?? grandTotalCandidates[0];
     if (grandTotalRow) {
-      yearTotals.set(year, grandTotalRow[countField]);
+      yearTotals.set(year, parseCount(grandTotalRow[countField]).value);
       continue;
     }
     let sum = 0;
     for (const r of yearRows) {
       const raw = r[nameField];
-      const total = r[countField];
-      if (raw && raw.trim() && typeof total === "number") sum += total;
+      const parsed = parseCount(r[countField]);
+      // A suppressed cell (parsed.value == null) can't contribute a real
+      // number to the sum — same "floor, not ceiling" treatment already
+      // accepted elsewhere (Georgia's unmatched districts, Hawaii's Charter
+      // exclusion) rather than guessing at what it masks.
+      if (raw && raw.trim() && parsed?.value != null) sum += parsed.value;
     }
     yearTotals.set(year, sum);
   }
@@ -691,16 +718,19 @@ export function shapeState({
   // Unique matched NAMES per year, not raw matched ROWS — a county can have
   // several raw rows (e.g. several districts inside it), and counting rows
   // instead of names inflated the UI's "N of M counties reporting" past M
-  // (caught live: Minnesota showed "322 of 87 counties reporting").
+  // (caught live: Minnesota showed "322 of 87 counties reporting"). A
+  // suppressed cell (e.g. "<10") still counts as that name REPORTING — JHU
+  // gave a real, if masked, answer — same as a plain number; only a blank
+  // cell or an explicit non-response ("Did Not Report", "NA", "-") doesn't.
   const matchedNamesByYear = new Map();
-  const normalized = []; // { year, name, total } for every matched row
+  const normalized = []; // { year, name, value, code } for every matched row
 
   for (const row of rows) {
     const year = row.sy_fall;
     if (year == null) continue;
 
-    const total = row[countField];
-    if (typeof total !== "number") continue;
+    const parsed = parseCount(row[countField]);
+    if (!parsed) continue;
 
     const raw = row[nameField];
     if (!raw || !raw.trim()) continue;
@@ -709,7 +739,7 @@ export function shapeState({
     if (validNames && !validNames.has(name)) continue;
 
     (matchedNamesByYear.get(year) ?? matchedNamesByYear.set(year, new Set()).get(year)).add(name);
-    normalized.push({ year, name, total });
+    normalized.push({ year, name, value: parsed.value, code: parsed.code });
   }
 
   // Normally the most recent year. `pinnedYear` overrides this for a state
@@ -730,16 +760,33 @@ export function shapeState({
   // district's count per county instead of the county's real total (caught
   // live: Washington's county sum was ~3.3k against a real 31.7k total).
   // Harmless no-op for states where each name truly is one row per year.
-  const regionsByName = new Map(); // current-roster name -> { year-label -> total }
-  for (const { year, name, total } of normalized) {
-    if (!currentRoster.has(name)) continue;
-    if (!regionsByName.has(name)) regionsByName.set(name, {});
-    const byYear = regionsByName.get(name);
-    byYear[yearLabel(year)] = (byYear[yearLabel(year)] ?? 0) + total;
+  const regionsByName = new Map(); // current-roster name -> { values, codes }
+  const entryFor = (name) =>
+    regionsByName.get(name) ?? regionsByName.set(name, { values: {}, codes: {} }).get(name);
+
+  // Pass 1: real numbers only, summed. Done as its own pass (not merged with
+  // pass 2 below) so a real number always wins regardless of row order —
+  // otherwise a code recorded before a same-name/year real row arrived would
+  // wrongly survive.
+  for (const { year, name, value } of normalized) {
+    if (!currentRoster.has(name) || value == null) continue;
+    const label = yearLabel(year);
+    const entry = entryFor(name);
+    entry.values[label] = (entry.values[label] ?? 0) + value;
+  }
+  // Pass 2: suppression codes, only where no real number already covers that
+  // name/year. Rare case of two differing codes for the same coarser name
+  // (e.g. a county summed from several suppressed district rows) keeps
+  // whichever was seen first — there's no way to combine "<10" with "*".
+  for (const { year, name, code } of normalized) {
+    if (!currentRoster.has(name) || code == null) continue;
+    const label = yearLabel(year);
+    const entry = entryFor(name);
+    if (entry.values[label] == null && entry.codes[label] == null) entry.codes[label] = code;
   }
 
   const regions = [...regionsByName.entries()]
-    .map(([name, values]) => ({ name, values }))
+    .map(([name, { values, codes }]) => ({ name, values, codes }))
     .sort((a, b) => (b.values[latestLabel] ?? 0) - (a.values[latestLabel] ?? 0));
 
   // Demographics prefer the state's own blank-geography ("statewide") rows
@@ -764,10 +811,17 @@ export function shapeState({
     ? statewideDemoRows
     : yearRows.filter((r) => !isGrandTotalRow(r));
 
+  // Per year, not just latestYear, so the UI's "N of M reporting" line can
+  // track the year selector instead of staying frozen at whichever count
+  // applied when the snapshot was built.
+  const reportingCountByYear = Object.fromEntries(
+    [...matchedNamesByYear.entries()].map(([year, names]) => [yearLabel(year), names.size]),
+  );
+
   return {
     year: latestLabel,
     total: yearTotals.get(latestYear),
-    reportingCount: matchedNamesByYear.get(latestYear)?.size ?? 0,
+    reportingCountByYear,
     regions,
     demographics: extractDemographics(demoRows),
   };
@@ -783,13 +837,17 @@ function buildMapMatched(rows, code, cfg) {
     pinnedYear: cfg.pinnedYear,
     countField: cfg.countField,
   });
+  const reportingByYear = Object.fromEntries(
+    Object.entries(shaped.reportingCountByYear).map(([yr, n]) => [yr, `${n} of ${validNames.size}`]),
+  );
   return {
     ...shaped,
     name: NAME_BY_POSTAL[code],
     geoUnit: cfg.geoUnit,
     geoLabel: plural(cfg.geoUnit),
     hasRealGeo: true,
-    reporting: `${shaped.reportingCount} of ${validNames.size}`,
+    reportingByYear,
+    reporting: reportingByYear[shaped.year],
   };
 }
 
@@ -803,13 +861,18 @@ function buildListOnly(rows, code, cfg) {
     countField: cfg.countField,
     excludeNames: cfg.excludeNames,
   });
+  // No real boundary file, so no fixed "of N" denominator — just the count.
+  const reportingByYear = Object.fromEntries(
+    Object.entries(shaped.reportingCountByYear).map(([yr, n]) => [yr, String(n)]),
+  );
   return {
     ...shaped,
     name: NAME_BY_POSTAL[code],
     geoUnit: cfg.geoUnit,
     geoLabel: plural(cfg.geoUnit),
     hasRealGeo: false,
-    reporting: String(shaped.reportingCount),
+    reportingByYear,
+    reporting: reportingByYear[shaped.year],
   };
 }
 
@@ -847,8 +910,8 @@ function main() {
     }
   }
 
-  // reportingCount was only needed to build `reporting` above.
-  for (const state of Object.values(states)) delete state.reportingCount;
+  // reportingCountByYear was only needed to build reportingByYear above.
+  for (const state of Object.values(states)) delete state.reportingCountByYear;
 
   writeSnapshot(OUT_PATH, { source: SOURCE_PATH, states });
 
