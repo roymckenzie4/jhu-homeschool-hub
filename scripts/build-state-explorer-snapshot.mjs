@@ -319,21 +319,32 @@ function buildDistrictMapper(geoPath, { allowPrefix = false, preprocess } = {}) 
   const byTightKey = buildAmbiguitySafeKeyMap(names, (n) => districtNormKey(n).replace(/\s+/g, ""));
   const keys = [...byKey.keys()];
   return function mapDistrictName(rawInput) {
-    const raw = preprocess ? preprocess(rawInput) : rawInput;
-    const exact = byExact.get(raw.toLowerCase().trim());
-    if (exact) return exact;
-    const key = districtNormKey(raw);
-    if (byKey.has(key)) return byKey.get(key);
-    const tight = key.replace(/\s+/g, "");
-    if (byTightKey.has(tight)) return byTightKey.get(tight);
+    // `preprocess` may return one rewritten name or several CANDIDATES, tried
+    // in order — needed when the real source itself is ambiguous about which
+    // name a raw row currently goes by (Maine's TIGERweb data is a genuine
+    // mix: some districts already carry their new "Regional School Unit"
+    // name, others are still under their legacy "School Administrative
+    // District" name, and there's no way to know which from the raw row
+    // alone without just trying both).
+    const preprocessed = preprocess ? preprocess(rawInput) : rawInput;
+    const candidates = Array.isArray(preprocessed) ? preprocessed : [preprocessed];
+    for (const raw of candidates) {
+      const exact = byExact.get(raw.toLowerCase().trim());
+      if (exact) return exact;
+      const key = districtNormKey(raw);
+      if (byKey.has(key)) return byKey.get(key);
+      const tight = key.replace(/\s+/g, "");
+      if (byTightKey.has(tight)) return byTightKey.get(tight);
+    }
     if (allowPrefix) {
       // raw is the truncated/dirty side (fixed-length column cuts mid-word,
       // leaving a stray suffix fragment) — geo is clean and shorter, so
       // check geo-is-prefix-of-raw, not the other way around.
+      const key = districtNormKey(candidates[0]);
       const prefixMatches = keys.filter((k) => k.length >= 4 && key.startsWith(k));
       if (prefixMatches.length === 1) return byKey.get(prefixMatches[0]);
     }
-    return raw;
+    return candidates[0];
   };
 }
 function districtGeoPath(abbr, unit = "districts") {
@@ -423,32 +434,55 @@ export const MAP_MATCHED = {
   }, // 99.3%
   // Maine's raw rows mostly match real TIGER names directly (single-town
   // units like "Acton Public Schools" -> "Acton"). The real gap is Maine's
-  // modern "RSU NN" (Regional School Unit) numbering, which TIGER doesn't
-  // know at all — Census's school-district product still uses Maine's
-  // pre-2007-consolidation "School Administrative District NN" names and
-  // numbers. Most RSUs kept their predecessor MSAD's number, so extracting
-  // it and rewriting to TIGER's real name resolves most of the gap — but
-  // NOT reliably from the RSU number alone (9 of 48 checked compound names
-  // have a RSU number that genuinely differs from its own MSAD alias, e.g.
-  // "RSU 79/MSAD 01"), so an explicit "/MSAD NN" alias is always preferred
-  // over the RSU number when both appear in the raw name. Where a raw name
-  // is RSU-only with no real SAD match (a newly-formed, post-2007
-  // consolidation with no single legacy predecessor — about 21 of Maine's
-  // ~78 RSUs), this correctly falls through to unmatched rather than
-  // guessing. Previously list-only ("structurally blocked" — see decisions.md
-  // 2026-10-06); re-investigated and fixed 2026-10-07 after Roy questioned
-  // that framing — 87.8% of names / 81.1% of the real population matches.
+  // modern "RSU NN" (Regional School Unit) numbering, which the STATIC
+  // TIGER2023 bulk download (used for every other state) doesn't know at
+  // all — that vintage still has Maine's pre-2007-consolidation "School
+  // Administrative District NN" names exclusively. But the live TIGERweb
+  // REST service (tigerweb.geo.census.gov, "BAS 2026" vintage — Roy caught
+  // this, checking it directly after the first, static-only attempt landed
+  // at only 81.1%) is current enough that MOST districts already carry
+  // their real "Regional School Unit NN" name there — just not ALL of them:
+  // Census's own data is a genuine mix, some districts still sit under
+  // their legacy "School Administrative District NN" name even in the
+  // current vintage (confirmed directly: RSU 06/57/11/17/40/etc. are
+  // "School Administrative District" in TIGERweb today, not "Regional
+  // School Unit", while RSU 01/02/04/05/09/etc. HAVE converted). Since
+  // there's no way to know which naming a given district currently uses
+  // from the raw row alone, the preprocess returns BOTH candidates (plus
+  // the explicit "/MSAD NN" alias when the raw name has one — 9 of 48
+  // checked compound names have an RSU number that genuinely differs from
+  // its own MSAD alias, e.g. "RSU 79/MSAD 01", so that alias is always
+  // tried ahead of a same-number guess) and `buildDistrictMapper` tries
+  // each in turn. Boundary file rebuilt from the live service's layers 0-2
+  // (Unified/Secondary/Elementary), not the static bulk download. Result:
+  // 99.2% of the real population matches — the only real gap is "Education
+  // in Unorganized Terr" (87 students, 0.8%), a genuine non-geographic
+  // category (homeschoolers in Maine's unorganized territories, no local
+  // school unit to attach to), same "floor not ceiling" shape as Georgia's
+  // non-matching independent districts. Previously list-only ("structurally
+  // blocked" — see decisions.md 2026-10-06); Roy questioned that framing
+  // 2026-10-07, re-investigated, fixed with the static source (81.1%), then
+  // fixed properly with the live source after Roy flagged he wasn't
+  // satisfied with 81.1% and pointed at TIGERweb directly.
   ME: {
     nameField: "district ",
     geoUnit: "district",
     geoPath: districtGeoPath("me"),
     _preprocess: (raw) => {
+      // Mount Desert is Maine's one same-key collision (same shape as TN/NH's
+      // — two real entities, "Mount Desert" the town unit and "Mount Desert
+      // Community School District" the consolidated one, both reduce to
+      // "mount desert" once stopwords strip "community"/"school"/"district").
+      if (raw === "Mount Desert Public Schools") return "Mount Desert";
+      if (raw === "Mt Desert CSD") return "Mount Desert Community School District";
       const msad = /msad\s*0*(\d+)/i.exec(raw);
       const rsu = /^rsu\s*0*(\d+)/i.exec(raw);
       const num = msad ? msad[1] : rsu ? rsu[1] : null;
-      return num == null ? raw : `School Administrative District ${num.padStart(2, "0")}`;
+      if (num == null) return raw;
+      const n2 = num.padStart(2, "0");
+      return [raw, `Regional School Unit ${n2}`, `School Administrative District ${n2}`];
     },
-  }, // 87.8%
+  }, // 99.4%
 };
 for (const [code, cfg] of Object.entries(MAP_MATCHED)) {
   if (cfg.mapName) continue;
