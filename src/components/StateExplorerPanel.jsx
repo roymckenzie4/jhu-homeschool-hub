@@ -59,27 +59,25 @@
  * State Explorer tab and back (this component unmounts on tab switch; the
  * lifted state above it doesn't).
  *
- * Demographics (row 2's right-hand slot) does NOT react to region selection
- * at all — no swap, no heading change. Earlier passes tried making it swap to
- * a region-comparison detail view, reasoning that slot would eventually hold
- * a per-region trend chart anyway; Roy cut that once the table already showed
- * the identical value+rank info (the swap was pure duplication with today's
- * single-year data) — the eventual trend chart is real future work, not a
- * reason to half-build a placeholder for it now.
+ * Demographics (row 2's right-hand slot) is state-wide and doesn't react to
+ * region selection — but the SLOT itself does: 1+ regions selected swaps it
+ * entirely to a multi-year trend chart for the selected region(s) (real
+ * per-county/district history landed 2026-10, see decisions.md), reusing
+ * Enrollment's ComparisonTrend/ComparisonLegend (generalized to take a
+ * `labelForItem`/`formatYear` instead of assuming states — see those files).
+ * A single selected region still uses ComparisonTrend rather than a separate
+ * single-series chart: its shared-y-domain fitting is a no-op with only one
+ * series, so there's nothing a dedicated one-line chart would do differently.
  *
- * Known limitation, deliberately not solved yet: this whole mechanism (table
- * rows = individual regions, click a row's name to add/remove) assumes
- * TODAY's table shape. Once real per-county history lands, Roy's plan is for
- * this table to pivot to a year-by-year view (rows = years) for the selected
- * region(s) — at which point there's no per-region ROW left to click, and
- * "remove" will need to move to a per-column control instead (each selected
- * region as its own column, with a color dot matching its future trend line
- * and a way to drop it — much like the national comparison table/chips
- * already do). That's a real, known rework, but a narrow one: the MAP click,
- * the "+ add" combobox (RegionAddControl), and the underlying
- * selectedRegions state are already shape-agnostic — none of them assume
- * "one row per region" — only the table's click-to-remove affordance will
- * need to move. Not worth solving today against data that doesn't exist yet.
+ * The region TABLE deliberately does NOT pivot to a year-by-year shape for
+ * this — an earlier plan floated that (rows=years, one column per selected
+ * region, mirroring the national comparison table), but county/district names
+ * have no postal-code-length equivalent, so that shape would need the
+ * longest real names as repeated column headers. The table keeps today's
+ * shape (rows=regions, ranked for the active year) instead — it already
+ * tells you magnitude+rank for whatever's selected; the new chart tells you
+ * shape over time. Click a region's name to add/remove still works exactly
+ * as before; no affordance migration needed.
  */
 
 import { useEffect, useMemo, useState } from "react";
@@ -123,13 +121,15 @@ import {
   MAP_STROKE_REST,
   MAP_SELECTION_STROKE_WIDTH,
 } from "../config/theme.js";
-import { formatNumber } from "../lib/format.js";
+import { formatNumber, shortRegionLabel } from "../lib/format.js";
 import { buildStateProjection } from "../lib/geoProjection.js";
 import { buildInteractionProps } from "../lib/mapInteraction.js";
 import { BY_NAME } from "../config/states.js";
 import { COMPARE_CAP } from "../config/selection.js";
 import MapLegend from "./MapLegend.jsx";
 import MapHoverGlow from "./MapHoverGlow.jsx";
+import ComparisonTrend from "./ComparisonTrend.jsx";
+import ComparisonLegend from "./ComparisonLegend.jsx";
 import {
   ENROLLMENT_TABLE_HEIGHT,
   DATA_ZONE_MIN_HEIGHT,
@@ -850,6 +850,58 @@ export default function StateExplorerPanel({
     [regionsForDisplay],
   );
 
+  // Trend mode: 1+ regions selected replaces the demographic breakdown with
+  // each selected region's own multi-year history — same shape as
+  // Enrollment's single-state Sparkline / multi-state ComparisonTrend split,
+  // but unified into one component since a single selected region is just a
+  // one-line case of the same shared-y-domain chart (see ComparisonTrend;
+  // nothing about its domain-fitting logic depends on there being 2+ lines).
+  const isTrending = selectedRegions.length > 0;
+
+  // Each selected region's line/chip color, by selection order — same
+  // comparisonColor sequence Enrollment's states use.
+  const colorForRegion = (name) => comparisonColor(selectedRegions.indexOf(name));
+
+  // Trend highlight (hover previews, click pins), lifted the same way
+  // EnrollmentPanel lifts hoveredState/pinnedState so the legend and the
+  // chart stay in lockstep.
+  const [hoveredRegion, setHoveredRegion] = useState(null);
+  const [pinnedRegion, setPinnedRegion] = useState(null);
+  const rawRegionHighlight = hoveredRegion ?? pinnedRegion;
+  const highlightedRegion = selectedRegions.includes(rawRegionHighlight)
+    ? rawRegionHighlight
+    : null;
+  const toggleRegionPin = (name) =>
+    setPinnedRegion((prev) => (prev === name ? null : name));
+
+  // Years×regions series for the trend chart: one row per year this state has
+  // ANY data for, with a value per selected region (null where that region
+  // has a gap that year — same "gaps break a line" rule as Enrollment).
+  // `availableYears` holds label strings (e.g. "2024–25"), not raw fall
+  // years, so the chart's numeric x-axis needs the leading-4-digits number;
+  // `yearByNumber` reverses that for formatYear, so axis ticks/the selected-
+  // year guide line show State Explorer's own label format, not Enrollment's.
+  const regionsByName = useMemo(
+    () => new Map((state.regions ?? []).map((r) => [r.name, r])),
+    [state.regions],
+  );
+  const yearByNumber = useMemo(
+    () => new Map(availableYears.map((label) => [parseInt(label, 10), label])),
+    [availableYears],
+  );
+  const trendRows = useMemo(
+    () =>
+      availableYears.map((label) => {
+        const row = { year: parseInt(label, 10) };
+        selectedRegions.forEach((name) => {
+          const region = regionsByName.get(name);
+          row[name] = region ? valueForYear(region, label) : null;
+        });
+        return row;
+      }),
+    [availableYears, selectedRegions, regionsByName],
+  );
+
   return (
     <div className="flex flex-col">
       {/* Row 1 — a fixed-aspect map slot (real map or a same-box "not
@@ -945,43 +997,64 @@ export default function StateExplorerPanel({
         </div>
 
         <div>
-          {/* Demographics — completely inert to region selection (see the
-              file header doc comment for why: the table already shows
-              value+rank for whatever's selected, so a swap here would just
-              duplicate it with today's single-year data; a real per-region
-              trend chart is the honest thing to build here once historical
-              data exists, not before). */}
+          {/* Trend mode (1+ regions selected) fully replaces demographics —
+              not coexist, not relocate (see isTrending above). Demographics
+              is state-wide and doesn't react to region selection at all, so
+              once a region IS selected, its own history is the more useful
+              thing to show in this slot. */}
           {/* Same fixed h-7 as the region table's heading row, and for the
               same reason — a state with no demographics at all (demoKeys
               empty) shouldn't get a shorter heading row than one with
               category pills. */}
           <div className="flex h-7 items-center justify-between gap-4">
-            <h2 className={SECTION_HEADING_CLASS}>Reported subgroups</h2>
-            {/* Category pills sit in the heading row, trailing — same spot
-                ComparisonLegend occupies next to Enrollment's "Trends"
-                heading. */}
-            {demoKeys.length > 0 && (
-              <div className="flex flex-wrap justify-end gap-2">
-                {demoKeys.map((key) => (
-                  <button
-                    key={key}
-                    type="button"
-                    onClick={() => setPickedDemo(key)}
-                    className={`rounded-full px-3 py-1 font-sans text-xs font-medium capitalize transition-colors ${
-                      activeDemo === key
-                        ? "bg-heritage text-white"
-                        : "border border-sable/20 text-sable/70 hover:border-sable/40 hover:text-sable"
-                    }`}
-                  >
-                    {key}
-                  </button>
-                ))}
-              </div>
+            <h2 className={SECTION_HEADING_CLASS}>
+              {isTrending ? "Trends" : "Reported subgroups"}
+            </h2>
+            {isTrending ? (
+              <ComparisonLegend
+                states={selectedRegions}
+                colorForState={colorForRegion}
+                highlighted={highlightedRegion}
+                onHover={setHoveredRegion}
+                onTogglePin={toggleRegionPin}
+                labelForItem={shortRegionLabel}
+              />
+            ) : (
+              /* Category pills sit in the heading row, trailing — same spot
+                 ComparisonLegend occupies next to Enrollment's "Trends"
+                 heading. */
+              demoKeys.length > 0 && (
+                <div className="flex flex-wrap justify-end gap-2">
+                  {demoKeys.map((key) => (
+                    <button
+                      key={key}
+                      type="button"
+                      onClick={() => setPickedDemo(key)}
+                      className={`rounded-full px-3 py-1 font-sans text-xs font-medium capitalize transition-colors ${
+                        activeDemo === key
+                          ? "bg-heritage text-white"
+                          : "border border-sable/20 text-sable/70 hover:border-sable/40 hover:text-sable"
+                      }`}
+                    >
+                      {key}
+                    </button>
+                  ))}
+                </div>
+              )
             )}
           </div>
 
           <div className="mt-3" style={{ height: ENROLLMENT_TABLE_HEIGHT }}>
-            {demoKeys.length === 0 ? (
+            {isTrending ? (
+              <ComparisonTrend
+                rows={trendRows}
+                states={selectedRegions}
+                colorForState={colorForRegion}
+                highlighted={highlightedRegion}
+                selectedYear={parseInt(activeYear, 10)}
+                formatYear={(y) => yearByNumber.get(y) ?? String(y)}
+              />
+            ) : demoKeys.length === 0 ? (
               <DataPlaceholder height={ENROLLMENT_TABLE_HEIGHT}>
                 {hasDemographicsAnyYear
                   ? `No demographic breakdown reported for ${activeYear}.`

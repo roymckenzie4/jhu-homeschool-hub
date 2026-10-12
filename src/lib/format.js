@@ -53,6 +53,58 @@ export function formatUpdatedDate(iso, fallback) {
 }
 
 /**
+ * Strips a trailing generic administrative-unit phrase from a State Explorer
+ * region's real (TIGER) name, for display contexts that need something
+ * shorter than the full legal name — currently just the trend chart's
+ * legend. Longest/most-specific phrases are checked first, so "X Municipal
+ * Schools" strips to "X", not "X Municipal" (the first partial match a
+ * shorter-first order would hit). Only strips an exact trailing phrase, never
+ * digits or codes after it (e.g. "Florence School District 5" is untouched —
+ * that trailing "5" is load-bearing, not boilerplate, since South Carolina
+ * has several same-named districts distinguished only by number) — so the
+ * fallback floor is always the real, unambiguous full name, never a guess.
+ * Falls back to the full name when nothing matches (e.g. Georgia's names,
+ * already short).
+ *
+ * Maine's two historical naming schemes ("School Administrative District
+ * NN" / "Regional School Unit NN") are handled separately, as a PREFIX
+ * abbreviation rather than a suffix strip — the number here is the whole
+ * identity (there's no separate place name alongside it), and "SAD 57" /
+ * "RSU 19" are the real, commonly-used short forms for these in Maine itself
+ * (see STATUS.md's note on JHU's own workbook calling SAD 57 "RSU 57/MSAD
+ * 57"), not an invented abbreviation.
+ */
+const REGION_SUFFIXES = [
+  ' Union Free School District',
+  ' Central School District',
+  ' Community School District',
+  ' County School District',
+  ' City School District',
+  ' Public School District',
+  ' Municipal Schools',
+  ' Public Schools',
+  ' County Schools',
+  ' County School System',
+  ' School District',
+  ' School System',
+  ' School Department',
+  ' Schools',
+  ' Town',
+  ' Parish',
+];
+const REGION_PREFIXES = [
+  [/^School Administrative District (\d+)$/, 'SAD $1'],
+  [/^Regional School Unit (\d+)$/, 'RSU $1'],
+];
+export function shortRegionLabel(name) {
+  for (const [pattern, replacement] of REGION_PREFIXES) {
+    if (pattern.test(name)) return name.replace(pattern, replacement);
+  }
+  const suffix = REGION_SUFFIXES.find((s) => name.endsWith(s));
+  return suffix ? name.slice(0, -suffix.length) : name;
+}
+
+/**
  * English ordinal suffix: 1 -> "1st", 2 -> "2nd", 3 -> "3rd", 4 -> "4th",
  * handles the 11/12/13 special cases correctly. Used for the national rank
  * display in the detail card.

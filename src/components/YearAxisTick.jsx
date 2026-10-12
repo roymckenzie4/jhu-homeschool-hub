@@ -8,6 +8,10 @@
  *
  * Recharts clones this element per tick, injecting x / y / payload; the
  * firstYear / lastYear / covidYear props are supplied by the chart.
+ *
+ * `formatYear` defaults to Enrollment's own label style; State Explorer
+ * passes its own (en dash, not Enrollment's figure dash — the two topics'
+ * year-label formats predate this shared component and don't match).
  */
 
 import { COLORS, schoolYearLabel } from "../config/theme.js";
@@ -19,6 +23,7 @@ export default function YearAxisTick({
   firstYear,
   lastYear,
   covidYear,
+  formatYear = schoolYearLabel,
 }) {
   const { value } = payload;
   const anchor =
@@ -34,7 +39,7 @@ export default function YearAxisTick({
       fill={COLORS.sable}
       fillOpacity={isCovid ? 0.3 : 0.5}
     >
-      {schoolYearLabel(value)}
+      {formatYear(value)}
     </text>
   );
 }

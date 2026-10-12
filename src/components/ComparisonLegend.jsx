@@ -20,6 +20,10 @@
  *   highlighted:   string | null — the emphasized state.
  *   onHover:       (name | null) — hover enter (name) / leave (null).
  *   onTogglePin:   (name) — click to pin/unpin.
+ *   labelForItem:  (name) => string — chip text; defaults to the state's
+ *                  postal code. State Explorer passes the region's own full
+ *                  name through unchanged — there's no postal-code equivalent
+ *                  for a county/district, and the chip row wraps freely.
  */
 
 import { BY_NAME } from "../config/states.js";
@@ -30,6 +34,7 @@ export default function ComparisonLegend({
   highlighted,
   onHover,
   onTogglePin,
+  labelForItem = (name) => BY_NAME[name]?.postal ?? name,
 }) {
   return (
     <div className="flex flex-wrap items-center justify-end gap-x-2.5 gap-y-1">
@@ -54,7 +59,7 @@ export default function ComparisonLegend({
               style={{ backgroundColor: colorForState(state) }}
               aria-hidden="true"
             />
-            {BY_NAME[state]?.postal ?? state}
+            {labelForItem(state)}
           </button>
         );
       })}

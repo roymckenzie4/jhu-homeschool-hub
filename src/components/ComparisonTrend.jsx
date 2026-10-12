@@ -23,6 +23,8 @@
  *   highlighted:   string | null — the emphasized state (from the legend).
  *   selectedYear:  number — marked with a vertical guide line, the multi-line
  *                  parallel to the single-state Sparkline's selected-year dot.
+ *   formatYear:    (fallYear) => string — x-axis tick label; defaults to
+ *                  Enrollment's own format (see YearAxisTick).
  */
 
 import {
@@ -43,7 +45,14 @@ import YearAxisTick from "./YearAxisTick.jsx";
 const REST_ALPHA = 0.8;
 const DIMMED_ALPHA = 0.15;
 
-export default function ComparisonTrend({ rows, states, colorForState, highlighted, selectedYear }) {
+export default function ComparisonTrend({
+  rows,
+  states,
+  colorForState,
+  highlighted,
+  selectedYear,
+  formatYear,
+}) {
   // Shared vertical domain across every selected state's reported values, so
   // all lines sit on one honest scale. Padded so extremes clear the edges.
   const values = [];
@@ -93,6 +102,7 @@ export default function ComparisonTrend({ rows, states, colorForState, highlight
                 firstYear={years[0]}
                 lastYear={years[years.length - 1]}
                 covidYear={covidYear}
+                {...(formatYear ? { formatYear } : {})}
               />
             }
             tickLine={false}
