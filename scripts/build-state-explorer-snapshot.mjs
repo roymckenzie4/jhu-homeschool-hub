@@ -237,12 +237,15 @@ export function districtNormKey(raw) {
 const NY_PREPROCESS = (raw) =>
   /^NEW YORK CITY GEOGRAPHIC DISTRICT/i.test(raw) ? "New York City Department Of Education" : raw;
 
-// Nashville and Clarksville are consolidated city-county governments, so
-// their real TIGER school-district names don't contain "Davidson"/
-// "Montgomery" at all — not an abbreviation issue districtNormKey can
-// generalize, just two real, different legal names worth hardcoding (same
-// shape as Louisiana's special cases above). These two account for nearly
-// all of TN's unmatched total.
+// Nashville and Clarksville (and Jackson/Madison, a city-county pair with
+// the same consolidated shape) don't have real TIGER school-district names
+// that contain "Davidson"/"Montgomery"/"Madison" alone — not an abbreviation
+// issue districtNormKey can generalize, just real, different legal names
+// worth hardcoding (same shape as Louisiana's special cases above). Each has
+// a 2013–2016 raw spelling ("Davidson County") and a 2017+ one ("Davidson
+// Co.") — both mapped; found by extending the region-sum audit to check
+// every year, not just each state's latest (2026-10-12), which is what
+// first surfaced the 2013–2016 rows as a real gap.
 //
 // Franklin/Johnson/Union are a different problem: TN genuinely has two real
 // districts sharing each base name (a County district and a City/Special
@@ -259,7 +262,10 @@ const NY_PREPROCESS = (raw) =>
 // map resolves all three cleanly.
 const TN_SPECIAL_CASES = {
   "Montgomery Co.": "Clarksville-Montgomery County School System",
+  "Montgomery County": "Clarksville-Montgomery County School System", // 2013–2016 spelling
   "Davidson Co.": "Metropolitan Nashville Public School District",
+  "Davidson County": "Metropolitan Nashville Public School District", // 2013–2016 spelling
+  "Madison County": "Jackson-Madison County School System", // 2013–2016 spelling; "Jackson-Madison Co." (2017+) already normalizes fine
   "Franklin County": "Franklin County School District", // 2013–2016 spelling
   "Franklin Co.": "Franklin County School District", // 2017+ spelling
   "Franklin Special": "Franklin Special School District", // 2013–2016 spelling
@@ -282,6 +288,43 @@ const TN_SPECIAL_CASES = {
 const NH_SPECIAL_CASES = {
   Exeter: "Exeter School District",
   "Exeter Region Cooperative": "Exeter Regional Cooperative School District",
+};
+
+// Wisconsin: four small districts that no longer exist as their own real
+// TIGER entity — they consolidated into a different, still-real district
+// at some point in the raw data's history (confirmed against Wisconsin DPI's
+// reorganization records and news coverage, not guessed):
+//   - Richfield J1 + Friess Lake consolidated into Holy Hill Area School
+//     District, effective 2018-19 (last standalone row: 2017-18).
+//   - Herman #22 + Neosho J3 + Rubicon J6 consolidated into
+//     Herman-Neosho-Rubicon School District, effective 2016-17 (the raw
+//     sheet already spells it that way from 2016 on — only the earlier
+//     Neosho J3 spelling needs mapping).
+//   - "Central/Westosha Uhs" is the same institution as today's "Westosha
+//     Central High School District" under its pre-2022-23 name — a rename,
+//     not a merger.
+// Each has two raw spellings across the sheet's history: unabbreviated
+// 2007-09, then an abbreviated "Sch Dist" form 2010 on.
+const WI_SPECIAL_CASES = {
+  "Richfield J 1": "Holy Hill Area School District",
+  "Richfield J1 Sch Dist": "Holy Hill Area School District",
+  "Friess Lake": "Holy Hill Area School District",
+  "Friess Lake Sch Dist": "Holy Hill Area School District",
+  "Neosho J3": "Herman-Neosho-Rubicon School District",
+  "Neosho J3 Sch Dist": "Herman-Neosho-Rubicon School District",
+  "Central/Westosha Uhs": "Westosha Central High School District",
+  "Central/Westosha Uhs Sch Dist": "Westosha Central High School District",
+  // Not a consolidation — the generic prefix-truncation fallback (WI's
+  // `_allowPrefix`) finds TWO real districts whose normalized key is a
+  // prefix of this raw row's key ("maple" from the real "Maple School
+  // District", and "maple dale indian hill" from this row's real match),
+  // so it backs off as ambiguous rather than picking one. The ambiguity is
+  // only against the generic key-prefix check, not a real naming
+  // collision — "Maple School District" is a different, distant district
+  // (Douglas County) with nothing in common with this raw name beyond the
+  // first word. Hardcoded directly rather than loosening the generic
+  // fallback, which exists to be conservative for exactly this reason.
+  "Maple Dale-Indian Hill Sch Dis": "Maple Dale-Indian Hill School District",
 };
 
 // Builds a name -> geo-name map, skipping (not overwriting) any key two
@@ -426,11 +469,14 @@ export const MAP_MATCHED = {
   }, // 95.5%
   // Wisconsin's raw column truncates to a fixed length (same issue Nebraska's
   // counties had) — the generic mapper's prefix-match fallback handles it.
+  // WI_SPECIAL_CASES above handles the real consolidations/renames and the
+  // one ambiguous-prefix name the fallback can't.
   WI: {
     nameField: "district ",
     geoUnit: "district",
     geoPath: districtGeoPath("wi"),
     _allowPrefix: true,
+    _preprocess: (raw) => WI_SPECIAL_CASES[raw] ?? raw,
   }, // 99.3%
   // Maine's raw rows mostly match real TIGER names directly (single-town
   // units like "Acton Public Schools" -> "Acton"). The real gap is Maine's
@@ -604,7 +650,7 @@ function extractDemographics(latestYearRows) {
 const GEO_COLUMNS = ["sau_name", "lea", "lcounty", "district ", "town ", "lcity"];
 const TOTAL_SENTINELS = new Set(["all", "total", "totals", "statewide", "grand total"]);
 
-function isGrandTotalRow(row) {
+export function isGrandTotalRow(row) {
   return GEO_COLUMNS.every((col) => {
     const v = (row[col] ?? "").toString().trim();
     return v === "" || TOTAL_SENTINELS.has(v.toLowerCase());
@@ -842,9 +888,19 @@ export function shapeState({
     [...matchedNamesByYear.entries()].map(([year, names]) => [yearLabel(year), names.size]),
   );
 
+  // Per year, not just latestYear — lets the region-sum audit check every
+  // year's regionSum against its own true total instead of only the
+  // default/latest one. That single-year blind spot is exactly what let
+  // both the PA column-swap and the 2026-10-12 region-roster bug stay
+  // invisible as long as they did. See decisions.md, 2026-10-12.
+  const totalsByYear = Object.fromEntries(
+    [...yearTotals.entries()].map(([year, total]) => [yearLabel(year), total]),
+  );
+
   return {
     year: latestLabel,
     total: yearTotals.get(latestYear),
+    totalsByYear,
     reportingCountByYear,
     regions,
     demographicsByYear,
