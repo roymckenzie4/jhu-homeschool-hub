@@ -56,6 +56,8 @@ function auditStateAllYears(code, cfg, mapMatched) {
     validNames,
     pinnedYear: cfg.pinnedYear,
     countField,
+    excludeYears: cfg.excludeYears,
+    excludeNames: cfg.excludeNames,
   });
 
   return Object.entries(shaped.totalsByYear).map(([label, total]) => {
@@ -77,6 +79,11 @@ function auditStateAllYears(code, cfg, mapMatched) {
       // being a region at all. Reuses shapeState's own check so the audit
       // can't drift from what the pipeline itself treats as a rollup.
       if (isGrandTotalRow(row)) continue;
+      // Same two escape hatches the real pipeline gets (see shapeState) —
+      // without these the audit flags a state's own deliberate "not a real
+      // region" calls (e.g. MA's Devens, WY's charter schools) and PA's
+      // known-bad excluded year as if they were still open bugs.
+      if (cfg.excludeYears?.has(row.sy_fall)) continue;
       const rowTotal = row[countField];
       if (typeof rowTotal !== "number") continue;
       const raw = row[cfg.nameField];
@@ -84,6 +91,7 @@ function auditStateAllYears(code, cfg, mapMatched) {
         unnamedSum += rowTotal;
         continue;
       }
+      if (cfg.excludeNames?.has(raw.trim())) continue;
       const name = mapMatched ? cfg.mapName(raw.trim()) : raw.trim();
       const matched = mapMatched ? validNames.has(name) : true;
       if (!matched) {

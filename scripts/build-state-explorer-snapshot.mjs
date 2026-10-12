@@ -41,7 +41,6 @@ export const SOURCE_PATH = resolve(
 );
 const OUT_PATH = resolve(HERE, "../src/data/state-explorer-snapshot.json");
 const GEO_DIR = resolve(HERE, "../public/state-explorer-geo");
-const GA_GEO_PATH = resolve(GEO_DIR, "ga-counties.json");
 const LA_GEO_PATH = resolve(GEO_DIR, "la-districts.json");
 
 export const NAME_BY_POSTAL = Object.fromEntries(STATES.map((s) => [s.postal, s.name]));
@@ -63,13 +62,6 @@ export function geoNames(path) {
   const topo = JSON.parse(readFileSync(path, "utf8"));
   const obj = Object.values(topo.objects)[0];
   return new Set(obj.geometries.map((g) => g.properties.name));
-}
-
-// Georgia: raw district names are "X County" (plus some independent/charter
-// schools and "Optional (undisclosed)" that don't correspond to any county —
-// excluded, same as the hand-entered data's "156 of 159" framing).
-function mapGaName(raw) {
-  return raw.replace(/\s+County$/, "").trim();
 }
 
 // Louisiana: raw names are bare parish names, "Saint X", or one of 5
@@ -202,6 +194,13 @@ export function districtNormKey(raw) {
     six: "6", seven: "7", eight: "8", nine: "9", ten: "10",
   };
   let s = raw.toLowerCase();
+  // Fold accented Latin letters to their base form (e.g. "ñ" -> "n") BEFORE
+  // the non-letter strip below — that strip treats "ñ" as punctuation and
+  // deletes it outright (leaving a stray space, splitting one word into
+  // two), rather than treating it as the "n" it stands for. Found via New
+  // Mexico's "Española"/"Peñasco" real districts not matching their own
+  // unaccented raw-data spellings ("Espanola"/"Penasco") — 2026-10-12.
+  s = s.normalize("NFD").replace(/[̀-ͯ]/g, "");
   s = s.replace(/\(non-op\)/g, " ");
   s = s.replace(/[.#]/g, " ");
   s = s.replace(/\bco\b/g, "county");
@@ -234,8 +233,57 @@ export function districtNormKey(raw) {
 // overwrite logic in shapeState (built for Washington's county-contains-
 // many-districts case) combine them into one real NYC region instead of
 // 32 silently-dropped names — the single biggest chunk of NY's gap.
-const NY_PREPROCESS = (raw) =>
-  /^NEW YORK CITY GEOGRAPHIC DISTRICT/i.test(raw) ? "New York City Department Of Education" : raw;
+// A second, older ALL-CAPS raw naming convention runs alongside NY's normal
+// title-case rows (different reporting years/source, not resolved by case-
+// folding since districtNormKey already lowercases everything) — these are
+// real renames/mergers/parenthetical-alias mismatches, confirmed per-name
+// the same way as every other state's special cases, 2026-10-12:
+//   - Central Valley Central School District is the real 2010s merger of
+//     Ilion and Mohawk (both raw spellings, plus the newer combined one, map
+//     to it).
+//   - Boquet Valley Central School District at Elizabethtown-Lewis-Westport
+//     is the real merger of Westport and Elizabethtown-Lewis.
+//   - Oppenheim-Ephratah-St. Johnsville Central School District is the real
+//     merger of Oppenheim-Ephratah and St. Johnsville.
+//   - The rest are real districts whose TIGER name carries a parenthetical
+//     alias (e.g. "(North Rockland)") the raw ALL-CAPS spelling doesn't
+//     reproduce, or just the "CSD" abbreviation losing "Central" the same
+//     way districtNormKey's stopword list already strips it for the
+//     unabbreviated form — direct 1:1, not a merger.
+const NY_SPECIAL_CASES = {
+  "THE ENLARGED CITY SCHOOL DISTRICT OF THE CITY OF SARATOGA SPRINGS":
+    "Saratoga Springs City School District",
+  "NORTH COLONIE CSD": "North Colonie Central School District",
+  "KINDERHOOK CENTRAL SCHOOL DISTRICT": "Kinderhook Central School District (Ichabod Crane)",
+  "CANISTEO-GREENWOOD CSD": "Canisteo-Greenwood Central School District",
+  "CENTRAL VALLEY CSD AT ILION-MOHAWK": "Central Valley Central School District",
+  "ILION CENTRAL SCHOOL DISTRICT": "Central Valley Central School District",
+  "MOHAWK CENTRAL SCHOOL DISTRICT": "Central Valley Central School District",
+  "OPPENHEIM-EPHRATAH-ST. JOHNSVILLE CSD":
+    "Oppenheim-Ephratah-St. Johnsville Central School District",
+  "SAINT JOHNSVILLE CENTRAL SCHOOL DISTRICT":
+    "Oppenheim-Ephratah-St. Johnsville Central School District",
+  "OPPENHEIM-EPHRATAH CENTRAL SCHOOL DISTRICT":
+    "Oppenheim-Ephratah-St. Johnsville Central School District",
+  "EASTPORT-SOUTH MANOR CSD": "Eastport-South Manor Central School District",
+  "HAVERSTRAW-STONY POINT CSD (NORTH ROCKLAND)":
+    "Haverstraw-Stony Point Central School District (North Rockland)",
+  "MANCHESTER-SHORTSVILLE CENTRAL SCHOOL DISTRICT (RED JACKET)":
+    "Manchester-Shortsville Central School District",
+  "OTSELIC VALLEY CENTRAL SCHOOL DISTRICT AT GEORGETOWN-SOUTH OTSELIC":
+    "Georgetown-South Otselic Central School District",
+  "VALLEY STREAM 13 UNION FREE SCHOOL DISTRICT": "Valley Stream Union Free School District 13",
+  "VALLEY STREAM 24 UNION FREE SCHOOL DISTRICT": "Valley Stream Union Free School District 24",
+  "VALLEY STREAM 30 UNION FREE SCHOOL DISTRICT": "Valley Stream Union Free School District 30",
+  "WESTPORT CENTRAL SCHOOL DISTRICT":
+    "Boquet Valley Central School District at Elizabethtown-Lewis-Westport",
+  "ELIZABETHTOWN-LEWIS CENTRAL SCHOOL DISTRICT":
+    "Boquet Valley Central School District at Elizabethtown-Lewis-Westport",
+};
+const NY_PREPROCESS = (raw) => {
+  if (/^NEW YORK CITY GEOGRAPHIC DISTRICT/i.test(raw)) return "New York City Department Of Education";
+  return NY_SPECIAL_CASES[raw] ?? raw;
+};
 
 // Nashville and Clarksville (and Jackson/Madison, a city-county pair with
 // the same consolidated shape) don't have real TIGER school-district names
@@ -288,6 +336,179 @@ const TN_SPECIAL_CASES = {
 const NH_SPECIAL_CASES = {
   Exeter: "Exeter School District",
   "Exeter Region Cooperative": "Exeter Regional Cooperative School District",
+  // Plural-vs-singular, not a rename — the real boundary file's name is
+  // "White Mountain" (singular), the raw sheet has always said "White
+  // Mountains" (plural), every year 2011-2025.
+  "White Mountains Regional": "White Mountain Regional School District",
+};
+
+// Pennsylvania's 6 collision pairs (flagged 2026-10-07, unblocked 2026-10-12
+// once `district ` — not `lcounty` — turned out to hold clean, stable raw
+// district names for 2014–2023; see PA's config below). All raw spellings
+// below are stable across every one of those years; found and verified the
+// same way as TN/NH's — diffing PA's real per-year `district ` values
+// against the real boundary file's names. "Knoch" is a genuine rename, not a
+// stopword collision: South Butler County School District renamed itself
+// Knoch School District in 2022; the real boundary file (vintage predates
+// the rename) still has the old name, and JHU's workbook already uses
+// "Knoch" from 2020 on. "Union" is a 3-way collision, not a pair — "union"
+// is itself one of districtNormKey's stopwords (for NY's "Union Free School
+// District" pattern), so three distinct real PA districts (Union, Union
+// Area, Union City Area) all reduce to the same empty key; Mount Union Area
+// needs no entry here since its own key ("mount") doesn't collide with
+// anything and already matches via the generic normalizer. "River Valley SD"
+// (appears from 2020 on) is a second rename, not a collision: Blairsville-
+// Saltsburg School District became River Valley School District effective
+// 2021-07-01; the real boundary file still has the pre-rename name.
+const PA_SPECIAL_CASES = {
+  "Hanover Area SD": "Hanover Area School District",
+  "Hanover Public SD": "Hanover Public School District",
+  "Hempfield  SD": "Hempfield School District", // double-space spelling, 2014-2018
+  "Hempfield SD": "Hempfield School District", // single-space spelling, 2019+
+  "Hempfield Area SD": "Hempfield Area School District",
+  "Union SD": "Union School District",
+  "Union Area SD": "Union Area School District",
+  "Union City Area SD": "Union City Area School District",
+  "Forest Area SD": "Forest Area School District",
+  "Forest City Regional SD": "Forest City Regional School District",
+  "Franklin Area SD": "Franklin Area School District",
+  "Franklin Regional SD": "Franklin Regional School District",
+  "Wilson  SD": "Wilson School District", // double-space spelling, 2014-2018
+  "Wilson SD": "Wilson School District", // single-space spelling, 2019+
+  "Wilson Area SD": "Wilson Area School District",
+  "Knoch SD": "South Butler County School District",
+  "River Valley SD": "Blairsville-Saltsburg School District",
+};
+
+// South Carolina: two real shapes, found 2026-10-12 (the "91.7%, genuine
+// ambiguous/non-geographic" framing below predates this — these turned out
+// to be real, resolvable consolidations/renames, not noise).
+//   - Real 2017-2022 countywide consolidations of several small numbered
+//     districts (confirmed per-county, not guessed): Orangeburg (2017),
+//     Barnwell 19+29 (2022, Barnwell 45 stayed separate and already matches
+//     generically), Clarendon 1+2+3+4 (2022). Every predecessor number maps
+//     to the post-merger county district; SUM-not-overwrite in shapeState
+//     combines them for years where more than one predecessor reported.
+//   - York County's districts are informally/currently known by their town
+//     name (Clover = York 2, Fort Mill = York 4) but the boundary file still
+//     uses York's own numbering — both the old "York N (Town)" raw spelling
+//     AND the newer town-named raw spelling need mapping to the same
+//     York-numbered real name.
+//   - "Lexington/Richland 5" is the same real district as "Lexington School
+//     District 5" under three different raw spellings over time (the real
+//     name doesn't mention Richland at all, despite the district serving
+//     both counties).
+const SC_SPECIAL_CASES = {
+  "Barnwell 19": "Barnwell County Consolidated School District",
+  "Barnwell 29": "Barnwell County Consolidated School District",
+  "Clarendon 1": "Clarendon County School District",
+  "Clarendon 2": "Clarendon County School District",
+  "Clarendon 3": "Clarendon County School District",
+  "Clarendon 4": "Clarendon County School District",
+  "York 1 (York)": "York School District 1",
+  "York 2 (Clover)": "York School District 2",
+  "Clover School District": "York School District 2",
+  "York 3 (Rock Hill)": "York School District 3",
+  "Rock Hill School District Three of York County": "York School District 3",
+  "York 4 (Fort Mill)": "York School District 4",
+  "Fort Mill School District": "York School District 4",
+  "Fort Mill School District Four": "York School District 4",
+  "Lexington/Richland 5": "Lexington School District 5",
+  "Lexington/ Richland 5": "Lexington School District 5",
+  "School District Five of Lexington and Richland Counties": "Lexington School District 5",
+  "Marion 10 District Office": "Marion School District 10",
+  "Orangeburg 3": "Orangeburg County School District",
+  "Orangeburg 4": "Orangeburg County School District",
+  "Orangeburg 5": "Orangeburg County School District",
+  "Orangeburg 9": "Orangeburg County School District",
+  "Sumter 1": "Sumter County Consolidated School District",
+  "Hampton 1": "Hampton County School District",
+  "Hampton 2": "Hampton County School District",
+  "Hampton 3": "Hampton County School District",
+  "Bamberg 1": "Bamberg County School District",
+  "Bamberg 2": "Bamberg County School District",
+  "Williston 29": "Barnwell County Consolidated School District", // Williston-Elko's own name for Barnwell 29
+  "Ware Shoals School District 51": "Greenwood School District 51",
+};
+
+// Georgia, rebuilt 2026-10-12 from the real TIGER district-level product
+// (UNSD/ELSD/SCSD) instead of us-atlas's county product — Roy caught that
+// the district product already has Georgia's ~23 real independent CITY
+// school systems (Atlanta, Marietta, Valdosta, etc.) as their own features,
+// which the county-only map could never show at all (not a naming gap, a
+// structural ceiling — ~20k students/year, invisible under the old county
+// build). See decisions.md, 2026-10-12.
+//   - The 3 county-wide systems below are real counties co-branded with
+//     their largest city in the raw name ("Savannah-Chatham County" = all of
+//     Chatham County, not a separate smaller system) — confirmed via each
+//     city being the real county seat, not guessed.
+//   - Jefferson/Calhoun/Decatur each have a real CITY system and a real
+//     COUNTY system sharing the same base name — "city"/"county" are both
+//     districtNormKey stopwords, so the generic matcher correctly treats
+//     these as ambiguous and drops both; same collision shape already fixed
+//     for TN/PA/SC. "City Schools of Decatur" is a later raw spelling for
+//     the same real entity as "Decatur City" (2016-17 overlap in the raw
+//     data, not two different places).
+//   - "Optional (undisclosed)" is excluded via GA's excludeNames below, not
+//     here — this map only maps, it doesn't filter.
+const GA_SPECIAL_CASES = {
+  "Savannah-Chatham County": "Chatham County School District",
+  "Griffin-Spalding County": "Spalding County School District",
+  "Thomaston-Upson County": "Upson County School District",
+  "Jefferson City": "Jefferson City School District",
+  "Jefferson County": "Jefferson County School District",
+  "Calhoun City": "Calhoun City School District",
+  "Calhoun County": "Calhoun County School District",
+  "Decatur City": "Decatur City School District",
+  "City Schools of Decatur": "Decatur City School District",
+  "Decatur County": "Decatur County School District",
+};
+
+// South Dakota: most raw names just drop the trailing "NN-N" district code
+// the real boundary file keeps — not ambiguous (each has one real geo
+// match), just missing the code, so hardcoded directly rather than loosened
+// generically (same reasoning as PA's Maple Dale-Indian Hill). A few are
+// real 2013-era consolidations (confirmed, not guessed): Viborg + Hurley
+// merged 2013 into Viborg Hurley School District 60-6; Corsica + Stickney
+// (raw "Stickney 01-2") merged into Corsica-Stickney School District 21-3;
+// Shannon County renamed to Oglala Lakota County in 2015 (same district
+// number, 65-1, just the county/district's legal name changed). "Cheyenne
+// River - BIE" is a federally-run Bureau of Indian Education school
+// co-located inside Eagle Butte School District 20-1's boundary, not a
+// separate geographic district — excluded below. "Grant-Deuel 25-3"
+// (dissolved 2018, no single real successor) and "Oldham-Ramona-Rutland
+// 39-6" (a real but brand-new 2023 consolidation, too recent for this
+// boundary file's vintage) are left unmapped on purpose, same shape as
+// NH's Goshen-Lempster/Pasquaney.
+const SD_SPECIAL_CASES = {
+  "Groton Area": "Groton Area School District 06-6",
+  "Faulkton Area": "Faulkton School District 24-4",
+  "Faulkton Area Schools District": "Faulkton School District 24-4",
+  Miller: "Miller Area School District 29-4",
+  "Highmore-Harrold": "Highmore-Harrold School District 34-2",
+  "Colome Consolidated": "Colome Consolidated School District 59-3",
+  "Webster Area": "Webster School District 18-5",
+  "Hitchcock-Tulare": "Hitchcock-Tulare School District 56-6",
+  "Langford Area": "Langford School District 45-5",
+  "Viborg 60-5": "Viborg Hurley School District 60-6",
+  "Hurley 60-2": "Viborg Hurley School District 60-6",
+  "Corsica 21-2": "Corsica-Stickney School District 21-3",
+  "Stickney 01-2": "Corsica-Stickney School District 21-3",
+  "Shannon County 65-1": "Oglala Lakota County School District 65-1",
+};
+
+// New Mexico's remaining 3 (after the accent-fold fix above resolved
+// Española/Peñasco generically): "Moriarty-Edgewood" is the district's
+// commonly-used name, confirmed also officially called "Moriarty Municipal
+// Schools" (the real boundary file's name); "Chama Valley Ind." is a
+// truncated 2023+ spelling of an otherwise-clean match; "Mosquero Muncipal
+// Schools" is a literal typo in the raw data (missing the "i" in
+// "Municipal") that breaks the stopword-based generic match, not a rename.
+const NM_SPECIAL_CASES = {
+  "Moriarty-Edgewood": "Moriarty Municipal Schools",
+  "Moriarty-Edgewood School District": "Moriarty Municipal Schools",
+  "Chama Valley Ind.": "Chama Valley Independent Schools",
+  "Mosquero Muncipal Schools": "Mosquero Municipal Schools",
 };
 
 // Wisconsin: four small districts that no longer exist as their own real
@@ -398,8 +619,25 @@ function districtGeoPath(abbr, unit = "districts") {
 // States with a real published boundary file + a name-normalization function
 // to join the workbook's raw unit names to that geometry.
 export const MAP_MATCHED = {
-  GA: { nameField: "district ", geoUnit: "county", mapName: mapGaName, geoPath: GA_GEO_PATH },
-  LA: { nameField: "district ", geoUnit: "district", mapName: mapLaName, geoPath: LA_GEO_PATH },
+  GA: {
+    nameField: "district ",
+    geoUnit: "district",
+    geoPath: districtGeoPath("ga"),
+    _preprocess: (raw) => GA_SPECIAL_CASES[raw] ?? raw,
+    // Literal raw spelling, including its real double space — the raw data
+    // itself flags this as not corresponding to any place.
+    excludeNames: new Set(["Optional  (undisclosed)"]),
+  },
+  // "RSD" = Recovery School District, a real statewide special district
+  // (schools taken over by the state, not tied to a single parish) — not a
+  // geographic region, excluded the same way as Hawaii's "Charter" above.
+  LA: {
+    nameField: "district ",
+    geoUnit: "district",
+    mapName: mapLaName,
+    geoPath: LA_GEO_PATH,
+    excludeNames: new Set(["RSD"]),
+  },
   AR: { nameField: "lcounty", geoUnit: "county", geoPath: countyGeoPath("ar") },
   FL: { nameField: "lcounty", geoUnit: "county", geoPath: countyGeoPath("fl") },
   MD: { nameField: "lea", geoUnit: "county", geoPath: countyGeoPath("md") },
@@ -419,19 +657,68 @@ export const MAP_MATCHED = {
   // each case is genuine ambiguous/non-geographic entries (charter
   // academies, special-ed districts, abbreviated codes that drop a
   // distinguishing digit), not a normalization bug. See decisions.md
-  // (2026-10-06).
-  SC: { nameField: "district ", geoUnit: "district", geoPath: districtGeoPath("sc") }, // 91.7%
-  SD: { nameField: "district ", geoUnit: "district", geoPath: districtGeoPath("sd") }, // 92.6%
+  // (2026-10-06). SC's own remainder turned out to be real resolvable
+  // consolidations/renames instead — see SC_SPECIAL_CASES above, 2026-10-12.
+  SC: {
+    nameField: "district ",
+    geoUnit: "district",
+    geoPath: districtGeoPath("sc"),
+    _preprocess: (raw) => SC_SPECIAL_CASES[raw] ?? raw,
+  }, // 91.7%, higher with SC_SPECIAL_CASES
+  SD: {
+    nameField: "district ",
+    geoUnit: "district",
+    geoPath: districtGeoPath("sd"),
+    _preprocess: (raw) => SD_SPECIAL_CASES[raw] ?? raw,
+    excludeNames: new Set(["Cheyenne River - BIE"]),
+  }, // 92.6%, higher with SD_SPECIAL_CASES
   NY: {
     nameField: "district ",
     geoUnit: "district",
     geoPath: districtGeoPath("ny"),
     _preprocess: NY_PREPROCESS,
+    // Real NY "special act school districts" — a well-documented legal
+    // category serving institutionalized/residential student populations
+    // (named after the specific facility, e.g. Hopevale, Little Flower,
+    // George Junior Republic), not a geographic area a map region can
+    // represent. "NYC SPECIAL SCHOOLS - DISTRICT 75" is NYC's own citywide
+    // special-education district, same non-geographic shape. Confirmed via
+    // NYSED/the NYS Coalition of Special Act School Districts, not guessed.
+    excludeNames: new Set([
+      "NYC SPECIAL SCHOOLS - DISTRICT 75",
+      "GEORGE JUNIOR REPUBLIC UNION FREE SCHOOL DISTRICT",
+      "GREENBURGH ELEVEN UNION FREE SCHOOL DISTRICT",
+      "GREENBURGH-GRAHAM UNION FREE SCHOOL DISTRICT",
+      "GREENBURGH-NORTH CASTLE UNION FREE SCHOOL DISTRICT",
+      "RANDOLPH ACADEMY UNION FREE SCHOOL DISTRICT",
+      "HOPEVALE UNION FREE SCHOOL DISTRICT AT HAMBURG",
+      "LITTLE FLOWER UNION FREE SCHOOL DISTRICT",
+      "HAWTHORNE-CEDAR KNOLLS UNION FREE SCHOOL DISTRICT",
+      "MOUNT PLEASANT-COTTAGE UNION FREE SCHOOL DISTRICT",
+      "MOUNT PLEASANT-BLYTHEDALE UNION FREE SCHOOL DISTRICT",
+      "ABBOTT UNION FREE SCHOOL DISTRICT",
+    ]),
   }, // 92.5% before the NYC collapse fix, see decisions.md (2026-10-06)
-  // PA's raw "lcounty" column is ~500 distinct values — real Pennsylvania has
-  // 67 counties but ~500 school districts, so despite the column name this
-  // is clearly district-level granularity; labeled accordingly.
-  PA: { nameField: "lcounty", geoUnit: "district", geoPath: districtGeoPath("pa") }, // 99.4%
+  // PA's `lcounty` and `district ` columns swap meaning in 2024-25 only — a
+  // data-entry mistake in JHU's newest batch (flagged to them, not expected
+  // to persist): 2014-15 through 2023-24, `district ` holds the real
+  // ~500-district-level names (`lcounty` holds county names, 67 distinct);
+  // in 2024-25 that flips, `lcounty` jumps to ~500 distinct and `district `
+  // drops to 67. Using `district ` as nameField (97.6% match on its own
+  // pre-2024 years, checked directly against the real boundary file) with
+  // 2024-25 excluded — NOT auto-detected per year — so if this shape changes
+  // again in some future year, the pipeline fails safe to a visible gap
+  // rather than silently matching counties to coincidentally-same-named
+  // districts again (28 of PA's 67 counties share a name with a real
+  // district — confirmed by testing `district `-as-nameField against 2024-25
+  // directly). See decisions.md, 2026-10-07 and 2026-10-12.
+  PA: {
+    nameField: "district ",
+    geoUnit: "district",
+    geoPath: districtGeoPath("pa"),
+    excludeYears: new Set([2024]),
+    _preprocess: (raw) => PA_SPECIAL_CASES[raw] ?? raw,
+  }, // 97.6% for years with real district-level data, now ~99%+ with PA_SPECIAL_CASES; 2024-25 has none (see above)
   // JHU's own tracking sheet flags TN explicitly: "'independent' HS should
   // be the only counts, remove 'church school' and 'totals'" — TN is the
   // only state in the workbook where total_enrollment_ count is actually
@@ -444,16 +731,60 @@ export const MAP_MATCHED = {
     countField: "independent_hs",
     geoPath: districtGeoPath("tn"),
     _preprocess: (raw) => TN_SPECIAL_CASES[raw] ?? raw,
+    // The Achievement School District is a real statewide special district
+    // (low-performing schools taken over by the state), not tied to one
+    // county — not a geographic region, same shape as LA's "RSD" above.
+    excludeNames: new Set(["Achievement School District (ASD)"]),
   }, // 97.9% before the Nashville/Clarksville fix, see decisions.md (2026-10-06)
   CO: { nameField: "district ", geoUnit: "district", geoPath: districtGeoPath("co") }, // 86.0%
-  WY: { nameField: "district ", geoUnit: "district", geoPath: districtGeoPath("wy") }, // 94.1%
+  // These 3 are real charter schools, not geographic districts — they draw
+  // students from across a wide area rather than belonging to any one real
+  // district polygon.
+  WY: {
+    nameField: "district ",
+    geoUnit: "district",
+    geoPath: districtGeoPath("wy"),
+    excludeNames: new Set([
+      "Cheyenne Classical Academy",
+      "Wyoming Classical Academy",
+      "Prairie View Community School",
+    ]),
+  }, // 94.1%
   RI: { nameField: "district ", geoUnit: "district", geoPath: districtGeoPath("ri") }, // 100%
-  MA: { nameField: "town ", geoUnit: "town", geoPath: districtGeoPath("ma", "towns") }, // 99.4%
+  MA: {
+    nameField: "town ",
+    geoUnit: "town",
+    geoPath: districtGeoPath("ma", "towns"),
+    // Manchester officially renamed itself Manchester-by-the-Sea in 1989;
+    // the real boundary file uses the post-rename name.
+    _preprocess: (raw) => (raw === "Manchester (non-op)" ? "Manchester-by-the-Sea" : raw),
+    // Devens is a real place but not an incorporated town — a state-run
+    // "regional enterprise zone" split across Ayer/Harvard/Shirley with no
+    // town government or single polygon of its own, so there's no real name
+    // to map it to (not a naming puzzle like Manchester above). "State"/
+    // "State Total" are MA's real grand-total row (see TOTAL_SENTINELS
+    // above, which now prefers it for the real yearTotal) — excluded here
+    // too so the region-matching loop doesn't separately try and fail to
+    // match it against a town.
+    excludeNames: new Set(["Devens (non-op)", "State", "State Total"]),
+  }, // 99.4%
   NH: {
     nameField: "district ",
     geoUnit: "district",
     geoPath: districtGeoPath("nh"),
     _preprocess: (raw) => NH_SPECIAL_CASES[raw] ?? raw,
+    // "SAU #23 French Pond"/"King Street School" are individual SCHOOL
+    // buildings, not districts — a one-year (2022), zero-value data
+    // artifact, not a real geographic region. "Goshen-Lempster Cooperative"
+    // (2011-2015 only) and "Pasquaney" (2025 only) are real but genuinely
+    // unmappable, not naming puzzles: Goshen-Lempster split into two
+    // separate real districts (Goshen, Lempster) in 2015 — no single
+    // current polygon is "correct" for its pre-split history, and
+    // attributing it to either one alone, or both, would misstate what that
+    // row actually reported. Pasquaney is a brand-new district (formed July
+    // 2025, split off from Newfound Area) — too new for the boundary file's
+    // vintage to have a polygon for yet. Left unmatched on purpose.
+    excludeNames: new Set(["SAU #23 French Pond", "SAU #23 King Street School"]),
   }, // 98.2%
   // NM's 2020 rows carry the richest statewide demographics in the whole
   // workbook (full K-12 grade, 3-way gender, 7-way race — checked against
@@ -466,7 +797,8 @@ export const MAP_MATCHED = {
     geoUnit: "district",
     pinnedYear: 2020,
     geoPath: districtGeoPath("nm"),
-  }, // 95.5%
+    _preprocess: (raw) => NM_SPECIAL_CASES[raw] ?? raw,
+  }, // 95.5%, higher with the accent-fold fix + NM_SPECIAL_CASES
   // Wisconsin's raw column truncates to a fixed length (same issue Nebraska's
   // counties had) — the generic mapper's prefix-match fallback handles it.
   // WI_SPECIAL_CASES above handles the real consolidations/renames and the
@@ -514,6 +846,15 @@ export const MAP_MATCHED = {
     nameField: "district ",
     geoUnit: "district",
     geoPath: districtGeoPath("me"),
+    // "Education in Unorganized Terr[itory]" is real (students across
+    // Maine's vast state-administered unorganized territories, which have no
+    // town government at all) but structurally has no single polygon to map
+    // to — the known, already-documented Unorganized-Territory granularity
+    // gap from the 2026-10-07 map investigation, not a naming puzzle.
+    // "NULL" is a literal placeholder value in the raw sheet, not a place —
+    // real for exactly one row (2023, 5 students), worth a tiny flag to JHU,
+    // but not something to guess a name for.
+    excludeNames: new Set(["Education in Unorganized Terr", "NULL"]),
     _preprocess: (raw) => {
       // Mount Desert is Maine's one same-key collision (same shape as TN/NH's
       // — two real entities, "Mount Desert" the town unit and "Mount Desert
@@ -648,7 +989,23 @@ function extractDemographics(latestYearRows) {
 // Carolina/Tennessee row with every geography column blank; a Minnesota row
 // tagged lcounty="All"/district="Total"). See isGrandTotalRow below.
 const GEO_COLUMNS = ["sau_name", "lea", "lcounty", "district ", "town ", "lcity"];
-const TOTAL_SENTINELS = new Set(["all", "total", "totals", "statewide", "grand total"]);
+// "state"/"state total" added 2026-10-12 — Massachusetts's rollup row uses
+// these, which weren't recognized, so isGrandTotalRow missed it and the
+// fallback sum-path double-counted every MA year except the latest (no
+// grand-total-row-preference kicked in, so the real per-town sum AND this
+// row's own identical total both got added). Confirmed before fixing: this
+// row's own value exactly equals the sum of that year's real town rows,
+// every year 2010-2023 — same bug shape as the Montana double-count already
+// fixed, just a sentinel word this set didn't have yet.
+const TOTAL_SENTINELS = new Set([
+  "all",
+  "total",
+  "totals",
+  "statewide",
+  "grand total",
+  "state",
+  "state total",
+]);
 
 export function isGrandTotalRow(row) {
   return GEO_COLUMNS.every((col) => {
@@ -718,6 +1075,7 @@ export function shapeState({
   pinnedYear,
   countField = "total_enrollment_ count",
   excludeNames,
+  excludeYears,
 }) {
   const rowsByYear = new Map(); // every dated row, keyed by raw sy_fall — also feeds demographics below
   for (const row of rows) {
@@ -774,6 +1132,15 @@ export function shapeState({
   for (const row of rows) {
     const year = row.sy_fall;
     if (year == null) continue;
+    // A year whose nameField column is KNOWN to hold the wrong thing (e.g.
+    // PA's 2024-25, where `lcounty`/`district ` swap meaning — see PA's
+    // config below) can't contribute real regions: skip the match entirely
+    // rather than let it run and silently attribute each raw value to
+    // whichever real place coincidentally shares that name. The state's
+    // real headline total for that year is unaffected (yearTotals above
+    // doesn't depend on a real match, just a non-blank cell) — only that
+    // year's region breakdown goes missing, same as any other real gap.
+    if (excludeYears?.has(year)) continue;
 
     const parsed = parseCount(row[countField]);
     if (!parsed) continue;
@@ -920,6 +1287,7 @@ function buildMapMatched(rows, code, cfg) {
     validNames,
     pinnedYear: cfg.pinnedYear,
     countField: cfg.countField,
+    excludeYears: cfg.excludeYears,
   });
   const reportingByYear = Object.fromEntries(
     Object.entries(shaped.reportingCountByYear).map(([yr, n]) => [yr, `${n} of ${validNames.size}`]),

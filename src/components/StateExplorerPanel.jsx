@@ -156,7 +156,7 @@ const SECTION_HEADING_CLASS =
 // missing filename fails with no .catch(), so `topo` never updates) rather
 // than erroring — caught live for Maine, 2026-10-07.
 const geoFileByState = {
-  GA: "ga-counties.json",
+  GA: "ga-districts.json",
   LA: "la-districts.json",
   AR: "ar-counties.json",
   FL: "fl-counties.json",
@@ -647,7 +647,7 @@ function RegionTable({ regions, unitLabel, height, selectedRegions = [], onToggl
                 </button>
               </TableCell>
               <TableCell className="px-3 py-1.5 text-right tabular-nums text-sable">
-                {r.value > 0 ? (
+                {r.value != null ? (
                   formatNumber(r.value)
                 ) : r.code ? (
                   // The raw sheet has a real row for this region, but a code
@@ -717,7 +717,7 @@ function RegionAddControl({ selectedCount, availableItems, valueByName, onAdd, o
                     <CommandItem key={name} value={name} onSelect={() => onAdd(name)}>
                       <span className="flex-1">{name}</span>
                       <span className="font-sans text-xs tabular-nums text-sable/70">
-                        {entry?.value > 0
+                        {entry?.value != null
                           ? formatNumber(entry.value)
                           : entry?.code ?? "not reported"}
                       </span>
