@@ -749,9 +749,20 @@ export function shapeState({
   // total with an older region/demographic breakdown.
   const latestYear = pinnedYear ?? Math.max(...yearTotals.keys());
   const latestLabel = yearLabel(latestYear);
-  const currentRoster = new Set(
-    normalized.filter((r) => r.year === latestYear).map((r) => r.name),
-  );
+
+  // Union of every year's matched names, not just latestYear's. Used to be
+  // `normalized.filter((r) => r.year === latestYear)` — any real district
+  // whose only gap happened to fall in that one anchor year vanished from
+  // the table entirely, not even as a dash. Found via New Mexico's Wagon
+  // Mound (first real row 2021, invisible because NM's anchor year was
+  // pinned to 2020) but turned out to affect every MAP_MATCHED state, not
+  // just NM — Maine alone recovered 11 real small-town/plantation districts
+  // with a one-year gap in whatever year was previously the anchor. Doesn't
+  // reintroduce decades-dead/consolidated entries: `validNames` (the
+  // CURRENT real boundary file) already gates every row before it reaches
+  // `normalized` above, so a name has to match a currently-real TIGER place
+  // in at least one year to get in here at all. See decisions.md, 2026-10-12.
+  const currentRoster = new Set(normalized.map((r) => r.name));
 
   // SUM, not overwrite: several states (Washington confirmed; likely others
   // using county as the display unit) have MULTIPLE raw rows per name per
