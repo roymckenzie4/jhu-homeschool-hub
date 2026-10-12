@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-08T17:07:40.745Z",
+  "generatedAt": "2026-10-08T17:33:36.479Z",
   "source": "/Users/roymckenzie/Active/work/jhu/notes/2026-10-02-combined-state-data-from-jhu-expanded.xlsx",
   "states": {
     "GA": {
@@ -2969,6 +2969,7 @@
           "codes": {}
         }
       ],
+      "demographicsByYear": {},
       "demographics": {},
       "name": "Georgia",
       "geoUnit": "county",
@@ -4168,6 +4169,7 @@
           "codes": {}
         }
       ],
+      "demographicsByYear": {},
       "demographics": {},
       "name": "Louisiana",
       "geoUnit": "district",
@@ -5468,6 +5470,268 @@
           "codes": {}
         }
       ],
+      "demographicsByYear": {
+        "2014–15": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 42
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 22
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 36
+            }
+          ],
+          "gender": [
+            {
+              "label": "Male",
+              "pct": 51
+            },
+            {
+              "label": "Female",
+              "pct": 49
+            }
+          ]
+        },
+        "2015–16": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 42
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 22
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 36
+            }
+          ],
+          "gender": [
+            {
+              "label": "Male",
+              "pct": 50
+            },
+            {
+              "label": "Female",
+              "pct": 50
+            }
+          ]
+        },
+        "2016–17": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 43
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 22
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 35
+            }
+          ],
+          "gender": [
+            {
+              "label": "Male",
+              "pct": 50
+            },
+            {
+              "label": "Female",
+              "pct": 50
+            }
+          ]
+        },
+        "2017–18": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 43
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 22
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 35
+            }
+          ],
+          "gender": [
+            {
+              "label": "Male",
+              "pct": 50
+            },
+            {
+              "label": "Female",
+              "pct": 50
+            }
+          ]
+        },
+        "2019–20": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 45
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 24
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 32
+            }
+          ],
+          "gender": [
+            {
+              "label": "Male",
+              "pct": 50
+            },
+            {
+              "label": "Female",
+              "pct": 50
+            }
+          ]
+        },
+        "2020–21": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 53
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 22
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 25
+            }
+          ],
+          "gender": [
+            {
+              "label": "Male",
+              "pct": 51
+            },
+            {
+              "label": "Female",
+              "pct": 49
+            }
+          ]
+        },
+        "2021–22": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 49
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 23
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 29
+            }
+          ],
+          "gender": [
+            {
+              "label": "Male",
+              "pct": 51
+            },
+            {
+              "label": "Female",
+              "pct": 49
+            }
+          ]
+        },
+        "2022–23": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 48
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 23
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 30
+            }
+          ],
+          "gender": [
+            {
+              "label": "Male",
+              "pct": 50
+            },
+            {
+              "label": "Female",
+              "pct": 50
+            }
+          ]
+        },
+        "2023–24": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 48
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 23
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 29
+            }
+          ],
+          "gender": [
+            {
+              "label": "Male",
+              "pct": 50
+            },
+            {
+              "label": "Female",
+              "pct": 50
+            }
+          ]
+        },
+        "2024–25": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 48
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 23
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 29
+            }
+          ],
+          "gender": [
+            {
+              "label": "Male",
+              "pct": 50
+            },
+            {
+              "label": "Female",
+              "pct": 50
+            }
+          ]
+        }
+      },
       "demographics": {
         "grade": [
           {
@@ -8466,6 +8730,7 @@
           "codes": {}
         }
       ],
+      "demographicsByYear": {},
       "demographics": {},
       "name": "Florida",
       "geoUnit": "county",
@@ -9431,6 +9696,7 @@
           "codes": {}
         }
       ],
+      "demographicsByYear": {},
       "demographics": {},
       "name": "Maryland",
       "geoUnit": "county",
@@ -10086,6 +10352,7 @@
           "codes": {}
         }
       ],
+      "demographicsByYear": {},
       "demographics": {},
       "name": "Minnesota",
       "geoUnit": "county",
@@ -10868,6 +11135,440 @@
           "codes": {}
         }
       ],
+      "demographicsByYear": {
+        "2018–19": {
+          "grade": [
+            {
+              "label": "Grades 1–8",
+              "pct": 77
+            },
+            {
+              "label": "Grades 9–12",
+              "pct": 23
+            }
+          ]
+        },
+        "2019–20": {
+          "grade": [
+            {
+              "label": "Grades 1–8",
+              "pct": 76
+            },
+            {
+              "label": "Grades 9–12",
+              "pct": 24
+            }
+          ]
+        },
+        "2020–21": {
+          "grade": [
+            {
+              "label": "Grades 1–8",
+              "pct": 83
+            },
+            {
+              "label": "Grades 9–12",
+              "pct": 17
+            }
+          ]
+        },
+        "2021–22": {
+          "grade": [
+            {
+              "label": "Grades 1–8",
+              "pct": 78
+            },
+            {
+              "label": "Grades 9–12",
+              "pct": 22
+            }
+          ]
+        },
+        "2022–23": {
+          "grade": [
+            {
+              "label": "Grades 1–8",
+              "pct": 76
+            },
+            {
+              "label": "Grades 9–12",
+              "pct": 24
+            }
+          ]
+        },
+        "2023–24": {
+          "grade": [
+            {
+              "label": "Grades 1–8",
+              "pct": 76
+            },
+            {
+              "label": "Grades 9–12",
+              "pct": 24
+            }
+          ]
+        },
+        "2024–25": {
+          "grade": [
+            {
+              "label": "Grades 1–8",
+              "pct": 75
+            },
+            {
+              "label": "Grades 9–12",
+              "pct": 25
+            }
+          ]
+        },
+        "2025–26": {
+          "grade": [
+            {
+              "label": "Grades 1–8",
+              "pct": 75
+            },
+            {
+              "label": "Grades 9–12",
+              "pct": 25
+            }
+          ]
+        },
+        "1990–91": {
+          "grade": [
+            {
+              "label": "Grades 1–8",
+              "pct": 88
+            },
+            {
+              "label": "Grades 9–12",
+              "pct": 12
+            }
+          ]
+        },
+        "1991–92": {
+          "grade": [
+            {
+              "label": "Grades 1–8",
+              "pct": 86
+            },
+            {
+              "label": "Grades 9–12",
+              "pct": 14
+            }
+          ]
+        },
+        "1992–93": {
+          "grade": [
+            {
+              "label": "Grades 1–8",
+              "pct": 85
+            },
+            {
+              "label": "Grades 9–12",
+              "pct": 15
+            }
+          ]
+        },
+        "1993–94": {
+          "grade": [
+            {
+              "label": "Grades 1–8",
+              "pct": 83
+            },
+            {
+              "label": "Grades 9–12",
+              "pct": 17
+            }
+          ]
+        },
+        "1994–95": {
+          "grade": [
+            {
+              "label": "Grades 1–8",
+              "pct": 85
+            },
+            {
+              "label": "Grades 9–12",
+              "pct": 15
+            }
+          ]
+        },
+        "1995–96": {
+          "grade": [
+            {
+              "label": "Grades 1–8",
+              "pct": 82
+            },
+            {
+              "label": "Grades 9–12",
+              "pct": 18
+            }
+          ]
+        },
+        "1996–97": {
+          "grade": [
+            {
+              "label": "Grades 1–8",
+              "pct": 81
+            },
+            {
+              "label": "Grades 9–12",
+              "pct": 19
+            }
+          ]
+        },
+        "1997–98": {
+          "grade": [
+            {
+              "label": "Grades 1–8",
+              "pct": 78
+            },
+            {
+              "label": "Grades 9–12",
+              "pct": 22
+            }
+          ]
+        },
+        "1998–99": {
+          "grade": [
+            {
+              "label": "Grades 1–8",
+              "pct": 77
+            },
+            {
+              "label": "Grades 9–12",
+              "pct": 23
+            }
+          ]
+        },
+        "1999–00": {
+          "grade": [
+            {
+              "label": "Grades 1–8",
+              "pct": 76
+            },
+            {
+              "label": "Grades 9–12",
+              "pct": 24
+            }
+          ]
+        },
+        "2000–01": {
+          "grade": [
+            {
+              "label": "Grades 1–8",
+              "pct": 75
+            },
+            {
+              "label": "Grades 9–12",
+              "pct": 25
+            }
+          ]
+        },
+        "2001–02": {
+          "grade": [
+            {
+              "label": "Grades 1–8",
+              "pct": 77
+            },
+            {
+              "label": "Grades 9–12",
+              "pct": 23
+            }
+          ]
+        },
+        "2002–03": {
+          "grade": [
+            {
+              "label": "Grades 1–8",
+              "pct": 76
+            },
+            {
+              "label": "Grades 9–12",
+              "pct": 24
+            }
+          ]
+        },
+        "2003–04": {
+          "grade": [
+            {
+              "label": "Grades 1–8",
+              "pct": 77
+            },
+            {
+              "label": "Grades 9–12",
+              "pct": 23
+            }
+          ]
+        },
+        "2004–05": {
+          "grade": [
+            {
+              "label": "Grades 1–8",
+              "pct": 76
+            },
+            {
+              "label": "Grades 9–12",
+              "pct": 24
+            }
+          ]
+        },
+        "2005–06": {
+          "grade": [
+            {
+              "label": "Grades 1–8",
+              "pct": 74
+            },
+            {
+              "label": "Grades 9–12",
+              "pct": 26
+            }
+          ]
+        },
+        "2006–07": {
+          "grade": [
+            {
+              "label": "Grades 1–8",
+              "pct": 76
+            },
+            {
+              "label": "Grades 9–12",
+              "pct": 24
+            }
+          ]
+        },
+        "2007–08": {
+          "grade": [
+            {
+              "label": "Grades 1–8",
+              "pct": 76
+            },
+            {
+              "label": "Grades 9–12",
+              "pct": 24
+            }
+          ]
+        },
+        "2008–09": {
+          "grade": [
+            {
+              "label": "Grades 1–8",
+              "pct": 75
+            },
+            {
+              "label": "Grades 9–12",
+              "pct": 25
+            }
+          ]
+        },
+        "2009–10": {
+          "grade": [
+            {
+              "label": "Grades 1–8",
+              "pct": 74
+            },
+            {
+              "label": "Grades 9–12",
+              "pct": 26
+            }
+          ]
+        },
+        "2010–11": {
+          "grade": [
+            {
+              "label": "Grades 1–8",
+              "pct": 74
+            },
+            {
+              "label": "Grades 9–12",
+              "pct": 26
+            }
+          ]
+        },
+        "2011–12": {
+          "grade": [
+            {
+              "label": "Grades 1–8",
+              "pct": 74
+            },
+            {
+              "label": "Grades 9–12",
+              "pct": 26
+            }
+          ]
+        },
+        "2012–13": {
+          "grade": [
+            {
+              "label": "Grades 1–8",
+              "pct": 74
+            },
+            {
+              "label": "Grades 9–12",
+              "pct": 26
+            }
+          ]
+        },
+        "2013–14": {
+          "grade": [
+            {
+              "label": "Grades 1–8",
+              "pct": 75
+            },
+            {
+              "label": "Grades 9–12",
+              "pct": 25
+            }
+          ]
+        },
+        "2014–15": {
+          "grade": [
+            {
+              "label": "Grades 1–8",
+              "pct": 75
+            },
+            {
+              "label": "Grades 9–12",
+              "pct": 25
+            }
+          ]
+        },
+        "2015–16": {
+          "grade": [
+            {
+              "label": "Grades 1–8",
+              "pct": 76
+            },
+            {
+              "label": "Grades 9–12",
+              "pct": 24
+            }
+          ]
+        },
+        "2016–17": {
+          "grade": [
+            {
+              "label": "Grades 1–8",
+              "pct": 76
+            },
+            {
+              "label": "Grades 9–12",
+              "pct": 24
+            }
+          ]
+        },
+        "2017–18": {
+          "grade": [
+            {
+              "label": "Grades 1–8",
+              "pct": 76
+            },
+            {
+              "label": "Grades 9–12",
+              "pct": 24
+            }
+          ]
+        }
+      },
       "demographics": {
         "grade": [
           {
@@ -12116,6 +12817,56 @@
           "codes": {}
         }
       ],
+      "demographicsByYear": {
+        "2022–23": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 53
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 24
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 23
+            }
+          ],
+          "gender": [
+            {
+              "label": "Male",
+              "pct": 51
+            },
+            {
+              "label": "Female",
+              "pct": 48
+            },
+            {
+              "label": "Other / not specified",
+              "pct": 1
+            }
+          ],
+          "race": [
+            {
+              "label": "White",
+              "pct": 69
+            },
+            {
+              "label": "Asian",
+              "pct": 2
+            },
+            {
+              "label": "Native American",
+              "pct": 7
+            },
+            {
+              "label": "Other / not specified",
+              "pct": 21
+            }
+          ]
+        }
+      },
       "demographics": {},
       "name": "North Dakota",
       "geoUnit": "county",
@@ -12986,6 +13737,7 @@
           "codes": {}
         }
       ],
+      "demographicsByYear": {},
       "demographics": {},
       "name": "Nebraska",
       "geoUnit": "county",
@@ -14238,6 +14990,7 @@
           "codes": {}
         }
       ],
+      "demographicsByYear": {},
       "demographics": {},
       "name": "Ohio",
       "geoUnit": "county",
@@ -15462,6 +16215,56 @@
           "codes": {}
         }
       ],
+      "demographicsByYear": {
+        "2002–03": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 44
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 31
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 24
+            }
+          ]
+        },
+        "2003–04": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 43
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 32
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 25
+            }
+          ]
+        },
+        "2000–01": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 45
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 31
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 24
+            }
+          ]
+        }
+      },
       "demographics": {},
       "name": "Washington",
       "geoUnit": "county",
@@ -19801,6 +20604,416 @@
           "codes": {}
         }
       ],
+      "demographicsByYear": {
+        "2025–26": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 43
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 25
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 32
+            }
+          ]
+        },
+        "2024–25": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 42
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 25
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 33
+            }
+          ]
+        },
+        "2023–24": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 43
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 25
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 32
+            }
+          ]
+        },
+        "2022–23": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 44
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 25
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 31
+            }
+          ]
+        },
+        "2021–22": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 45
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 25
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 30
+            }
+          ]
+        },
+        "2020–21": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 44
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 25
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 31
+            }
+          ]
+        },
+        "2019–20": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 40
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 26
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 34
+            }
+          ]
+        },
+        "2018–19": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 41
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 26
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 33
+            }
+          ]
+        },
+        "2017–18": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 42
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 26
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 32
+            }
+          ]
+        },
+        "2009–10": {
+          "gender": [
+            {
+              "label": "Male",
+              "pct": 52
+            },
+            {
+              "label": "Female",
+              "pct": 48
+            }
+          ]
+        },
+        "2008–09": {
+          "gender": [
+            {
+              "label": "Male",
+              "pct": 52
+            },
+            {
+              "label": "Female",
+              "pct": 48
+            }
+          ]
+        },
+        "2007–08": {
+          "gender": [
+            {
+              "label": "Male",
+              "pct": 52
+            },
+            {
+              "label": "Female",
+              "pct": 48
+            }
+          ]
+        },
+        "2006–07": {
+          "gender": [
+            {
+              "label": "Male",
+              "pct": 52
+            },
+            {
+              "label": "Female",
+              "pct": 48
+            }
+          ]
+        },
+        "2005–06": {
+          "gender": [
+            {
+              "label": "Male",
+              "pct": 52
+            },
+            {
+              "label": "Female",
+              "pct": 48
+            }
+          ]
+        },
+        "2004–05": {
+          "gender": [
+            {
+              "label": "Male",
+              "pct": 52
+            },
+            {
+              "label": "Female",
+              "pct": 48
+            }
+          ]
+        },
+        "2003–04": {
+          "gender": [
+            {
+              "label": "Male",
+              "pct": 52
+            },
+            {
+              "label": "Female",
+              "pct": 48
+            }
+          ]
+        },
+        "2002–03": {
+          "gender": [
+            {
+              "label": "Male",
+              "pct": 52
+            },
+            {
+              "label": "Female",
+              "pct": 48
+            }
+          ]
+        },
+        "2001–02": {
+          "gender": [
+            {
+              "label": "Male",
+              "pct": 52
+            },
+            {
+              "label": "Female",
+              "pct": 48
+            }
+          ]
+        },
+        "2000–01": {
+          "gender": [
+            {
+              "label": "Male",
+              "pct": 52
+            },
+            {
+              "label": "Female",
+              "pct": 48
+            }
+          ]
+        },
+        "1999–00": {
+          "gender": [
+            {
+              "label": "Male",
+              "pct": 52
+            },
+            {
+              "label": "Female",
+              "pct": 48
+            }
+          ]
+        },
+        "1998–99": {
+          "gender": [
+            {
+              "label": "Male",
+              "pct": 52
+            },
+            {
+              "label": "Female",
+              "pct": 48
+            }
+          ]
+        },
+        "1997–98": {
+          "gender": [
+            {
+              "label": "Male",
+              "pct": 52
+            },
+            {
+              "label": "Female",
+              "pct": 48
+            }
+          ]
+        },
+        "1996–97": {
+          "gender": [
+            {
+              "label": "Male",
+              "pct": 52
+            },
+            {
+              "label": "Female",
+              "pct": 48
+            }
+          ]
+        },
+        "1995–96": {
+          "gender": [
+            {
+              "label": "Male",
+              "pct": 52
+            },
+            {
+              "label": "Female",
+              "pct": 48
+            }
+          ]
+        },
+        "1994–95": {
+          "gender": [
+            {
+              "label": "Male",
+              "pct": 52
+            },
+            {
+              "label": "Female",
+              "pct": 48
+            }
+          ]
+        },
+        "1993–94": {
+          "gender": [
+            {
+              "label": "Male",
+              "pct": 52
+            },
+            {
+              "label": "Female",
+              "pct": 48
+            }
+          ]
+        },
+        "1992–93": {
+          "gender": [
+            {
+              "label": "Male",
+              "pct": 52
+            },
+            {
+              "label": "Female",
+              "pct": 48
+            }
+          ]
+        },
+        "1991–92": {
+          "gender": [
+            {
+              "label": "Male",
+              "pct": 51
+            },
+            {
+              "label": "Female",
+              "pct": 49
+            }
+          ]
+        },
+        "1990–91": {
+          "gender": [
+            {
+              "label": "Male",
+              "pct": 52
+            },
+            {
+              "label": "Female",
+              "pct": 48
+            }
+          ]
+        },
+        "1989–90": {
+          "gender": [
+            {
+              "label": "Male",
+              "pct": 51
+            },
+            {
+              "label": "Female",
+              "pct": 49
+            }
+          ]
+        },
+        "1988–89": {
+          "gender": [
+            {
+              "label": "Male",
+              "pct": 51
+            },
+            {
+              "label": "Female",
+              "pct": 49
+            }
+          ]
+        }
+      },
       "demographics": {
         "grade": [
           {
@@ -20944,6 +22157,184 @@
           "codes": {}
         }
       ],
+      "demographicsByYear": {
+        "2015–16": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 49
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 25
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 25
+            }
+          ]
+        },
+        "2016–17": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 49
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 25
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 25
+            }
+          ]
+        },
+        "2017–18": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 49
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 25
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 26
+            }
+          ]
+        },
+        "2018–19": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 48
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 25
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 26
+            }
+          ]
+        },
+        "2019–20": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 47
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 26
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 27
+            }
+          ]
+        },
+        "2020–21": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 57
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 23
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 21
+            }
+          ]
+        },
+        "2021–22": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 53
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 24
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 23
+            }
+          ]
+        },
+        "2022–23": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 52
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 24
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 24
+            }
+          ]
+        },
+        "2023–24": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 52
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 24
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 24
+            }
+          ]
+        },
+        "2024–25": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 51
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 24
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 24
+            }
+          ]
+        },
+        "2025–26": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 52
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 24
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 24
+            }
+          ]
+        }
+      },
       "demographics": {
         "grade": [
           {
@@ -23961,6 +25352,248 @@
           "codes": {}
         }
       ],
+      "demographicsByYear": {
+        "2011–12": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 53
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 24
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 23
+            }
+          ]
+        },
+        "2012–13": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 52
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 24
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 24
+            }
+          ]
+        },
+        "2013–14": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 52
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 23
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 26
+            }
+          ]
+        },
+        "2014–15": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 53
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 23
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 24
+            }
+          ]
+        },
+        "2015–16": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 54
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 23
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 24
+            }
+          ]
+        },
+        "2016–17": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 53
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 23
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 24
+            }
+          ]
+        },
+        "2017–18": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 52
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 23
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 25
+            }
+          ]
+        },
+        "2018–19": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 50
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 24
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 26
+            }
+          ]
+        },
+        "2019–20": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 50
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 24
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 26
+            }
+          ]
+        },
+        "2020–21": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 55
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 22
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 23
+            }
+          ]
+        },
+        "2021–22": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 53
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 23
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 25
+            }
+          ]
+        },
+        "2022–23": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 46
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 23
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 31
+            }
+          ]
+        },
+        "2023–24": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 43
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 23
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 34
+            }
+          ]
+        },
+        "2024–25": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 42
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 23
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 35
+            }
+          ]
+        },
+        "2025–26": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 40
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 24
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 36
+            }
+          ]
+        }
+      },
       "demographics": {
         "grade": [
           {
@@ -39221,6 +40854,7 @@
           "codes": {}
         }
       ],
+      "demographicsByYear": {},
       "demographics": {},
       "name": "New York",
       "geoUnit": "district",
@@ -42927,6 +44561,7 @@
           "codes": {}
         }
       ],
+      "demographicsByYear": {},
       "demographics": {},
       "name": "Pennsylvania",
       "geoUnit": "district",
@@ -44788,6 +46423,7 @@
           }
         }
       ],
+      "demographicsByYear": {},
       "demographics": {},
       "name": "Tennessee",
       "geoUnit": "district",
@@ -48493,6 +50129,7 @@
           "codes": {}
         }
       ],
+      "demographicsByYear": {},
       "demographics": {},
       "name": "Colorado",
       "geoUnit": "district",
@@ -49148,6 +50785,7 @@
           "codes": {}
         }
       ],
+      "demographicsByYear": {},
       "demographics": {},
       "name": "Wyoming",
       "geoUnit": "district",
@@ -50228,6 +51866,7 @@
           "codes": {}
         }
       ],
+      "demographicsByYear": {},
       "demographics": {},
       "name": "Rhode Island",
       "geoUnit": "district",
@@ -57527,6 +59166,7 @@
           "codes": {}
         }
       ],
+      "demographicsByYear": {},
       "demographics": {},
       "name": "Massachusetts",
       "geoUnit": "town",
@@ -60882,6 +62522,408 @@
           "codes": {}
         }
       ],
+      "demographicsByYear": {
+        "2012–13": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 40
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 28
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 32
+            }
+          ]
+        },
+        "2013–14": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 38
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 28
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 35
+            }
+          ]
+        },
+        "2014–15": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 36
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 27
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 37
+            }
+          ]
+        },
+        "2015–16": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 34
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 27
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 39
+            }
+          ]
+        },
+        "2016–17": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 34
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 24
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 41
+            }
+          ]
+        },
+        "2017–18": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 34
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 25
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 42
+            }
+          ]
+        },
+        "2018–19": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 35
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 24
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 41
+            }
+          ]
+        },
+        "2019–20": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 33
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 26
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 41
+            }
+          ]
+        },
+        "2020–21": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 61
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 21
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 18
+            }
+          ]
+        },
+        "2021–22": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 52
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 21
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 26
+            }
+          ]
+        },
+        "2022–23": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 39
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 23
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 38
+            }
+          ]
+        },
+        "2023–24": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 39
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 24
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 38
+            }
+          ]
+        },
+        "2024–25": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 36
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 23
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 40
+            }
+          ]
+        },
+        "2025–26": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 35
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 24
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 41
+            }
+          ]
+        },
+        "2011–12": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 43
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 29
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 28
+            }
+          ]
+        },
+        "2001–02": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 52
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 31
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 18
+            }
+          ]
+        },
+        "2002–03": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 51
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 28
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 21
+            }
+          ]
+        },
+        "2003–04": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 52
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 30
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 18
+            }
+          ]
+        },
+        "2004–05": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 50
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 30
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 20
+            }
+          ]
+        },
+        "2005–06": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 50
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 31
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 19
+            }
+          ]
+        },
+        "2006–07": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 51
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 29
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 20
+            }
+          ]
+        },
+        "2007–08": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 51
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 29
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 20
+            }
+          ]
+        },
+        "2008–09": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 49
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 30
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 21
+            }
+          ]
+        },
+        "2009–10": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 46
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 28
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 25
+            }
+          ]
+        },
+        "2010–11": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 43
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 29
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 28
+            }
+          ]
+        }
+      },
       "demographics": {
         "grade": [
           {
@@ -61949,6 +63991,270 @@
           }
         }
       ],
+      "demographicsByYear": {
+        "2019–20": {
+          "gender": [
+            {
+              "label": "Male",
+              "pct": 38
+            },
+            {
+              "label": "Female",
+              "pct": 35
+            },
+            {
+              "label": "Other / not specified",
+              "pct": 28
+            }
+          ]
+        },
+        "2020–21": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 63
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 22
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 16
+            }
+          ],
+          "gender": [
+            {
+              "label": "Male",
+              "pct": 51
+            },
+            {
+              "label": "Female",
+              "pct": 48
+            },
+            {
+              "label": "Other / not specified",
+              "pct": 1
+            }
+          ],
+          "race": [
+            {
+              "label": "White",
+              "pct": 40
+            },
+            {
+              "label": "Black",
+              "pct": 2
+            },
+            {
+              "label": "Asian",
+              "pct": 1
+            },
+            {
+              "label": "Native American",
+              "pct": 3
+            },
+            {
+              "label": "Other / not specified",
+              "pct": 54
+            }
+          ]
+        },
+        "2021–22": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 57
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 23
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 20
+            }
+          ],
+          "gender": [
+            {
+              "label": "Male",
+              "pct": 51
+            },
+            {
+              "label": "Female",
+              "pct": 49
+            },
+            {
+              "label": "Other / not specified",
+              "pct": 1
+            }
+          ],
+          "race": [
+            {
+              "label": "White",
+              "pct": 37
+            },
+            {
+              "label": "Black",
+              "pct": 2
+            },
+            {
+              "label": "Asian",
+              "pct": 1
+            },
+            {
+              "label": "Native American",
+              "pct": 4
+            },
+            {
+              "label": "Multiracial",
+              "pct": 1
+            },
+            {
+              "label": "Other / not specified",
+              "pct": 56
+            }
+          ]
+        },
+        "2022–23": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 54
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 24
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 22
+            }
+          ],
+          "gender": [
+            {
+              "label": "Male",
+              "pct": 51
+            },
+            {
+              "label": "Female",
+              "pct": 49
+            }
+          ],
+          "race": [
+            {
+              "label": "White",
+              "pct": 41
+            },
+            {
+              "label": "Black",
+              "pct": 2
+            },
+            {
+              "label": "Asian",
+              "pct": 1
+            },
+            {
+              "label": "Native American",
+              "pct": 4
+            },
+            {
+              "label": "Multiracial",
+              "pct": 1
+            },
+            {
+              "label": "Other / not specified",
+              "pct": 51
+            }
+          ]
+        },
+        "2023–24": {
+          "gender": [
+            {
+              "label": "Male",
+              "pct": 51
+            },
+            {
+              "label": "Female",
+              "pct": 47
+            },
+            {
+              "label": "Other / not specified",
+              "pct": 2
+            }
+          ],
+          "race": [
+            {
+              "label": "White",
+              "pct": 65
+            },
+            {
+              "label": "Black",
+              "pct": 3
+            },
+            {
+              "label": "Asian",
+              "pct": 1
+            },
+            {
+              "label": "Native American",
+              "pct": 7
+            },
+            {
+              "label": "Other / not specified",
+              "pct": 23
+            }
+          ]
+        },
+        "2024–25": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 53
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 24
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 23
+            }
+          ],
+          "gender": [
+            {
+              "label": "Male",
+              "pct": 51
+            },
+            {
+              "label": "Female",
+              "pct": 48
+            },
+            {
+              "label": "Other / not specified",
+              "pct": 1
+            }
+          ],
+          "race": [
+            {
+              "label": "White",
+              "pct": 69
+            },
+            {
+              "label": "Asian",
+              "pct": 2
+            },
+            {
+              "label": "Native American",
+              "pct": 7
+            },
+            {
+              "label": "Other / not specified",
+              "pct": 21
+            }
+          ]
+        }
+      },
       "demographics": {
         "grade": [
           {
@@ -72538,6 +74844,680 @@
           }
         }
       ],
+      "demographicsByYear": {
+        "2007–08": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 42
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 25
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 32
+            }
+          ]
+        },
+        "2008–09": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 43
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 26
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 31
+            }
+          ]
+        },
+        "2009–10": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 44
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 26
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 30
+            }
+          ]
+        },
+        "2010–11": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 43
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 26
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 31
+            }
+          ]
+        },
+        "2011–12": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 45
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 26
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 30
+            }
+          ]
+        },
+        "2012–13": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 45
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 26
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 29
+            }
+          ]
+        },
+        "2013–14": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 45
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 25
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 30
+            }
+          ]
+        },
+        "2014–15": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 44
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 26
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 30
+            }
+          ]
+        },
+        "2015–16": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 46
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 26
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 29
+            }
+          ]
+        },
+        "2016–17": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 45
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 25
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 30
+            }
+          ]
+        },
+        "2017–18": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 44
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 25
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 31
+            }
+          ]
+        },
+        "2018–19": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 43
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 27
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 31
+            }
+          ]
+        },
+        "2019–20": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 43
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 26
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 31
+            }
+          ]
+        },
+        "2020–21": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 55
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 24
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 21
+            }
+          ]
+        },
+        "2021–22": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 46
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 26
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 28
+            }
+          ]
+        },
+        "2022–23": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 44
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 25
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 31
+            }
+          ]
+        },
+        "2023–24": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 43
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 27
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 31
+            }
+          ]
+        },
+        "2024–25": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 44
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 26
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 31
+            }
+          ]
+        },
+        "2025–26": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 45
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 25
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 30
+            }
+          ]
+        },
+        "1984–85": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 66
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 22
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 12
+            }
+          ]
+        },
+        "1985–86": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 65
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 22
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 14
+            }
+          ]
+        },
+        "1986–87": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 66
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 22
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 12
+            }
+          ]
+        },
+        "1987–88": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 64
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 22
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 14
+            }
+          ]
+        },
+        "1988–89": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 61
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 22
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 16
+            }
+          ]
+        },
+        "1989–90": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 57
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 22
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 21
+            }
+          ]
+        },
+        "1990–91": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 54
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 23
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 23
+            }
+          ]
+        },
+        "1991–92": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 52
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 24
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 24
+            }
+          ]
+        },
+        "1992–93": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 50
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 24
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 26
+            }
+          ]
+        },
+        "1993–94": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 47
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 25
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 28
+            }
+          ]
+        },
+        "1994–95": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 44
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 25
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 31
+            }
+          ]
+        },
+        "1995–96": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 43
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 24
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 33
+            }
+          ]
+        },
+        "1996–97": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 43
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 24
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 33
+            }
+          ]
+        },
+        "1997–98": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 41
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 24
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 34
+            }
+          ]
+        },
+        "1998–99": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 41
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 25
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 34
+            }
+          ]
+        },
+        "1999–00": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 40
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 25
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 35
+            }
+          ]
+        },
+        "2000–01": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 41
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 24
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 35
+            }
+          ]
+        },
+        "2001–02": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 40
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 25
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 35
+            }
+          ]
+        },
+        "2002–03": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 41
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 25
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 34
+            }
+          ]
+        },
+        "2003–04": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 41
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 25
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 34
+            }
+          ]
+        },
+        "2004–05": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 42
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 25
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 33
+            }
+          ]
+        },
+        "2005–06": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 41
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 25
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 33
+            }
+          ]
+        },
+        "2006–07": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 41
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 26
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 33
+            }
+          ]
+        }
+      },
       "demographics": {
         "grade": [
           {
@@ -74729,6 +77709,7 @@
           "codes": {}
         }
       ],
+      "demographicsByYear": {},
       "demographics": {},
       "name": "Maine",
       "geoUnit": "district",
@@ -74820,6 +77801,450 @@
           "codes": {}
         }
       ],
+      "demographicsByYear": {
+        "2009–10": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 41
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 26
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 33
+            }
+          ],
+          "gender": [
+            {
+              "label": "Male",
+              "pct": 50
+            },
+            {
+              "label": "Female",
+              "pct": 50
+            }
+          ]
+        },
+        "2010–11": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 43
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 29
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 28
+            }
+          ],
+          "gender": [
+            {
+              "label": "Male",
+              "pct": 53
+            },
+            {
+              "label": "Female",
+              "pct": 47
+            }
+          ]
+        },
+        "2011–12": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 47
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 26
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 27
+            }
+          ],
+          "gender": [
+            {
+              "label": "Male",
+              "pct": 50
+            },
+            {
+              "label": "Female",
+              "pct": 50
+            }
+          ]
+        },
+        "2012–13": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 46
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 27
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 27
+            }
+          ],
+          "gender": [
+            {
+              "label": "Male",
+              "pct": 51
+            },
+            {
+              "label": "Female",
+              "pct": 49
+            }
+          ]
+        },
+        "2013–14": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 48
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 26
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 26
+            }
+          ],
+          "gender": [
+            {
+              "label": "Male",
+              "pct": 52
+            },
+            {
+              "label": "Female",
+              "pct": 48
+            }
+          ]
+        },
+        "2014–15": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 53
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 28
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 19
+            }
+          ],
+          "gender": [
+            {
+              "label": "Male",
+              "pct": 52
+            },
+            {
+              "label": "Female",
+              "pct": 48
+            }
+          ]
+        },
+        "2015–16": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 58
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 25
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 17
+            }
+          ],
+          "gender": [
+            {
+              "label": "Male",
+              "pct": 53
+            },
+            {
+              "label": "Female",
+              "pct": 47
+            }
+          ]
+        },
+        "2016–17": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 52
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 27
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 21
+            }
+          ],
+          "gender": [
+            {
+              "label": "Male",
+              "pct": 52
+            },
+            {
+              "label": "Female",
+              "pct": 48
+            }
+          ]
+        },
+        "2017–18": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 54
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 25
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 21
+            }
+          ],
+          "gender": [
+            {
+              "label": "Male",
+              "pct": 52
+            },
+            {
+              "label": "Female",
+              "pct": 48
+            }
+          ]
+        },
+        "2018–19": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 54
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 27
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 20
+            }
+          ],
+          "gender": [
+            {
+              "label": "Male",
+              "pct": 52
+            },
+            {
+              "label": "Female",
+              "pct": 48
+            }
+          ]
+        },
+        "2019–20": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 58
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 24
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 18
+            }
+          ],
+          "gender": [
+            {
+              "label": "Male",
+              "pct": 51
+            },
+            {
+              "label": "Female",
+              "pct": 49
+            }
+          ]
+        },
+        "2020–21": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 65
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 26
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 8
+            }
+          ],
+          "gender": [
+            {
+              "label": "Male",
+              "pct": 52
+            },
+            {
+              "label": "Female",
+              "pct": 48
+            }
+          ]
+        },
+        "2021–22": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 66
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 21
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 13
+            }
+          ],
+          "gender": [
+            {
+              "label": "Male",
+              "pct": 52
+            },
+            {
+              "label": "Female",
+              "pct": 48
+            }
+          ]
+        },
+        "2022–23": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 65
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 21
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 15
+            }
+          ],
+          "gender": [
+            {
+              "label": "Male",
+              "pct": 52
+            },
+            {
+              "label": "Female",
+              "pct": 48
+            }
+          ]
+        },
+        "2023–24": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 64
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 22
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 14
+            }
+          ],
+          "gender": [
+            {
+              "label": "Male",
+              "pct": 52
+            },
+            {
+              "label": "Female",
+              "pct": 48
+            }
+          ]
+        },
+        "2024–25": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 62
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 23
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 14
+            }
+          ],
+          "gender": [
+            {
+              "label": "Male",
+              "pct": 52
+            },
+            {
+              "label": "Female",
+              "pct": 48
+            }
+          ]
+        },
+        "2025–26": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 62
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 23
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 15
+            }
+          ],
+          "gender": [
+            {
+              "label": "Male",
+              "pct": 51
+            },
+            {
+              "label": "Female",
+              "pct": 49
+            }
+          ]
+        }
+      },
       "demographics": {
         "grade": [
           {

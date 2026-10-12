@@ -753,19 +753,11 @@ export default function StateExplorerPanel({
   onClearRegions,
 }) {
   const state = states[stateKey];
-  const demoKeys = Object.keys(state.demographics);
-
-  // Not reset via useEffect on stateKey change — self-heals instead: if the
-  // previously-picked category doesn't exist for the newly-selected state,
-  // fall back to that state's first available category (or none).
-  const [pickedDemo, setPickedDemo] = useState(demoKeys[0] ?? null);
-  const activeDemo = demoKeys.includes(pickedDemo) ? pickedDemo : demoKeys[0] ?? null;
 
   // Every year that appears in ANY region's `values` for this state, plus
-  // state.year itself (covers the no-regions case, e.g. Delaware). Same
-  // self-heal pattern as pickedDemo above — switching to a state that
-  // doesn't have the previously-picked year falls back to its own latest
-  // year rather than erroring.
+  // state.year itself (covers the no-regions case, e.g. Delaware). Self-heals
+  // on state switch — a state that doesn't have the previously-picked year
+  // falls back to its own latest year rather than erroring.
   const availableYears = useMemo(() => {
     const years = new Set([state.year]);
     for (const r of state.regions ?? []) {
@@ -776,6 +768,26 @@ export default function StateExplorerPanel({
   }, [state.regions, state.year]);
   const [pickedYear, setPickedYear] = useState(state.year);
   const activeYear = availableYears.includes(pickedYear) ? pickedYear : state.year;
+
+  // Demographics are extracted per year at build time — not every year has
+  // any (a year with no grade/gender/race columns populated anywhere in its
+  // rows extracts to {}). `demographicsByYear` is the real per-year map;
+  // `state.demographics` (the old single/default-year field) is the fallback
+  // for a hand-entered state that predates it (e.g. Delaware).
+  const demographicsForYear =
+    state.demographicsByYear?.[activeYear] ??
+    (activeYear === state.year ? state.demographics : {});
+  const demoKeys = Object.keys(demographicsForYear);
+  // Distinguishes "this state never reports demographics" from "this
+  // particular year doesn't have any" — the empty-state copy below reads
+  // very differently for the two.
+  const hasDemographicsAnyYear = Object.keys(state.demographicsByYear ?? {}).length > 0;
+
+  // Not reset via useEffect on stateKey/year change — self-heals instead: if
+  // the previously-picked category doesn't exist for the newly-active
+  // state/year, fall back to the first available category for it (or none).
+  const [pickedDemo, setPickedDemo] = useState(demoKeys[0] ?? null);
+  const activeDemo = demoKeys.includes(pickedDemo) ? pickedDemo : demoKeys[0] ?? null;
 
   // This was the one seam the multi-year `values` shape was always built
   // for (see valueForYear's own doc comment) — RegionMap/RegionTable both
@@ -971,11 +983,13 @@ export default function StateExplorerPanel({
           <div className="mt-3" style={{ height: ENROLLMENT_TABLE_HEIGHT }}>
             {demoKeys.length === 0 ? (
               <DataPlaceholder height={ENROLLMENT_TABLE_HEIGHT}>
-                {state.name} does not yet report a demographic breakdown.
+                {hasDemographicsAnyYear
+                  ? `No demographic breakdown reported for ${activeYear}.`
+                  : `${state.name} does not yet report a demographic breakdown.`}
               </DataPlaceholder>
             ) : (
               <div className="flex h-full flex-col justify-center gap-2.5 overflow-y-auto">
-                {state.demographics[activeDemo].map((row, i) => {
+                {demographicsForYear[activeDemo].map((row, i) => {
                   const isOther = /other|not specified/i.test(row.label);
                   const color = isOther ? COLORS.nonReportingStripe : comparisonColor(i);
                   return (

@@ -805,11 +805,24 @@ export function shapeState({
   // byte-identical output for all of them — only Hawaii's underlying sums
   // change (the displayed percentages don't, since they were already
   // coincidentally right). See decisions.md, 2026-10-07.
-  const yearRows = rowsByYear.get(latestYear) ?? [];
-  const statewideDemoRows = yearRows.filter((r) => isGrandTotalRow(r) && hasAnyDemographics(r));
-  const demoRows = statewideDemoRows.length
-    ? statewideDemoRows
-    : yearRows.filter((r) => !isGrandTotalRow(r));
+  //
+  // Computed per year (2026-10-08), not just latestYear — same row-selection
+  // rule applied independently to every year in rowsByYear, so the panel can
+  // show whichever year the selector is actually on instead of freezing to
+  // the default/pinned year. A year with no demographic columns at all
+  // anywhere in its rows (extractDemographics returns {}) is simply absent
+  // from demographicsByYear — the frontend falls back/grays out for those.
+  const demographicsByYear = {};
+  for (const [year, yearRowsForYear] of rowsByYear) {
+    const statewideDemoRows = yearRowsForYear.filter(
+      (r) => isGrandTotalRow(r) && hasAnyDemographics(r),
+    );
+    const demoRowsForYear = statewideDemoRows.length
+      ? statewideDemoRows
+      : yearRowsForYear.filter((r) => !isGrandTotalRow(r));
+    const demo = extractDemographics(demoRowsForYear);
+    if (Object.keys(demo).length) demographicsByYear[yearLabel(year)] = demo;
+  }
 
   // Per year, not just latestYear, so the UI's "N of M reporting" line can
   // track the year selector instead of staying frozen at whichever count
@@ -823,7 +836,11 @@ export function shapeState({
     total: yearTotals.get(latestYear),
     reportingCountByYear,
     regions,
-    demographics: extractDemographics(demoRows),
+    demographicsByYear,
+    // Default/latest-year view — kept so anything not yet reading
+    // demographicsByYear (or a hand-entered state with no per-year data)
+    // still gets a sensible single breakdown.
+    demographics: demographicsByYear[latestLabel] ?? {},
   };
 }
 
