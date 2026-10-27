@@ -29,7 +29,6 @@
  */
 
 import { readFileSync } from "node:fs";
-import * as XLSX from "xlsx";
 import {
   SOURCE_PATH,
   MAP_MATCHED,
@@ -38,10 +37,14 @@ import {
   shapeState,
   geoNames,
   isGrandTotalRow,
+  readRawRows,
+  withDelawareDistrictTotal,
 } from "./build-state-explorer-snapshot.mjs";
 
-const wb = XLSX.read(readFileSync(SOURCE_PATH), { type: "buffer" });
-const allRows = XLSX.utils.sheet_to_json(wb.Sheets["raw data"], { defval: null, range: 1 });
+// withDelawareDistrictTotal: DE's countField is a synthetic column (see its
+// own doc comment) that only exists after this transform — without it, DE
+// audits as a false-clean 0-vs-0 rather than a real check.
+const allRows = withDelawareDistrictTotal(readRawRows(readFileSync(SOURCE_PATH)));
 
 // One row per (state, year) — every year the state has a real total for,
 // not just its default/latest year.

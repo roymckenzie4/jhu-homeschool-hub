@@ -638,6 +638,18 @@ export const MAP_MATCHED = {
     geoPath: LA_GEO_PATH,
     excludeNames: new Set(["RSD"]),
   },
+  // Built 2026-10-27 — Delaware was the last unbuilt state, blocked until
+  // Genny confirmed single_family/multi_family are real student counts (see
+  // withDelawareDistrictTotal above for the derived countField). The two
+  // non-geographic rollup rows ("Out of State Student", "Out-of-State or Did
+  // not Report") are real students, just not a Delaware district.
+  DE: {
+    nameField: "district ",
+    geoUnit: "district",
+    geoPath: districtGeoPath("de"),
+    countField: "_de_district_total",
+    excludeNames: new Set(["Out of State Student", "Out-of-State or Did not Report"]),
+  },
   AR: { nameField: "lcounty", geoUnit: "county", geoPath: countyGeoPath("ar") },
   FL: { nameField: "lcounty", geoUnit: "county", geoPath: countyGeoPath("fl") },
   MD: { nameField: "lea", geoUnit: "county", geoPath: countyGeoPath("md") },
@@ -645,7 +657,16 @@ export const MAP_MATCHED = {
   MT: { nameField: "lcounty", geoUnit: "county", geoPath: countyGeoPath("mt") },
   ND: { nameField: "lcounty", geoUnit: "county", geoPath: countyGeoPath("nd") },
   NE: { nameField: "lcounty", geoUnit: "county", geoPath: countyGeoPath("ne") },
-  OH: { nameField: "lcounty", geoUnit: "county", geoPath: countyGeoPath("oh") },
+  // Switched county -> district 2026-10-27, Genny green-lit (STATUS.md
+  // Open Questions, "Ohio's county tag is missing for 2014-16"): Ohio
+  // reports at district grain every year 2014-2024, but JHU only tags each
+  // row with its containing county from 2017 on — the county view's year
+  // selector silently started at 2017 for exactly that reason. District is
+  // Ohio's own native, every-year unit, so this shows the full history
+  // honestly instead. districts.json built from TIGER2024's UNSD product
+  // (FIPS 39, no ELSD/SCSD — Census 404s those, same as several other
+  // district states), same recipe as Georgia/Louisiana. 611 real features.
+  OH: { nameField: "district ", geoUnit: "district", geoPath: districtGeoPath("oh") },
   WA: { nameField: "lcounty", geoUnit: "county", geoPath: countyGeoPath("wa") },
   // Labeled "district " in the raw column, but its 100 distinct names are
   // North Carolina's actual 100 counties (confirmed against JHU's own
@@ -1292,6 +1313,7 @@ function buildMapMatched(rows, code, cfg) {
     pinnedYear: cfg.pinnedYear,
     countField: cfg.countField,
     excludeYears: cfg.excludeYears,
+    excludeNames: cfg.excludeNames,
   });
   const reportingByYear = Object.fromEntries(
     Object.entries(shaped.reportingCountByYear).map(([yr, n]) => [yr, `${n} of ${validNames.size}`]),
@@ -1332,6 +1354,26 @@ function buildListOnly(rows, code, cfg) {
   };
 }
 
+// Delaware's district-level rows report two separate pieces that sum to the
+// real per-district student count — single_family + multi_family. The
+// codebook called these FAMILY/program counts; Genny confirmed 2026-10-27
+// both are actually real STUDENT counts (the codebook was wrong), which is
+// what makes a normal student-count map possible here. No single raw column
+// holds the combined number, so synthesize one before parseCount ever sees
+// it — restricted to rows that actually carry a district name, so this
+// doesn't touch Delaware's separate, still-unsettled STATE-level total (four
+// overlapping candidate rows across state-level-only rows with no district
+// name — to be worked out with JHU, see STATUS.md). See decisions.md,
+// 2026-10-07, 2026-10-12, 2026-10-27.
+export function withDelawareDistrictTotal(rows) {
+  return rows.map((row) => {
+    if (row.lstate !== "DE" || row["district "] == null) return row;
+    const sf = typeof row.single_family === "number" ? row.single_family : 0;
+    const mf = typeof row.multi_family === "number" ? row.multi_family : 0;
+    return { ...row, _de_district_total: sf + mf };
+  });
+}
+
 // Reads the workbook's long-format "raw data" tab (row 0 is a banner, row 1
 // is the real header) from raw bytes — shared by the local manual-file CLI
 // below and fetch-state-explorer-snapshot.mjs's live Drive pull, so both read
@@ -1349,6 +1391,8 @@ export function readRawRows(buf) {
 // the local manual-file CLI below and the live Drive-fetch script, so a
 // source swap can't drift the two build paths apart.
 export function buildStates(rows) {
+  rows = withDelawareDistrictTotal(rows);
+
   const states = {};
   for (const [code, cfg] of Object.entries(MAP_MATCHED)) {
     states[code] = buildMapMatched(rows, code, cfg);

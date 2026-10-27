@@ -156,6 +156,7 @@ const SECTION_HEADING_CLASS =
 // missing filename fails with no .catch(), so `topo` never updates) rather
 // than erroring — caught live for Maine, 2026-10-07.
 const geoFileByState = {
+  DE: "de-districts.json",
   GA: "ga-districts.json",
   LA: "la-districts.json",
   AR: "ar-counties.json",
@@ -165,7 +166,7 @@ const geoFileByState = {
   MT: "mt-counties.json",
   ND: "nd-counties.json",
   NE: "ne-counties.json",
-  OH: "oh-counties.json",
+  OH: "oh-districts.json",
   WA: "wa-counties.json",
   NC: "nc-counties.json",
   SC: "sc-districts.json",
