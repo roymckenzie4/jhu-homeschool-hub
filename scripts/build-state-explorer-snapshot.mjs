@@ -619,6 +619,32 @@ function districtGeoPath(abbr, unit = "districts") {
 // States with a real published boundary file + a name-normalization function
 // to join the workbook's raw unit names to that geometry.
 export const MAP_MATCHED = {
+  // Built 2026-10-27 — the last LIST_ONLY state. "Confirmed the real Census
+  // source has exactly ONE feature for Hawaii" was true (still is) for the
+  // FEDERAL TIGER product specifically — Hawaii is legally one statewide
+  // school district, so there's no federal sub-state boundary to draw from.
+  // But Hawaii's own state GIS program (geodata.hawaii.gov) separately
+  // publishes real HIDOE administrative boundaries, which TIGER was never
+  // going to have. Two candidate layers existed (AdminBnd/MapServer "School
+  // Districts", 7 features; "School Complex Areas", 15) — checked JHU's raw
+  // `district ` values against both before picking: JHU reports at the
+  // coarser 7-district grain (Central/Hawaii/Honolulu/Kauai/Leeward/Maui/
+  // Windward), an exact match to "School Districts" (layer 15, not 16).
+  // Pulled via the layer's own `/query?f=geojson&outSR=4326` (source is
+  // Hawaii State Plane, reprojected to WGS84 server-side), names copied
+  // through verbatim — no normalization needed, JHU's raw spelling already
+  // matches. Real complex-area-level demographics (age/gender) still only
+  // exist 2019–2022 in the workbook; other years are a bare state total —
+  // pinnedYear unchanged from the old LIST_ONLY entry. "Charter" stays
+  // excluded (real students, not a geographic district). See decisions.md,
+  // 2026-10-27.
+  HI: {
+    nameField: "district ",
+    geoUnit: "district",
+    geoPath: districtGeoPath("hi"),
+    pinnedYear: 2022,
+    excludeNames: new Set(["Charter"]),
+  },
   GA: {
     nameField: "district ",
     geoUnit: "district",
@@ -918,29 +944,14 @@ for (const [code, cfg] of Object.entries(MAP_MATCHED)) {
 }
 
 // States with clean, simple rows (one row per unit per year, numeric totals)
-// but no boundary file yet — rendered as a real ranked list, no map, same
-// pattern as Hawaii's hand-entered card. `nameField` is whichever raw column
-// actually holds that state's reporting unit (checked directly per state —
-// see decisions.md).
-export const LIST_ONLY = {
-  // Hawaii's "districts" are HIDOE "complex areas" (an internal
-  // administrative division, not a real federal/TIGER boundary — confirmed
-  // the real Census source has exactly ONE feature for Hawaii, the whole
-  // state as a single legal district), so list-only is permanent here, not
-  // a placeholder. Real complex-area rows + age/gender demographics only
-  // exist 2019–2022; other years in the workbook are a bare state total
-  // with no breakdown at all. Pinned to 2022 (richest, last such year) for
-  // the default view/demographics — same shape as New Mexico's pinnedYear.
-  // "Charter" is a real raw row (real students) but not a geographic
-  // complex area — excluded from the region list, same as the original
-  // hand-entered card did, so it doesn't look like one of the 7 real areas.
-  HI: {
-    nameField: "district ",
-    geoUnit: "district",
-    pinnedYear: 2022,
-    excludeNames: new Set(["Charter"]),
-  },
-};
+// but no boundary file yet — rendered as a real ranked list, no map.
+// `nameField` is whichever raw column actually holds that state's reporting
+// unit (checked directly per state — see decisions.md). Empty as of
+// 2026-10-27: Hawaii (the last resident here) moved to MAP_MATCHED once a
+// real boundary turned up — see its entry above for how. Kept as an export
+// (not deleted) since every state-building loop iterates it generically;
+// a future state with no boundary file yet would land here again.
+export const LIST_ONLY = {};
 
 // Grade demographics, shared across every state. Sums whatever grade columns
 // are actually numeric, buckets into Elementary/Middle/High when the fine

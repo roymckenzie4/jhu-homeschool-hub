@@ -157,6 +157,7 @@ const SECTION_HEADING_CLASS =
 // than erroring — caught live for Maine, 2026-10-07.
 const geoFileByState = {
   DE: "de-districts.json",
+  HI: "hi-districts.json",
   GA: "ga-districts.json",
   LA: "la-districts.json",
   AR: "ar-counties.json",
