@@ -380,6 +380,47 @@ const PA_SPECIAL_CASES = {
   "River Valley SD": "Blairsville-Saltsburg School District",
 };
 
+// Colorado's raw names were never one consistent pattern — researched and
+// confirmed individually (not guessed), 2026-10-27. Two real shapes:
+// (1) JHU names some districts by their host TOWN, TIGER names them by
+// COUNTY (or vice versa) — real Colorado districts commonly go by both,
+// inconsistently, depending on which source you ask. Confirmed per-district
+// via NCES/CDE/the district's own site, not inferred from the pattern alone:
+// "Eaton" IS "Weld County School District No. RE-2" (serves Eaton/Galeton);
+// "Weld RE-4" IS Windsor's district (Weld County Reorganized No. RE-4,
+// serves Windsor/Severance/West Greeley — JHU used the county name, TIGER
+// uses the town); "Canon City"/"Cotopaxi" are 2 of Fremont County's 3
+// districts (TIGER names all three bare "Fremont RE-N", no town name at
+// all) — Canon City is RE-1, Cotopaxi ("Cotopaxi Consolidated...Fremont
+// Re-3") is RE-3. (2) JHU drops the district's trailing number/letter
+// suffix in several rows (Briggsdale "RE" for real RE-10, Pawnee "RE" for
+// real RE-12, Arriba-Flagler "C" for real C-20) — same truncation shape as
+// Nebraska's county-name cutoff, just inconsistent instead of a fixed
+// column width. "Buffalo RE-4J" is the district's own real name (TIGER's
+// copy just drops the J) — a formatting difference, not JHU's error.
+const CO_SPECIAL_CASES = {
+  "Canon City RE-1": "Fremont RE-1",
+  "Cotopaxi RE-3": "Fremont RE-3",
+  "Weld RE-4": "Windsor School District RE-4",
+  "Eaton RE-2": "Weld County School District No. RE-2",
+  "Alamosa REJ": "Alamosa School District RE-11J",
+  "Arriba-Flagler C": "Arriba-Flagler School District C-20",
+  "Buffalo RE-4J": "Buffalo School District RE-4",
+  "Briggsdale RE": "Briggsdale School District RE-10",
+  "Pawnee RE": "Pawnee School District RE-12",
+  "Weldon Valley RE(J)": "Weldon Valley School District RE-20J",
+  "Hi-Plains R": "Hi-Plains School District R-23",
+  "Sangre De Cristo ReJ": "Sangre de Cristo School District RE-22J",
+  "South Conejos RE": "South Conejos School District RE-10",
+  "Woodlin R4": "Woodlin School District R-104",
+  "Karval RE": "Karval School District RE-23",
+  "Wiley RE Jt": "Wiley School District RE-13-JT",
+  "Prairie RE": "Prairie School District RE-11",
+  // Eads is Kiowa County's seat — same town/county pattern as Canon
+  // City/Fremont RE-1 and Cotopaxi/Fremont RE-3 above.
+  "Eads RE-1": "Kiowa County School District No. RE-1",
+};
+
 // South Carolina: two real shapes, found 2026-10-12 (the "91.7%, genuine
 // ambiguous/non-geographic" framing below predates this — these turned out
 // to be real, resolvable consolidations/renames, not noise).
@@ -798,7 +839,17 @@ export const MAP_MATCHED = {
     // county — not a geographic region, same shape as LA's "RSD" above.
     excludeNames: new Set(["Achievement School District (ASD)"]),
   }, // 97.9% before the Nashville/Clarksville fix, see decisions.md (2026-10-06)
-  CO: { nameField: "district ", geoUnit: "district", geoPath: districtGeoPath("co") }, // 86.0%
+  // 86.0% baseline resolved to ~100% 2026-10-27 — see CO_SPECIAL_CASES above.
+  // "Colorado School for the Deaf and Blind" and "Charter School Institute"
+  // are real statewide entities (not tied to a single geographic district),
+  // same exclusion shape as every other state's non-geographic rollups.
+  CO: {
+    nameField: "district ",
+    geoUnit: "district",
+    geoPath: districtGeoPath("co"),
+    _preprocess: (raw) => CO_SPECIAL_CASES[raw] ?? raw,
+    excludeNames: new Set(["Colorado School for the Deaf and Blind", "Charter School Institute"]),
+  },
   // These 3 are real charter schools, not geographic districts — they draw
   // students from across a wide area rather than belonging to any one real
   // district polygon.
