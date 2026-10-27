@@ -37,7 +37,7 @@ import { STATES } from "../src/config/states.js";
 const HERE = dirname(fileURLToPath(import.meta.url));
 export const SOURCE_PATH = resolve(
   HERE,
-  "../../notes/2026-10-02-combined-state-data-from-jhu-expanded.xlsx",
+  "../../notes/2026-10-27-combined-state-data-from-jhu-corrected.xlsx",
 );
 export const OUT_PATH = resolve(HERE, "../src/data/state-explorer-snapshot.json");
 const GEO_DIR = resolve(HERE, "../public/state-explorer-geo");
@@ -699,26 +699,20 @@ export const MAP_MATCHED = {
       "ABBOTT UNION FREE SCHOOL DISTRICT",
     ]),
   }, // 92.5% before the NYC collapse fix, see decisions.md (2026-10-06)
-  // PA's `lcounty` and `district ` columns swap meaning in 2024-25 only — a
-  // data-entry mistake in JHU's newest batch (flagged to them, not expected
-  // to persist): 2014-15 through 2023-24, `district ` holds the real
-  // ~500-district-level names (`lcounty` holds county names, 67 distinct);
-  // in 2024-25 that flips, `lcounty` jumps to ~500 distinct and `district `
-  // drops to 67. Using `district ` as nameField (97.6% match on its own
-  // pre-2024 years, checked directly against the real boundary file) with
-  // 2024-25 excluded — NOT auto-detected per year — so if this shape changes
-  // again in some future year, the pipeline fails safe to a visible gap
-  // rather than silently matching counties to coincidentally-same-named
-  // districts again (28 of PA's 67 counties share a name with a real
-  // district — confirmed by testing `district `-as-nameField against 2024-25
-  // directly). See decisions.md, 2026-10-07 and 2026-10-12.
+  // PA's `lcounty` and `district ` columns swapped meaning in 2024-25 only —
+  // a data-entry mistake in JHU's 2026-10 batch, flagged to Genny 2026-10-12.
+  // She confirmed 2026-10-27 she corrected it at the source (swapped the two
+  // columns back for SY2024-25); verified directly against her corrected
+  // file — 2024-25 now has 499 distinct `district ` values / 67 distinct
+  // `lcounty` values, matching every other year's shape. `excludeYears` (kept
+  // 2026-10-12 through -27 to fail safe while the source was still wrong)
+  // removed accordingly. See decisions.md, 2026-10-07, 2026-10-12, 2026-10-27.
   PA: {
     nameField: "district ",
     geoUnit: "district",
     geoPath: districtGeoPath("pa"),
-    excludeYears: new Set([2024]),
     _preprocess: (raw) => PA_SPECIAL_CASES[raw] ?? raw,
-  }, // 97.6% for years with real district-level data, now ~99%+ with PA_SPECIAL_CASES; 2024-25 has none (see above)
+  }, // 97.6% for years with real district-level data, now ~99%+ with PA_SPECIAL_CASES; 2024-25 now included
   // JHU's own tracking sheet flags TN explicitly: "'independent' HS should
   // be the only counts, remove 'church school' and 'totals'" — TN is the
   // only state in the workbook where total_enrollment_ count is actually
@@ -1046,6 +1040,14 @@ function hasAnyDemographics(row) {
 // lost real-but-masked ones. Returns null for anything with no usable value.
 const SUPPRESSION_CODES = new Set(["<10", "*", "masked"]);
 
+// TN-only: "CS" means "complementary suppression" (confirmed by Genny,
+// 2026-10-27 — see decisions.md) — same "real row, no usable count" shape as
+// the suppression codes above, but shown as "–" rather than verbatim: unlike
+// "<10", "CS" reads as a confusing undefined code to a site visitor, and
+// Genny agreed "–" is clearer. Confirmed nowhere else in the 27-state
+// workbook, so safe to normalize here rather than scoping it to TN's config.
+const CS_DISPLAY = "–";
+
 function parseCount(raw) {
   if (typeof raw === "number") return { value: raw, code: null };
   if (typeof raw !== "string") return null;
@@ -1053,7 +1055,9 @@ function parseCount(raw) {
   if (trimmed === "") return null;
   const asNumber = Number(trimmed);
   if (!Number.isNaN(asNumber)) return { value: asNumber, code: null };
-  if (SUPPRESSION_CODES.has(trimmed.toLowerCase())) return { value: null, code: trimmed };
+  const lower = trimmed.toLowerCase();
+  if (lower === "cs") return { value: null, code: CS_DISPLAY };
+  if (SUPPRESSION_CODES.has(lower)) return { value: null, code: trimmed };
   return null; // "Did Not Report", "NA", "-", or anything unrecognized
 }
 
