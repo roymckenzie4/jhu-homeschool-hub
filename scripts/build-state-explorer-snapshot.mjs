@@ -39,7 +39,7 @@ export const SOURCE_PATH = resolve(
   HERE,
   "../../notes/2026-10-02-combined-state-data-from-jhu-expanded.xlsx",
 );
-const OUT_PATH = resolve(HERE, "../src/data/state-explorer-snapshot.json");
+export const OUT_PATH = resolve(HERE, "../src/data/state-explorer-snapshot.json");
 const GEO_DIR = resolve(HERE, "../public/state-explorer-geo");
 const LA_GEO_PATH = resolve(GEO_DIR, "la-districts.json");
 
@@ -1328,13 +1328,23 @@ function buildListOnly(rows, code, cfg) {
   };
 }
 
-function main() {
-  const wb = XLSX.read(readFileSync(SOURCE_PATH), { type: "buffer" });
-  const rows = XLSX.utils.sheet_to_json(wb.Sheets["raw data"], {
+// Reads the workbook's long-format "raw data" tab (row 0 is a banner, row 1
+// is the real header) from raw bytes — shared by the local manual-file CLI
+// below and fetch-state-explorer-snapshot.mjs's live Drive pull, so both read
+// the exact same way.
+export function readRawRows(buf) {
+  const wb = XLSX.read(buf, { type: "buffer" });
+  return XLSX.utils.sheet_to_json(wb.Sheets["raw data"], {
     defval: null,
     range: 1,
   });
+}
 
+// Builds every MAP_MATCHED/LIST_ONLY state's entry from already-read raw
+// rows, with the shape guard against a truncated/malformed source. Shared by
+// the local manual-file CLI below and the live Drive-fetch script, so a
+// source swap can't drift the two build paths apart.
+export function buildStates(rows) {
   const states = {};
   for (const [code, cfg] of Object.entries(MAP_MATCHED)) {
     states[code] = buildMapMatched(rows, code, cfg);
@@ -1364,6 +1374,13 @@ function main() {
 
   // reportingCountByYear was only needed to build reportingByYear above.
   for (const state of Object.values(states)) delete state.reportingCountByYear;
+
+  return states;
+}
+
+function main() {
+  const rows = readRawRows(readFileSync(SOURCE_PATH));
+  const states = buildStates(rows);
 
   writeSnapshot(OUT_PATH, { source: SOURCE_PATH, states });
 

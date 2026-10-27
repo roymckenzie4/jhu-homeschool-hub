@@ -71,6 +71,16 @@ jobs:
         env:
           SHEETS_API_KEY: ${{ secrets.SHEETS_API_KEY }}
 
+      # Refresh the State Explorer snapshot from JHU's Combined State Data
+      # workbook (same Drive-download + SheetJS shape as enrollment above).
+      # Same non-fatal guard. DRIVE_FILE_ID in the script is currently Roy's
+      # personal link-shared copy, not Genny's real file — see the script's
+      # own header comment.
+      - name: Refresh state explorer snapshot
+        run: node scripts/fetch-state-explorer-snapshot.mjs || echo "snapshot refresh failed; using committed snapshot"
+        env:
+          SHEETS_API_KEY: ${{ secrets.SHEETS_API_KEY }}
+
       - name: Build
         run: npm run build
         env:
