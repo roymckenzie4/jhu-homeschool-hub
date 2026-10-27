@@ -666,6 +666,27 @@ export const MAP_MATCHED = {
   // honestly instead. districts.json built from TIGER2024's UNSD product
   // (FIPS 39, no ELSD/SCSD — Census 404s those, same as several other
   // district states), same recipe as Georgia/Louisiana. 611 real features.
+  //
+  // One real district renamed at the GEOMETRY level, not via a raw-name
+  // _preprocess map like every other state's special-cases: "Southeast Local
+  // School District" (TIGER2024 GEOID 3905058) is really "Waynedale Local
+  // Schools" (renamed, confirmed via NCES's school directory — Waynedale
+  // Elementary/High School both carry LEAID prefix 3905058 — and by the
+  // district's own site, 2026-10-27). JHU's raw data already says
+  // "Waynedale Local"; TIGER hasn't caught up to the rename yet. A plain
+  // _preprocess rename (raw "Waynedale Local" -> TIGER's stale "Southeast
+  // Local") isn't safe here the way PA's Knoch/River Valley renames were:
+  // Ohio has a SECOND, unrelated real "Southeast Local School District"
+  // (GEOID 3904922) elsewhere in the state, so the name alone is ambiguous
+  // — buildDistrictMapper's collision-safety would drop the match entirely
+  // rather than guess which one. Fixed upstream instead, in the mapshaper
+  // build step: GEOID 3905058 specifically renamed to "Waynedale Local
+  // School District" before the file was committed, so oh-districts.json's
+  // `name` field already reads "Waynedale Local" and matches directly, with
+  // the OTHER Southeast Local untouched. Rebuild recipe: same as above, plus
+  // `-each "if (GEOID == '3905058') NAME = 'Waynedale Local School
+  // District'"` before the generic NAME->name step. 611 -> 583 matched -> 0
+  // gap. See decisions.md, 2026-10-27.
   OH: { nameField: "district ", geoUnit: "district", geoPath: districtGeoPath("oh") },
   WA: { nameField: "lcounty", geoUnit: "county", geoPath: countyGeoPath("wa") },
   // Labeled "district " in the raw column, but its 100 distinct names are
