@@ -680,6 +680,37 @@ function RegionTable({ regions, unitLabel, height, selectedRegions = [], onToggl
   );
 }
 
+// One demographic category's breakdown — a label/track/percent row per
+// group. Extracted so the live view and the off-screen PNG export render the
+// identical markup (same reasoning as reusing ComparisonTrend for both
+// rather than duplicating chart JSX). "demographic-bar-fill" marks the real
+// painted content for usePngExport's paint-wait selector — the fill itself
+// is the thing that's actually drawn, unlike the empty track underneath it.
+function DemographicBars({ rows }) {
+  return (
+    <div className="flex h-full flex-col justify-center gap-2.5 overflow-y-auto">
+      {rows.map((row, i) => {
+        const isOther = /other|not specified/i.test(row.label);
+        const color = isOther ? COLORS.nonReportingStripe : comparisonColor(i);
+        return (
+          <div key={row.label} className="grid grid-cols-[132px_1fr_38px] items-center gap-2.5">
+            <span className="font-sans text-xs leading-snug text-sable">{row.label}</span>
+            <div className="h-2 rounded-full bg-sable/5">
+              <div
+                className="demographic-bar-fill h-full rounded-full"
+                style={{ width: `${row.pct}%`, backgroundColor: color }}
+              />
+            </div>
+            <span className="text-right font-sans text-xs tabular-nums text-sable/70">
+              {row.pct}%
+            </span>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 // Same-height filler for a data-zone slot with nothing to show — identical
 // pattern to EnrollmentPanel's DataPlaceholder, kept local since this page's
 // data zone isn't part of the shell's shared grid.
@@ -929,6 +960,14 @@ export default function StateExplorerPanel({
     "svg .recharts-line-curve",
     `state-explorer-${stateSlug}-trends.png`,
   );
+  const {
+    exportRef: demoExportRef,
+    pending: demoExportPending,
+    startExport: startDemoExport,
+  } = usePngExport(
+    ".demographic-bar-fill",
+    `state-explorer-${stateSlug}-${activeDemo ?? "demographics"}.png`,
+  );
 
   return (
     <div className="flex flex-col">
@@ -1074,12 +1113,17 @@ export default function StateExplorerPanel({
                 </div>
               )
             )}
-            {/* Third flex child alongside the heading + legend — same
+            {/* Third flex child alongside the heading + legend/pills — same
                 3-way justify-between row Enrollment's own Trends heading
-                uses for its export button. Only the trend chart (not the
-                demographic bars) is exportable, same as the backlog scoped
-                it. */}
-            {isTrending && <DownloadPngButton onClick={startTrendExport} />}
+                uses for its export button. Whichever of the two is showing
+                (trend chart or demographic bars) gets its own Save button;
+                nothing renders when there's no demographic data at all
+                (demoKeys.length === 0) since there's nothing to export. */}
+            {isTrending ? (
+              <DownloadPngButton onClick={startTrendExport} />
+            ) : (
+              demoKeys.length > 0 && <DownloadPngButton onClick={startDemoExport} />
+            )}
           </div>
 
           <div className="mt-3" style={{ height: ENROLLMENT_TABLE_HEIGHT }}>
@@ -1099,31 +1143,7 @@ export default function StateExplorerPanel({
                   : `${state.name} does not yet report a demographic breakdown.`}
               </DataPlaceholder>
             ) : (
-              <div className="flex h-full flex-col justify-center gap-2.5 overflow-y-auto">
-                {demographicsForYear[activeDemo].map((row, i) => {
-                  const isOther = /other|not specified/i.test(row.label);
-                  const color = isOther ? COLORS.nonReportingStripe : comparisonColor(i);
-                  return (
-                    <div
-                      key={row.label}
-                      className="grid grid-cols-[132px_1fr_38px] items-center gap-2.5"
-                    >
-                      <span className="font-sans text-xs leading-snug text-sable">
-                        {row.label}
-                      </span>
-                      <div className="h-2 rounded-full bg-sable/5">
-                        <div
-                          className="h-full rounded-full"
-                          style={{ width: `${row.pct}%`, backgroundColor: color }}
-                        />
-                      </div>
-                      <span className="text-right font-sans text-xs tabular-nums text-sable/70">
-                        {row.pct}%
-                      </span>
-                    </div>
-                  );
-                })}
-              </div>
+              <DemographicBars rows={demographicsForYear[activeDemo]} />
             )}
           </div>
         </div>
@@ -1208,6 +1228,23 @@ export default function StateExplorerPanel({
                 colorForState={colorForRegion}
                 highlighted={null}
               />
+            </ChartExportCard>
+          </div>
+        </div>
+      )}
+
+      {demoExportPending && (
+        <div
+          aria-hidden="true"
+          style={{ position: "fixed", left: -99999, top: 0, pointerEvents: "none" }}
+        >
+          <div ref={demoExportRef}>
+            <ChartExportCard
+              title={`${state.name} homeschool enrollment by ${activeDemo}`}
+              subtitle={`Students, ${activeYear}`}
+              citation={stateExplorerCitation(state.name)}
+            >
+              <DemographicBars rows={demographicsForYear[activeDemo]} />
             </ChartExportCard>
           </div>
         </div>
