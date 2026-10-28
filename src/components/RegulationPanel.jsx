@@ -30,7 +30,7 @@ import RegulationComparisonTable from "./RegulationComparisonTable.jsx";
 import RegulationTableDownloadButton from "./RegulationTableDownloadButton.jsx";
 import OnboardingPanel from "./OnboardingPanel.jsx";
 
-export default function RegulationPanel() {
+export default function RegulationPanel({ onExploreState }) {
   const { selectedStates, clearAll } = useSelection();
   const count = selectedStates.length;
 
@@ -45,6 +45,7 @@ export default function RegulationPanel() {
             selectedStates={selectedStates}
             regulationByState={regulationByState}
             onClear={clearAll}
+            onExploreState={onExploreState}
           />
         </div>
       </div>

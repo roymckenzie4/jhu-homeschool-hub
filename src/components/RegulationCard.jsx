@@ -20,6 +20,7 @@ import {
 } from "../config/regulation.js";
 import { COLORS, levelColor } from "../config/theme.js";
 import { BY_NAME } from "../config/states.js";
+import { STATE_EXPLORER_CODES } from "../config/stateExplorerCoverage.js";
 import SummaryCard, {
   CARD_HEADING_CLASS,
   CARD_DIVIDER_CLASS,
@@ -27,6 +28,7 @@ import SummaryCard, {
   CARD_LIST_CLASS,
   CARD_CAVEAT_CLASS,
   ReadMoreLink,
+  ExplorerCrossLink,
   ClearLink,
 } from "./SummaryCard.jsx";
 
@@ -101,7 +103,12 @@ function LegislationFacts({ legislation }) {
   );
 }
 
-export default function RegulationCard({ selectedStates, regulationByState, onClear }) {
+export default function RegulationCard({
+  selectedStates,
+  regulationByState,
+  onClear,
+  onExploreState,
+}) {
   const count = selectedStates.length;
 
   return (
@@ -112,6 +119,7 @@ export default function RegulationCard({ selectedStates, regulationByState, onCl
         <Detail
           stateName={selectedStates[0]}
           entry={regulationByState[selectedStates[0]]}
+          onExploreState={onExploreState}
         />
       ) : (
         <ComparisonSummary
@@ -160,8 +168,10 @@ function Overview({ regulationByState }) {
 }
 
 // One state's regulation profile: level, count in force, and a per-group tally.
-function Detail({ stateName, entry }) {
+function Detail({ stateName, entry, onExploreState }) {
   const slug = BY_NAME[stateName]?.slug ?? "";
+  const explorerCode = BY_NAME[stateName]?.postal;
+  const isExplorerCovered = explorerCode && STATE_EXPLORER_CODES.has(explorerCode);
   return (
     <>
       <h3 className={CARD_HEADING_CLASS}>{stateName}</h3>
@@ -203,7 +213,14 @@ function Detail({ stateName, entry }) {
       <LegislationFacts legislation={entry?.legislation} />
 
       <div className="mt-auto border-t border-sable/15 pt-2.5">
-        <ReadMoreLink stateName={stateName} slug={slug} />
+        {/* Cross-link sits beside ReadMoreLink, not stacked under it — see
+            ExplorerCrossLink's own comment for why. */}
+        <div className="flex items-baseline justify-between gap-3">
+          <ReadMoreLink stateName={stateName} slug={slug} />
+          {isExplorerCovered && (
+            <ExplorerCrossLink onClick={() => onExploreState(explorerCode)} />
+          )}
+        </div>
       </div>
     </>
   );

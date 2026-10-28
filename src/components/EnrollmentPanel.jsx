@@ -54,7 +54,7 @@ const byYear = deriveByYear(byState);
 // Number of states in the national-overview leaderboard.
 const TOP_STATES_COUNT = 5;
 
-export default function EnrollmentPanel({ activeYear }) {
+export default function EnrollmentPanel({ activeYear, onExploreState }) {
   const { selectedStates, focusedState, clearAll, focusState, clearFocus } =
     useSelection();
   const count = selectedStates.length;
@@ -223,6 +223,7 @@ export default function EnrollmentPanel({ activeYear }) {
             // clears to the national overview.
             backLabel={focusedState ? "Back to comparison" : "Back to national overview"}
             onBack={focusedState ? clearFocus : clearAll}
+            onExploreState={onExploreState}
           />
         ) : (
           <EnrollmentComparisonCard

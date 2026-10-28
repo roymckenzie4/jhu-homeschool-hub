@@ -56,6 +56,26 @@ export function ReadMoreLink({ stateName, slug }) {
   );
 }
 
+// Cross-link to State Explorer's own page for this state, shown beside
+// ReadMoreLink (same row, not stacked below it) rather than on its own line —
+// the card's bottom block is already tight (Regulation's single-state Detail
+// has two eyebrow+list blocks to fit under the map height), so adding a
+// second stacked link risked growing the card past the fixed-height iframe
+// budget. Only rendered by the caller when the state is one of State
+// Explorer's 27 covered states (see config/stateExplorerCoverage.js) — an
+// in-app tab/state switch (onClick), not an external link like ReadMoreLink.
+export function ExplorerCrossLink({ onClick }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="shrink-0 whitespace-nowrap font-sans text-xs font-medium text-heritage underline-offset-4 hover:underline"
+    >
+      View in State Explorer →
+    </button>
+  );
+}
+
 // "Clear" text button for a comparison card header (StateDetailCard's sibling
 // comparison cards). Distinct from ComparingChips' dashed-underline Clear,
 // which sits in the shared chip row rather than a card heading.

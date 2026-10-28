@@ -33,7 +33,9 @@ import Footer from "./components/Footer.jsx";
 import EnrollmentPanel from "./components/EnrollmentPanel.jsx";
 import RegulationPanel from "./components/RegulationPanel.jsx";
 import StateExplorerPanel from "./components/StateExplorerPanel.jsx";
+import ExplorerLandingCard from "./components/ExplorerLandingCard.jsx";
 import { useSelection } from "./state/selection.jsx";
+import { isIframed } from "./lib/utils.js";
 import { CHIPS_SLOT_CLASS, TWO_COLUMN_GRID_CLASS } from "./config/layout.js";
 import {
   buildEnrollmentDescriptor,
@@ -43,7 +45,6 @@ import {
   DEFAULT_YEAR,
 } from "./topics/enrollmentTopic.jsx";
 import { regulationDescriptor, regulationFooter } from "./topics/regulationTopic.jsx";
-import { DEFAULT_EXPLORER_STATE } from "./data/stateExplorerMockData.js";
 import { STATES } from "./config/states.js";
 import { COMPARE_CAP } from "./config/selection.js";
 import { trackEvent } from "./lib/analytics.js";
@@ -57,9 +58,11 @@ const TABS = [
 export default function App() {
   const [activeTab, setActiveTab] = useState("enrollment");
   const [activeYear, setActiveYear] = useState(DEFAULT_YEAR);
-  // Phase 2 concept only — see stateExplorerMockData.js. Not part of the
-  // shared cross-topic selection; the explorer is inherently single-state.
-  const [explorerState, setExplorerState] = useState(DEFAULT_EXPLORER_STATE);
+  // Null = landing state (nothing picked yet) — mirrors Enrollment/
+  // Regulation's own "0 selected -> national overview" default rather than
+  // jumping straight into one state. Not part of the shared cross-topic
+  // selection; the explorer is inherently single-state.
+  const [explorerState, setExplorerState] = useState(null);
   const { selectedStates, toggleState, clearAll } = useSelection();
 
   // State Explorer's per-state data comes from a ~1.7MB generated snapshot
@@ -124,6 +127,15 @@ export default function App() {
     trackEvent("state_select", { view: activeTab, state: name });
   }
 
+  // Cross-link target from Enrollment/Regulation's single-state detail card
+  // (see ExplorerCrossLink) — switches to the State Explorer tab with this
+  // state already picked, rather than landing on the 0-selected view.
+  function goToStateExplorer(postal) {
+    setActiveTab("explorer");
+    setExplorerState(postal);
+    trackEvent("tab_switch", { view: "explorer" });
+  }
+
   // The active topic's coloring/labeling rules for the shared map, legend, and
   // chip row. Enrollment's depends on the year (rebuilt as it changes);
   // regulation's is static.
@@ -154,15 +166,29 @@ export default function App() {
     [selectedStates],
   );
 
+  // State Explorer works differently from Enrollment/Regulation's "select
+  // one state, or compare up to six" (one state via the dropdown, then
+  // regions within it) — the generic subtitle doesn't describe it, so it
+  // gets its own copy, same pattern the year-control/"as of" label already
+  // uses to vary by tab.
+  const subtitle = isExplorer
+    ? "Select a state to explore its counties, districts, or towns."
+    : "Explore enrollment trends and state-level regulations. Select one state for detail, or compare up to six.";
+
   return (
     <main className="mx-auto max-w-[1200px] px-8 py-4 lg:px-12 lg:py-6">
       <header>
-        <h1 className="font-sans text-3xl font-bold leading-[1.2] tracking-tight text-sable">
-          Homeschool data across the United States
-        </h1>
+        {/* Suppressed in the WordPress iframe embed — standing in for the
+            page's own title there, which would otherwise show twice (see
+            decisions.md). Standalone (GitHub Pages, review links) keeps it;
+            the subtitle below stays either way. */}
+        {!isIframed() && (
+          <h1 className="font-sans text-3xl font-bold leading-[1.2] tracking-tight text-sable">
+            Homeschool data across the United States
+          </h1>
+        )}
         <p className="mt-2 max-w-4xl font-sans text-xs leading-relaxed text-sable/70">
-          Explore enrollment trends and state-level regulations. Select one
-          state for detail, or compare up to six.
+          {subtitle}
         </p>
       </header>
 
@@ -186,12 +212,12 @@ export default function App() {
                 Explore
               </span>
               {explorerStates ? (
-                <Select value={explorerState} onValueChange={setExplorerState}>
+                <Select value={explorerState ?? undefined} onValueChange={setExplorerState}>
                   <SelectTrigger
                     aria-label="Choose a state"
                     className="whitespace-nowrap rounded border border-sable/20 bg-white px-2.5 py-1 font-sans text-xs tabular-nums text-sable transition hover:bg-sable/5"
                   >
-                    <SelectValue />
+                    <SelectValue placeholder="Select a state" />
                     <ChevronDown className="h-3 w-3 opacity-70" aria-hidden />
                   </SelectTrigger>
                   <SelectContent align="end">
@@ -244,13 +270,17 @@ export default function App() {
           className="mt-4"
         >
           {explorerStates ? (
-            <StateExplorerPanel
-              states={explorerStates}
-              stateKey={explorerState}
-              selectedRegions={selectedRegions}
-              onToggleRegion={toggleRegion}
-              onClearRegions={clearRegions}
-            />
+            explorerState ? (
+              <StateExplorerPanel
+                states={explorerStates}
+                stateKey={explorerState}
+                selectedRegions={selectedRegions}
+                onToggleRegion={toggleRegion}
+                onClearRegions={clearRegions}
+              />
+            ) : (
+              <ExplorerLandingCard />
+            )
           ) : (
             <p className="font-sans text-sm text-sable/70">Loading state data…</p>
           )}
@@ -313,7 +343,11 @@ export default function App() {
           {/* Panel content tracks the active tab. Each topic panel returns a
               fragment (its card + data slot children), so they land directly in
               the shell grid above (this div carries the tabpanel role/grid). */}
-          {isEnrollment ? <EnrollmentPanel activeYear={activeYear} /> : <RegulationPanel />}
+          {isEnrollment ? (
+            <EnrollmentPanel activeYear={activeYear} onExploreState={goToStateExplorer} />
+          ) : (
+            <RegulationPanel onExploreState={goToStateExplorer} />
+          )}
         </div>
       )}
 
@@ -324,11 +358,6 @@ export default function App() {
           downloadFilename={footer.downloadFilename}
           lastUpdated={footer.lastUpdated}
         />
-      )}
-      {isExplorer && (
-        <p className="mt-3 border-t border-sable/10 pt-3 font-sans text-[10px] uppercase tracking-widest text-sable/70">
-          Concept only — not connected to live data
-        </p>
       )}
     </main>
   );

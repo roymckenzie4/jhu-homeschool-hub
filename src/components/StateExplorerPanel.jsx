@@ -126,6 +126,7 @@ import { buildStateProjection } from "../lib/geoProjection.js";
 import { buildInteractionProps } from "../lib/mapInteraction.js";
 import { BY_NAME } from "../config/states.js";
 import { COMPARE_CAP } from "../config/selection.js";
+import { GEO_FILE_BY_STATE } from "../config/stateExplorerCoverage.js";
 import MapLegend from "./MapLegend.jsx";
 import MapHoverGlow from "./MapHoverGlow.jsx";
 import ComparisonTrend from "./ComparisonTrend.jsx";
@@ -149,41 +150,14 @@ const SECTION_HEADING_CLASS =
 
 // Real per-state boundary files, fetched once and cached module-level
 // (survives remounts/tab switches) — mirrors ChoroplethMap's national-map
-// fetch pattern. Every MAP_MATCHED state from build-state-explorer-snapshot.mjs
-// needs an entry here too — a state present in the snapshot but missing from
-// this list silently shows whichever OTHER state's map was fetched last
-// (this component stays mounted across state switches; the fetch for a
+// fetch pattern. Lives in config/stateExplorerCoverage.js (not owned here)
+// so Enrollment/Regulation's cross-link can check state coverage without
+// pulling in this component. A state present in the snapshot but missing
+// from that list silently shows whichever OTHER state's map was fetched
+// last (this component stays mounted across state switches; the fetch for a
 // missing filename fails with no .catch(), so `topo` never updates) rather
 // than erroring — caught live for Maine, 2026-10-07.
-const geoFileByState = {
-  DE: "de-districts.json",
-  HI: "hi-districts.json",
-  GA: "ga-districts.json",
-  LA: "la-districts.json",
-  AR: "ar-counties.json",
-  FL: "fl-counties.json",
-  MD: "md-counties.json",
-  MN: "mn-counties.json",
-  MT: "mt-counties.json",
-  ND: "nd-counties.json",
-  NE: "ne-counties.json",
-  OH: "oh-districts.json",
-  WA: "wa-counties.json",
-  NC: "nc-counties.json",
-  SC: "sc-districts.json",
-  SD: "sd-districts.json",
-  NY: "ny-districts.json",
-  PA: "pa-districts.json",
-  TN: "tn-districts.json",
-  CO: "co-districts.json",
-  WY: "wy-districts.json",
-  RI: "ri-districts.json",
-  MA: "ma-towns.json",
-  NH: "nh-districts.json",
-  NM: "nm-districts.json",
-  WI: "wi-districts.json",
-  ME: "me-districts.json",
-};
+const geoFileByState = GEO_FILE_BY_STATE;
 const geoCache = new Map();
 
 // Plural form of a geo unit noun for combobox/empty-state copy — not a

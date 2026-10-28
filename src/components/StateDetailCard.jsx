@@ -28,10 +28,12 @@ import { computeYoY } from '../data/derive.js';
 import { formatNumber, formatYoY, yoyToneClass, ordinal } from '../lib/format.js';
 import { schoolYearLabel } from '../config/theme.js';
 import { BY_NAME } from '../config/states.js';
+import { STATE_EXPLORER_CODES } from '../config/stateExplorerCoverage.js';
 import SummaryCard, {
   CARD_HEADING_CLASS,
   CARD_DIVIDER_CLASS,
   ReadMoreLink,
+  ExplorerCrossLink,
 } from './SummaryCard.jsx';
 
 export default function StateDetailCard({
@@ -51,6 +53,9 @@ export default function StateDetailCard({
   // comparison returns to the comparison (clears focus, cohort intact).
   backLabel,
   onBack,
+  // Switches the shell to the State Explorer tab on this state. Only called
+  // from the cross-link below, which only renders when the state is covered.
+  onExploreState,
 }) {
   // Rank 1 = most reported homeschoolers that year. Show "Nth of M" so it reads
   // as a rank out of the reporting jurisdictions, with the caption naming the
@@ -60,6 +65,8 @@ export default function StateDetailCard({
   const slug = BY_NAME[stateName]?.slug ?? '';
   const isReporting = currentValue != null;
   const yoy = computeYoY(currentValue, previousValue);
+  const explorerCode = BY_NAME[stateName]?.postal;
+  const isExplorerCovered = explorerCode && STATE_EXPLORER_CODES.has(explorerCode);
 
   return (
     <SummaryCard>
@@ -143,7 +150,14 @@ export default function StateDetailCard({
       */}
       <div className="mt-auto">
         <hr className={CARD_DIVIDER_CLASS} />
-        <ReadMoreLink stateName={stateName} slug={slug} />
+        {/* Cross-link sits beside ReadMoreLink, not stacked under it — see
+            ExplorerCrossLink's own comment for why. */}
+        <div className="flex items-baseline justify-between gap-3">
+          <ReadMoreLink stateName={stateName} slug={slug} />
+          {isExplorerCovered && (
+            <ExplorerCrossLink onClick={() => onExploreState(explorerCode)} />
+          )}
+        </div>
         {/* Back control. Muted so it reads as secondary to the heritage
             "Read more" link above it. Label + target set by the caller. */}
         <button
