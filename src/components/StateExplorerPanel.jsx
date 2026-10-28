@@ -120,10 +120,13 @@ import {
   rangeLabel,
   MAP_STROKE_REST,
   MAP_SELECTION_STROKE_WIDTH,
+  REGION_DIM_OPACITY,
+  stateExplorerCitation,
 } from "../config/theme.js";
 import { formatNumber, shortRegionLabel } from "../lib/format.js";
 import { buildStateProjection } from "../lib/geoProjection.js";
 import { buildInteractionProps } from "../lib/mapInteraction.js";
+import { usePngExport } from "../lib/usePngExport.js";
 import { BY_NAME } from "../config/states.js";
 import { COMPARE_CAP } from "../config/selection.js";
 import { GEO_FILE_BY_STATE } from "../config/stateExplorerCoverage.js";
@@ -131,6 +134,8 @@ import MapLegend from "./MapLegend.jsx";
 import MapHoverGlow from "./MapHoverGlow.jsx";
 import ComparisonTrend from "./ComparisonTrend.jsx";
 import ComparisonLegend from "./ComparisonLegend.jsx";
+import ChartExportCard from "./ChartExportCard.jsx";
+import DownloadPngButton from "./DownloadPngButton.jsx";
 import {
   ENROLLMENT_TABLE_HEIGHT,
   DATA_ZONE_MIN_HEIGHT,
@@ -188,7 +193,21 @@ function fillForValue(value, breaks) {
 // visual are ported from ChoroplethMap (buildInteractionProps, the
 // .map-base--has-selection + overlay-ring pattern) rather than reinvented —
 // see StateExplorerPanel's own doc comment above for why this exists now.
-function RegionMap({ stateKey, regions, breaks, selectedRegions, onToggleRegion, unitLabel }) {
+function RegionMap({
+  stateKey,
+  regions,
+  breaks,
+  selectedRegions,
+  onToggleRegion,
+  unitLabel,
+  // Suffix for the shared <defs> hover-glow filter id — mirrors
+  // ChoroplethMap's own idPrefix (see that file's doc comment). Default ""
+  // keeps the canonical id the live map's CSS hover rule references; the
+  // off-screen PNG-export copy passes a unique prefix so its own filter def
+  // can't collide with the live map's.
+  idPrefix = "",
+}) {
+  const hoverGlowId = `state-hover-glow${idPrefix}`;
   const [topo, setTopo] = useState(geoCache.get(stateKey) ?? null);
 
   // Always resolves `topo` to match the CURRENT stateKey, not just fetches on
@@ -309,10 +328,20 @@ function RegionMap({ stateKey, regions, breaks, selectedRegions, onToggleRegion,
       viewBox={`0 0 ${EXPLORER_MAP_VIEW_W} ${EXPLORER_MAP_VIEW_H}`}
       role="group"
       aria-label={`${stateKey} map by ${unitLabel} — click or use Tab to select a ${unitLabel}`}
-      className="block h-full w-full"
+      // h-auto (not h-full): sizes off the viewBox's own intrinsic ratio,
+      // same technique ChoroplethMap uses, rather than depending on an
+      // ancestor's CSS aspect-ratio to supply a definite height. That
+      // dependency is what broke the PNG export — html-to-image's cloned
+      // snapshot didn't reliably re-resolve the ancestor's aspect-ratio-
+      // derived height, so the off-screen copy's map collapsed to zero
+      // height and exported blank. h-auto needs no ancestor cooperation at
+      // all. Harmless live too: the row 1 wrapper's own aspect-ratio uses
+      // the identical EXPLORER_MAP_VIEW_W/H ratio, so nothing visually
+      // changes there.
+      className="block h-auto w-full"
     >
       <defs>
-        <MapHoverGlow />
+        <MapHoverGlow id={hoverGlowId} />
       </defs>
 
       {/* Base layer: every region rendered once. Dimming when something's
@@ -355,7 +384,9 @@ function RegionMap({ stateKey, regions, breaks, selectedRegions, onToggleRegion,
           index.css's .region-dim-overlay comment. Sits above the base layer
           (dimming everything, selected regions included) but below the
           selection-ring overlay next, which redraws selected regions back
-          at full strength on top. */}
+          at full strength on top. Opacity is an inline style, not just the
+          --active class — see REGION_DIM_OPACITY's own comment for why
+          (the PNG export needs it). */}
       <rect
         x={0}
         y={0}
@@ -363,7 +394,8 @@ function RegionMap({ stateKey, regions, breaks, selectedRegions, onToggleRegion,
         height={EXPLORER_MAP_VIEW_H}
         fill="white"
         pointerEvents="none"
-        className={`region-dim-overlay${hasSelection ? " region-dim-overlay--active" : ""}`}
+        className="region-dim-overlay"
+        style={{ opacity: hasSelection ? REGION_DIM_OPACITY : 0 }}
       />
 
       {/* Selection overlay: each selected region redrawn on top with a single
@@ -878,6 +910,26 @@ export default function StateExplorerPanel({
     [availableYears, selectedRegions, regionsByName],
   );
 
+  // PNG export — same mechanism as Enrollment's map/chart downloads
+  // (usePngExport + an off-screen ChartExportCard), just two independent
+  // triggers here since the map and the trend chart are separate artifacts a
+  // user might want on their own. Filenames keyed to the state so a batch of
+  // downloads across states doesn't overwrite itself.
+  const stateSlug = stateKey.toLowerCase();
+  const {
+    exportRef: mapExportRef,
+    pending: mapExportPending,
+    startExport: startMapExport,
+  } = usePngExport("svg .state-path", `state-explorer-${stateSlug}-map.png`);
+  const {
+    exportRef: trendExportRef,
+    pending: trendExportPending,
+    startExport: startTrendExport,
+  } = usePngExport(
+    "svg .recharts-line-curve",
+    `state-explorer-${stateSlug}-trends.png`,
+  );
+
   return (
     <div className="flex flex-col">
       {/* Row 1 — a fixed-aspect map slot (real map or a same-box "not
@@ -907,7 +959,11 @@ export default function StateExplorerPanel({
               same height whether this state has a real map or not. */}
           <div className="mt-4" style={{ height: EXPLORER_LEGEND_SLOT_HEIGHT }}>
             {state.hasRealGeo && (
-              <MapLegend label={`Students, ${activeYear}`} swatches={legendSwatches} />
+              <MapLegend
+                label={`Students, ${activeYear}`}
+                swatches={legendSwatches}
+                trailing={<DownloadPngButton onClick={startMapExport} />}
+              />
             )}
           </div>
         </div>
@@ -1018,6 +1074,12 @@ export default function StateExplorerPanel({
                 </div>
               )
             )}
+            {/* Third flex child alongside the heading + legend — same
+                3-way justify-between row Enrollment's own Trends heading
+                uses for its export button. Only the trend chart (not the
+                demographic bars) is exportable, same as the backlog scoped
+                it. */}
+            {isTrending && <DownloadPngButton onClick={startTrendExport} />}
           </div>
 
           <div className="mt-3" style={{ height: ENROLLMENT_TABLE_HEIGHT }}>
@@ -1066,6 +1128,90 @@ export default function StateExplorerPanel({
           </div>
         </div>
       </div>
+
+      {/* Off-screen export compositions — same pattern as Enrollment's
+          (usePngExport + ChartExportCard), mounted only while a download is
+          in flight. Two independent artifacts, so each gets its own pending
+          flag: the map doesn't need the trend chart mounted to export, and
+          vice versa. */}
+      {mapExportPending && (
+        <div
+          aria-hidden="true"
+          style={{ position: "fixed", left: -99999, top: 0, pointerEvents: "none" }}
+        >
+          <div ref={mapExportRef}>
+            <ChartExportCard
+              title={`${state.name} homeschool enrollment by ${unitLabel.toLowerCase()}`}
+              subtitle={`Students, ${activeYear}`}
+              citation={stateExplorerCitation(state.name)}
+              chartHeight={null}
+            >
+              {/* No wrapper div needed — RegionMap sizes itself off its own
+                  viewBox (h-auto w-full), same as ChoroplethMap's export. */}
+              <RegionMap
+                stateKey={stateKey}
+                regions={regionsForDisplay}
+                breaks={regionBreaks}
+                selectedRegions={selectedRegions}
+                onToggleRegion={() => {}}
+                unitLabel={unitLabel.toLowerCase()}
+                // Unique defs id so this copy's hover-glow filter can't
+                // collide with the live map's — see RegionMap's own
+                // idPrefix comment.
+                idPrefix="-explorer-export"
+              />
+              <div className="mt-3">
+                <MapLegend label={`Students, ${activeYear}`} swatches={legendSwatches} />
+              </div>
+            </ChartExportCard>
+          </div>
+        </div>
+      )}
+
+      {trendExportPending && (
+        <div
+          aria-hidden="true"
+          style={{ position: "fixed", left: -99999, top: 0, pointerEvents: "none" }}
+        >
+          <div ref={trendExportRef}>
+            <ChartExportCard
+              title={`${state.name} enrollment trends by ${unitLabel.toLowerCase()}`}
+              subtitle={`Comparing ${selectedRegions.length} ${
+                selectedRegions.length === 1
+                  ? unitLabel.toLowerCase()
+                  : geoUnitPlural(state.geoUnit ?? "region")
+              } · ${availableYears[0]} to ${availableYears[availableYears.length - 1]}`}
+              citation={stateExplorerCitation(state.name)}
+              legend={
+                <div className="flex flex-wrap gap-x-4 gap-y-1.5">
+                  {selectedRegions.map((name) => (
+                    <span
+                      key={name}
+                      className="flex items-center gap-1.5 text-xs text-sable/80"
+                    >
+                      <span
+                        className="inline-block h-2.5 w-2.5 rounded-full"
+                        style={{ backgroundColor: colorForRegion(name) }}
+                      />
+                      {shortRegionLabel(name)}
+                    </span>
+                  ))}
+                </div>
+              }
+            >
+              {/* selectedYear/formatYear omitted — same call as Enrollment's
+                  own trend export: the dashed selected-year guide line is a
+                  live-page affordance, not part of the republished image. */}
+              <ComparisonTrend
+                rows={trendRows}
+                states={selectedRegions}
+                colorForState={colorForRegion}
+                highlighted={null}
+              />
+            </ChartExportCard>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

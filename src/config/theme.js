@@ -139,6 +139,17 @@ export const TRANSITION_MS = 200;
 export const MAP_STROKE_REST = 0.6;
 export const MAP_SELECTION_STROKE_WIDTH = 2.5;
 
+// State Explorer's single-rect dim overlay (see index.css's .region-dim-
+// overlay comment and StateExplorerPanel's RegionMap) — the SAME value the
+// CSS class sets, duplicated here because the PNG export needs it as an
+// inline style, not a class. html-to-image's snapshot doesn't carry over
+// opacity set purely via an external stylesheet class (confirmed live,
+// 2026-10-28: the exported rect had its class names but no opacity, so it
+// painted fully opaque and hid everything underneath) — RegionMap applies
+// this value as an inline style for exactly that reason, keeping the CSS
+// class only for its transition timing.
+export const REGION_DIM_OPACITY = 0.35;
+
 // Fallback footer "last updated" label for the rare case a topic's snapshot
 // fetch has ever failed and the app is running on the bundled CSV, which
 // carries no fetch timestamp. The normal path shows the real snapshot date
@@ -166,6 +177,9 @@ export function enrollmentCitation(rangeLabel) {
 }
 export function regulationCitation() {
   return `Source: Homeschool Hub, Johns Hopkins University School of Education. State homeschool regulations in force, current as of 2024–25. Retrieved ${CHART_SOURCE_RETRIEVED} from ${CHART_SOURCE_URL}`;
+}
+export function stateExplorerCitation(stateName) {
+  return `Source: Homeschool Hub, Johns Hopkins University School of Education. Reported homeschool enrollment by sub-state region, ${stateName}. Retrieved ${CHART_SOURCE_RETRIEVED} from ${CHART_SOURCE_URL}`;
 }
 
 /**
