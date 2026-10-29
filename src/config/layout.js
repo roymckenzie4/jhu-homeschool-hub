@@ -92,3 +92,17 @@ export const EXPLORER_CONTEXT_SLOT_HEIGHT = 152;
 // whitespace below rather than fake rows. Provisional alongside
 // TARGET_HEIGHT until real iframe dims.
 export const DATA_ZONE_MIN_HEIGHT = ENROLLMENT_TABLE_HEIGHT + 28;
+
+// RegulationComparisonTable's own fixed scroll-container height — shorter
+// than ENROLLMENT_TABLE_HEIGHT by design. That table carries a trailing
+// caveat line below it ("Score = regulations in force, of N tracked.") that
+// Enrollment's equivalent data zone has no counterpart for; DATA_ZONE_MIN_
+// HEIGHT's budget (heading + ENROLLMENT_TABLE_HEIGHT) never accounted for
+// it. A real bug this caused, found 2026-10-28: comparing states on
+// Regulation grew the whole page ~37px taller than Enrollment for the same
+// selection, before the table itself even had a fixed height — fixing just
+// the table to ENROLLMENT_TABLE_HEIGHT closed most of that gap but still
+// left ~22.5px of overflow from the caveat line's own height + margin. This
+// constant reserves that space up front so [heading + table + caveat]
+// together land on DATA_ZONE_MIN_HEIGHT exactly, same as Enrollment's zone.
+export const REGULATION_TABLE_HEIGHT = ENROLLMENT_TABLE_HEIGHT - 23;

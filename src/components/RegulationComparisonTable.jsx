@@ -4,11 +4,16 @@
  * A plain table (same shape as the Enrollment table): states are rows, the 10
  * tracked regulations are columns grouped into Registration / Instruction /
  * Assessment bands, followed by a Homeschoolers (latest-year enrollment)
- * column. It sizes naturally to its rows — the fixed frame lives at the shell
- * level (see App), not here. Each regulation cell shows "Yes" (in force, in
- * heritage) or a muted "No"; either links to that rule's source statute when
- * the sheet provides one. The STATE cell anchors the name, with the Low/Med/High
- * badge and regulation count as right-aligned metadata; removal is via the chips.
+ * column. Fixed-height, internally-scrolling body with a sticky two-row
+ * header (same ENROLLMENT_TABLE_HEIGHT + containerStyle pattern as
+ * EnrollmentTable/State Explorer's RegionTable) — a real cross-tab bug found
+ * 2026-10-28: without this, comparing states grew the whole page ~37px taller
+ * than Enrollment's fixed height for the same selection, violating the
+ * app-wide "same height regardless of what's selected" principle. Each
+ * regulation cell shows "Yes" (in force, in heritage) or a muted "No"; either
+ * links to that rule's source statute when the sheet provides one. The STATE
+ * cell anchors the name, with the Low/Med/High badge and regulation count as
+ * right-aligned metadata; removal is via the chips.
  *
  * Column widths are pinned so a long state name or "not reported" can never
  * reflow the grid. When nothing is selected, a prompt stands in for the table.
@@ -51,6 +56,7 @@ import {
 } from "../config/regulation.js";
 import { COLORS, levelColor, schoolYearLabel } from "../config/theme.js";
 import { formatNumber } from "../lib/format.js";
+import { REGULATION_TABLE_HEIGHT } from "../config/layout.js";
 import {
   Tooltip,
   TooltipTrigger,
@@ -136,9 +142,30 @@ export default function RegulationComparisonTable({
 
   return (
     <TooltipProvider delayDuration={150}>
-      <Table className="text-xs" containerClassName="border-b border-sable/15">
+      <Table
+        className="text-xs"
+        containerClassName="border-b border-sable/15"
+        containerStyle={{ height: REGULATION_TABLE_HEIGHT }}
+        containerLabel="Regulations compared"
+      >
         <TableHeader>
-          {/* Band row: STATE + the three regulation groups + Homeschoolers. */}
+          {/* Band row: STATE + the three regulation groups + Homeschoolers.
+              Scrolls with the body rather than sticking. Tried sticky twice
+              more (2026-10-28, after the first failed attempt below in git
+              history) — pixel-exact top offsets measured live via DevTools
+              fixed the row-to-row positioning, then opaque inline-style
+              backgrounds fixed the transparency bleed-through, but a THIRD,
+              different bug then surfaced on the rowSpan cells specifically
+              (State, Homeschoolers): their sticky "frozen" box visually
+              detached from their real dimensions mid-scroll (background
+              stopping short of the cell's true height, the bottom border
+              landing in the wrong place) — caught live by Roy, not by any
+              amount of measuring beforehand. `position: sticky` combined
+              with `rowSpan` on table cells is a genuinely unreliable browser
+              combination, not a one-off mistake to patch again — not
+              reattempting this without a fundamentally different technique
+              (e.g. two column-aligned tables, one fixed header-only and one
+              scrolling body-only, rather than sticky positioning at all). */}
           <TableRow className="border-b border-sable/15 hover:bg-transparent">
             <TableHead
               id="col-state"
