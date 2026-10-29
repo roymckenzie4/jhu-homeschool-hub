@@ -2,19 +2,26 @@
  * Layout dimensions for the fixed-frame scaffolding.
  *
  * The app is designed to live in a fixed-height WordPress iframe, so we build
- * to a target height rather than letting content dictate it. The "fixed" lives
- * at the view level: each view is a flex column at least TARGET_HEIGHT tall with
- * its footer pinned to the bottom, so short content leaves clean whitespace
- * (not an empty box) and the tables inside size naturally to their rows.
+ * to a target height rather than letting content dictate it. Two levels do the
+ * work: TARGET_HEIGHT is a min-height on the <main> wrapper, so every tab is
+ * the same overall height; the per-zone constants below hold individual rows
+ * open so swapping topics or selections can't collapse a zone. Short content
+ * leaves clean whitespace (not an empty box) and tables size to their rows.
  *
- * This is the single place to retune the frame — most importantly, TARGET_HEIGHT
- * will be swapped for the real iframe dimensions once JHU provides them.
+ * This is the single place to retune the frame.
  */
 
-// Target view height (the eventual iframe height). Provisional — used as a
-// min-height so a view never collapses shorter than the frame; taller content
-// (e.g. a full six-state comparison) grows past it and the page scrolls.
-export const TARGET_HEIGHT = 760;
+// Shared floor for every view, applied as a min-height on the <main> wrapper
+// so all three tabs occupy the same height no matter what's selected. Short
+// views pad with whitespace below; nothing is trimmed to fit.
+//
+// 940 is the measured natural ceiling (935.2 — Enrollment with 1+ states
+// selected, the tallest view) rounded up for slack, and sits under the
+// embed's 960 iframe height. Measured across every tab x selection state at
+// 1400px, 2026-10-29. Re-measure and raise this if a view ever grows past it:
+// content taller than the floor still wins and would reintroduce the uneven
+// heights this prevents.
+export const TARGET_HEIGHT = 940;
 
 // Fixed height of the by-year enrollment table's scroll area. The table shows
 // every reporting year (~26 rows), so it scrolls internally under a sticky

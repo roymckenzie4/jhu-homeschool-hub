@@ -36,7 +36,7 @@ import StateExplorerPanel from "./components/StateExplorerPanel.jsx";
 import ExplorerLandingCard from "./components/ExplorerLandingCard.jsx";
 import { useSelection } from "./state/selection.jsx";
 import { isIframed } from "./lib/utils.js";
-import { CHIPS_SLOT_CLASS, TWO_COLUMN_GRID_CLASS } from "./config/layout.js";
+import { CHIPS_SLOT_CLASS, TARGET_HEIGHT, TWO_COLUMN_GRID_CLASS } from "./config/layout.js";
 import {
   buildEnrollmentDescriptor,
   enrollmentFooter,
@@ -176,7 +176,13 @@ export default function App() {
     : "Explore enrollment trends and state-level regulations. Select one state for detail, or compare up to six.";
 
   return (
-    <main className="mx-auto max-w-[1200px] px-8 py-4 lg:px-12 lg:py-6">
+    // min-height keeps all three tabs the same overall height — State Explorer
+    // has no footer and a shorter data zone, so without a floor it rendered
+    // ~92px short and the tool's bottom edge jumped on tab switch.
+    <main
+      className="mx-auto max-w-[1200px] px-8 py-4 lg:px-12 lg:py-6"
+      style={{ minHeight: TARGET_HEIGHT }}
+    >
       <header>
         {/* Suppressed in the WordPress iframe embed — standing in for the
             page's own title there, which would otherwise show twice (see
