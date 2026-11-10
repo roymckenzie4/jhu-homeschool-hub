@@ -17,6 +17,17 @@ export const COLORS = {
   brick: "#CF4520", // negative YoY indicator
   nonReportingGround: "#E5E5E5", // light gray under the diagonal stripes
   nonReportingStripe: "#CFCFCF", // stripe color for non-reporting states
+  zeroValue: "#E5E5E5", // reported count of 0: the no-data ground, solid (no stripes)
+};
+
+/**
+ * Where each map's color breaks come from (see lib/colorScale.js):
+ *   "pooled"  — every year's values at once, so one scale holds across years
+ *   "perYear" — only the selected year's values, so the scale shifts by year
+ */
+export const MAP_SCALE_MODE = {
+  enrollment: "pooled",
+  stateExplorer: "pooled",
 };
 
 /**

@@ -31,6 +31,7 @@ import {
   LAST_UPDATED,
 } from "../config/theme.js";
 import { formatNumber, formatUpdatedDate } from "../lib/format.js";
+import { NoDataKey } from "../components/NoDataPattern.jsx";
 
 // Most recent five years pin as pills in the shell's year selector; older
 // years are reachable through its leading "More years" dropdown.
@@ -87,37 +88,7 @@ export function buildEnrollmentDescriptor(activeYear) {
     legend: {
       label: `Students, ${schoolYearLabel(activeYear)}`,
       swatches,
-      trailing: (
-        <div className="flex items-center gap-2 whitespace-nowrap text-sable/70">
-          {/* Self-contained stripe swatch (its own <defs>), mirroring
-              ChoroplethMap's non-reporting pattern. Doesn't reference the map's
-              pattern so it renders correctly inside the off-screen PNG export,
-              which doesn't carry the map's defs. */}
-          <svg width="20" height="12" aria-hidden="true">
-            <defs>
-              <pattern
-                id="legend-non-reporting"
-                patternUnits="userSpaceOnUse"
-                width="6"
-                height="6"
-                patternTransform="rotate(45)"
-              >
-                <rect width="6" height="6" fill={COLORS.nonReportingGround} />
-                <line
-                  x1="0"
-                  y1="0"
-                  x2="0"
-                  y2="6"
-                  stroke={COLORS.nonReportingStripe}
-                  strokeWidth="2"
-                />
-              </pattern>
-            </defs>
-            <rect width="20" height="12" fill="url(#legend-non-reporting)" />
-          </svg>
-          <span>No public data</span>
-        </div>
-      ),
+      trailing: <NoDataKey label="No public data" />,
     },
     // Chip dot is HTML, so a non-reporting state resolves to a solid grey —
     // never the map's SVG stripe pattern. When 2+ states are selected (the

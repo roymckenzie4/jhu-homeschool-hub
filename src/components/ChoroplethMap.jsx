@@ -63,6 +63,7 @@ import {
 import { buildProjection } from "../lib/geoProjection.js";
 import { buildInteractionProps } from "../lib/mapInteraction.js";
 import MapHoverGlow from "./MapHoverGlow.jsx";
+import { NoDataPattern } from "./NoDataPattern.jsx";
 
 // SVG viewBox dimensions. The map scales to its container via CSS; these
 // numbers just set the internal coordinate system the projection fits into.
@@ -199,23 +200,7 @@ export default function ChoroplethMap({
   const sharedDefs = (
     <defs>
       {/* Diagonal stripes for states that do not publicly report. */}
-      <pattern
-        id={nonReportingId}
-        patternUnits="userSpaceOnUse"
-        width="6"
-        height="6"
-        patternTransform="rotate(45)"
-      >
-        <rect width="6" height="6" fill={COLORS.nonReportingGround} />
-        <line
-          x1="0"
-          y1="0"
-          x2="0"
-          y2="6"
-          stroke={COLORS.nonReportingStripe}
-          strokeWidth="2"
-        />
-      </pattern>
+      <NoDataPattern id={nonReportingId} />
 
       <MapHoverGlow id={hoverGlowId} />
     </defs>

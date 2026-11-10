@@ -113,17 +113,16 @@ import {
   CommandItem,
 } from "./ui/command.jsx";
 import {
-  RAMP_STEPS,
   COLORS,
   comparisonColor,
-  computeQuantileBreaks,
-  rangeLabel,
+  MAP_SCALE_MODE,
   MAP_STROKE_REST,
   MAP_SELECTION_STROKE_WIDTH,
   REGION_DIM_OPACITY,
   stateExplorerCitation,
 } from "../config/theme.js";
 import { formatNumber, shortRegionLabel } from "../lib/format.js";
+import { buildColorScale } from "../lib/colorScale.js";
 import { buildStateProjection } from "../lib/geoProjection.js";
 import { buildInteractionProps } from "../lib/mapInteraction.js";
 import { usePngExport } from "../lib/usePngExport.js";
@@ -132,6 +131,7 @@ import { COMPARE_CAP } from "../config/selection.js";
 import { GEO_FILE_BY_STATE } from "../config/stateExplorerCoverage.js";
 import MapLegend from "./MapLegend.jsx";
 import MapHoverGlow from "./MapHoverGlow.jsx";
+import { NoDataPattern } from "./NoDataPattern.jsx";
 import ComparisonTrend from "./ComparisonTrend.jsx";
 import ComparisonLegend from "./ComparisonLegend.jsx";
 import ChartExportCard from "./ChartExportCard.jsx";
@@ -173,17 +173,11 @@ function geoUnitPlural(geoUnit) {
   return GEO_UNIT_PLURAL[geoUnit] ?? `${geoUnit}s`;
 }
 
-// Same quantile-bucket logic as the national map's fillForValue (see
-// topics/enrollmentTopic.jsx) — reused rather than reinvented, so the two
-// maps' color language reads as one system. `breaks` comes from
-// computeQuantileBreaks over the state's own region values, so the ramp
-// reflects THIS state's real spread, not a hardcoded percent-of-max split.
-function fillForValue(value, breaks) {
-  if (value == null || !breaks) return COLORS.nonReportingGround;
-  for (let i = 0; i < RAMP_STEPS.length; i += 1) {
-    if (value <= breaks[i + 1]) return RAMP_STEPS[i];
-  }
-  return RAMP_STEPS[RAMP_STEPS.length - 1];
+// Region fill from the state's color scale (lib/colorScale.js, shared with
+// the national map so both read as one system); the no-data stripes when the
+// region has no value for the year.
+function fillForValue(value, scale, noDataId) {
+  return scale?.fillForValue(value) ?? `url(#${noDataId})`;
 }
 
 // Sub-state map, fit to EXPLORER_MAP_VIEW_W/H and filling its aspect-ratio
@@ -196,7 +190,7 @@ function fillForValue(value, breaks) {
 function RegionMap({
   stateKey,
   regions,
-  breaks,
+  scale,
   selectedRegions,
   onToggleRegion,
   unitLabel,
@@ -208,6 +202,7 @@ function RegionMap({
   idPrefix = "",
 }) {
   const hoverGlowId = `state-hover-glow${idPrefix}`;
+  const noDataId = `region-no-data${idPrefix}`;
   const [topo, setTopo] = useState(geoCache.get(stateKey) ?? null);
 
   // Always resolves `topo` to match the CURRENT stateKey, not just fetches on
@@ -342,6 +337,7 @@ function RegionMap({
     >
       <defs>
         <MapHoverGlow id={hoverGlowId} />
+        <NoDataPattern id={noDataId} />
       </defs>
 
       {/* Base layer: every region rendered once. Dimming when something's
@@ -360,7 +356,7 @@ function RegionMap({
               key={f.id}
               d={d}
               className={className}
-              fill={fillForValue(value, breaks)}
+              fill={fillForValue(value, scale, noDataId)}
               stroke="#fff"
               strokeWidth={MAP_STROKE_REST}
               {...buildInteractionProps({
@@ -408,7 +404,7 @@ function RegionMap({
             <path
               key={f.id}
               d={d}
-              fill={fillForValue(value, breaks)}
+              fill={fillForValue(value, scale, noDataId)}
               stroke={COLORS.sable}
               strokeWidth={MAP_SELECTION_STROKE_WIDTH}
               strokeLinejoin="round"
@@ -856,20 +852,26 @@ export default function StateExplorerPanel({
       ? state.total
       : (regionsForDisplay?.reduce((sum, r) => sum + (r.value ?? 0), 0) ?? state.total);
 
-  // Quantile breaks over THIS state's own region values, shared by the map's
-  // fill (fillForValue) and the legend's swatch range labels — computed once
-  // here so the two can never drift apart, same reasoning as
-  // buildEnrollmentDescriptor sharing one `breaks` between the national
-  // map's fill and its legend.
-  const regionBreaks = regionsForDisplay
-    ? computeQuantileBreaks(regionsForDisplay.map((r) => r.value))
-    : null;
-  const legendSwatches = regionBreaks
-    ? RAMP_STEPS.map((color, i) => ({
-        color,
-        label: rangeLabel(regionBreaks, i, RAMP_STEPS.length),
-      }))
+  // One color scale per state, shared by the map fill and the legend so the
+  // two can't drift apart. "pooled" builds it from every year's region
+  // values, so a color means the same count in every year; "perYear" from the
+  // active year's only (see MAP_SCALE_MODE).
+  const pooledScale = MAP_SCALE_MODE.stateExplorer === "pooled";
+  const regionScale = useMemo(() => {
+    if (!state.regions) return null;
+    const values = pooledScale
+      ? state.regions.flatMap((r) => Object.values(r.values))
+      : regionsForDisplay.map((r) => r.value);
+    return buildColorScale(values);
+  }, [state.regions, regionsForDisplay, pooledScale]);
+  // The striped "No data" swatch always trails the ramp, so the legend
+  // keeps the same shape from year to year.
+  const legendSwatches = regionScale
+    ? [...regionScale.swatches, { label: "No data", kind: "noData" }]
     : [];
+  // Names the state and the classification, since each state's breaks are
+  // its own. The year rides on the primary label line.
+  const legendSublabel = `${state.name} quintiles`;
   const slug = BY_NAME[state.name]?.slug ?? "";
   const unitLabel = state.geoUnit
     ? state.geoUnit[0].toUpperCase() + state.geoUnit.slice(1)
@@ -985,7 +987,7 @@ export default function StateExplorerPanel({
               <RegionMap
                 stateKey={stateKey}
                 regions={regionsForDisplay}
-                breaks={regionBreaks}
+                scale={regionScale}
                 selectedRegions={selectedRegions}
                 onToggleRegion={onToggleRegion}
                 unitLabel={unitLabel.toLowerCase()}
@@ -1001,6 +1003,7 @@ export default function StateExplorerPanel({
               <MapLegend
                 label={`Students, ${activeYear}`}
                 swatches={legendSwatches}
+                sublabel={legendSublabel}
                 trailing={<DownloadPngButton onClick={startMapExport} />}
               />
             )}
@@ -1175,7 +1178,7 @@ export default function StateExplorerPanel({
               <RegionMap
                 stateKey={stateKey}
                 regions={regionsForDisplay}
-                breaks={regionBreaks}
+                scale={regionScale}
                 selectedRegions={selectedRegions}
                 onToggleRegion={() => {}}
                 unitLabel={unitLabel.toLowerCase()}
@@ -1185,7 +1188,11 @@ export default function StateExplorerPanel({
                 idPrefix="-explorer-export"
               />
               <div className="mt-3">
-                <MapLegend label={`Students, ${activeYear}`} swatches={legendSwatches} />
+                <MapLegend
+                  label={`Students, ${activeYear}`}
+                  swatches={legendSwatches}
+                  sublabel={legendSublabel}
+                />
               </div>
             </ChartExportCard>
           </div>

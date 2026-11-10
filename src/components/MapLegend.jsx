@@ -16,41 +16,83 @@
  *   - label    string              left label; a ", " splits it into the
  *                                  primary line and a smaller secondary line
  *                                  (e.g. "Students, 2024-25").
- *   - swatches [{ color, label }]  the color key, in display order. `label` is
- *                                  shown centered under each swatch.
+ *   - swatches [{ color, label, kind? }]
+ *                                  the color key, in display order. `label` is
+ *                                  shown centered under each swatch. `kind`
+ *                                  marks the two classes outside the ramp,
+ *                                  drawn narrower and set apart from it:
+ *                                  "zero" (leads the ramp) and "noData"
+ *                                  (trails it, diagonal stripes, no color).
  *   - trailing ReactNode           optional right-aligned slot (a note, helper
  *                                  text, or pill). Omitted when null.
+ *   - sublabel string              optional secondary line; when given, `label`
+ *                                  is shown whole as the primary line (e.g.
+ *                                  "Students, 2024-25" over "Arkansas quintiles").
  */
 
-export default function MapLegend({ label, swatches, trailing = null }) {
-  const [primary, secondary] = label.split(", ");
+import { useId } from "react";
+import { NoDataPattern } from "./NoDataPattern.jsx";
+
+// Width + spacing per swatch kind. "0" and "No data" are fixed, narrower, and
+// gapped off the ramp's ends. Ramp swatches are 64px but shrink (down to 44px,
+// still wide enough for a "501–1.4K" label) when the row is tight, so the
+// trailing slot never wraps under the legend.
+const SWATCH_SIZE = {
+  zero: "w-8 shrink-0 mr-2",
+  noData: "w-12 shrink-0 ml-2",
+};
+const RAMP_SWATCH_SIZE = "flex-1 basis-16 min-w-11 max-w-16";
+function swatchWidth(swatch) {
+  return SWATCH_SIZE[swatch.kind] ?? RAMP_SWATCH_SIZE;
+}
+
+// Striped "no data" swatch. useId keeps the pattern id unique when the live
+// legend and its off-screen PNG-export copy are mounted together.
+function NoDataSwatch({ className }) {
+  const id = `legend-no-data-${useId().replace(/:/g, "")}`;
+  return (
+    <svg className={`block h-2.5 ${className}`} aria-hidden="true">
+      <defs>
+        <NoDataPattern id={id} />
+      </defs>
+      <rect width="100%" height="100%" fill={`url(#${id})`} />
+    </svg>
+  );
+}
+
+export default function MapLegend({ label, swatches, trailing = null, sublabel = null }) {
+  const [primary, secondary] = sublabel ? [label, sublabel] : label.split(", ");
 
   return (
-    <div className="flex flex-wrap items-start justify-between gap-x-6 gap-y-3 font-sans text-[11px] text-sable/70">
-      <div className="flex items-start gap-4">
-        <div className="flex flex-col gap-[3px]">
+    <div className="flex flex-wrap items-start justify-between gap-x-6 gap-y-3 font-sans text-[11px] text-sable/70 lg:flex-nowrap">
+      <div className="flex min-w-0 items-start gap-4">
+        <div className="flex shrink-0 flex-col gap-[3px]">
           <span className="whitespace-nowrap font-semibold uppercase tracking-widest text-sable/90 leading-3">
             {primary}
           </span>
           {secondary && (
-            <span className="text-[10px] leading-none text-sable/70 tabular-nums">
+            <span className="whitespace-nowrap text-[10px] leading-none text-sable/70 tabular-nums">
               {secondary}
             </span>
           )}
         </div>
-        <div className="flex flex-col gap-[3px]" aria-hidden="true">
+        <div className="flex min-w-0 flex-1 flex-col gap-[3px]" aria-hidden="true">
           <div className="flex gap-[2px]">
-            {swatches.map((s, i) => (
-              <span
-                key={i}
-                className="block h-2.5 w-16 rounded-[1px]"
-                style={{ backgroundColor: s.color }}
-              />
-            ))}
+            {swatches.map((s, i) =>
+              s.kind === "noData" ? (
+                <NoDataSwatch key={i} className={swatchWidth(s)} />
+              ) : (
+                <span
+                  key={i}
+                  className={`block h-2.5 rounded-[1px] ${swatchWidth(s)}`}
+                  style={{ backgroundColor: s.color }}
+                />
+              ),
+            )}
           </div>
           <div className="flex gap-[2px] text-[10px] leading-none text-sable/70">
             {swatches.map((s, i) => (
-              <span key={i} className="block w-16 text-center tabular-nums">
+              <span key={i} className={`block text-center tabular-nums ${swatchWidth(s)}`}>
                 {s.label}
               </span>
             ))}
