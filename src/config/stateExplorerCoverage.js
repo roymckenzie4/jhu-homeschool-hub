@@ -40,6 +40,7 @@ export const GEO_FILE_BY_STATE = {
   NM: "nm-districts.json",
   WI: "wi-districts.json",
   ME: "me-districts.json",
+  MS: "ms-districts.json",
 };
 
 // Postal codes State Explorer covers at all — the cross-link check (and

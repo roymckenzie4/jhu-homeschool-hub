@@ -1,9 +1,12 @@
 /**
- * Builds src/data/state-explorer-snapshot.json from JHU's expanded raw-data
- * workbook (sent 2026-10-02, outside the repo — see SOURCE_PATH). Not a live
- * API fetch like the Enrollment/Regulation scripts: this is a one-off manual
- * .xlsx drop, no stable Drive/Sheet id, so just read it off disk by hand
- * whenever JHU sends a new one. Update SOURCE_PATH to match.
+ * Builds src/data/state-explorer-snapshot.json from a local copy of JHU's
+ * Combined State Data workbook (outside the repo — see SOURCE_PATH). The
+ * live counterpart is fetch-state-explorer-snapshot.mjs, which pulls the
+ * same file from Drive and reuses this module's readRawRows/buildStates.
+ * This local path exists for the audit and for testing a matching change
+ * without a network fetch; refresh the copy (fetchDriveFile from
+ * lib/sheets.mjs, same file id as the live script) and update SOURCE_PATH
+ * whenever JHU changes the source.
  *
  * The "raw data" sheet is long-format: one row per state x local unit
  * (county/district/town/LEA — varies by state) x school year, ~78k rows,
@@ -37,7 +40,7 @@ import { STATES } from "../src/config/states.js";
 const HERE = dirname(fileURLToPath(import.meta.url));
 export const SOURCE_PATH = resolve(
   HERE,
-  "../../notes/2026-10-27-combined-state-data-from-jhu-corrected.xlsx",
+  "../../notes/2026-11-10-combined-state-data-from-jhu-live.xlsx",
 );
 export const OUT_PATH = resolve(HERE, "../src/data/state-explorer-snapshot.json");
 const GEO_DIR = resolve(HERE, "../public/state-explorer-geo");
@@ -589,6 +592,51 @@ const WI_SPECIAL_CASES = {
   "Maple Dale-Indian Hill Sch Dis": "Maple Dale-Indian Hill School District",
 };
 
+// Mississippi, added 2026-11-10. 121 of 151 raw names match generically; the
+// rest fall into three shapes, found by diffing the raw names against the
+// TIGER2024 UNSD names (same method as every state above):
+//   - City/county pairs sharing a base name (Jackson, Newton, Pontotoc,
+//     Quitman, Union, Yazoo) collide once stopwords strip "county"/"public"/
+//     "municipal" — same shape as TN's Franklin. Mapped exactly.
+//   - "Separate" appears on only one side (raw "Okolona" vs TIGER "Okolona
+//     Separate", the reverse for Moss Point). Not added to districtNormKey's
+//     stopwords, since that list is shared by every state.
+//   - Real consolidations, confirmed against the enabling legislation and
+//     news coverage, not guessed: Durant -> Holmes County Consolidated
+//     (2018), Montgomery County -> Winona-Montgomery County Consolidated
+//     (2018), Leflore County -> Greenwood-Leflore Consolidated (2019),
+//     Houston -> Chickasaw County (2021). The raw sheet marks each
+//     predecessor "Consolidated" from then on; its pre-merger counts are
+//     separate students from the successor's own row, so SUM-not-overwrite
+//     in shapeState folds them in without double counting. The raw district
+//     literally named "Consolidated" (Montgomery County, district code 4911)
+//     is Winona-Montgomery's own row under the old Winona district code.
+// Lumberton is NOT here: it was dissolved in 2019 and split between Lamar
+// County and Poplarville, so no single polygon is right for its history
+// (same call as NH's Goshen-Lempster) — excluded in MS's config below.
+const MS_SPECIAL_CASES = {
+  "Jackson County": "Jackson County",
+  "Jackson Public": "Jackson Public",
+  "Newton County": "Newton County",
+  "Newton Municipal": "Newton Municipal School",
+  "Pontotoc City": "Pontotoc City Schools",
+  "Pontotoc County": "Pontotoc County Schools",
+  Quitman: "Quitman",
+  "Quitman County": "Quitman County",
+  "Union County": "Union County",
+  "Union Public": "Union Public",
+  "Yazoo City": "Yazoo City Municipal",
+  "Yazoo County": "Yazoo County",
+  Okolona: "Okolona Separate",
+  Poplarville: "Poplarville Separate",
+  "Moss Point Separate": "Moss Point",
+  Consolidated: "Winona-Montgomery County Consolidated",
+  "Montgomery County": "Winona-Montgomery County Consolidated",
+  Durant: "Holmes County Consolidated",
+  "Leflore County": "Greenwood-Leflore Consolidated",
+  Houston: "Chickasaw County",
+};
+
 // Builds a name -> geo-name map, skipping (not overwriting) any key two
 // DIFFERENT real names both reduce to — e.g. TN's "Franklin County School
 // District" and "Franklin Special School District" both normalize to
@@ -983,6 +1031,34 @@ export const MAP_MATCHED = {
       return [raw, `Regional School Unit ${n2}`, `School Administrative District ${n2}`];
     },
   }, // 99.4%
+  // District-level counts only, no subgroups (Genny's cleaned source, added
+  // to the workbook 2026-11). No statewide rollup row, so the headline is the
+  // district sum. Boundary file is TIGER2024 UNSD (FIPS 28, no ELSD/SCSD),
+  // built with the Louisiana recipe — 137 features, no "Not Defined"
+  // placeholder. See MS_SPECIAL_CASES above for the name matching.
+  MS: {
+    nameField: "district ",
+    geoUnit: "district",
+    geoPath: districtGeoPath("ms"),
+    _preprocess: (raw) => MS_SPECIAL_CASES[raw] ?? raw,
+    // See parseCount — MS's "*NNN" cells are real counts.
+    starredCounts: true,
+    // Charter schools and Forrest County's agricultural high school draw
+    // from a wide area rather than one district, and never carry a count in
+    // the raw sheet anyway. Lumberton: see MS_SPECIAL_CASES above.
+    excludeNames: new Set([
+      "Ambition Preparatory (Charter)",
+      "Clarksdale Collegiate",
+      "Forrest AG High School",
+      "Joel E. Smilow Collegiate (Charter)",
+      "Leflore Legacy Academy",
+      "Midtown (Charter)",
+      "Reimagine Prep (Charter)",
+      "Reviv Prep (Charter)",
+      "Smilow Prep (Charter)",
+      "Lumberton",
+    ]),
+  },
 };
 for (const [code, cfg] of Object.entries(MAP_MATCHED)) {
   if (cfg.mapName) continue;
@@ -1152,11 +1228,20 @@ const SUPPRESSION_CODES = new Set(["<10", "*", "masked"]);
 // workbook, so safe to normalize here rather than scoping it to TN's config.
 const CS_DISPLAY = "–";
 
-function parseCount(raw) {
+// MS-only (`starredCounts` in its config): ~80 cells read "*NNN" (e.g.
+// "*1808"). Counted as the number — the state's totals land within ~1% of
+// the Enrollment tab's MS figures with them, ~30% low in 2020-21 without.
+// What the asterisk marks is still an open question for JHU; opt-in per
+// state so another state's "*" can't be silently reinterpreted.
+const STARRED_COUNT = /^\*(\d+)$/;
+
+export function parseCount(raw, { starredCounts = false } = {}) {
   if (typeof raw === "number") return { value: raw, code: null };
   if (typeof raw !== "string") return null;
   const trimmed = raw.trim();
   if (trimmed === "") return null;
+  const starred = starredCounts && STARRED_COUNT.exec(trimmed);
+  if (starred) return { value: Number(starred[1]), code: null };
   const asNumber = Number(trimmed);
   if (!Number.isNaN(asNumber)) return { value: asNumber, code: null };
   const lower = trimmed.toLowerCase();
@@ -1184,7 +1269,9 @@ export function shapeState({
   countField = "total_enrollment_ count",
   excludeNames,
   excludeYears,
+  starredCounts,
 }) {
+  const parse = (raw) => parseCount(raw, { starredCounts });
   const rowsByYear = new Map(); // every dated row, keyed by raw sy_fall — also feeds demographics below
   for (const row of rows) {
     const year = row.sy_fall;
@@ -1206,18 +1293,18 @@ export function shapeState({
   const yearTotals = new Map();
   for (const [year, yearRows] of rowsByYear) {
     const grandTotalCandidates = yearRows.filter(
-      (r) => isGrandTotalRow(r) && parseCount(r[countField])?.value != null,
+      (r) => isGrandTotalRow(r) && parse(r[countField])?.value != null,
     );
     const grandTotalRow =
       grandTotalCandidates.find((r) => !hasAgeBreakdown(r)) ?? grandTotalCandidates[0];
     if (grandTotalRow) {
-      yearTotals.set(year, parseCount(grandTotalRow[countField]).value);
+      yearTotals.set(year, parse(grandTotalRow[countField]).value);
       continue;
     }
     let sum = 0;
     for (const r of yearRows) {
       const raw = r[nameField];
-      const parsed = parseCount(r[countField]);
+      const parsed = parse(r[countField]);
       // A suppressed cell (parsed.value == null) can't contribute a real
       // number to the sum — same "floor, not ceiling" treatment already
       // accepted elsewhere (Georgia's unmatched districts, Hawaii's Charter
@@ -1250,7 +1337,7 @@ export function shapeState({
     // year's region breakdown goes missing, same as any other real gap.
     if (excludeYears?.has(year)) continue;
 
-    const parsed = parseCount(row[countField]);
+    const parsed = parse(row[countField]);
     if (!parsed) continue;
 
     const raw = row[nameField];
@@ -1397,6 +1484,7 @@ function buildMapMatched(rows, code, cfg) {
     countField: cfg.countField,
     excludeYears: cfg.excludeYears,
     excludeNames: cfg.excludeNames,
+    starredCounts: cfg.starredCounts,
   });
   const reportingByYear = Object.fromEntries(
     Object.entries(shaped.reportingCountByYear).map(([yr, n]) => [yr, `${n} of ${validNames.size}`]),
@@ -1421,6 +1509,7 @@ function buildListOnly(rows, code, cfg) {
     pinnedYear: cfg.pinnedYear,
     countField: cfg.countField,
     excludeNames: cfg.excludeNames,
+    starredCounts: cfg.starredCounts,
   });
   // No real boundary file, so no fixed "of N" denominator — just the count.
   const reportingByYear = Object.fromEntries(

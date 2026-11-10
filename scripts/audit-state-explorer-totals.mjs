@@ -38,6 +38,7 @@ import {
   geoNames,
   isGrandTotalRow,
   readRawRows,
+  parseCount,
   withDelawareDistrictTotal,
 } from "./build-state-explorer-snapshot.mjs";
 
@@ -61,6 +62,7 @@ function auditStateAllYears(code, cfg, mapMatched) {
     countField,
     excludeYears: cfg.excludeYears,
     excludeNames: cfg.excludeNames,
+    starredCounts: cfg.starredCounts,
   });
 
   return Object.entries(shaped.totalsByYear).map(([label, total]) => {
@@ -87,8 +89,10 @@ function auditStateAllYears(code, cfg, mapMatched) {
       // region" calls (e.g. MA's Devens, WY's charter schools) and PA's
       // known-bad excluded year as if they were still open bugs.
       if (cfg.excludeYears?.has(row.sy_fall)) continue;
-      const rowTotal = row[countField];
-      if (typeof rowTotal !== "number") continue;
+      // Same parser as shapeState, so a row it counts (a numeric string, an
+      // MS "*NNN") can't slip past this check as non-numeric.
+      const rowTotal = parseCount(row[countField], cfg)?.value;
+      if (rowTotal == null) continue;
       const raw = row[cfg.nameField];
       if (!raw || !raw.trim()) {
         unnamedSum += rowTotal;

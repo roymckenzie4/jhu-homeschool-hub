@@ -62,7 +62,7 @@ export function ReadMoreLink({ stateName, slug }) {
 // has two eyebrow+list blocks to fit under the map height), so adding a
 // second stacked link risked growing the card past the fixed-height iframe
 // budget. Only rendered by the caller when the state is one of State
-// Explorer's 27 covered states (see config/stateExplorerCoverage.js) — an
+// Explorer's covered states (see config/stateExplorerCoverage.js) — an
 // in-app tab/state switch (onClick), not an external link like ReadMoreLink.
 export function ExplorerCrossLink({ onClick }) {
   return (
