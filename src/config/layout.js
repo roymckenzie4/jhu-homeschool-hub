@@ -80,7 +80,7 @@ export const EXPLORER_MAP_VIEW_H = 460;
 // fix existed; this constant is just the box's share of that 41px.
 export const EXPLORER_LEGEND_SLOT_HEIGHT = 25;
 
-// Reserved height for the headline's "State context" block (divider +
+// Reserved height for the headline's "State policy context" block (divider +
 // eyebrow + up to 4 rows), held open whether a state has context data or
 // not. Now populated for essentially every state (sourced live from the
 // Legislation sheet via regulationLoader.js) — the reserved slot still

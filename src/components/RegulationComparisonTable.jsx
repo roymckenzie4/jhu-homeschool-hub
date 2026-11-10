@@ -3,7 +3,7 @@
  *
  * A plain table (same shape as the Enrollment table): states are rows, the 10
  * tracked regulations are columns grouped into Registration / Instruction /
- * Assessment bands, followed by a Homeschoolers (latest-year enrollment)
+ * Assessment bands, followed by a Homeschooled (latest-year enrollment)
  * column. Fixed-height, internally-scrolling body with a sticky two-row
  * header (same ENROLLMENT_TABLE_HEIGHT + containerStyle pattern as
  * EnrollmentTable/State Explorer's RegionTable) — a real cross-tab bug found
@@ -27,7 +27,7 @@
  *   - selectedStates string[]   states to show as rows, in selection order.
  *   - regulationByState   object     shaped regulation data.
  *   - enrollmentLatestYear   number   most recent enrollment year, for the
- *                                     Homeschoolers column header. Passed down
+ *                                     Homeschooled column header. Passed down
  *                                     from RegulationPanel rather than imported
  *                                     from enrollmentLoader here directly, so
  *                                     the cross-topic dependency stays visible
@@ -79,7 +79,7 @@ const COLUMNS = REGULATION_GROUPS.flatMap((group) =>
   })),
 );
 
-// Subtle left divider between regulation bands (and before Homeschoolers).
+// Subtle left divider between regulation bands (and before Homeschooled).
 const DIVIDER = "border-l border-sable/10";
 
 // Pinned column widths so the grid never shifts with content — a long state
@@ -87,7 +87,7 @@ const DIVIDER = "border-l border-sable/10";
 const STATE_COL = "w-[272px]";
 const HS_COL = "w-[104px]";
 
-// Neutral shade behind the State + Homeschoolers header cells, so the whole
+// Neutral shade behind the State + Homeschooled header cells, so the whole
 // header band reads as one shaded strip alongside the tinted group cells.
 const HEADER_TINT = "bg-sable/[0.03]";
 
@@ -149,14 +149,14 @@ export default function RegulationComparisonTable({
         containerLabel="Regulations compared"
       >
         <TableHeader>
-          {/* Band row: STATE + the three regulation groups + Homeschoolers.
+          {/* Band row: STATE + the three regulation groups + Homeschooled.
               Scrolls with the body rather than sticking. Tried sticky twice
               more (2026-10-28, after the first failed attempt below in git
               history) — pixel-exact top offsets measured live via DevTools
               fixed the row-to-row positioning, then opaque inline-style
               backgrounds fixed the transparency bleed-through, but a THIRD,
               different bug then surfaced on the rowSpan cells specifically
-              (State, Homeschoolers): their sticky "frozen" box visually
+              (State, Homeschooled): their sticky "frozen" box visually
               detached from their real dimensions mid-scroll (background
               stopping short of the cell's true height, the bottom border
               landing in the wrong place) — caught live by Roy, not by any
@@ -192,7 +192,7 @@ export default function RegulationComparisonTable({
               rowSpan={2}
               className={`h-auto ${HS_COL} px-2 py-1.5 text-right align-bottom text-[11px] font-semibold uppercase tracking-widest text-sable/70 ${DIVIDER} ${HEADER_TINT}`}
             >
-              Homeschoolers
+              Homeschooled
               <span className="block text-[9px] font-normal tracking-normal text-sable/70">
                 {schoolYearLabel(enrollmentLatestYear)}
               </span>

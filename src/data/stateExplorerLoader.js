@@ -4,7 +4,7 @@
  * (built by scripts/build-state-explorer-snapshot.mjs) covers more states,
  * more years, and better demographics than the original hand-entered
  * stateExplorerMockData.js. For a code the snapshot covers, everything comes
- * from the snapshot except `context` — the access/funding ("State context")
+ * from the snapshot except `context` — the access/funding ("State policy context")
  * facts don't live in that workbook at all; they come from the Legislation
  * Google Sheet's access/funding columns, same source already wired up for
  * the Regulation view, via regulationLoader.js. Hawaii/Delaware's workbook
@@ -15,7 +15,6 @@
 import {
   EXPLORER_STATES as HAND_ENTERED,
   valueForYear,
-  DEFAULT_EXPLORER_STATE,
 } from "./stateExplorerMockData.js";
 import snapshot from "./state-explorer-snapshot.json";
 import { regulationByState } from "./regulationLoader.js";
@@ -29,4 +28,4 @@ export const EXPLORER_STATES = Object.fromEntries(
   }),
 );
 
-export { valueForYear, DEFAULT_EXPLORER_STATE };
+export { valueForYear };

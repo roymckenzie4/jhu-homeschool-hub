@@ -10,11 +10,10 @@
  * can't drift from how the local manual build works — only the byte source
  * differs.
  *
- * DRIVE_FILE_ID below is a personal copy Roy made and link-shared, standing
- * in until Genny turns on "anyone with the link" sharing on the real
- * Combined State Data file (she's shared it to specific accounts only so
- * far, which a bare API key can't read — see decisions.md, 2026-10-27).
- * Swap it for the real file's id once she confirms.
+ * DRIVE_FILE_ID is JHU's Combined State Data file. A bare API key can only
+ * read it because the file is shared as "anyone with the link → viewer";
+ * turning that off, or deleting and re-uploading the file (new id), breaks
+ * the fetch.
  *
  * Run locally (loads SHEETS_API_KEY from .env.local):
  *   node --env-file=.env.local scripts/fetch-state-explorer-snapshot.mjs
@@ -27,9 +26,7 @@
 import { fetchDriveFile, requireKey, writeSnapshot } from "./lib/sheets.mjs";
 import { readRawRows, buildStates, OUT_PATH } from "./build-state-explorer-snapshot.mjs";
 
-// TODO: swap for the real Combined State Data file's id once Genny turns on
-// link sharing (ask sent 2026-10-27 — see decisions.md).
-const DRIVE_FILE_ID = "1fTIYkuxheZWqNj6jh8Wg7YM9bGnBomvj";
+const DRIVE_FILE_ID = "1_hUgMx_dPi5ZisfB8mN4Hc5bWdIfvD4Y";
 
 async function main() {
   const key = requireKey();

@@ -1,7 +1,7 @@
 /**
  * Parses the Homeschool Hub "Legislation" tab as returned by the Google
  * Sheets API (`spreadsheets.get`), into per-state compulsory-schooling +
- * legalization facts AND access/funding "State context" facts, keyed by
+ * legalization facts AND access/funding "State policy context" facts, keyed by
  * full state name.
  *
  * Reads the full cell model (not values.get) because the access/funding

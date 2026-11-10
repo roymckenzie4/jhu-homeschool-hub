@@ -48,7 +48,7 @@ import ChartExportCard from "./ChartExportCard.jsx";
 import DownloadPngButton from "./DownloadPngButton.jsx";
 
 // Enrollment data comes shaped from the loader (parsed once, shared with the
-// Regulation view's Homeschoolers column). byYear aggregates are derived here.
+// Regulation view's Homeschooled column). byYear aggregates are derived here.
 const byYear = deriveByYear(byState);
 
 // Number of states in the national-overview leaderboard.

@@ -82,7 +82,7 @@ export const regulationFooter = {
       state's regulation level reflects how many are in force — Low (0–3), Medium
       (4–6), or High (7–10) — currently {LEVEL_DISTRIBUTION.Low} Low,{" "}
       {LEVEL_DISTRIBUTION.Medium} Medium, and {LEVEL_DISTRIBUTION.High} High. The
-      Homeschoolers column draws on the enrollment dataset and shows each state's
+      Homeschooled column draws on the enrollment dataset and shows each state's
       figure for the latest year, or “not reported” where the state does not
       publish one. Figures are illustrative placeholders pending the verified
       dataset.

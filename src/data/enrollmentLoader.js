@@ -9,7 +9,7 @@
  * breaking. The CSV also still backs the "Download data (CSV)" affordance, which
  * serves the published source verbatim.
  *
- * The Regulation view reads `enrollmentInLatestYear` for its "Homeschoolers"
+ * The Regulation view reads `enrollmentInLatestYear` for its "Homeschooled"
  * column; the Enrollment view consumes `enrollmentByState` / `enrollmentYears`
  * for everything it renders.
  */
@@ -47,7 +47,7 @@ export const enrollmentLatestYear = enrollmentYears[enrollmentYears.length - 1];
 
 /**
  * A state's enrollment in the latest dataset year, or null if it didn't report
- * that year. The regulation view's Homeschoolers column reads a single shared year
+ * that year. The regulation view's Homeschooled column reads a single shared year
  * across all states so its header can name a concrete year honestly; states
  * with no value for that year render as "not reported".
  */

@@ -35,7 +35,7 @@
  * and Louisiana have real sub-state breakdowns but NO demographics anywhere
  * in the draft.
  *
- * No `context` ("State context": sports/course/extracurricular access +
+ * No `context` ("State policy context": sports/course/extracurricular access +
  * public funding) block here anymore — that now comes live from the
  * Legislation Google Sheet via regulationLoader.js (stateExplorerLoader.js
  * merges it in for every state), so it doesn't need hand-entering here at all.
@@ -398,5 +398,3 @@ export const EXPLORER_STATES = {
     demographics: {},
   },
 };
-
-export const DEFAULT_EXPLORER_STATE = "LA";

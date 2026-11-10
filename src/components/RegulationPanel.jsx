@@ -7,7 +7,7 @@
  * from the shared selection; removal happens via the shared chips above the map.
  *
  * All regulation data comes through the regulation loader, never the CSV directly.
- * The comparison table's Homeschoolers column is the one cross-topic exception —
+ * The comparison table's Homeschooled column is the one cross-topic exception —
  * it reads enrollment via enrollmentLoader, imported here (not in the table or
  * its download button) so the dependency is visible at the topic layer.
  */

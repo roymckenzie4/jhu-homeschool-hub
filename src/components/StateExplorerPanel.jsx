@@ -434,7 +434,7 @@ function NoMapPlaceholder({ stateName, geoUnit }) {
   );
 }
 
-// Ordered (key, label) pairs for the "State context" list — the four
+// Ordered (key, label) pairs for the "State policy context" list — the four
 // access/funding variables from JHU's Legislation sheet that were requested
 // early on (see running-notes.md, the "additional policy fields" ask) but
 // never built anywhere, since the standalone Policy view they were floated
@@ -449,7 +449,7 @@ const STATE_CONTEXT_FIELDS = [
   ["publicFunding", "Public funding"],
 ];
 
-// Reuses SummaryCard's own "State context" list convention (eyebrow + a
+// Reuses SummaryCard's own "State policy context" list convention (eyebrow + a
 // label/value row list) byte-for-byte — see RegulationCard's
 // LegislationFacts — rather than inventing new styling for the same kind of
 // content. A field with a `url` (a real per-cell source link off the
@@ -465,7 +465,7 @@ function StateContextList({ context }) {
   return (
     <div style={{ minHeight: EXPLORER_CONTEXT_SLOT_HEIGHT }}>
       <hr className={CARD_DIVIDER_CLASS} />
-      <p className={CARD_EYEBROW_CLASS}>State context</p>
+      <p className={CARD_EYEBROW_CLASS}>State policy context</p>
       <ul className={CARD_LIST_CLASS}>
         {STATE_CONTEXT_FIELDS.map(([key, label]) => {
           const field = context[key];
@@ -742,7 +742,7 @@ function RegionAddControl({ selectedCount, availableItems, valueByName, onAdd, o
               type="button"
               className="rounded-full border border-dashed border-sable/30 px-3 py-1 font-sans text-xs text-sable/70 transition-colors hover:border-sable/50 hover:text-sable"
             >
-              + add {itemNounSingular}
+              + select {itemNounSingular}
             </button>
           </PopoverTrigger>
           <PopoverContent align="end" className="w-64 p-0">
@@ -1113,17 +1113,11 @@ export default function StateExplorerPanel({
                 </div>
               )
             )}
-            {/* Third flex child alongside the heading + legend/pills — same
-                3-way justify-between row Enrollment's own Trends heading
-                uses for its export button. Whichever of the two is showing
-                (trend chart or demographic bars) gets its own Save button;
-                nothing renders when there's no demographic data at all
-                (demoKeys.length === 0) since there's nothing to export. */}
-            {isTrending ? (
-              <DownloadPngButton onClick={startTrendExport} />
-            ) : (
-              demoKeys.length > 0 && <DownloadPngButton onClick={startDemoExport} />
-            )}
+            {/* Trend chart's Save button: third flex child alongside the
+                heading + legend — same 3-way justify-between row
+                Enrollment's own Trends heading uses. The demographic bars'
+                Save button sits under the bars instead (below). */}
+            {isTrending && <DownloadPngButton onClick={startTrendExport} />}
           </div>
 
           <div className="mt-3" style={{ height: ENROLLMENT_TABLE_HEIGHT }}>
@@ -1143,7 +1137,17 @@ export default function StateExplorerPanel({
                   : `${state.name} does not yet report a demographic breakdown.`}
               </DataPlaceholder>
             ) : (
-              <DemographicBars rows={demographicsForYear[activeDemo]} />
+              // Save button bottom-right, inside the same fixed-height slot
+              // so the row's height doesn't change; the bars give up the
+              // space and scroll if a category has too many groups.
+              <div className="flex h-full flex-col">
+                <div className="min-h-0 flex-1">
+                  <DemographicBars rows={demographicsForYear[activeDemo]} />
+                </div>
+                <div className="mt-1 flex justify-end">
+                  <DownloadPngButton onClick={startDemoExport} />
+                </div>
+              </div>
             )}
           </div>
         </div>

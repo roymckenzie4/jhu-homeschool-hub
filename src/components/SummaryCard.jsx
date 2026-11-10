@@ -22,7 +22,7 @@ export const CARD_HEADING_CLASS = "font-sans text-lg font-semibold text-sable";
 // blocks — still fits under the map height; row spacing carries the breathing.
 export const CARD_DIVIDER_CLASS = "my-3 border-t border-sable/15";
 
-// Small uppercase label over a list (e.g. "State context", "Regulations").
+// Small uppercase label over a list (e.g. "State policy context", "Regulations").
 export const CARD_EYEBROW_CLASS =
   "font-sans text-[11px] font-semibold uppercase tracking-widest text-sable/70";
 

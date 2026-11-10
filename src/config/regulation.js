@@ -147,7 +147,7 @@ export const LEGISLATION_COLUMNS = {
 };
 
 /**
- * Access/funding facts — "State context" in both RegulationCard and State
+ * Access/funding facts — "State policy context" in both RegulationCard and State
  * Explorer — also from the Legislation tab. Unlike LEGISLATION_COLUMNS, these
  * cells carry real per-cell source hyperlinks (statute text, EdChoice program
  * pages), same shape as the Heat Map tab's regulation cells. The sheet's

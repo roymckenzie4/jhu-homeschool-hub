@@ -17,7 +17,7 @@
  *   selectedStates  string[] — states shown as rows, mirrored from the shell.
  *   regulationByState   object   — shaped regulation data.
  *   enrollmentLatestYear, enrollmentInLatestYear — forwarded straight through
- *     to RegulationComparisonTable for its Homeschoolers column; sourced from
+ *     to RegulationComparisonTable for its Homeschooled column; sourced from
  *     enrollmentLoader at the RegulationPanel level, not here (see that file).
  *   title, subtitle, citation, filename — export metadata.
  */

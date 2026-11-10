@@ -33,7 +33,6 @@ import Footer from "./components/Footer.jsx";
 import EnrollmentPanel from "./components/EnrollmentPanel.jsx";
 import RegulationPanel from "./components/RegulationPanel.jsx";
 import StateExplorerPanel from "./components/StateExplorerPanel.jsx";
-import ExplorerLandingCard from "./components/ExplorerLandingCard.jsx";
 import { useSelection } from "./state/selection.jsx";
 import { isIframed } from "./lib/utils.js";
 import { CHIPS_SLOT_CLASS, TARGET_HEIGHT, TWO_COLUMN_GRID_CLASS } from "./config/layout.js";
@@ -47,6 +46,7 @@ import {
 import { regulationDescriptor, regulationFooter } from "./topics/regulationTopic.jsx";
 import { STATES } from "./config/states.js";
 import { COMPARE_CAP } from "./config/selection.js";
+import { DEFAULT_EXPLORER_STATE } from "./config/stateExplorerCoverage.js";
 import { trackEvent } from "./lib/analytics.js";
 
 const TABS = [
@@ -58,11 +58,10 @@ const TABS = [
 export default function App() {
   const [activeTab, setActiveTab] = useState("enrollment");
   const [activeYear, setActiveYear] = useState(DEFAULT_YEAR);
-  // Null = landing state (nothing picked yet) — mirrors Enrollment/
-  // Regulation's own "0 selected -> national overview" default rather than
-  // jumping straight into one state. Not part of the shared cross-topic
-  // selection; the explorer is inherently single-state.
-  const [explorerState, setExplorerState] = useState(null);
+  // Opens on DEFAULT_EXPLORER_STATE rather than an empty landing view. Not
+  // part of the shared cross-topic selection; the explorer is inherently
+  // single-state.
+  const [explorerState, setExplorerState] = useState(DEFAULT_EXPLORER_STATE);
   const { selectedStates, toggleState, clearAll } = useSelection();
 
   // State Explorer's per-state data comes from a ~1.7MB generated snapshot
@@ -129,7 +128,7 @@ export default function App() {
 
   // Cross-link target from Enrollment/Regulation's single-state detail card
   // (see ExplorerCrossLink) — switches to the State Explorer tab with this
-  // state already picked, rather than landing on the 0-selected view.
+  // state already picked, rather than the default state.
   function goToStateExplorer(postal) {
     setActiveTab("explorer");
     setExplorerState(postal);
@@ -201,10 +200,12 @@ export default function App() {
       {/* Tabs on the left; the year control (Enrollment) or a same-spot "as of"
           label (Regulation) on the right. Keeping the year here rather than on
           its own row means the tab row's height governs — the row doesn't
-          resize when switching to Regulation, which has no year control. */}
-      <div className="mt-4 flex items-center justify-between gap-4">
+          resize when switching to Regulation, which has no year control.
+          At narrow widths the control wraps under the tabs, and scrolls
+          sideways inside its own box if even a full row can't fit it. */}
+      <div className="mt-4 flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
         <ViewTabs tabs={TABS} activeTab={activeTab} onChange={handleTabChange} />
-        <div className="shrink-0">
+        <div className="-my-1 max-w-full overflow-x-auto py-1">
           {isEnrollment ? (
             <YearSelector
               recentYears={RECENT_YEARS}
@@ -276,17 +277,13 @@ export default function App() {
           className="mt-4"
         >
           {explorerStates ? (
-            explorerState ? (
-              <StateExplorerPanel
-                states={explorerStates}
-                stateKey={explorerState}
-                selectedRegions={selectedRegions}
-                onToggleRegion={toggleRegion}
-                onClearRegions={clearRegions}
-              />
-            ) : (
-              <ExplorerLandingCard />
-            )
+            <StateExplorerPanel
+              states={explorerStates}
+              stateKey={explorerState}
+              selectedRegions={selectedRegions}
+              onToggleRegion={toggleRegion}
+              onClearRegions={clearRegions}
+            />
           ) : (
             <p className="font-sans text-sm text-sable/70">Loading state data…</p>
           )}

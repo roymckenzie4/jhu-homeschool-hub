@@ -87,7 +87,7 @@ function LegislationFacts({ legislation }) {
   return (
     <>
       <hr className={CARD_DIVIDER_CLASS} />
-      <p className={CARD_EYEBROW_CLASS}>State context</p>
+      <p className={CARD_EYEBROW_CLASS}>State policy context</p>
       <ul className={CARD_LIST_CLASS}>
         {rows.map(([label, value]) => (
           <li

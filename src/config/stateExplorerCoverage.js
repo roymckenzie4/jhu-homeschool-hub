@@ -46,3 +46,7 @@ export const GEO_FILE_BY_STATE = {
 // anything else that just needs "is this state in State Explorer?") doesn't
 // need the per-state filename, just membership.
 export const STATE_EXPLORER_CODES = new Set(Object.keys(GEO_FILE_BY_STATE));
+
+// State shown when the State Explorer tab first opens, before anything is
+// picked in the Explore dropdown.
+export const DEFAULT_EXPLORER_STATE = "AR";
