@@ -108,15 +108,16 @@ backs each footer's "Download data (CSV)" button.
 
 **The snapshots refresh automatically — most of the time, nobody needs to
 touch this repo when JHU updates their source.** Every push to `main`, plus a
-weekly scheduled run (Mondays), re-fetches both sources and rebuilds the site.
+weekly scheduled run (Mondays), re-fetches every source and rebuilds the site.
 This needs the `SHEETS_API_KEY` repository secret (already configured).
 
 | Topic | Live source | Snapshot file | Fetch script |
 |---|---|---|---|
 | Enrollment | JHU's `.xlsx` workbook in Google Drive, tab `All States` | `src/data/enrollment-snapshot.json` | `scripts/fetch-enrollment-snapshot.mjs` |
 | Regulation | JHU's Google Sheet, `Heat Map` + `Legislation` tabs | `src/data/policy-snapshot.json` | `scripts/fetch-policy-snapshot.mjs` |
+| State Explorer | JHU's "Combined State Data" `.xlsx` in Google Drive, tab `raw data` | `src/data/state-explorer-snapshot.json` | `scripts/fetch-state-explorer-snapshot.mjs` |
 
-Both scripts share `scripts/lib/sheets.mjs` (the fetch plumbing, the API key,
+All three scripts share `scripts/lib/sheets.mjs` (the fetch plumbing, the API key,
 and the "don't overwrite a good snapshot with a bad fetch" safety check). To
 refresh a snapshot by hand, put the API key in `.env.local` (see
 `.env.local` — gitignored, never committed) and run:
@@ -124,6 +125,7 @@ refresh a snapshot by hand, put the API key in `.env.local` (see
 ```bash
 node --env-file=.env.local scripts/fetch-enrollment-snapshot.mjs
 node --env-file=.env.local scripts/fetch-policy-snapshot.mjs
+node --env-file=.env.local scripts/fetch-state-explorer-snapshot.mjs
 ```
 
 **To update the bundled CSV fallback** (only matters if the live source is
@@ -144,6 +146,14 @@ Notes worth knowing:
   nothing here needs to change. **If the file is ever deleted and
   re-uploaded** (rather than updated in place), its ID changes — update the ID
   at the top of `scripts/fetch-enrollment-snapshot.mjs`.
+- **The State Explorer source works the same way**: an uploaded `.xlsx`, read
+  via the Drive API. It also has to stay shared as "anyone with the link →
+  viewer", because the API key can only read link-shared files. Its ID is at
+  the top of `scripts/fetch-state-explorer-snapshot.mjs`. A state only
+  appears in State Explorer once it has a build config entry in
+  `scripts/build-state-explorer-snapshot.mjs`, a boundary file, and an entry
+  in `src/config/stateExplorerCoverage.js`. New rows for an unlisted state
+  are ignored until then.
 - **The regulation source's per-cell source links** (each Yes/No cell in the
   comparison table can link to the statute) only exist because the Sheets API
   returns the full cell model, not just values — a plain CSV export of that
