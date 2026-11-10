@@ -20,18 +20,16 @@ import {
   enrollmentGeneratedAt,
 } from "../data/enrollmentLoader.js";
 import {
-  RAMP_STEPS,
   COLORS,
+  MAP_SCALE_MODE,
   schoolYearLabel,
-  computeQuantileBreaks,
-  rangeLabel,
   DOWNLOAD_FILENAME,
   comparisonColor,
   enrollmentCitation,
   LAST_UPDATED,
 } from "../config/theme.js";
 import { formatNumber, formatUpdatedDate } from "../lib/format.js";
-import { NoDataKey } from "../components/NoDataPattern.jsx";
+import { buildColorScale } from "../lib/colorScale.js";
 
 // Most recent five years pin as pills in the shell's year selector; older
 // years are reachable through its leading "More years" dropdown.
@@ -40,23 +38,23 @@ export const RECENT_YEARS = years.slice(-RECENT_COUNT);
 export const OLDER_YEARS = years.slice(0, -RECENT_COUNT);
 export const DEFAULT_YEAR = RECENT_YEARS[RECENT_YEARS.length - 1];
 
+// Every state's value in every year. Built once: the pooled scale doesn't
+// depend on the active year.
+const ALL_VALUES = Object.values(byState).flatMap((yearMap) => Object.values(yearMap));
+const POOLED_SCALE = buildColorScale(ALL_VALUES);
+
 /**
- * Map a reporting value to one of the RAMP_STEPS buckets via quantile breaks.
- * Returns the non-reporting stripe pattern when no value exists — kept out of
- * the map so the map stays classification-agnostic.
+ * Map a value to its fill on the given color scale (lib/colorScale.js, shared
+ * with State Explorer's map). Returns the non-reporting stripe pattern when no
+ * value exists — kept out of the map so the map stays classification-agnostic.
  */
-function fillForValue(value, breaks) {
-  if (value == null) return "url(#non-reporting)";
-  if (!breaks) return RAMP_STEPS[0];
-  for (let i = 0; i < RAMP_STEPS.length; i += 1) {
-    if (value <= breaks[i + 1]) return RAMP_STEPS[i];
-  }
-  return RAMP_STEPS[RAMP_STEPS.length - 1];
+function fillForValue(value, scale) {
+  return scale?.fillForValue(value) ?? "url(#non-reporting)";
 }
 
 /**
- * Build the enrollment descriptor for a given active year. Computes the year's
- * per-state values and quantile breaks once, then closes over them for the
+ * Build the enrollment descriptor for a given active year. Resolves the year's
+ * per-state values and the color scale once, then closes over them for the
  * map fill, legend swatches, and chip-dot color so all three can never drift.
  */
 export function buildEnrollmentDescriptor(activeYear) {
@@ -67,17 +65,17 @@ export function buildEnrollmentDescriptor(activeYear) {
     valuesByState[name] = v == null ? null : v;
   }
 
-  // Quantile break points shared by the map (bucket per state) and the legend
-  // (range label per swatch).
-  const breaks = computeQuantileBreaks(Object.values(valuesByState));
-
-  const swatches = RAMP_STEPS.map((color, i) => ({
-    color,
-    label: rangeLabel(breaks, i, RAMP_STEPS.length),
-  }));
+  // One scale shared by the map (bucket per state) and the legend (range label
+  // per swatch). "pooled" holds it across all years, so a color means the same
+  // count in every year; "perYear" rebuilds it from the active year alone (see
+  // MAP_SCALE_MODE).
+  const pooled = MAP_SCALE_MODE.enrollment === "pooled";
+  const scale = pooled ? POOLED_SCALE : buildColorScale(Object.values(valuesByState));
+  // The striped "No data" swatch trails the ramp, matching State Explorer.
+  const swatches = [...(scale?.swatches ?? []), { label: "No data", kind: "noData" }];
 
   return {
-    fillForState: (name) => fillForValue(valuesByState[name] ?? null, breaks),
+    fillForState: (name) => fillForValue(valuesByState[name] ?? null, scale),
     ariaLabelForState: (name) => {
       const v = valuesByState[name] ?? null;
       return v != null
@@ -87,8 +85,8 @@ export function buildEnrollmentDescriptor(activeYear) {
     selectionStroke: COLORS.selectionBorder,
     legend: {
       label: `Students, ${schoolYearLabel(activeYear)}`,
+      sublabel: "National quintiles",
       swatches,
-      trailing: <NoDataKey label="No public data" />,
     },
     // Chip dot is HTML, so a non-reporting state resolves to a solid grey —
     // never the map's SVG stripe pattern. When 2+ states are selected (the
@@ -102,7 +100,7 @@ export function buildEnrollmentDescriptor(activeYear) {
         if (i >= 0) return comparisonColor(i);
       }
       const v = valuesByState[name] ?? null;
-      return v == null ? COLORS.nonReportingStripe : fillForValue(v, breaks);
+      return v == null ? COLORS.nonReportingStripe : fillForValue(v, scale);
     },
     // Combobox per-row meta: the active-year count, or a dash when unreported.
     metaForState: (name) => {

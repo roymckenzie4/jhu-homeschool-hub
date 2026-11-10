@@ -214,6 +214,8 @@ is scattered through the component files:**
 | The list of tracked regulations or level thresholds     | `src/config/regulation.js`                     |
 | How many states can be compared at once                 | `COMPARE_CAP` in `src/config/selection.js`     |
 | Fixed layout heights (the WordPress iframe target)      | `src/config/layout.js`                         |
+| Map color breaks (rounded quintiles, zero, label format) | `src/lib/colorScale.js`                       |
+| Whether a map's color scale spans all years or just one | `MAP_SCALE_MODE` in `src/config/theme.js`      |
 | How the enrollment CSV/workbook is parsed               | `src/data/parseCsv.js`                         |
 | How the regulation CSV/sheet is parsed                  | `src/data/parseRegulationCsv.js`, `parseHeatMapData.js`, `parseLegislationData.js` |
 | The deployed URL or base path                           | `base` in `vite.config.js`                     |

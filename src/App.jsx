@@ -312,6 +312,7 @@ export default function App() {
               <MapLegend
                 label={descriptor.legend.label}
                 swatches={descriptor.legend.swatches}
+                sublabel={descriptor.legend.sublabel}
                 trailing={
                   <div className="flex items-center gap-5">
                     {descriptor.legend.trailing}
