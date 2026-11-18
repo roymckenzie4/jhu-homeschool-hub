@@ -146,6 +146,7 @@ import {
   TWO_COLUMN_GRID_CLASS,
 } from "../config/layout.js";
 import { valueForYear, codeForYear } from "../data/stateExplorerMockData.js";
+import { enrollmentByState } from "../data/enrollmentLoader.js";
 
 // Section-heading convention shared by Enrollment/Regulation's data-zone
 // headings (see EnrollmentPanel.jsx) — kept local here since this page's data
@@ -496,8 +497,14 @@ function StateContextList({ context }) {
 // than its own thing. Centers vertically against the map via the row's own
 // lg:items-center (see the grid below) rather than stretching to fill it —
 // there's no visible box here that would look broken if it didn't.
+// The state name doubles as the state picker, same inline-trigger treatment
+// as the year below it, so the control sits on the thing it changes. The
+// accessible name starts with the visible state name (WCAG 2.5.3).
 function ExplorerHeadline({
   state,
+  stateKey,
+  stateOptions,
+  onPickState,
   slug,
   displayTotal,
   activeYear,
@@ -506,7 +513,24 @@ function ExplorerHeadline({
 }) {
   return (
     <div>
-      <h3 className="font-sans text-2xl font-bold text-sable">{state.name}</h3>
+      <h3 className="font-sans text-2xl font-bold text-sable">
+        <Select value={stateKey} onValueChange={onPickState}>
+          <SelectTrigger
+            aria-label={`${state.name}, choose a state`}
+            className="inline-flex h-auto w-auto gap-1.5 rounded border-none p-0 text-left underline decoration-sable/30 decoration-2 underline-offset-4 hover:decoration-sable/60 focus:ring-0"
+          >
+            <SelectValue />
+            <ChevronDown className="h-5 w-5 shrink-0 opacity-70" aria-hidden />
+          </SelectTrigger>
+          <SelectContent align="start">
+            {stateOptions.map(([key, name]) => (
+              <SelectItem key={key} value={key}>
+                {name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </h3>
 
       <p className="mt-3 font-sans text-4xl font-bold leading-none text-sable">
         {formatNumber(displayTotal)}
@@ -783,11 +807,21 @@ function RegionAddControl({ selectedCount, availableItems, valueByName, onAdd, o
 export default function StateExplorerPanel({
   states,
   stateKey,
+  onPickState,
   selectedRegions,
   onToggleRegion,
   onClearRegions,
 }) {
   const state = states[stateKey];
+
+  // [postal, name] pairs for the headline's state picker, alphabetical by name.
+  const stateOptions = useMemo(
+    () =>
+      Object.entries(states)
+        .map(([key, s]) => [key, s.name])
+        .sort(([, a], [, b]) => a.localeCompare(b)),
+    [states],
+  );
 
   // Every year that appears in ANY region's `values` for this state, plus
   // state.year itself (covers the no-regions case, e.g. Delaware). Self-heals
@@ -841,16 +875,24 @@ export default function StateExplorerPanel({
     [state.regions, activeYear],
   );
 
-  // Headline number for the active year. state.total is the TRUE verified
-  // total (matches JHU's own published figures) but only FOR state.year —
-  // stepping to an older year falls back to summing this state's own
-  // regions for that year, a real but partial number (same "floor, not
-  // ceiling" caveat Georgia's county-matched total already carries) rather
-  // than a second real total this snapshot doesn't store per year.
+  // Headline number for the active year, in order of preference:
+  //   1. The Enrollment tab's figure, so the same state-year reads the same
+  //      number on both tabs. JHU's two workbooks disagree for some
+  //      state-years (e.g. Arkansas 2023–24), and Enrollment's is the
+  //      published one.
+  //   2. The State Explorer workbook's own statewide total for that year —
+  //      covers years Enrollment doesn't (pre-1999, the in-progress year).
+  //   3. The sum of this year's regions — a floor, not a true total, since
+  //      suppressed cells and unmatched names drop out. Only reached by a
+  //      hand-entered state with no per-year totals.
+  // The region table can therefore sum to a different number than the
+  // headline; that difference is in the source data, not the display.
   const displayTotal =
-    activeYear === state.year
+    enrollmentByState[state.name]?.[parseInt(activeYear, 10)] ??
+    state.totalsByYear?.[activeYear] ??
+    (activeYear === state.year
       ? state.total
-      : (regionsForDisplay?.reduce((sum, r) => sum + (r.value ?? 0), 0) ?? state.total);
+      : (regionsForDisplay?.reduce((sum, r) => sum + (r.value ?? 0), 0) ?? state.total));
 
   // One color scale per state, shared by the map fill and the legend so the
   // two can't drift apart. "pooled" builds it from every year's region
@@ -1012,6 +1054,9 @@ export default function StateExplorerPanel({
 
         <ExplorerHeadline
           state={state}
+          stateKey={stateKey}
+          stateOptions={stateOptions}
+          onPickState={onPickState}
           slug={slug}
           displayTotal={displayTotal}
           activeYear={activeYear}

@@ -15,15 +15,7 @@
  */
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { ChevronDown } from "lucide-react";
 import ViewTabs from "./components/ViewTabs.jsx";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "./components/ui/select.jsx";
 import ChoroplethMap from "./components/ChoroplethMap.jsx";
 import MapLegend from "./components/MapLegend.jsx";
 import ComparingChips from "./components/ComparingChips.jsx";
@@ -198,7 +190,8 @@ export default function App() {
       </header>
 
       {/* Tabs on the left; the year control (Enrollment) or a same-spot "as of"
-          label (Regulation) on the right. Keeping the year here rather than on
+          label (Regulation) on the right; State Explorer leaves it empty, since
+          its state and year pickers sit inline in its own headline. Keeping the year here rather than on
           its own row means the tab row's height governs — the row doesn't
           resize when switching to Regulation, which has no year control.
           At narrow widths the control wraps under the tabs, and scrolls
@@ -213,35 +206,7 @@ export default function App() {
               activeYear={activeYear}
               onChange={setActiveYear}
             />
-          ) : isExplorer ? (
-            <div className="flex items-center">
-              <span className="mr-3 font-sans text-[11px] font-medium uppercase tracking-widest text-sable/70">
-                Explore
-              </span>
-              {explorerStates ? (
-                <Select value={explorerState ?? undefined} onValueChange={setExplorerState}>
-                  <SelectTrigger
-                    aria-label="Choose a state"
-                    className="whitespace-nowrap rounded border border-sable/20 bg-white px-2.5 py-1 font-sans text-xs tabular-nums text-sable transition hover:bg-sable/5"
-                  >
-                    <SelectValue placeholder="Select a state" />
-                    <ChevronDown className="h-3 w-3 opacity-70" aria-hidden />
-                  </SelectTrigger>
-                  <SelectContent align="end">
-                    {Object.entries(explorerStates)
-                      .sort(([, a], [, b]) => a.name.localeCompare(b.name))
-                      .map(([key, s]) => (
-                        <SelectItem key={key} value={key}>
-                          {s.name}
-                        </SelectItem>
-                      ))}
-                  </SelectContent>
-                </Select>
-              ) : (
-                <span className="font-sans text-xs text-sable/70">Loading states…</span>
-              )}
-            </div>
-          ) : (
+          ) : isExplorer ? null : (
             <span className="font-sans text-[11px] font-medium uppercase tracking-widest text-sable/70">
               Regulations current as of 2024–25
             </span>
@@ -280,6 +245,7 @@ export default function App() {
             <StateExplorerPanel
               states={explorerStates}
               stateKey={explorerState}
+              onPickState={setExplorerState}
               selectedRegions={selectedRegions}
               onToggleRegion={toggleRegion}
               onClearRegions={clearRegions}
