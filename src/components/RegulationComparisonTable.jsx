@@ -124,7 +124,7 @@ function EmptyPrompt() {
     <div className="flex flex-1 items-center justify-center rounded border border-dashed border-sable/25 px-6 py-10 text-center font-sans text-sm text-sable/70">
       <p>
         Select states on the map — or use{" "}
-        <span className="font-medium text-sable/70">+ add state</span> — to
+        <span className="font-medium text-sable/70">+ select state</span> — to
         compare their regulations side by side.
       </p>
     </div>

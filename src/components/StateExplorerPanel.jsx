@@ -756,7 +756,7 @@ function DataPlaceholder({ height, children }) {
 // already shows who's selected (pinned to top, highlighted), so a second
 // "who's selected" display would be redundant. Always rendered (not gated on
 // any selection existing) so it's reachable before a first click, same
-// reasoning as the national map's always-visible "+ add state".
+// reasoning as the national map's always-visible "+ select state".
 function RegionAddControl({ selectedCount, availableItems, valueByName, onAdd, onClear, itemNounSingular, itemNounPlural }) {
   const atCap = selectedCount >= COMPARE_CAP;
   return (
@@ -1088,7 +1088,7 @@ export default function StateExplorerPanel({
             {/* Always rendered when this state has regions at all (not
                 gated on a selection existing) — reachable before any click,
                 same reasoning as the national map's always-visible
-                "+ add state". No chips here: the table itself already shows
+                "+ select state". No chips here: the table itself already shows
                 who's selected (pinned to top, highlighted), so this control
                 only needs to add/clear, not redisplay the selection. */}
             {regionsForDisplay && (

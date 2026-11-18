@@ -16,7 +16,7 @@ Homeschool Hub team. One tool, three tabs:
   (where a state reports them). Counties/districts are click-to-compare, up to
   six, the same spirit as the national map's state comparison: click a
   shape on the map or a name in the table to add/remove it, or search by name
-  via the table's own "+ add" control. Still a Phase 2 concept — see
+  via the table's own "+ select" control. Still a Phase 2 concept — see
   `StateExplorerPanel.jsx`'s doc comment for the current data-shape caveats
   and what's deliberately not built yet.
 
@@ -263,5 +263,5 @@ tooling.
   year-by-year view for the selected region(s), that row-per-region shape
   goes away, and "remove" will need to move to a per-column control instead
   (see the doc comment in `StateExplorerPanel.jsx`). The map click and the
-  table's "+ add" search aren't affected — only the table's own
+  table's "+ select" search aren't affected — only the table's own
   click-to-remove needs to move.

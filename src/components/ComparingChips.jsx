@@ -2,7 +2,7 @@
  * ComparingChips — the shared selection chip row.
  *
  * Item-neutral: shows one chip per selected item (a colored dot + name +
- * remove ✕), a searchable "+ add {item}" combobox for picking items without
+ * remove ✕), a searchable "+ select {item}" combobox for picking items without
  * clicking a map shape, the running count against COMPARE_CAP, and a "Clear"
  * action. Selection lives with the caller (a context for the national map's
  * state cohort, local state for State Explorer's region cohort); this
@@ -20,7 +20,7 @@
  * HTML, so non-reporting must resolve to a solid color — never the map's SVG
  * stripe pattern (the caller's descriptor handles that translation).
  *
- * The "+ add" control is the shared shadcn Combobox (Popover + Command): a
+ * The "+ select" control is the shared shadcn Combobox (Popover + Command): a
  * type-to-filter list where each row shows the item's dot and optional meta.
  * It stays open after a pick so several items can be added in a row;
  * outside-click / Escape closes it.
@@ -39,7 +39,7 @@
  *   - onAdd / onRemove   (name)             add / remove a single item.
  *   - onClear            ()                 empty the cohort.
  *   - label              string             row eyebrow (default "Comparing").
- *   - itemNounSingular   string             drives "+ add {noun}" (default "state").
+ *   - itemNounSingular   string             drives "+ select {noun}" (default "state").
  *   - itemNounPlural     string             drives the empty-state prompt and
  *                                           combobox placeholder/empty-text
  *                                           (default "states").
@@ -131,7 +131,7 @@ export default function ComparingChips({
               type="button"
               className="rounded-full border border-dashed border-sable/30 px-3 py-1 font-sans text-xs text-sable/70 transition-colors hover:border-sable/50 hover:text-sable"
             >
-              + add {itemNounSingular}
+              + select {itemNounSingular}
             </button>
           </PopoverTrigger>
           <PopoverContent align="start" className="w-64 p-0">

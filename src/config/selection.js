@@ -1,6 +1,6 @@
 /**
  * Shared constants for the cross-topic state-selection cohort — the map click,
- * the "+ add state" control, and the comparison chip row all read from here.
+ * the "+ select state" control, and the comparison chip row all read from here.
  * Topic-agnostic: neither Enrollment nor Regulation owns this, so it doesn't
  * live in either topic's config file.
  */

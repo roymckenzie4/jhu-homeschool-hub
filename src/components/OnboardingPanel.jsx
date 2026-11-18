@@ -16,7 +16,7 @@
 // Name of the searchable add-state control in the chip row, styled to match how
 // it reads on screen so the step points at a real affordance.
 function AddStateControl() {
-  return <span className="font-medium text-sable/80">+ add state</span>;
+  return <span className="font-medium text-sable/80">+ select state</span>;
 }
 
 // How-to steps. Titles are the instruction (bold in render); the detail line
