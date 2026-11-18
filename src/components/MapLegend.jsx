@@ -35,14 +35,14 @@ import { useId } from "react";
 import { NoDataPattern } from "./NoDataPattern.jsx";
 
 // Width + spacing per swatch kind. "0" and "No data" are fixed, narrower, and
-// gapped off the ramp's ends. Ramp swatches are 64px but shrink (down to 44px,
-// still wide enough for a "501–1.4K" label) when the row is tight, so the
-// trailing slot never wraps under the legend.
+// gapped off the ramp's ends. Ramp swatches are 64px but shrink (down to 52px,
+// still wide enough for a "1.4K–2.6K" label on one line) when the row is
+// tight, so the trailing slot never wraps under the legend.
 const SWATCH_SIZE = {
   zero: "w-8 shrink-0 mr-2",
   noData: "w-12 shrink-0 ml-2",
 };
-const RAMP_SWATCH_SIZE = "flex-1 basis-16 min-w-11 max-w-16";
+const RAMP_SWATCH_SIZE = "flex-1 basis-16 min-w-13 max-w-16";
 function swatchWidth(swatch) {
   return SWATCH_SIZE[swatch.kind] ?? RAMP_SWATCH_SIZE;
 }
@@ -93,7 +93,7 @@ export default function MapLegend({ label, swatches, trailing = null, sublabel =
           </div>
           <div className="flex gap-[2px] text-[10px] leading-none text-sable/70">
             {swatches.map((s, i) => (
-              <span key={i} className={`block text-center tabular-nums ${swatchWidth(s)}`}>
+              <span key={i} className={`block whitespace-nowrap text-center tabular-nums ${swatchWidth(s)}`}>
                 {s.label}
               </span>
             ))}
