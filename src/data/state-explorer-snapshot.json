@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-11-10T17:16:21.098Z",
-  "source": "drive:1_hUgMx_dPi5ZisfB8mN4Hc5bWdIfvD4Y",
+  "generatedAt": "2026-11-18T19:42:37.173Z",
+  "source": "/Users/roymckenzie/Active/work/jhu/notes/2026-11-10-combined-state-data-from-jhu-live.xlsx",
   "states": {
     "HI": {
       "year": "2022–23",
@@ -372,6 +372,20 @@
               "pct": 18
             }
           ],
+          "age": [
+            {
+              "label": "10 and under",
+              "pct": 59
+            },
+            {
+              "label": "11–13",
+              "pct": 24
+            },
+            {
+              "label": "14 and over",
+              "pct": 17
+            }
+          ],
           "gender": [
             {
               "label": "Male",
@@ -396,6 +410,20 @@
             {
               "label": "High (9–12)",
               "pct": 8
+            }
+          ],
+          "age": [
+            {
+              "label": "10 and under",
+              "pct": 74
+            },
+            {
+              "label": "11–13",
+              "pct": 19
+            },
+            {
+              "label": "14 and over",
+              "pct": 7
             }
           ],
           "gender": [
@@ -424,6 +452,20 @@
               "pct": 13
             }
           ],
+          "age": [
+            {
+              "label": "10 and under",
+              "pct": 67
+            },
+            {
+              "label": "11–13",
+              "pct": 21
+            },
+            {
+              "label": "14 and over",
+              "pct": 12
+            }
+          ],
           "gender": [
             {
               "label": "Male",
@@ -448,6 +490,20 @@
             {
               "label": "High (9–12)",
               "pct": 15
+            }
+          ],
+          "age": [
+            {
+              "label": "10 and under",
+              "pct": 71
+            },
+            {
+              "label": "11–13",
+              "pct": 19
+            },
+            {
+              "label": "14 and over",
+              "pct": 10
             }
           ],
           "gender": [
@@ -540,6 +596,7 @@
           ]
         }
       },
+      "demographicUnits": {},
       "demographics": {
         "grade": [
           {
@@ -553,6 +610,20 @@
           {
             "label": "High (9–12)",
             "pct": 15
+          }
+        ],
+        "age": [
+          {
+            "label": "10 and under",
+            "pct": 71
+          },
+          {
+            "label": "11–13",
+            "pct": 19
+          },
+          {
+            "label": "14 and over",
+            "pct": 10
           }
         ],
         "gender": [
@@ -4015,6 +4086,7 @@
         }
       ],
       "demographicsByYear": {},
+      "demographicUnits": {},
       "demographics": {},
       "name": "Georgia",
       "geoUnit": "district",
@@ -5228,6 +5300,7 @@
         }
       ],
       "demographicsByYear": {},
+      "demographicUnits": {},
       "demographics": {},
       "name": "Louisiana",
       "geoUnit": "district",
@@ -5452,15 +5525,23 @@
           "grade": [
             {
               "label": "Elementary (K–5)",
-              "pct": 49
+              "pct": 47
             },
             {
               "label": "Middle (6–8)",
-              "pct": 24
+              "pct": 23
             },
             {
               "label": "High (9–12)",
-              "pct": 28
+              "pct": 27
+            },
+            {
+              "label": "Ungraded (K–6)",
+              "pct": 3
+            },
+            {
+              "label": "Ungraded (7–12)",
+              "pct": 1
             }
           ],
           "race": [
@@ -5476,21 +5557,39 @@
               "label": "Multiracial",
               "pct": 13
             }
+          ],
+          "familyType": [
+            {
+              "label": "Single-family",
+              "pct": 93
+            },
+            {
+              "label": "Multi-family",
+              "pct": 7
+            }
           ]
         },
         "2023–24": {
           "grade": [
             {
               "label": "Elementary (K–5)",
-              "pct": 46
+              "pct": 44
             },
             {
               "label": "Middle (6–8)",
-              "pct": 25
+              "pct": 24
             },
             {
               "label": "High (9–12)",
-              "pct": 28
+              "pct": 27
+            },
+            {
+              "label": "Ungraded (K–6)",
+              "pct": 3
+            },
+            {
+              "label": "Ungraded (7–12)",
+              "pct": 2
             }
           ],
           "race": [
@@ -5510,21 +5609,39 @@
               "label": "Multiracial",
               "pct": 13
             }
+          ],
+          "familyType": [
+            {
+              "label": "Single-family",
+              "pct": 92
+            },
+            {
+              "label": "Multi-family",
+              "pct": 8
+            }
           ]
         },
         "2022–23": {
           "grade": [
             {
               "label": "Elementary (K–5)",
-              "pct": 52
+              "pct": 49
             },
             {
               "label": "Middle (6–8)",
-              "pct": 26
+              "pct": 25
             },
             {
               "label": "High (9–12)",
-              "pct": 22
+              "pct": 21
+            },
+            {
+              "label": "Ungraded (K–6)",
+              "pct": 3
+            },
+            {
+              "label": "Ungraded (7–12)",
+              "pct": 2
             }
           ],
           "race": [
@@ -5548,21 +5665,39 @@
               "label": "Multiracial",
               "pct": 13
             }
+          ],
+          "familyType": [
+            {
+              "label": "Single-family",
+              "pct": 91
+            },
+            {
+              "label": "Multi-family",
+              "pct": 9
+            }
           ]
         },
         "2021–22": {
           "grade": [
             {
               "label": "Elementary (K–5)",
-              "pct": 50
+              "pct": 48
             },
             {
               "label": "Middle (6–8)",
-              "pct": 25
+              "pct": 24
             },
             {
               "label": "High (9–12)",
-              "pct": 25
+              "pct": 23
+            },
+            {
+              "label": "Ungraded (K–6)",
+              "pct": 3
+            },
+            {
+              "label": "Ungraded (7–12)",
+              "pct": 3
             }
           ],
           "race": [
@@ -5586,21 +5721,39 @@
               "label": "Multiracial",
               "pct": 12
             }
+          ],
+          "familyType": [
+            {
+              "label": "Single-family",
+              "pct": 92
+            },
+            {
+              "label": "Multi-family",
+              "pct": 8
+            }
           ]
         },
         "2020–21": {
           "grade": [
             {
               "label": "Elementary (K–5)",
-              "pct": 54
+              "pct": 51
             },
             {
               "label": "Middle (6–8)",
-              "pct": 25
+              "pct": 23
             },
             {
               "label": "High (9–12)",
-              "pct": 21
+              "pct": 20
+            },
+            {
+              "label": "Ungraded (K–6)",
+              "pct": 4
+            },
+            {
+              "label": "Ungraded (7–12)",
+              "pct": 2
             }
           ],
           "race": [
@@ -5624,22 +5777,41 @@
               "label": "Multiracial",
               "pct": 14
             }
+          ],
+          "familyType": [
+            {
+              "label": "Single-family",
+              "pct": 92
+            },
+            {
+              "label": "Multi-family",
+              "pct": 8
+            }
           ]
         }
       },
+      "demographicUnits": {},
       "demographics": {
         "grade": [
           {
             "label": "Elementary (K–5)",
-            "pct": 49
+            "pct": 47
           },
           {
             "label": "Middle (6–8)",
-            "pct": 24
+            "pct": 23
           },
           {
             "label": "High (9–12)",
-            "pct": 28
+            "pct": 27
+          },
+          {
+            "label": "Ungraded (K–6)",
+            "pct": 3
+          },
+          {
+            "label": "Ungraded (7–12)",
+            "pct": 1
           }
         ],
         "race": [
@@ -5654,6 +5826,16 @@
           {
             "label": "Multiracial",
             "pct": 13
+          }
+        ],
+        "familyType": [
+          {
+            "label": "Single-family",
+            "pct": 93
+          },
+          {
+            "label": "Multi-family",
+            "pct": 7
           }
         ]
       },
@@ -7910,6 +8092,7 @@
           ]
         }
       },
+      "demographicUnits": {},
       "demographics": {
         "grade": [
           {
@@ -10956,6 +11139,7 @@
         }
       ],
       "demographicsByYear": {},
+      "demographicUnits": {},
       "demographics": {},
       "name": "Florida",
       "geoUnit": "county",
@@ -11956,6 +12140,7 @@
         }
       ],
       "demographicsByYear": {},
+      "demographicUnits": {},
       "demographics": {},
       "name": "Maryland",
       "geoUnit": "county",
@@ -15998,8 +16183,501 @@
           "codes": {}
         }
       ],
-      "demographicsByYear": {},
-      "demographics": {},
+      "demographicsByYear": {
+        "1986–87": {
+          "compliance": [
+            {
+              "label": "Compliant",
+              "pct": 94
+            },
+            {
+              "label": "Non-compliant",
+              "pct": 6
+            }
+          ]
+        },
+        "1987–88": {
+          "compliance": [
+            {
+              "label": "Compliant",
+              "pct": 94
+            },
+            {
+              "label": "Non-compliant",
+              "pct": 6
+            }
+          ]
+        },
+        "1988–89": {
+          "compliance": [
+            {
+              "label": "Compliant",
+              "pct": 96
+            },
+            {
+              "label": "Non-compliant",
+              "pct": 4
+            }
+          ]
+        },
+        "1989–90": {
+          "compliance": [
+            {
+              "label": "Compliant",
+              "pct": 96
+            },
+            {
+              "label": "Non-compliant",
+              "pct": 4
+            }
+          ]
+        },
+        "1990–91": {
+          "compliance": [
+            {
+              "label": "Compliant",
+              "pct": 98
+            },
+            {
+              "label": "Non-compliant",
+              "pct": 2
+            }
+          ]
+        },
+        "1991–92": {
+          "compliance": [
+            {
+              "label": "Compliant",
+              "pct": 98
+            },
+            {
+              "label": "Non-compliant",
+              "pct": 2
+            }
+          ]
+        },
+        "1992–93": {
+          "compliance": [
+            {
+              "label": "Compliant",
+              "pct": 98
+            },
+            {
+              "label": "Non-compliant",
+              "pct": 2
+            }
+          ]
+        },
+        "1993–94": {
+          "compliance": [
+            {
+              "label": "Compliant",
+              "pct": 99
+            },
+            {
+              "label": "Non-compliant",
+              "pct": 1
+            }
+          ]
+        },
+        "1994–95": {
+          "compliance": [
+            {
+              "label": "Compliant",
+              "pct": 99
+            },
+            {
+              "label": "Non-compliant",
+              "pct": 1
+            }
+          ]
+        },
+        "1995–96": {
+          "compliance": [
+            {
+              "label": "Compliant",
+              "pct": 99
+            },
+            {
+              "label": "Non-compliant",
+              "pct": 1
+            }
+          ]
+        },
+        "1996–97": {
+          "compliance": [
+            {
+              "label": "Compliant",
+              "pct": 99
+            },
+            {
+              "label": "Non-compliant",
+              "pct": 1
+            }
+          ]
+        },
+        "1997–98": {
+          "compliance": [
+            {
+              "label": "Compliant",
+              "pct": 98
+            },
+            {
+              "label": "Non-compliant",
+              "pct": 2
+            }
+          ]
+        },
+        "1998–99": {
+          "compliance": [
+            {
+              "label": "Compliant",
+              "pct": 99
+            },
+            {
+              "label": "Non-compliant",
+              "pct": 1
+            }
+          ]
+        },
+        "2001–02": {
+          "compliance": [
+            {
+              "label": "Compliant",
+              "pct": 98
+            },
+            {
+              "label": "Non-compliant",
+              "pct": 2
+            }
+          ]
+        },
+        "2002–03": {
+          "compliance": [
+            {
+              "label": "Compliant",
+              "pct": 99
+            },
+            {
+              "label": "Non-compliant",
+              "pct": 1
+            }
+          ]
+        },
+        "2003–04": {
+          "compliance": [
+            {
+              "label": "Compliant",
+              "pct": 99
+            },
+            {
+              "label": "Non-compliant",
+              "pct": 1
+            }
+          ]
+        },
+        "2004–05": {
+          "compliance": [
+            {
+              "label": "Compliant",
+              "pct": 99
+            },
+            {
+              "label": "Non-compliant",
+              "pct": 1
+            }
+          ]
+        },
+        "2005–06": {
+          "compliance": [
+            {
+              "label": "Compliant",
+              "pct": 99
+            },
+            {
+              "label": "Non-compliant",
+              "pct": 1
+            }
+          ]
+        },
+        "2006–07": {
+          "compliance": [
+            {
+              "label": "Compliant",
+              "pct": 98
+            },
+            {
+              "label": "Non-compliant",
+              "pct": 2
+            }
+          ]
+        },
+        "2007–08": {
+          "compliance": [
+            {
+              "label": "Compliant",
+              "pct": 99
+            },
+            {
+              "label": "Non-compliant",
+              "pct": 1
+            }
+          ]
+        },
+        "2008–09": {
+          "compliance": [
+            {
+              "label": "Compliant",
+              "pct": 93
+            },
+            {
+              "label": "Non-compliant",
+              "pct": 7
+            }
+          ]
+        },
+        "2009–10": {
+          "compliance": [
+            {
+              "label": "Compliant",
+              "pct": 94
+            },
+            {
+              "label": "Non-compliant",
+              "pct": 6
+            }
+          ]
+        },
+        "2010–11": {
+          "compliance": [
+            {
+              "label": "Compliant",
+              "pct": 96
+            },
+            {
+              "label": "Non-compliant",
+              "pct": 4
+            }
+          ]
+        },
+        "2011–12": {
+          "compliance": [
+            {
+              "label": "Compliant",
+              "pct": 97
+            },
+            {
+              "label": "Non-compliant",
+              "pct": 3
+            }
+          ]
+        },
+        "2012–13": {
+          "compliance": [
+            {
+              "label": "Compliant",
+              "pct": 97
+            },
+            {
+              "label": "Non-compliant",
+              "pct": 3
+            }
+          ]
+        },
+        "2000–01": {
+          "compliance": [
+            {
+              "label": "Compliant",
+              "pct": 98
+            },
+            {
+              "label": "Non-compliant",
+              "pct": 2
+            }
+          ]
+        },
+        "2013–14": {
+          "compliance": [
+            {
+              "label": "Compliant",
+              "pct": 97
+            },
+            {
+              "label": "Non-compliant",
+              "pct": 3
+            }
+          ]
+        },
+        "2014–15": {
+          "compliance": [
+            {
+              "label": "Compliant",
+              "pct": 97
+            },
+            {
+              "label": "Non-compliant",
+              "pct": 3
+            }
+          ]
+        },
+        "2015–16": {
+          "compliance": [
+            {
+              "label": "Compliant",
+              "pct": 97
+            },
+            {
+              "label": "Non-compliant",
+              "pct": 3
+            }
+          ]
+        },
+        "2016–17": {
+          "compliance": [
+            {
+              "label": "Compliant",
+              "pct": 97
+            },
+            {
+              "label": "Non-compliant",
+              "pct": 3
+            }
+          ]
+        },
+        "2017–18": {
+          "compliance": [
+            {
+              "label": "Compliant",
+              "pct": 97
+            },
+            {
+              "label": "Non-compliant",
+              "pct": 3
+            }
+          ]
+        },
+        "2018–19": {
+          "compliance": [
+            {
+              "label": "Compliant",
+              "pct": 97
+            },
+            {
+              "label": "Non-compliant",
+              "pct": 3
+            }
+          ]
+        },
+        "2019–20": {
+          "compliance": [
+            {
+              "label": "Compliant",
+              "pct": 97
+            },
+            {
+              "label": "Non-compliant",
+              "pct": 3
+            }
+          ]
+        },
+        "2020–21": {
+          "compliance": [
+            {
+              "label": "Compliant",
+              "pct": 98
+            },
+            {
+              "label": "Non-compliant",
+              "pct": 2
+            }
+          ]
+        },
+        "2021–22": {
+          "compliance": [
+            {
+              "label": "Compliant",
+              "pct": 95
+            },
+            {
+              "label": "Non-compliant",
+              "pct": 5
+            }
+          ]
+        },
+        "2022–23": {
+          "compliance": [
+            {
+              "label": "Compliant",
+              "pct": 95
+            },
+            {
+              "label": "Non-compliant",
+              "pct": 5
+            }
+          ]
+        },
+        "2023–24": {
+          "compliance": [
+            {
+              "label": "Compliant",
+              "pct": 95
+            },
+            {
+              "label": "Non-compliant",
+              "pct": 5
+            }
+          ]
+        },
+        "2024–25": {
+          "compliance": [
+            {
+              "label": "Compliant",
+              "pct": 95
+            },
+            {
+              "label": "Non-compliant",
+              "pct": 5
+            }
+          ]
+        },
+        "2025–26": {
+          "compliance": [
+            {
+              "label": "Compliant",
+              "pct": 94
+            },
+            {
+              "label": "Non-compliant",
+              "pct": 6
+            }
+          ]
+        },
+        "1999–00": {
+          "compliance": [
+            {
+              "label": "Compliant",
+              "pct": 98
+            },
+            {
+              "label": "Non-compliant",
+              "pct": 2
+            }
+          ]
+        }
+      },
+      "demographicUnits": {},
+      "demographics": {
+        "compliance": [
+          {
+            "label": "Compliant",
+            "pct": 94
+          },
+          {
+            "label": "Non-compliant",
+            "pct": 6
+          }
+        ]
+      },
       "name": "Minnesota",
       "geoUnit": "county",
       "geoLabel": "counties",
@@ -17305,6 +17983,7 @@
           ]
         }
       },
+      "demographicUnits": {},
       "demographics": {
         "grade": [
           {
@@ -18591,6 +19270,7 @@
         }
       ],
       "demographicsByYear": {},
+      "demographicUnits": {},
       "demographics": {},
       "name": "North Dakota",
       "geoUnit": "county",
@@ -19502,8 +20182,585 @@
           "codes": {}
         }
       ],
-      "demographicsByYear": {},
-      "demographics": {},
+      "demographicsByYear": {
+        "1985–86": {
+          "familyType": [
+            {
+              "label": "Single-family",
+              "pct": 52
+            },
+            {
+              "label": "Multi-family",
+              "pct": 48
+            }
+          ]
+        },
+        "1986–87": {
+          "familyType": [
+            {
+              "label": "Single-family",
+              "pct": 60
+            },
+            {
+              "label": "Multi-family",
+              "pct": 40
+            }
+          ]
+        },
+        "1987–88": {
+          "familyType": [
+            {
+              "label": "Single-family",
+              "pct": 60
+            },
+            {
+              "label": "Multi-family",
+              "pct": 40
+            }
+          ]
+        },
+        "1988–89": {
+          "familyType": [
+            {
+              "label": "Single-family",
+              "pct": 68
+            },
+            {
+              "label": "Multi-family",
+              "pct": 32
+            }
+          ]
+        },
+        "1989–90": {
+          "familyType": [
+            {
+              "label": "Single-family",
+              "pct": 70
+            },
+            {
+              "label": "Multi-family",
+              "pct": 30
+            }
+          ]
+        },
+        "1990–91": {
+          "familyType": [
+            {
+              "label": "Single-family",
+              "pct": 73
+            },
+            {
+              "label": "Multi-family",
+              "pct": 27
+            }
+          ]
+        },
+        "1991–92": {
+          "familyType": [
+            {
+              "label": "Single-family",
+              "pct": 78
+            },
+            {
+              "label": "Multi-family",
+              "pct": 22
+            }
+          ]
+        },
+        "1992–93": {
+          "familyType": [
+            {
+              "label": "Single-family",
+              "pct": 78
+            },
+            {
+              "label": "Multi-family",
+              "pct": 22
+            }
+          ]
+        },
+        "1993–94": {
+          "familyType": [
+            {
+              "label": "Single-family",
+              "pct": 79
+            },
+            {
+              "label": "Multi-family",
+              "pct": 21
+            }
+          ]
+        },
+        "1994–95": {
+          "familyType": [
+            {
+              "label": "Single-family",
+              "pct": 80
+            },
+            {
+              "label": "Multi-family",
+              "pct": 20
+            }
+          ]
+        },
+        "1995–96": {
+          "familyType": [
+            {
+              "label": "Single-family",
+              "pct": 81
+            },
+            {
+              "label": "Multi-family",
+              "pct": 19
+            }
+          ]
+        },
+        "1996–97": {
+          "familyType": [
+            {
+              "label": "Single-family",
+              "pct": 84
+            },
+            {
+              "label": "Multi-family",
+              "pct": 16
+            }
+          ]
+        },
+        "1997–98": {
+          "familyType": [
+            {
+              "label": "Single-family",
+              "pct": 85
+            },
+            {
+              "label": "Multi-family",
+              "pct": 15
+            }
+          ]
+        },
+        "1998–99": {
+          "familyType": [
+            {
+              "label": "Single-family",
+              "pct": 86
+            },
+            {
+              "label": "Multi-family",
+              "pct": 14
+            }
+          ]
+        },
+        "1999–00": {
+          "familyType": [
+            {
+              "label": "Single-family",
+              "pct": 88
+            },
+            {
+              "label": "Multi-family",
+              "pct": 12
+            }
+          ]
+        },
+        "2000–01": {
+          "familyType": [
+            {
+              "label": "Single-family",
+              "pct": 87
+            },
+            {
+              "label": "Multi-family",
+              "pct": 13
+            }
+          ]
+        },
+        "2001–02": {
+          "familyType": [
+            {
+              "label": "Single-family",
+              "pct": 89
+            },
+            {
+              "label": "Multi-family",
+              "pct": 11
+            }
+          ]
+        },
+        "2002–03": {
+          "familyType": [
+            {
+              "label": "Single-family",
+              "pct": 89
+            },
+            {
+              "label": "Multi-family",
+              "pct": 11
+            }
+          ]
+        },
+        "2003–04": {
+          "familyType": [
+            {
+              "label": "Single-family",
+              "pct": 90
+            },
+            {
+              "label": "Multi-family",
+              "pct": 10
+            }
+          ]
+        },
+        "2004–05": {
+          "familyType": [
+            {
+              "label": "Single-family",
+              "pct": 90
+            },
+            {
+              "label": "Multi-family",
+              "pct": 10
+            }
+          ]
+        },
+        "2005–06": {
+          "familyType": [
+            {
+              "label": "Single-family",
+              "pct": 91
+            },
+            {
+              "label": "Multi-family",
+              "pct": 9
+            }
+          ]
+        },
+        "2006–07": {
+          "familyType": [
+            {
+              "label": "Single-family",
+              "pct": 91
+            },
+            {
+              "label": "Multi-family",
+              "pct": 9
+            }
+          ]
+        },
+        "2007–08": {
+          "familyType": [
+            {
+              "label": "Single-family",
+              "pct": 91
+            },
+            {
+              "label": "Multi-family",
+              "pct": 9
+            }
+          ]
+        },
+        "2008–09": {
+          "familyType": [
+            {
+              "label": "Single-family",
+              "pct": 92
+            },
+            {
+              "label": "Multi-family",
+              "pct": 8
+            }
+          ]
+        },
+        "2009–10": {
+          "familyType": [
+            {
+              "label": "Single-family",
+              "pct": 93
+            },
+            {
+              "label": "Multi-family",
+              "pct": 7
+            }
+          ]
+        },
+        "2010–11": {
+          "familyType": [
+            {
+              "label": "Single-family",
+              "pct": 92
+            },
+            {
+              "label": "Multi-family",
+              "pct": 8
+            }
+          ]
+        },
+        "2011–12": {
+          "familyType": [
+            {
+              "label": "Single-family",
+              "pct": 92
+            },
+            {
+              "label": "Multi-family",
+              "pct": 8
+            }
+          ]
+        },
+        "2012–13": {
+          "familyType": [
+            {
+              "label": "Single-family",
+              "pct": 92
+            },
+            {
+              "label": "Multi-family",
+              "pct": 8
+            }
+          ]
+        },
+        "2013–14": {
+          "familyType": [
+            {
+              "label": "Single-family",
+              "pct": 92
+            },
+            {
+              "label": "Multi-family",
+              "pct": 8
+            }
+          ]
+        },
+        "2014–15": {
+          "familyType": [
+            {
+              "label": "Single-family",
+              "pct": 92
+            },
+            {
+              "label": "Multi-family",
+              "pct": 8
+            }
+          ]
+        },
+        "2015–16": {
+          "familyType": [
+            {
+              "label": "Single-family",
+              "pct": 93
+            },
+            {
+              "label": "Multi-family",
+              "pct": 7
+            }
+          ]
+        },
+        "2016–17": {
+          "familyType": [
+            {
+              "label": "Single-family",
+              "pct": 92
+            },
+            {
+              "label": "Multi-family",
+              "pct": 8
+            }
+          ]
+        },
+        "2017–18": {
+          "familyType": [
+            {
+              "label": "Single-family",
+              "pct": 92
+            },
+            {
+              "label": "Multi-family",
+              "pct": 8
+            }
+          ]
+        },
+        "2018–19": {
+          "familyType": [
+            {
+              "label": "Single-family",
+              "pct": 91
+            },
+            {
+              "label": "Multi-family",
+              "pct": 9
+            }
+          ]
+        },
+        "2019–20": {
+          "familyType": [
+            {
+              "label": "Single-family",
+              "pct": 91
+            },
+            {
+              "label": "Multi-family",
+              "pct": 9
+            }
+          ]
+        },
+        "2020–21": {
+          "familyType": [
+            {
+              "label": "Single-family",
+              "pct": 93
+            },
+            {
+              "label": "Multi-family",
+              "pct": 7
+            }
+          ]
+        },
+        "2021–22": {
+          "age": [
+            {
+              "label": "10 and under",
+              "pct": 49
+            },
+            {
+              "label": "11–13",
+              "pct": 25
+            },
+            {
+              "label": "14 and over",
+              "pct": 26
+            }
+          ],
+          "religiosity": [
+            {
+              "label": "Religious",
+              "pct": 58
+            },
+            {
+              "label": "Non-religious",
+              "pct": 42
+            }
+          ],
+          "familyType": [
+            {
+              "label": "Single-family",
+              "pct": 91
+            },
+            {
+              "label": "Multi-family",
+              "pct": 9
+            }
+          ]
+        },
+        "2022–23": {
+          "age": [
+            {
+              "label": "10 and under",
+              "pct": 47
+            },
+            {
+              "label": "11–13",
+              "pct": 25
+            },
+            {
+              "label": "14 and over",
+              "pct": 27
+            }
+          ],
+          "religiosity": [
+            {
+              "label": "Religious",
+              "pct": 59
+            },
+            {
+              "label": "Non-religious",
+              "pct": 41
+            }
+          ],
+          "familyType": [
+            {
+              "label": "Single-family",
+              "pct": 90
+            },
+            {
+              "label": "Multi-family",
+              "pct": 10
+            }
+          ]
+        },
+        "2023–24": {
+          "age": [
+            {
+              "label": "10 and under",
+              "pct": 46
+            },
+            {
+              "label": "11–13",
+              "pct": 25
+            },
+            {
+              "label": "14 and over",
+              "pct": 29
+            }
+          ],
+          "religiosity": [
+            {
+              "label": "Religious",
+              "pct": 64
+            },
+            {
+              "label": "Non-religious",
+              "pct": 36
+            }
+          ],
+          "familyType": [
+            {
+              "label": "Single-family",
+              "pct": 90
+            },
+            {
+              "label": "Multi-family",
+              "pct": 10
+            }
+          ]
+        }
+      },
+      "demographicUnits": {},
+      "demographics": {
+        "age": [
+          {
+            "label": "10 and under",
+            "pct": 46
+          },
+          {
+            "label": "11–13",
+            "pct": 25
+          },
+          {
+            "label": "14 and over",
+            "pct": 29
+          }
+        ],
+        "religiosity": [
+          {
+            "label": "Religious",
+            "pct": 64
+          },
+          {
+            "label": "Non-religious",
+            "pct": 36
+          }
+        ],
+        "familyType": [
+          {
+            "label": "Single-family",
+            "pct": 90
+          },
+          {
+            "label": "Multi-family",
+            "pct": 10
+          }
+        ]
+      },
       "name": "Nebraska",
       "geoUnit": "county",
       "geoLabel": "counties",
@@ -29362,6 +30619,7 @@
         }
       ],
       "demographicsByYear": {},
+      "demographicUnits": {},
       "demographics": {},
       "name": "Ohio",
       "geoUnit": "district",
@@ -30667,6 +31925,7 @@
           ]
         }
       },
+      "demographicUnits": {},
       "demographics": {},
       "name": "Washington",
       "geoUnit": "county",
@@ -35051,150 +36310,410 @@
       ],
       "demographicsByYear": {
         "2025–26": {
-          "grade": [
+          "age": [
             {
-              "label": "Elementary (K–5)",
+              "label": "10 and under",
               "pct": 43
             },
             {
-              "label": "Middle (6–8)",
+              "label": "11–13",
               "pct": 25
             },
             {
-              "label": "High (9–12)",
+              "label": "14 and over",
               "pct": 32
+            }
+          ],
+          "religiosity": [
+            {
+              "label": "Religious homeschools",
+              "pct": 52
+            },
+            {
+              "label": "Non-religious homeschools",
+              "pct": 48
             }
           ]
         },
         "2024–25": {
-          "grade": [
+          "age": [
             {
-              "label": "Elementary (K–5)",
+              "label": "10 and under",
               "pct": 42
             },
             {
-              "label": "Middle (6–8)",
+              "label": "11–13",
               "pct": 25
             },
             {
-              "label": "High (9–12)",
+              "label": "14 and over",
               "pct": 33
+            }
+          ],
+          "religiosity": [
+            {
+              "label": "Religious homeschools",
+              "pct": 53
+            },
+            {
+              "label": "Non-religious homeschools",
+              "pct": 47
             }
           ]
         },
         "2023–24": {
-          "grade": [
+          "age": [
             {
-              "label": "Elementary (K–5)",
+              "label": "10 and under",
               "pct": 43
             },
             {
-              "label": "Middle (6–8)",
+              "label": "11–13",
               "pct": 25
             },
             {
-              "label": "High (9–12)",
+              "label": "14 and over",
               "pct": 32
+            }
+          ],
+          "religiosity": [
+            {
+              "label": "Religious homeschools",
+              "pct": 53
+            },
+            {
+              "label": "Non-religious homeschools",
+              "pct": 47
             }
           ]
         },
         "2022–23": {
-          "grade": [
+          "age": [
             {
-              "label": "Elementary (K–5)",
+              "label": "10 and under",
               "pct": 44
             },
             {
-              "label": "Middle (6–8)",
+              "label": "11–13",
               "pct": 25
             },
             {
-              "label": "High (9–12)",
+              "label": "14 and over",
               "pct": 31
+            }
+          ],
+          "religiosity": [
+            {
+              "label": "Religious homeschools",
+              "pct": 53
+            },
+            {
+              "label": "Non-religious homeschools",
+              "pct": 47
             }
           ]
         },
         "2021–22": {
-          "grade": [
+          "age": [
             {
-              "label": "Elementary (K–5)",
+              "label": "10 and under",
               "pct": 45
             },
             {
-              "label": "Middle (6–8)",
+              "label": "11–13",
               "pct": 25
             },
             {
-              "label": "High (9–12)",
+              "label": "14 and over",
               "pct": 30
+            }
+          ],
+          "religiosity": [
+            {
+              "label": "Religious homeschools",
+              "pct": 53
+            },
+            {
+              "label": "Non-religious homeschools",
+              "pct": 47
             }
           ]
         },
         "2020–21": {
-          "grade": [
+          "age": [
             {
-              "label": "Elementary (K–5)",
+              "label": "10 and under",
               "pct": 44
             },
             {
-              "label": "Middle (6–8)",
+              "label": "11–13",
               "pct": 25
             },
             {
-              "label": "High (9–12)",
+              "label": "14 and over",
               "pct": 31
+            }
+          ],
+          "religiosity": [
+            {
+              "label": "Religious homeschools",
+              "pct": 55
+            },
+            {
+              "label": "Non-religious homeschools",
+              "pct": 45
             }
           ]
         },
         "2019–20": {
-          "grade": [
+          "age": [
             {
-              "label": "Elementary (K–5)",
+              "label": "10 and under",
               "pct": 40
             },
             {
-              "label": "Middle (6–8)",
+              "label": "11–13",
               "pct": 26
             },
             {
-              "label": "High (9–12)",
+              "label": "14 and over",
               "pct": 34
+            }
+          ],
+          "religiosity": [
+            {
+              "label": "Religious homeschools",
+              "pct": 56
+            },
+            {
+              "label": "Non-religious homeschools",
+              "pct": 44
             }
           ]
         },
         "2018–19": {
-          "grade": [
+          "age": [
             {
-              "label": "Elementary (K–5)",
+              "label": "10 and under",
               "pct": 41
             },
             {
-              "label": "Middle (6–8)",
+              "label": "11–13",
               "pct": 26
             },
             {
-              "label": "High (9–12)",
+              "label": "14 and over",
               "pct": 33
+            }
+          ],
+          "religiosity": [
+            {
+              "label": "Religious homeschools",
+              "pct": 58
+            },
+            {
+              "label": "Non-religious homeschools",
+              "pct": 42
             }
           ]
         },
         "2017–18": {
-          "grade": [
+          "age": [
             {
-              "label": "Elementary (K–5)",
+              "label": "10 and under",
               "pct": 42
             },
             {
-              "label": "Middle (6–8)",
+              "label": "11–13",
               "pct": 26
             },
             {
-              "label": "High (9–12)",
+              "label": "14 and over",
               "pct": 32
+            }
+          ],
+          "religiosity": [
+            {
+              "label": "Religious homeschools",
+              "pct": 59
+            },
+            {
+              "label": "Non-religious homeschools",
+              "pct": 41
+            }
+          ]
+        },
+        "2016–17": {
+          "age": [
+            {
+              "label": "10 and under",
+              "pct": 43
+            },
+            {
+              "label": "11–13",
+              "pct": 26
+            },
+            {
+              "label": "14 and over",
+              "pct": 31
+            }
+          ],
+          "religiosity": [
+            {
+              "label": "Religious homeschools",
+              "pct": 59
+            },
+            {
+              "label": "Non-religious homeschools",
+              "pct": 41
+            }
+          ]
+        },
+        "2014–15": {
+          "age": [
+            {
+              "label": "10 and under",
+              "pct": 42
+            },
+            {
+              "label": "11–13",
+              "pct": 27
+            },
+            {
+              "label": "14 and over",
+              "pct": 31
+            }
+          ],
+          "religiosity": [
+            {
+              "label": "Religious homeschools",
+              "pct": 61
+            },
+            {
+              "label": "Non-religious homeschools",
+              "pct": 39
+            }
+          ]
+        },
+        "2013–14": {
+          "age": [
+            {
+              "label": "10 and under",
+              "pct": 42
+            },
+            {
+              "label": "11–13",
+              "pct": 27
+            },
+            {
+              "label": "14 and over",
+              "pct": 31
+            }
+          ],
+          "religiosity": [
+            {
+              "label": "Religious homeschools",
+              "pct": 62
+            },
+            {
+              "label": "Non-religious homeschools",
+              "pct": 38
+            }
+          ]
+        },
+        "2012–13": {
+          "age": [
+            {
+              "label": "10 and under",
+              "pct": 42
+            },
+            {
+              "label": "11–13",
+              "pct": 28
+            },
+            {
+              "label": "14 and over",
+              "pct": 31
+            }
+          ],
+          "religiosity": [
+            {
+              "label": "Religious homeschools",
+              "pct": 63
+            },
+            {
+              "label": "Non-religious homeschools",
+              "pct": 37
+            }
+          ]
+        },
+        "2011–12": {
+          "age": [
+            {
+              "label": "10 and under",
+              "pct": 43
+            },
+            {
+              "label": "11–13",
+              "pct": 28
+            },
+            {
+              "label": "14 and over",
+              "pct": 29
+            }
+          ],
+          "religiosity": [
+            {
+              "label": "Religious homeschools",
+              "pct": 64
+            },
+            {
+              "label": "Non-religious homeschools",
+              "pct": 36
+            }
+          ]
+        },
+        "2010–11": {
+          "age": [
+            {
+              "label": "10 and under",
+              "pct": 36
+            },
+            {
+              "label": "11–13",
+              "pct": 30
+            },
+            {
+              "label": "14 and over",
+              "pct": 34
+            }
+          ],
+          "religiosity": [
+            {
+              "label": "Religious homeschools",
+              "pct": 65
+            },
+            {
+              "label": "Non-religious homeschools",
+              "pct": 35
             }
           ]
         },
         "2009–10": {
+          "age": [
+            {
+              "label": "10 and under",
+              "pct": 36
+            },
+            {
+              "label": "11–13",
+              "pct": 29
+            },
+            {
+              "label": "14 and over",
+              "pct": 35
+            }
+          ],
           "gender": [
             {
               "label": "Male",
@@ -35203,10 +36722,34 @@
             {
               "label": "Female",
               "pct": 48
+            }
+          ],
+          "religiosity": [
+            {
+              "label": "Religious homeschools",
+              "pct": 66
+            },
+            {
+              "label": "Non-religious homeschools",
+              "pct": 34
             }
           ]
         },
         "2008–09": {
+          "age": [
+            {
+              "label": "10 and under",
+              "pct": 38
+            },
+            {
+              "label": "11–13",
+              "pct": 30
+            },
+            {
+              "label": "14 and over",
+              "pct": 32
+            }
+          ],
           "gender": [
             {
               "label": "Male",
@@ -35215,10 +36758,34 @@
             {
               "label": "Female",
               "pct": 48
+            }
+          ],
+          "religiosity": [
+            {
+              "label": "Religious homeschools",
+              "pct": 66
+            },
+            {
+              "label": "Non-religious homeschools",
+              "pct": 34
             }
           ]
         },
         "2007–08": {
+          "age": [
+            {
+              "label": "10 and under",
+              "pct": 37
+            },
+            {
+              "label": "11–13",
+              "pct": 30
+            },
+            {
+              "label": "14 and over",
+              "pct": 33
+            }
+          ],
           "gender": [
             {
               "label": "Male",
@@ -35228,9 +36795,33 @@
               "label": "Female",
               "pct": 48
             }
+          ],
+          "religiosity": [
+            {
+              "label": "Religious homeschools",
+              "pct": 67
+            },
+            {
+              "label": "Non-religious homeschools",
+              "pct": 33
+            }
           ]
         },
         "2006–07": {
+          "age": [
+            {
+              "label": "10 and under",
+              "pct": 37
+            },
+            {
+              "label": "11–13",
+              "pct": 31
+            },
+            {
+              "label": "14 and over",
+              "pct": 32
+            }
+          ],
           "gender": [
             {
               "label": "Male",
@@ -35239,6 +36830,16 @@
             {
               "label": "Female",
               "pct": 48
+            }
+          ],
+          "religiosity": [
+            {
+              "label": "Religious homeschools",
+              "pct": 67
+            },
+            {
+              "label": "Non-religious homeschools",
+              "pct": 33
             }
           ]
         },
@@ -35252,6 +36853,16 @@
               "label": "Female",
               "pct": 48
             }
+          ],
+          "religiosity": [
+            {
+              "label": "Religious homeschools",
+              "pct": 68
+            },
+            {
+              "label": "Non-religious homeschools",
+              "pct": 32
+            }
           ]
         },
         "2004–05": {
@@ -35263,6 +36874,16 @@
             {
               "label": "Female",
               "pct": 48
+            }
+          ],
+          "religiosity": [
+            {
+              "label": "Religious homeschools",
+              "pct": 68
+            },
+            {
+              "label": "Non-religious homeschools",
+              "pct": 32
             }
           ]
         },
@@ -35276,6 +36897,16 @@
               "label": "Female",
               "pct": 48
             }
+          ],
+          "religiosity": [
+            {
+              "label": "Religious homeschools",
+              "pct": 69
+            },
+            {
+              "label": "Non-religious homeschools",
+              "pct": 31
+            }
           ]
         },
         "2002–03": {
@@ -35287,6 +36918,16 @@
             {
               "label": "Female",
               "pct": 48
+            }
+          ],
+          "religiosity": [
+            {
+              "label": "Religious homeschools",
+              "pct": 69
+            },
+            {
+              "label": "Non-religious homeschools",
+              "pct": 31
             }
           ]
         },
@@ -35300,6 +36941,16 @@
               "label": "Female",
               "pct": 48
             }
+          ],
+          "religiosity": [
+            {
+              "label": "Religious homeschools",
+              "pct": 70
+            },
+            {
+              "label": "Non-religious homeschools",
+              "pct": 30
+            }
           ]
         },
         "2000–01": {
@@ -35311,6 +36962,16 @@
             {
               "label": "Female",
               "pct": 48
+            }
+          ],
+          "religiosity": [
+            {
+              "label": "Religious homeschools",
+              "pct": 70
+            },
+            {
+              "label": "Non-religious homeschools",
+              "pct": 30
             }
           ]
         },
@@ -35324,6 +36985,16 @@
               "label": "Female",
               "pct": 48
             }
+          ],
+          "religiosity": [
+            {
+              "label": "Religious homeschools",
+              "pct": 72
+            },
+            {
+              "label": "Non-religious homeschools",
+              "pct": 28
+            }
           ]
         },
         "1998–99": {
@@ -35335,6 +37006,16 @@
             {
               "label": "Female",
               "pct": 48
+            }
+          ],
+          "religiosity": [
+            {
+              "label": "Religious homeschools",
+              "pct": 73
+            },
+            {
+              "label": "Non-religious homeschools",
+              "pct": 27
             }
           ]
         },
@@ -35348,6 +37029,16 @@
               "label": "Female",
               "pct": 48
             }
+          ],
+          "religiosity": [
+            {
+              "label": "Religious homeschools",
+              "pct": 74
+            },
+            {
+              "label": "Non-religious homeschools",
+              "pct": 26
+            }
           ]
         },
         "1996–97": {
@@ -35359,6 +37050,16 @@
             {
               "label": "Female",
               "pct": 48
+            }
+          ],
+          "religiosity": [
+            {
+              "label": "Religious homeschools",
+              "pct": 73
+            },
+            {
+              "label": "Non-religious homeschools",
+              "pct": 27
             }
           ]
         },
@@ -35372,6 +37073,16 @@
               "label": "Female",
               "pct": 48
             }
+          ],
+          "religiosity": [
+            {
+              "label": "Religious homeschools",
+              "pct": 74
+            },
+            {
+              "label": "Non-religious homeschools",
+              "pct": 26
+            }
           ]
         },
         "1994–95": {
@@ -35383,6 +37094,16 @@
             {
               "label": "Female",
               "pct": 48
+            }
+          ],
+          "religiosity": [
+            {
+              "label": "Religious homeschools",
+              "pct": 74
+            },
+            {
+              "label": "Non-religious homeschools",
+              "pct": 26
             }
           ]
         },
@@ -35396,6 +37117,16 @@
               "label": "Female",
               "pct": 48
             }
+          ],
+          "religiosity": [
+            {
+              "label": "Religious homeschools",
+              "pct": 74
+            },
+            {
+              "label": "Non-religious homeschools",
+              "pct": 26
+            }
           ]
         },
         "1992–93": {
@@ -35407,6 +37138,16 @@
             {
               "label": "Female",
               "pct": 48
+            }
+          ],
+          "religiosity": [
+            {
+              "label": "Religious homeschools",
+              "pct": 72
+            },
+            {
+              "label": "Non-religious homeschools",
+              "pct": 28
             }
           ]
         },
@@ -35420,6 +37161,16 @@
               "label": "Female",
               "pct": 49
             }
+          ],
+          "religiosity": [
+            {
+              "label": "Religious homeschools",
+              "pct": 69
+            },
+            {
+              "label": "Non-religious homeschools",
+              "pct": 31
+            }
           ]
         },
         "1990–91": {
@@ -35431,6 +37182,16 @@
             {
               "label": "Female",
               "pct": 48
+            }
+          ],
+          "religiosity": [
+            {
+              "label": "Religious homeschools",
+              "pct": 71
+            },
+            {
+              "label": "Non-religious homeschools",
+              "pct": 29
             }
           ]
         },
@@ -35444,6 +37205,16 @@
               "label": "Female",
               "pct": 49
             }
+          ],
+          "religiosity": [
+            {
+              "label": "Religious homeschools",
+              "pct": 77
+            },
+            {
+              "label": "Non-religious homeschools",
+              "pct": 23
+            }
           ]
         },
         "1988–89": {
@@ -35456,22 +37227,45 @@
               "label": "Female",
               "pct": 49
             }
+          ],
+          "religiosity": [
+            {
+              "label": "Religious homeschools",
+              "pct": 78
+            },
+            {
+              "label": "Non-religious homeschools",
+              "pct": 22
+            }
           ]
         }
       },
+      "demographicUnits": {
+        "religiosity": "Homeschools"
+      },
       "demographics": {
-        "grade": [
+        "age": [
           {
-            "label": "Elementary (K–5)",
+            "label": "10 and under",
             "pct": 43
           },
           {
-            "label": "Middle (6–8)",
+            "label": "11–13",
             "pct": 25
           },
           {
-            "label": "High (9–12)",
+            "label": "14 and over",
             "pct": 32
+          }
+        ],
+        "religiosity": [
+          {
+            "label": "Religious homeschools",
+            "pct": 52
+          },
+          {
+            "label": "Non-religious homeschools",
+            "pct": 48
           }
         ]
       },
@@ -36950,6 +38744,7 @@
           ]
         }
       },
+      "demographicUnits": {},
       "demographics": {
         "grade": [
           {
@@ -40367,6 +42162,7 @@
           ]
         }
       },
+      "demographicUnits": {},
       "demographics": {
         "grade": [
           {
@@ -56006,8 +57802,405 @@
           "codes": {}
         }
       ],
-      "demographicsByYear": {},
-      "demographics": {},
+      "demographicsByYear": {
+        "2009–10": {
+          "grade": [
+            {
+              "label": "Grades K–6",
+              "pct": 57
+            },
+            {
+              "label": "Grades 7–12",
+              "pct": 43
+            }
+          ],
+          "sped": [
+            {
+              "label": "SPED",
+              "pct": 5
+            },
+            {
+              "label": "Non-SPED",
+              "pct": 95
+            }
+          ]
+        },
+        "2010–11": {
+          "grade": [
+            {
+              "label": "Grades K–6",
+              "pct": 56
+            },
+            {
+              "label": "Grades 7–12",
+              "pct": 44
+            }
+          ],
+          "sped": [
+            {
+              "label": "SPED",
+              "pct": 6
+            },
+            {
+              "label": "Non-SPED",
+              "pct": 94
+            }
+          ]
+        },
+        "2011–12": {
+          "grade": [
+            {
+              "label": "Grades K–6",
+              "pct": 56
+            },
+            {
+              "label": "Grades 7–12",
+              "pct": 44
+            }
+          ],
+          "sped": [
+            {
+              "label": "SPED",
+              "pct": 5
+            },
+            {
+              "label": "Non-SPED",
+              "pct": 95
+            }
+          ]
+        },
+        "2012–13": {
+          "grade": [
+            {
+              "label": "Grades K–6",
+              "pct": 56
+            },
+            {
+              "label": "Grades 7–12",
+              "pct": 44
+            }
+          ],
+          "sped": [
+            {
+              "label": "SPED",
+              "pct": 4
+            },
+            {
+              "label": "Non-SPED",
+              "pct": 96
+            }
+          ]
+        },
+        "2013–14": {
+          "grade": [
+            {
+              "label": "Grades K–6",
+              "pct": 56
+            },
+            {
+              "label": "Grades 7–12",
+              "pct": 44
+            }
+          ],
+          "sped": [
+            {
+              "label": "SPED",
+              "pct": 6
+            },
+            {
+              "label": "Non-SPED",
+              "pct": 94
+            }
+          ]
+        },
+        "2014–15": {
+          "grade": [
+            {
+              "label": "Grades K–6",
+              "pct": 55
+            },
+            {
+              "label": "Grades 7–12",
+              "pct": 45
+            }
+          ],
+          "sped": [
+            {
+              "label": "SPED",
+              "pct": 9
+            },
+            {
+              "label": "Non-SPED",
+              "pct": 91
+            }
+          ]
+        },
+        "2015–16": {
+          "grade": [
+            {
+              "label": "Grades K–6",
+              "pct": 55
+            },
+            {
+              "label": "Grades 7–12",
+              "pct": 45
+            }
+          ],
+          "sped": [
+            {
+              "label": "SPED",
+              "pct": 9
+            },
+            {
+              "label": "Non-SPED",
+              "pct": 91
+            }
+          ]
+        },
+        "2016–17": {
+          "grade": [
+            {
+              "label": "Grades K–6",
+              "pct": 53
+            },
+            {
+              "label": "Grades 7–12",
+              "pct": 47
+            }
+          ],
+          "sped": [
+            {
+              "label": "SPED",
+              "pct": 8
+            },
+            {
+              "label": "Non-SPED",
+              "pct": 92
+            }
+          ]
+        },
+        "2017–18": {
+          "grade": [
+            {
+              "label": "Grades K–6",
+              "pct": 53
+            },
+            {
+              "label": "Grades 7–12",
+              "pct": 47
+            }
+          ],
+          "sped": [
+            {
+              "label": "SPED",
+              "pct": 8
+            },
+            {
+              "label": "Non-SPED",
+              "pct": 92
+            }
+          ]
+        },
+        "2018–19": {
+          "grade": [
+            {
+              "label": "Grades K–6",
+              "pct": 53
+            },
+            {
+              "label": "Grades 7–12",
+              "pct": 47
+            }
+          ],
+          "sped": [
+            {
+              "label": "SPED",
+              "pct": 8
+            },
+            {
+              "label": "Non-SPED",
+              "pct": 92
+            }
+          ]
+        },
+        "2019–20": {
+          "grade": [
+            {
+              "label": "Grades K–6",
+              "pct": 54
+            },
+            {
+              "label": "Grades 7–12",
+              "pct": 46
+            }
+          ],
+          "sped": [
+            {
+              "label": "SPED",
+              "pct": 13
+            },
+            {
+              "label": "Non-SPED",
+              "pct": 87
+            }
+          ]
+        },
+        "2020–21": {
+          "grade": [
+            {
+              "label": "Grades K–6",
+              "pct": 60
+            },
+            {
+              "label": "Grades 7–12",
+              "pct": 40
+            }
+          ],
+          "sped": [
+            {
+              "label": "SPED",
+              "pct": 14
+            },
+            {
+              "label": "Non-SPED",
+              "pct": 86
+            }
+          ]
+        },
+        "2021–22": {
+          "grade": [
+            {
+              "label": "Grades K–6",
+              "pct": 59
+            },
+            {
+              "label": "Grades 7–12",
+              "pct": 41
+            }
+          ],
+          "sped": [
+            {
+              "label": "SPED",
+              "pct": 14
+            },
+            {
+              "label": "Non-SPED",
+              "pct": 86
+            }
+          ]
+        },
+        "2022–23": {
+          "grade": [
+            {
+              "label": "Grades K–6",
+              "pct": 53
+            },
+            {
+              "label": "Grades 7–12",
+              "pct": 47
+            }
+          ],
+          "sped": [
+            {
+              "label": "SPED",
+              "pct": 16
+            },
+            {
+              "label": "Non-SPED",
+              "pct": 84
+            }
+          ]
+        },
+        "2023–24": {
+          "grade": [
+            {
+              "label": "Grades K–6",
+              "pct": 52
+            },
+            {
+              "label": "Grades 7–12",
+              "pct": 48
+            }
+          ],
+          "sped": [
+            {
+              "label": "SPED",
+              "pct": 12
+            },
+            {
+              "label": "Non-SPED",
+              "pct": 88
+            }
+          ]
+        },
+        "2024–25": {
+          "grade": [
+            {
+              "label": "Grades K–6",
+              "pct": 51
+            },
+            {
+              "label": "Grades 7–12",
+              "pct": 49
+            }
+          ],
+          "sped": [
+            {
+              "label": "SPED",
+              "pct": 12
+            },
+            {
+              "label": "Non-SPED",
+              "pct": 88
+            }
+          ]
+        },
+        "2025–26": {
+          "grade": [
+            {
+              "label": "Grades K–6",
+              "pct": 51
+            },
+            {
+              "label": "Grades 7–12",
+              "pct": 49
+            }
+          ],
+          "sped": [
+            {
+              "label": "SPED",
+              "pct": 11
+            },
+            {
+              "label": "Non-SPED",
+              "pct": 89
+            }
+          ]
+        }
+      },
+      "demographicUnits": {},
+      "demographics": {
+        "grade": [
+          {
+            "label": "Grades K–6",
+            "pct": 51
+          },
+          {
+            "label": "Grades 7–12",
+            "pct": 49
+          }
+        ],
+        "sped": [
+          {
+            "label": "SPED",
+            "pct": 11
+          },
+          {
+            "label": "Non-SPED",
+            "pct": 89
+          }
+        ]
+      },
       "name": "New York",
       "geoUnit": "district",
       "geoLabel": "districts",
@@ -64527,8 +66720,153 @@
           "codes": {}
         }
       ],
-      "demographicsByYear": {},
-      "demographics": {},
+      "demographicsByYear": {
+        "2014–15": {
+          "age": [
+            {
+              "label": "5–11",
+              "pct": 47
+            },
+            {
+              "label": "12 and over",
+              "pct": 53
+            }
+          ]
+        },
+        "2015–16": {
+          "age": [
+            {
+              "label": "5–11",
+              "pct": 47
+            },
+            {
+              "label": "12 and over",
+              "pct": 53
+            }
+          ]
+        },
+        "2016–17": {
+          "age": [
+            {
+              "label": "5–11",
+              "pct": 47
+            },
+            {
+              "label": "12 and over",
+              "pct": 53
+            }
+          ]
+        },
+        "2017–18": {
+          "age": [
+            {
+              "label": "5–11",
+              "pct": 47
+            },
+            {
+              "label": "12 and over",
+              "pct": 53
+            }
+          ]
+        },
+        "2018–19": {
+          "age": [
+            {
+              "label": "5–11",
+              "pct": 48
+            },
+            {
+              "label": "12 and over",
+              "pct": 52
+            }
+          ]
+        },
+        "2019–20": {
+          "age": [
+            {
+              "label": "5–11",
+              "pct": 48
+            },
+            {
+              "label": "12 and over",
+              "pct": 52
+            }
+          ]
+        },
+        "2020–21": {
+          "age": [
+            {
+              "label": "5–11",
+              "pct": 62
+            },
+            {
+              "label": "12 and over",
+              "pct": 38
+            }
+          ]
+        },
+        "2021–22": {
+          "age": [
+            {
+              "label": "5–11",
+              "pct": 59
+            },
+            {
+              "label": "12 and over",
+              "pct": 41
+            }
+          ]
+        },
+        "2022–23": {
+          "age": [
+            {
+              "label": "5–11",
+              "pct": 59
+            },
+            {
+              "label": "12 and over",
+              "pct": 41
+            }
+          ]
+        },
+        "2023–24": {
+          "age": [
+            {
+              "label": "5–11",
+              "pct": 59
+            },
+            {
+              "label": "12 and over",
+              "pct": 41
+            }
+          ]
+        },
+        "2024–25": {
+          "age": [
+            {
+              "label": "5–11",
+              "pct": 59
+            },
+            {
+              "label": "12 and over",
+              "pct": 41
+            }
+          ]
+        }
+      },
+      "demographicUnits": {},
+      "demographics": {
+        "age": [
+          {
+            "label": "5–11",
+            "pct": 59
+          },
+          {
+            "label": "12 and over",
+            "pct": 41
+          }
+        ]
+      },
       "name": "Pennsylvania",
       "geoUnit": "district",
       "geoLabel": "districts",
@@ -67019,6 +69357,7 @@
         }
       ],
       "demographicsByYear": {},
+      "demographicUnits": {},
       "demographics": {},
       "name": "Tennessee",
       "geoUnit": "district",
@@ -71158,6 +73497,7 @@
         }
       ],
       "demographicsByYear": {},
+      "demographicUnits": {},
       "demographics": {},
       "name": "Colorado",
       "geoUnit": "district",
@@ -71823,6 +74163,7 @@
         }
       ],
       "demographicsByYear": {},
+      "demographicUnits": {},
       "demographics": {},
       "name": "Wyoming",
       "geoUnit": "district",
@@ -72930,6 +75271,7 @@
         }
       ],
       "demographicsByYear": {},
+      "demographicUnits": {},
       "demographics": {},
       "name": "Rhode Island",
       "geoUnit": "district",
@@ -80286,6 +82628,7 @@
         }
       ],
       "demographicsByYear": {},
+      "demographicUnits": {},
       "demographics": {},
       "name": "Massachusetts",
       "geoUnit": "town",
@@ -83714,7 +86057,7 @@
             },
             {
               "label": "Middle (6–8)",
-              "pct": 28
+              "pct": 27
             },
             {
               "label": "High (9–12)",
@@ -83734,7 +86077,7 @@
             },
             {
               "label": "High (9–12)",
-              "pct": 37
+              "pct": 36
             }
           ]
         },
@@ -83774,7 +86117,7 @@
           "grade": [
             {
               "label": "Elementary (K–5)",
-              "pct": 34
+              "pct": 33
             },
             {
               "label": "Middle (6–8)",
@@ -83790,7 +86133,7 @@
           "grade": [
             {
               "label": "Elementary (K–5)",
-              "pct": 35
+              "pct": 34
             },
             {
               "label": "Middle (6–8)",
@@ -83799,6 +86142,10 @@
             {
               "label": "High (9–12)",
               "pct": 41
+            },
+            {
+              "label": "Ungraded (9–12)",
+              "pct": 1
             }
           ]
         },
@@ -83810,11 +86157,15 @@
             },
             {
               "label": "Middle (6–8)",
-              "pct": 26
+              "pct": 25
             },
             {
               "label": "High (9–12)",
               "pct": 41
+            },
+            {
+              "label": "Ungraded (1–8)",
+              "pct": 1
             }
           ]
         },
@@ -83822,15 +86173,19 @@
           "grade": [
             {
               "label": "Elementary (K–5)",
-              "pct": 61
+              "pct": 58
             },
             {
               "label": "Middle (6–8)",
-              "pct": 21
+              "pct": 20
             },
             {
               "label": "High (9–12)",
-              "pct": 18
+              "pct": 17
+            },
+            {
+              "label": "Ungraded (1–8)",
+              "pct": 4
             }
           ]
         },
@@ -83847,6 +86202,10 @@
             {
               "label": "High (9–12)",
               "pct": 26
+            },
+            {
+              "label": "Ungraded (1–8)",
+              "pct": 1
             }
           ]
         },
@@ -83854,7 +86213,7 @@
           "grade": [
             {
               "label": "Elementary (K–5)",
-              "pct": 39
+              "pct": 38
             },
             {
               "label": "Middle (6–8)",
@@ -83863,6 +86222,10 @@
             {
               "label": "High (9–12)",
               "pct": 38
+            },
+            {
+              "label": "Ungraded (1–8)",
+              "pct": 2
             }
           ]
         },
@@ -83870,15 +86233,19 @@
           "grade": [
             {
               "label": "Elementary (K–5)",
-              "pct": 39
+              "pct": 37
             },
             {
               "label": "Middle (6–8)",
-              "pct": 24
+              "pct": 23
             },
             {
               "label": "High (9–12)",
-              "pct": 38
+              "pct": 37
+            },
+            {
+              "label": "Ungraded (1–8)",
+              "pct": 3
             }
           ]
         },
@@ -83902,7 +86269,7 @@
           "grade": [
             {
               "label": "Elementary (K–5)",
-              "pct": 35
+              "pct": 34
             },
             {
               "label": "Middle (6–8)",
@@ -83911,6 +86278,14 @@
             {
               "label": "High (9–12)",
               "pct": 41
+            },
+            {
+              "label": "Ungraded (1–8)",
+              "pct": 1
+            },
+            {
+              "label": "Ungraded (9–12)",
+              "pct": 1
             }
           ]
         },
@@ -83938,7 +86313,7 @@
             },
             {
               "label": "Middle (6–8)",
-              "pct": 31
+              "pct": 30
             },
             {
               "label": "High (9–12)",
@@ -84022,7 +86397,7 @@
             },
             {
               "label": "High (9–12)",
-              "pct": 20
+              "pct": 19
             }
           ]
         },
@@ -84071,6 +86446,10 @@
             {
               "label": "High (9–12)",
               "pct": 25
+            },
+            {
+              "label": "Ungraded (1–8)",
+              "pct": 1
             }
           ]
         },
@@ -84086,16 +86465,17 @@
             },
             {
               "label": "High (9–12)",
-              "pct": 28
+              "pct": 27
             }
           ]
         }
       },
+      "demographicUnits": {},
       "demographics": {
         "grade": [
           {
             "label": "Elementary (K–5)",
-            "pct": 35
+            "pct": 34
           },
           {
             "label": "Middle (6–8)",
@@ -84104,6 +86484,14 @@
           {
             "label": "High (9–12)",
             "pct": 41
+          },
+          {
+            "label": "Ungraded (1–8)",
+            "pct": 1
+          },
+          {
+            "label": "Ungraded (9–12)",
+            "pct": 1
           }
         ]
       },
@@ -85493,6 +87881,7 @@
           ]
         }
       },
+      "demographicUnits": {},
       "demographics": {
         "grade": [
           {
@@ -96203,15 +98592,23 @@
           "grade": [
             {
               "label": "Elementary (K–5)",
-              "pct": 42
+              "pct": 34
             },
             {
               "label": "Middle (6–8)",
-              "pct": 25
+              "pct": 21
             },
             {
               "label": "High (9–12)",
-              "pct": 32
+              "pct": 26
+            },
+            {
+              "label": "Ungraded (1–8)",
+              "pct": 13
+            },
+            {
+              "label": "Ungraded (9–12)",
+              "pct": 6
             }
           ]
         },
@@ -96219,15 +98616,23 @@
           "grade": [
             {
               "label": "Elementary (K–5)",
-              "pct": 43
+              "pct": 35
             },
             {
               "label": "Middle (6–8)",
-              "pct": 26
+              "pct": 21
             },
             {
               "label": "High (9–12)",
-              "pct": 31
+              "pct": 25
+            },
+            {
+              "label": "Ungraded (1–8)",
+              "pct": 13
+            },
+            {
+              "label": "Ungraded (9–12)",
+              "pct": 6
             }
           ]
         },
@@ -96235,15 +98640,23 @@
           "grade": [
             {
               "label": "Elementary (K–5)",
-              "pct": 44
+              "pct": 35
             },
             {
               "label": "Middle (6–8)",
-              "pct": 26
+              "pct": 21
             },
             {
               "label": "High (9–12)",
-              "pct": 30
+              "pct": 24
+            },
+            {
+              "label": "Ungraded (1–8)",
+              "pct": 13
+            },
+            {
+              "label": "Ungraded (9–12)",
+              "pct": 6
             }
           ]
         },
@@ -96251,15 +98664,33 @@
           "grade": [
             {
               "label": "Elementary (K–5)",
-              "pct": 43
+              "pct": 29
             },
             {
               "label": "Middle (6–8)",
-              "pct": 26
+              "pct": 18
             },
             {
               "label": "High (9–12)",
-              "pct": 31
+              "pct": 21
+            },
+            {
+              "label": "Ungraded (1–8)",
+              "pct": 22
+            },
+            {
+              "label": "Ungraded (9–12)",
+              "pct": 10
+            }
+          ],
+          "gender": [
+            {
+              "label": "Male",
+              "pct": 51
+            },
+            {
+              "label": "Female",
+              "pct": 49
             }
           ]
         },
@@ -96267,15 +98698,33 @@
           "grade": [
             {
               "label": "Elementary (K–5)",
-              "pct": 45
+              "pct": 30
             },
             {
               "label": "Middle (6–8)",
-              "pct": 26
+              "pct": 17
             },
             {
               "label": "High (9–12)",
-              "pct": 30
+              "pct": 20
+            },
+            {
+              "label": "Ungraded (1–8)",
+              "pct": 23
+            },
+            {
+              "label": "Ungraded (9–12)",
+              "pct": 9
+            }
+          ],
+          "gender": [
+            {
+              "label": "Male",
+              "pct": 52
+            },
+            {
+              "label": "Female",
+              "pct": 48
             }
           ]
         },
@@ -96283,15 +98732,33 @@
           "grade": [
             {
               "label": "Elementary (K–5)",
-              "pct": 45
+              "pct": 30
             },
             {
               "label": "Middle (6–8)",
-              "pct": 26
+              "pct": 17
             },
             {
               "label": "High (9–12)",
-              "pct": 29
+              "pct": 20
+            },
+            {
+              "label": "Ungraded (1–8)",
+              "pct": 24
+            },
+            {
+              "label": "Ungraded (9–12)",
+              "pct": 9
+            }
+          ],
+          "gender": [
+            {
+              "label": "Male",
+              "pct": 52
+            },
+            {
+              "label": "Female",
+              "pct": 48
             }
           ]
         },
@@ -96299,15 +98766,33 @@
           "grade": [
             {
               "label": "Elementary (K–5)",
-              "pct": 45
+              "pct": 29
             },
             {
               "label": "Middle (6–8)",
-              "pct": 25
+              "pct": 17
             },
             {
               "label": "High (9–12)",
-              "pct": 30
+              "pct": 19
+            },
+            {
+              "label": "Ungraded (1–8)",
+              "pct": 25
+            },
+            {
+              "label": "Ungraded (9–12)",
+              "pct": 10
+            }
+          ],
+          "gender": [
+            {
+              "label": "Male",
+              "pct": 52
+            },
+            {
+              "label": "Female",
+              "pct": 48
             }
           ]
         },
@@ -96315,15 +98800,33 @@
           "grade": [
             {
               "label": "Elementary (K–5)",
-              "pct": 44
+              "pct": 29
             },
             {
               "label": "Middle (6–8)",
-              "pct": 26
+              "pct": 17
             },
             {
               "label": "High (9–12)",
-              "pct": 30
+              "pct": 20
+            },
+            {
+              "label": "Ungraded (1–8)",
+              "pct": 24
+            },
+            {
+              "label": "Ungraded (9–12)",
+              "pct": 10
+            }
+          ],
+          "gender": [
+            {
+              "label": "Male",
+              "pct": 52
+            },
+            {
+              "label": "Female",
+              "pct": 48
             }
           ]
         },
@@ -96331,15 +98834,33 @@
           "grade": [
             {
               "label": "Elementary (K–5)",
-              "pct": 46
+              "pct": 29
             },
             {
               "label": "Middle (6–8)",
-              "pct": 26
+              "pct": 17
             },
             {
               "label": "High (9–12)",
-              "pct": 29
+              "pct": 18
+            },
+            {
+              "label": "Ungraded (1–8)",
+              "pct": 25
+            },
+            {
+              "label": "Ungraded (9–12)",
+              "pct": 10
+            }
+          ],
+          "gender": [
+            {
+              "label": "Male",
+              "pct": 51
+            },
+            {
+              "label": "Female",
+              "pct": 49
             }
           ]
         },
@@ -96347,15 +98868,33 @@
           "grade": [
             {
               "label": "Elementary (K–5)",
-              "pct": 45
+              "pct": 28
             },
             {
               "label": "Middle (6–8)",
-              "pct": 25
+              "pct": 16
             },
             {
               "label": "High (9–12)",
-              "pct": 30
+              "pct": 19
+            },
+            {
+              "label": "Ungraded (1–8)",
+              "pct": 26
+            },
+            {
+              "label": "Ungraded (9–12)",
+              "pct": 10
+            }
+          ],
+          "gender": [
+            {
+              "label": "Male",
+              "pct": 52
+            },
+            {
+              "label": "Female",
+              "pct": 48
             }
           ]
         },
@@ -96363,15 +98902,33 @@
           "grade": [
             {
               "label": "Elementary (K–5)",
-              "pct": 44
+              "pct": 29
             },
             {
               "label": "Middle (6–8)",
-              "pct": 25
+              "pct": 16
             },
             {
               "label": "High (9–12)",
-              "pct": 31
+              "pct": 20
+            },
+            {
+              "label": "Ungraded (1–8)",
+              "pct": 25
+            },
+            {
+              "label": "Ungraded (9–12)",
+              "pct": 11
+            }
+          ],
+          "gender": [
+            {
+              "label": "Male",
+              "pct": 51
+            },
+            {
+              "label": "Female",
+              "pct": 49
             }
           ]
         },
@@ -96379,15 +98936,33 @@
           "grade": [
             {
               "label": "Elementary (K–5)",
-              "pct": 43
-            },
-            {
-              "label": "Middle (6–8)",
               "pct": 27
             },
             {
+              "label": "Middle (6–8)",
+              "pct": 17
+            },
+            {
               "label": "High (9–12)",
-              "pct": 31
+              "pct": 19
+            },
+            {
+              "label": "Ungraded (1–8)",
+              "pct": 27
+            },
+            {
+              "label": "Ungraded (9–12)",
+              "pct": 11
+            }
+          ],
+          "gender": [
+            {
+              "label": "Male",
+              "pct": 51
+            },
+            {
+              "label": "Female",
+              "pct": 49
             }
           ]
         },
@@ -96395,15 +98970,33 @@
           "grade": [
             {
               "label": "Elementary (K–5)",
-              "pct": 43
+              "pct": 27
             },
             {
               "label": "Middle (6–8)",
-              "pct": 26
+              "pct": 16
             },
             {
               "label": "High (9–12)",
-              "pct": 31
+              "pct": 19
+            },
+            {
+              "label": "Ungraded (1–8)",
+              "pct": 27
+            },
+            {
+              "label": "Ungraded (9–12)",
+              "pct": 11
+            }
+          ],
+          "gender": [
+            {
+              "label": "Male",
+              "pct": 52
+            },
+            {
+              "label": "Female",
+              "pct": 48
             }
           ]
         },
@@ -96411,15 +99004,33 @@
           "grade": [
             {
               "label": "Elementary (K–5)",
-              "pct": 55
+              "pct": 37
             },
             {
               "label": "Middle (6–8)",
-              "pct": 24
+              "pct": 16
             },
             {
               "label": "High (9–12)",
-              "pct": 21
+              "pct": 14
+            },
+            {
+              "label": "Ungraded (1–8)",
+              "pct": 25
+            },
+            {
+              "label": "Ungraded (9–12)",
+              "pct": 8
+            }
+          ],
+          "gender": [
+            {
+              "label": "Male",
+              "pct": 52
+            },
+            {
+              "label": "Female",
+              "pct": 48
             }
           ]
         },
@@ -96427,15 +99038,33 @@
           "grade": [
             {
               "label": "Elementary (K–5)",
-              "pct": 46
+              "pct": 29
             },
             {
               "label": "Middle (6–8)",
-              "pct": 26
+              "pct": 16
             },
             {
               "label": "High (9–12)",
+              "pct": 17
+            },
+            {
+              "label": "Ungraded (1–8)",
               "pct": 28
+            },
+            {
+              "label": "Ungraded (9–12)",
+              "pct": 10
+            }
+          ],
+          "gender": [
+            {
+              "label": "Male",
+              "pct": 51
+            },
+            {
+              "label": "Female",
+              "pct": 49
             }
           ]
         },
@@ -96443,15 +99072,33 @@
           "grade": [
             {
               "label": "Elementary (K–5)",
-              "pct": 44
+              "pct": 26
             },
             {
               "label": "Middle (6–8)",
-              "pct": 25
+              "pct": 15
             },
             {
               "label": "High (9–12)",
-              "pct": 31
+              "pct": 19
+            },
+            {
+              "label": "Ungraded (1–8)",
+              "pct": 29
+            },
+            {
+              "label": "Ungraded (9–12)",
+              "pct": 11
+            }
+          ],
+          "gender": [
+            {
+              "label": "Male",
+              "pct": 51
+            },
+            {
+              "label": "Female",
+              "pct": 49
             }
           ]
         },
@@ -96459,15 +99106,33 @@
           "grade": [
             {
               "label": "Elementary (K–5)",
-              "pct": 43
-            },
-            {
-              "label": "Middle (6–8)",
               "pct": 27
             },
             {
+              "label": "Middle (6–8)",
+              "pct": 17
+            },
+            {
               "label": "High (9–12)",
-              "pct": 31
+              "pct": 19
+            },
+            {
+              "label": "Ungraded (1–8)",
+              "pct": 27
+            },
+            {
+              "label": "Ungraded (9–12)",
+              "pct": 11
+            }
+          ],
+          "gender": [
+            {
+              "label": "Male",
+              "pct": 51
+            },
+            {
+              "label": "Female",
+              "pct": 49
             }
           ]
         },
@@ -96475,15 +99140,33 @@
           "grade": [
             {
               "label": "Elementary (K–5)",
-              "pct": 44
-            },
-            {
-              "label": "Middle (6–8)",
               "pct": 26
             },
             {
+              "label": "Middle (6–8)",
+              "pct": 15
+            },
+            {
               "label": "High (9–12)",
-              "pct": 31
+              "pct": 18
+            },
+            {
+              "label": "Ungraded (1–8)",
+              "pct": 29
+            },
+            {
+              "label": "Ungraded (9–12)",
+              "pct": 12
+            }
+          ],
+          "gender": [
+            {
+              "label": "Male",
+              "pct": 52
+            },
+            {
+              "label": "Female",
+              "pct": 48
             }
           ]
         },
@@ -96491,15 +99174,33 @@
           "grade": [
             {
               "label": "Elementary (K–5)",
-              "pct": 45
+              "pct": 27
             },
             {
               "label": "Middle (6–8)",
-              "pct": 25
+              "pct": 15
             },
             {
               "label": "High (9–12)",
-              "pct": 30
+              "pct": 18
+            },
+            {
+              "label": "Ungraded (1–8)",
+              "pct": 29
+            },
+            {
+              "label": "Ungraded (9–12)",
+              "pct": 11
+            }
+          ],
+          "gender": [
+            {
+              "label": "Male",
+              "pct": 52
+            },
+            {
+              "label": "Female",
+              "pct": 48
             }
           ]
         },
@@ -96507,15 +99208,23 @@
           "grade": [
             {
               "label": "Elementary (K–5)",
-              "pct": 66
+              "pct": 63
             },
             {
               "label": "Middle (6–8)",
-              "pct": 22
+              "pct": 21
             },
             {
               "label": "High (9–12)",
-              "pct": 12
+              "pct": 11
+            },
+            {
+              "label": "Ungraded (1–8)",
+              "pct": 3
+            },
+            {
+              "label": "Ungraded (9–12)",
+              "pct": 1
             }
           ]
         },
@@ -96523,15 +99232,23 @@
           "grade": [
             {
               "label": "Elementary (K–5)",
-              "pct": 65
+              "pct": 61
             },
             {
               "label": "Middle (6–8)",
-              "pct": 22
+              "pct": 21
             },
             {
               "label": "High (9–12)",
-              "pct": 14
+              "pct": 13
+            },
+            {
+              "label": "Ungraded (1–8)",
+              "pct": 4
+            },
+            {
+              "label": "Ungraded (9–12)",
+              "pct": 1
             }
           ]
         },
@@ -96539,15 +99256,19 @@
           "grade": [
             {
               "label": "Elementary (K–5)",
-              "pct": 66
+              "pct": 64
             },
             {
               "label": "Middle (6–8)",
-              "pct": 22
+              "pct": 21
             },
             {
               "label": "High (9–12)",
               "pct": 12
+            },
+            {
+              "label": "Ungraded (1–8)",
+              "pct": 2
             }
           ]
         },
@@ -96555,15 +99276,19 @@
           "grade": [
             {
               "label": "Elementary (K–5)",
-              "pct": 64
+              "pct": 62
             },
             {
               "label": "Middle (6–8)",
-              "pct": 22
+              "pct": 21
             },
             {
               "label": "High (9–12)",
-              "pct": 14
+              "pct": 13
+            },
+            {
+              "label": "Ungraded (1–8)",
+              "pct": 3
             }
           ]
         },
@@ -96571,15 +99296,23 @@
           "grade": [
             {
               "label": "Elementary (K–5)",
-              "pct": 61
+              "pct": 58
             },
             {
               "label": "Middle (6–8)",
-              "pct": 22
+              "pct": 21
             },
             {
               "label": "High (9–12)",
-              "pct": 16
+              "pct": 15
+            },
+            {
+              "label": "Ungraded (1–8)",
+              "pct": 5
+            },
+            {
+              "label": "Ungraded (9–12)",
+              "pct": 1
             }
           ]
         },
@@ -96587,7 +99320,31 @@
           "grade": [
             {
               "label": "Elementary (K–5)",
-              "pct": 57
+              "pct": 54
+            },
+            {
+              "label": "Middle (6–8)",
+              "pct": 21
+            },
+            {
+              "label": "High (9–12)",
+              "pct": 20
+            },
+            {
+              "label": "Ungraded (1–8)",
+              "pct": 4
+            },
+            {
+              "label": "Ungraded (9–12)",
+              "pct": 1
+            }
+          ]
+        },
+        "1990–91": {
+          "grade": [
+            {
+              "label": "Elementary (K–5)",
+              "pct": 51
             },
             {
               "label": "Middle (6–8)",
@@ -96596,22 +99353,14 @@
             {
               "label": "High (9–12)",
               "pct": 21
-            }
-          ]
-        },
-        "1990–91": {
-          "grade": [
-            {
-              "label": "Elementary (K–5)",
-              "pct": 54
             },
             {
-              "label": "Middle (6–8)",
-              "pct": 23
+              "label": "Ungraded (1–8)",
+              "pct": 5
             },
             {
-              "label": "High (9–12)",
-              "pct": 23
+              "label": "Ungraded (9–12)",
+              "pct": 1
             }
           ]
         },
@@ -96619,15 +99368,23 @@
           "grade": [
             {
               "label": "Elementary (K–5)",
-              "pct": 52
+              "pct": 49
             },
             {
               "label": "Middle (6–8)",
-              "pct": 24
+              "pct": 22
             },
             {
               "label": "High (9–12)",
-              "pct": 24
+              "pct": 23
+            },
+            {
+              "label": "Ungraded (1–8)",
+              "pct": 5
+            },
+            {
+              "label": "Ungraded (9–12)",
+              "pct": 2
             }
           ]
         },
@@ -96635,15 +99392,23 @@
           "grade": [
             {
               "label": "Elementary (K–5)",
-              "pct": 50
+              "pct": 47
             },
             {
               "label": "Middle (6–8)",
-              "pct": 24
+              "pct": 23
             },
             {
               "label": "High (9–12)",
-              "pct": 26
+              "pct": 24
+            },
+            {
+              "label": "Ungraded (1–8)",
+              "pct": 5
+            },
+            {
+              "label": "Ungraded (9–12)",
+              "pct": 1
             }
           ]
         },
@@ -96651,15 +99416,23 @@
           "grade": [
             {
               "label": "Elementary (K–5)",
-              "pct": 47
+              "pct": 43
             },
             {
               "label": "Middle (6–8)",
-              "pct": 25
+              "pct": 23
             },
             {
               "label": "High (9–12)",
-              "pct": 28
+              "pct": 25
+            },
+            {
+              "label": "Ungraded (1–8)",
+              "pct": 6
+            },
+            {
+              "label": "Ungraded (9–12)",
+              "pct": 2
             }
           ]
         },
@@ -96667,15 +99440,23 @@
           "grade": [
             {
               "label": "Elementary (K–5)",
-              "pct": 44
+              "pct": 40
             },
             {
               "label": "Middle (6–8)",
-              "pct": 25
+              "pct": 23
             },
             {
               "label": "High (9–12)",
-              "pct": 31
+              "pct": 29
+            },
+            {
+              "label": "Ungraded (1–8)",
+              "pct": 7
+            },
+            {
+              "label": "Ungraded (9–12)",
+              "pct": 2
             }
           ]
         },
@@ -96683,15 +99464,23 @@
           "grade": [
             {
               "label": "Elementary (K–5)",
-              "pct": 43
+              "pct": 39
             },
             {
               "label": "Middle (6–8)",
-              "pct": 24
+              "pct": 22
             },
             {
               "label": "High (9–12)",
-              "pct": 33
+              "pct": 30
+            },
+            {
+              "label": "Ungraded (1–8)",
+              "pct": 7
+            },
+            {
+              "label": "Ungraded (9–12)",
+              "pct": 3
             }
           ]
         },
@@ -96699,15 +99488,23 @@
           "grade": [
             {
               "label": "Elementary (K–5)",
-              "pct": 43
+              "pct": 39
             },
             {
               "label": "Middle (6–8)",
-              "pct": 24
+              "pct": 22
             },
             {
               "label": "High (9–12)",
-              "pct": 33
+              "pct": 30
+            },
+            {
+              "label": "Ungraded (1–8)",
+              "pct": 7
+            },
+            {
+              "label": "Ungraded (9–12)",
+              "pct": 3
             }
           ]
         },
@@ -96715,15 +99512,23 @@
           "grade": [
             {
               "label": "Elementary (K–5)",
-              "pct": 41
+              "pct": 37
             },
             {
               "label": "Middle (6–8)",
-              "pct": 24
+              "pct": 22
             },
             {
               "label": "High (9–12)",
-              "pct": 34
+              "pct": 31
+            },
+            {
+              "label": "Ungraded (1–8)",
+              "pct": 7
+            },
+            {
+              "label": "Ungraded (9–12)",
+              "pct": 3
             }
           ]
         },
@@ -96731,15 +99536,23 @@
           "grade": [
             {
               "label": "Elementary (K–5)",
-              "pct": 41
+              "pct": 37
             },
             {
               "label": "Middle (6–8)",
-              "pct": 25
+              "pct": 22
             },
             {
               "label": "High (9–12)",
-              "pct": 34
+              "pct": 31
+            },
+            {
+              "label": "Ungraded (1–8)",
+              "pct": 8
+            },
+            {
+              "label": "Ungraded (9–12)",
+              "pct": 3
             }
           ]
         },
@@ -96747,15 +99560,23 @@
           "grade": [
             {
               "label": "Elementary (K–5)",
-              "pct": 40
+              "pct": 36
             },
             {
               "label": "Middle (6–8)",
-              "pct": 25
+              "pct": 22
             },
             {
               "label": "High (9–12)",
-              "pct": 35
+              "pct": 31
+            },
+            {
+              "label": "Ungraded (1–8)",
+              "pct": 8
+            },
+            {
+              "label": "Ungraded (9–12)",
+              "pct": 3
             }
           ]
         },
@@ -96763,15 +99584,23 @@
           "grade": [
             {
               "label": "Elementary (K–5)",
-              "pct": 41
+              "pct": 35
             },
             {
               "label": "Middle (6–8)",
-              "pct": 24
+              "pct": 21
             },
             {
               "label": "High (9–12)",
-              "pct": 35
+              "pct": 30
+            },
+            {
+              "label": "Ungraded (1–8)",
+              "pct": 9
+            },
+            {
+              "label": "Ungraded (9–12)",
+              "pct": 4
             }
           ]
         },
@@ -96779,15 +99608,23 @@
           "grade": [
             {
               "label": "Elementary (K–5)",
-              "pct": 40
+              "pct": 35
             },
             {
               "label": "Middle (6–8)",
-              "pct": 25
+              "pct": 21
             },
             {
               "label": "High (9–12)",
-              "pct": 35
+              "pct": 30
+            },
+            {
+              "label": "Ungraded (1–8)",
+              "pct": 10
+            },
+            {
+              "label": "Ungraded (9–12)",
+              "pct": 4
             }
           ]
         },
@@ -96795,15 +99632,23 @@
           "grade": [
             {
               "label": "Elementary (K–5)",
-              "pct": 41
+              "pct": 35
             },
             {
               "label": "Middle (6–8)",
-              "pct": 25
+              "pct": 21
             },
             {
               "label": "High (9–12)",
-              "pct": 34
+              "pct": 29
+            },
+            {
+              "label": "Ungraded (1–8)",
+              "pct": 11
+            },
+            {
+              "label": "Ungraded (9–12)",
+              "pct": 5
             }
           ]
         },
@@ -96811,15 +99656,23 @@
           "grade": [
             {
               "label": "Elementary (K–5)",
-              "pct": 41
+              "pct": 34
             },
             {
               "label": "Middle (6–8)",
-              "pct": 25
+              "pct": 21
             },
             {
               "label": "High (9–12)",
-              "pct": 34
+              "pct": 28
+            },
+            {
+              "label": "Ungraded (1–8)",
+              "pct": 12
+            },
+            {
+              "label": "Ungraded (9–12)",
+              "pct": 5
             }
           ]
         },
@@ -96827,15 +99680,23 @@
           "grade": [
             {
               "label": "Elementary (K–5)",
-              "pct": 42
+              "pct": 35
             },
             {
               "label": "Middle (6–8)",
-              "pct": 25
+              "pct": 21
             },
             {
               "label": "High (9–12)",
-              "pct": 33
+              "pct": 28
+            },
+            {
+              "label": "Ungraded (1–8)",
+              "pct": 12
+            },
+            {
+              "label": "Ungraded (9–12)",
+              "pct": 5
             }
           ]
         },
@@ -96843,15 +99704,23 @@
           "grade": [
             {
               "label": "Elementary (K–5)",
-              "pct": 41
+              "pct": 34
             },
             {
               "label": "Middle (6–8)",
-              "pct": 25
+              "pct": 21
             },
             {
               "label": "High (9–12)",
-              "pct": 33
+              "pct": 27
+            },
+            {
+              "label": "Ungraded (1–8)",
+              "pct": 13
+            },
+            {
+              "label": "Ungraded (9–12)",
+              "pct": 5
             }
           ]
         },
@@ -96859,32 +99728,59 @@
           "grade": [
             {
               "label": "Elementary (K–5)",
-              "pct": 41
+              "pct": 34
             },
             {
               "label": "Middle (6–8)",
-              "pct": 26
+              "pct": 21
             },
             {
               "label": "High (9–12)",
-              "pct": 33
+              "pct": 27
+            },
+            {
+              "label": "Ungraded (1–8)",
+              "pct": 13
+            },
+            {
+              "label": "Ungraded (9–12)",
+              "pct": 5
             }
           ]
         }
       },
+      "demographicUnits": {},
       "demographics": {
         "grade": [
           {
             "label": "Elementary (K–5)",
-            "pct": 45
+            "pct": 27
           },
           {
             "label": "Middle (6–8)",
-            "pct": 25
+            "pct": 15
           },
           {
             "label": "High (9–12)",
-            "pct": 30
+            "pct": 18
+          },
+          {
+            "label": "Ungraded (1–8)",
+            "pct": 29
+          },
+          {
+            "label": "Ungraded (9–12)",
+            "pct": 11
+          }
+        ],
+        "gender": [
+          {
+            "label": "Male",
+            "pct": 52
+          },
+          {
+            "label": "Female",
+            "pct": 48
           }
         ]
       },
@@ -99174,8 +102070,137 @@
           "codes": {}
         }
       ],
-      "demographicsByYear": {},
-      "demographics": {},
+      "demographicsByYear": {
+        "2019–20": {
+          "age": [
+            {
+              "label": "10 and under",
+              "pct": 41
+            },
+            {
+              "label": "11–13",
+              "pct": 26
+            },
+            {
+              "label": "14 and over",
+              "pct": 34
+            }
+          ]
+        },
+        "2020–21": {
+          "age": [
+            {
+              "label": "10 and under",
+              "pct": 53
+            },
+            {
+              "label": "11–13",
+              "pct": 25
+            },
+            {
+              "label": "14 and over",
+              "pct": 22
+            }
+          ]
+        },
+        "2021–22": {
+          "age": [
+            {
+              "label": "10 and under",
+              "pct": 49
+            },
+            {
+              "label": "11–13",
+              "pct": 25
+            },
+            {
+              "label": "14 and over",
+              "pct": 26
+            }
+          ]
+        },
+        "2022–23": {
+          "age": [
+            {
+              "label": "10 and under",
+              "pct": 47
+            },
+            {
+              "label": "11–13",
+              "pct": 26
+            },
+            {
+              "label": "14 and over",
+              "pct": 27
+            }
+          ]
+        },
+        "2023–24": {
+          "age": [
+            {
+              "label": "10 and under",
+              "pct": 46
+            },
+            {
+              "label": "11–13",
+              "pct": 25
+            },
+            {
+              "label": "14 and over",
+              "pct": 28
+            }
+          ]
+        },
+        "2024–25": {
+          "age": [
+            {
+              "label": "10 and under",
+              "pct": 46
+            },
+            {
+              "label": "11–13",
+              "pct": 26
+            },
+            {
+              "label": "14 and over",
+              "pct": 29
+            }
+          ]
+        },
+        "2025–26": {
+          "age": [
+            {
+              "label": "10 and under",
+              "pct": 46
+            },
+            {
+              "label": "11–13",
+              "pct": 26
+            },
+            {
+              "label": "14 and over",
+              "pct": 28
+            }
+          ]
+        }
+      },
+      "demographicUnits": {},
+      "demographics": {
+        "age": [
+          {
+            "label": "10 and under",
+            "pct": 46
+          },
+          {
+            "label": "11–13",
+            "pct": 26
+          },
+          {
+            "label": "14 and over",
+            "pct": 28
+          }
+        ]
+      },
       "name": "Maine",
       "geoUnit": "district",
       "geoLabel": "districts",
@@ -101204,6 +104229,7 @@
         }
       ],
       "demographicsByYear": {},
+      "demographicUnits": {},
       "demographics": {},
       "name": "Mississippi",
       "geoUnit": "district",

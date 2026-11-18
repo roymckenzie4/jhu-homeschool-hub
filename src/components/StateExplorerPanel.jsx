@@ -128,7 +128,7 @@ import { buildInteractionProps } from "../lib/mapInteraction.js";
 import { usePngExport } from "../lib/usePngExport.js";
 import { BY_NAME } from "../config/states.js";
 import { COMPARE_CAP } from "../config/selection.js";
-import { GEO_FILE_BY_STATE } from "../config/stateExplorerCoverage.js";
+import { DEMOGRAPHIC_LABELS, GEO_FILE_BY_STATE } from "../config/stateExplorerCoverage.js";
 import MapLegend from "./MapLegend.jsx";
 import MapHoverGlow from "./MapHoverGlow.jsx";
 import { NoDataPattern } from "./NoDataPattern.jsx";
@@ -700,6 +700,12 @@ function RegionTable({ regions, unitLabel, height, selectedRegions = [], onToggl
   );
 }
 
+// Category name as it reads mid-sentence: "by family type", but "by SPED".
+function demoTitleLabel(key) {
+  const label = DEMOGRAPHIC_LABELS[key] ?? key ?? "";
+  return label === label.toUpperCase() ? label : label.toLowerCase();
+}
+
 // One demographic category's breakdown — a label/track/percent row per
 // group. Extracted so the live view and the off-screen PNG export render the
 // identical markup (same reasoning as reusing ComparisonTrend for both
@@ -839,7 +845,7 @@ export default function StateExplorerPanel({
   const activeYear = availableYears.includes(pickedYear) ? pickedYear : state.year;
 
   // Demographics are extracted per year at build time — not every year has
-  // any (a year with no grade/gender/race columns populated anywhere in its
+  // any (a year with no subgroup columns populated anywhere in its
   // rows extracts to {}). `demographicsByYear` is the real per-year map;
   // `state.demographics` (the old single/default-year field) is the fallback
   // for a hand-entered state that predates it (e.g. Delaware).
@@ -1149,13 +1155,13 @@ export default function StateExplorerPanel({
                       key={key}
                       type="button"
                       onClick={() => setPickedDemo(key)}
-                      className={`rounded-full px-3 py-1 font-sans text-xs font-medium capitalize transition-colors ${
+                      className={`rounded-full px-3 py-1 font-sans text-xs font-medium transition-colors ${
                         activeDemo === key
                           ? "bg-heritage text-white"
                           : "border border-sable/20 text-sable/70 hover:border-sable/40 hover:text-sable"
                       }`}
                     >
-                      {key}
+                      {DEMOGRAPHIC_LABELS[key] ?? key}
                     </button>
                   ))}
                 </div>
@@ -1296,8 +1302,8 @@ export default function StateExplorerPanel({
         >
           <div ref={demoExportRef}>
             <ChartExportCard
-              title={`${state.name} homeschool enrollment by ${activeDemo}`}
-              subtitle={`Students, ${activeYear}`}
+              title={`${state.name} homeschool enrollment by ${demoTitleLabel(activeDemo)}`}
+              subtitle={`${state.demographicUnits?.[activeDemo] ?? "Students"}, ${activeYear}`}
               citation={stateExplorerCitation(state.name)}
             >
               <DemographicBars rows={demographicsForYear[activeDemo]} />

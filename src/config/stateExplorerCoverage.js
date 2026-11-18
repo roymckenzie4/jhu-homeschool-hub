@@ -51,3 +51,16 @@ export const STATE_EXPLORER_CODES = new Set(Object.keys(GEO_FILE_BY_STATE));
 // State shown when the State Explorer tab first opens, before anything is
 // picked in the Explore dropdown.
 export const DEFAULT_EXPLORER_STATE = "AR";
+
+// Pill names for the demographics panel's categories, keyed by the
+// snapshot's demographic keys. The build script sets the pill order.
+export const DEMOGRAPHIC_LABELS = {
+  grade: "Grade",
+  age: "Age",
+  gender: "Gender",
+  race: "Race",
+  religiosity: "Religiosity",
+  familyType: "Family type",
+  sped: "SPED",
+  compliance: "Compliance",
+};

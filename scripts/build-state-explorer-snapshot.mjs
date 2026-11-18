@@ -771,7 +771,15 @@ export const MAP_MATCHED = {
   MN: { nameField: "lcounty", geoUnit: "county", geoPath: countyGeoPath("mn") },
   MT: { nameField: "lcounty", geoUnit: "county", geoPath: countyGeoPath("mt") },
   ND: { nameField: "lcounty", geoUnit: "county", geoPath: countyGeoPath("nd") },
-  NE: { nameField: "lcounty", geoUnit: "county", geoPath: countyGeoPath("ne") },
+  NE: {
+    nameField: "lcounty",
+    geoUnit: "county",
+    geoPath: countyGeoPath("ne"),
+    // NE's statewide religious/non_religious count families (they sum to
+    // family_count); its county rows count students. Students match every
+    // other category. Which one JHU wants is an open question for Genny.
+    demographics: { religiosity: { rows: "regions" } },
+  },
   // Switched county -> district 2026-10-27, Genny green-lit (STATUS.md
   // Open Questions, "Ohio's county tag is missing for 2014-16"): Ohio
   // reports at district grain every year 2014-2024, but JHU only tags each
@@ -807,7 +815,22 @@ export const MAP_MATCHED = {
   // Labeled "district " in the raw column, but its 100 distinct names are
   // North Carolina's actual 100 counties (confirmed against JHU's own
   // tracking sheet, which lists NC's disaggregation category as "County").
-  NC: { nameField: "district ", geoUnit: "county", geoPath: countyGeoPath("nc") },
+  NC: {
+    nameField: "district ",
+    geoUnit: "county",
+    geoPath: countyGeoPath("nc"),
+    demographics: {
+      // grade_N is age_(N+5) in every cell — a copy of the age data, so only
+      // age is shown.
+      grade: false,
+      // religious/non_religious count homeschools (they sum to `schools`),
+      // not students — student counts stop after 2009.
+      religiosity: {
+        labels: { Religious: "Religious homeschools", "Non-religious": "Non-religious homeschools" },
+        unit: "Homeschools",
+      },
+    },
+  },
   // Real match rates against each state's actual boundary file, found by
   // diffing the full raw-name list against the geometry's name list (same
   // method as every state above) — all strong (86-100%); the remainder in
@@ -970,6 +993,10 @@ export const MAP_MATCHED = {
     geoPath: districtGeoPath("wi"),
     _allowPrefix: true,
     _preprocess: (raw) => WI_SPECIAL_CASES[raw] ?? raw,
+    // 2011–15 each have a blank-geography row with a few dozen gender
+    // counts (e.g. 11 male / 10 female) — a leftover, not a statewide
+    // figure. The real gender data is on the district rows.
+    demographics: { gender: { rows: "regions" } },
   }, // 99.3%
   // Maine's raw rows mostly match real TIGER names directly (single-town
   // units like "Acton Public Schools" -> "Acton"). The real gap is Maine's
@@ -1080,52 +1107,26 @@ for (const [code, cfg] of Object.entries(MAP_MATCHED)) {
 // a future state with no boundary file yet would land here again.
 export const LIST_ONLY = {};
 
-// Grade demographics, shared across every state. Sums whatever grade columns
-// are actually numeric, buckets into Elementary/Middle/High when the fine
-// columns exist, else falls back to a state's own coarse buckets (Montana
-// only has grade1_8/grade9_12) — never invents a split the data doesn't
-// support. Null if there's nothing usable.
-function extractGradeDemographics(rows) {
-  const sum = (field) => {
-    const vals = rows.map((r) => r[field]).filter((v) => typeof v === "number");
-    return vals.length ? vals.reduce((a, b) => a + b, 0) : null;
-  };
-  const fine = {
-    "Elementary (K–5)": ["grade_k", "grade_1", "grade_2", "grade_3", "grade_4", "grade_5"],
-    "Middle (6–8)": ["grade_6", "grade_7", "grade_8"],
-    "High (9–12)": ["grade_9", "grade_10", "grade11", "grade_12"],
-  };
-  const fineBuckets = Object.entries(fine)
+// Sum of one column's numeric cells across rows — blanks and text codes
+// ("*", "-", "<10") are skipped. Null if no row has a number.
+function sumColumn(rows, field) {
+  const vals = rows.map((r) => r[field]).filter((v) => typeof v === "number");
+  return vals.length ? vals.reduce((a, b) => a + b, 0) : null;
+}
+
+// { label: [fields] } -> [{ label, total }], summing each label's columns.
+// A label with no numeric column anywhere is dropped, never shown as 0.
+function sumBuckets(rows, fieldsByLabel) {
+  return Object.entries(fieldsByLabel)
     .map(([label, fields]) => {
-      const parts = fields.map(sum).filter((v) => v != null);
+      const parts = fields.map((f) => sumColumn(rows, f)).filter((v) => v != null);
       return parts.length ? { label, total: parts.reduce((a, b) => a + b, 0) } : null;
     })
     .filter(Boolean);
-  if (fineBuckets.length >= 2) return toPct(fineBuckets);
-
-  const coarse = { "Grades 1–8": "grade1_8", "Grades 9–12": "grade9_12" };
-  const coarseBuckets = Object.entries(coarse)
-    .map(([label, field]) => {
-      const total = sum(field);
-      return total != null ? { label, total } : null;
-    })
-    .filter(Boolean);
-  return coarseBuckets.length >= 2 ? toPct(coarseBuckets) : null;
-}
-
-// Generic race/gender extractors — same column names everywhere in the
-// workbook, so no per-state logic needed beyond "which ones are populated."
-function extractColumnDemographics(rows, fieldsToLabels) {
-  const buckets = Object.entries(fieldsToLabels)
-    .map(([field, label]) => {
-      const vals = rows.map((r) => r[field]).filter((v) => typeof v === "number");
-      return vals.length ? { label, total: vals.reduce((a, b) => a + b, 0) } : null;
-    })
-    .filter(Boolean);
-  return buckets.length >= 2 ? toPct(buckets) : null;
 }
 
 function toPct(buckets) {
+  if (buckets.length < 2) return null;
   const sum = buckets.reduce((a, b) => a + b.total, 0);
   if (!sum) return null;
   return buckets
@@ -1133,26 +1134,162 @@ function toPct(buckets) {
     .filter((b) => b.pct > 0);
 }
 
-function extractDemographics(latestYearRows) {
+const GRADE_FINE = {
+  "Elementary (K–5)": ["grade_k", "grade_1", "grade_2", "grade_3", "grade_4", "grade_5"],
+  "Middle (6–8)": ["grade_6", "grade_7", "grade_8"],
+  "High (9–12)": ["grade_9", "grade_10", "grade11", "grade_12"],
+};
+// States' own coarse grade spans: Montana grade1_8/grade9_12, New York
+// gradek_6/grade7_12.
+const GRADE_COARSE = {
+  "Grades K–6": ["gradek_6"],
+  "Grades 1–8": ["grade1_8"],
+  "Grades 7–12": ["grade7_12"],
+  "Grades 9–12": ["grade9_12"],
+};
+// Ungraded students (WI/NH: 1–8 and 9–12) span more than one school level,
+// so they get their own bars rather than being dropped — in WI they
+// outnumber any single grade by several times.
+const GRADE_UNGRADED = {
+  "Ungraded (K–6)": ["ungradedk_6"],
+  "Ungraded (1–8)": ["ungraded1_8"],
+  "Ungraded (7–12)": ["ungraded7_12"],
+  "Ungraded (9–12)": ["ungraded9_12"],
+};
+
+// Buckets into Elementary/Middle/High when the fine columns exist, else
+// falls back to a state's own coarse spans — never invents a split the data
+// doesn't support.
+function extractGradeDemographics(rows) {
+  const fine = sumBuckets(rows, GRADE_FINE);
+  const levels = fine.length >= 2 ? fine : sumBuckets(rows, GRADE_COARSE);
+  if (levels.length < 2) return null;
+  return toPct([...levels, ...sumBuckets(rows, GRADE_UNGRADED)]);
+}
+
+// Single-year ages bracket by school level. Edges follow the workbook's own
+// age-to-grade mapping (NC's grade_N columns are its age_(N+5) columns), so
+// 10 and under ≈ K–5, 11–13 ≈ 6–8, 14 and over ≈ 9–12. The open ends take
+// in ME's age<5, age_18, and age>18.
+const AGE_BRACKETS = [
+  { label: "10 and under", maxAge: 10 },
+  { label: "11–13", maxAge: 13 },
+  { label: "14 and over", maxAge: Infinity },
+];
+const SINGLE_AGE_COLUMN = /^age(?:_(\d+)|<(\d+)|>(\d+))$/;
+// PA reports only two spans; age5_11 + age>12 equals its total, so ">12"
+// covers 12 as well.
+const AGE_COARSE = { "5–11": ["age5_11"], "12 and over": ["age>12"] };
+
+// "age_7" -> 7, "age<5" -> 4, "age>18" -> 19 (one past each open end, which
+// is all bracketing needs).
+function columnAge(field) {
+  const m = SINGLE_AGE_COLUMN.exec(field);
+  if (!m) return null;
+  if (m[1]) return Number(m[1]);
+  return m[2] ? Number(m[2]) - 1 : Number(m[3]) + 1;
+}
+
+function extractAgeDemographics(rows) {
+  if (sumColumn(rows, "age5_11") != null) return toPct(sumBuckets(rows, AGE_COARSE));
+  const fields = Object.keys(rows[0] ?? {}).filter((f) => f !== "age>12" && columnAge(f) != null);
+  const fieldsByLabel = Object.fromEntries(
+    AGE_BRACKETS.map((b, i) => {
+      const min = i ? AGE_BRACKETS[i - 1].maxAge + 1 : -Infinity;
+      return [b.label, fields.filter((f) => columnAge(f) >= min && columnAge(f) <= b.maxAge)];
+    }),
+  );
+  return toPct(sumBuckets(rows, fieldsByLabel));
+}
+
+// Share of students in special education — the sped count against the same
+// rows' totals.
+function extractSpedDemographics(rows, countField) {
+  const paired = rows.filter(
+    (r) => typeof r.sped === "number" && typeof r[countField] === "number",
+  );
+  if (!paired.length) return null;
+  const sped = sumColumn(paired, "sped");
+  const total = sumColumn(paired, countField);
+  return toPct([
+    { label: "SPED", total: sped },
+    { label: "Non-SPED", total: total - sped },
+  ]);
+}
+
+const bucketed = (fieldsByLabel) => (rows) => toPct(sumBuckets(rows, fieldsByLabel));
+
+// Every subgroup category, in pill order. `columns` marks which raw columns
+// belong to the category, for choosing statewide vs. region rows below.
+// Keys are the data keys; display names live in the frontend config.
+const DEMOGRAPHIC_CATEGORIES = [
+  { key: "grade", columns: /^(grade|ungraded)/, extract: extractGradeDemographics },
+  { key: "age", columns: /^age/, extract: extractAgeDemographics },
+  {
+    key: "gender",
+    columns: /^(gender_sex_|male_grade|female_grade)/,
+    // WI reports gender only within grade spans (1–8, plus 9–12 from 2017).
+    extract: bucketed({
+      Male: ["gender_sex_male", "male_grade1_8", "male_grade9_12"],
+      Female: ["gender_sex_female", "female_grade1_8", "female_grade9_12"],
+      "Other / not specified": ["gender_sex_other"],
+    }),
+  },
+  {
+    key: "race",
+    columns: /^race_/,
+    extract: bucketed({
+      White: ["race_white"],
+      Black: ["race_black"],
+      Asian: ["race_asian"],
+      "Native American": ["race_nativeamerican"],
+      "Native Hawaiian": ["race_nativehawaiian"],
+      Multiracial: ["race_multi"],
+      "Other / not specified": ["race_other"],
+    }),
+  },
+  {
+    key: "religiosity",
+    columns: /^(non_)?religious$/,
+    extract: bucketed({ Religious: ["religious"], "Non-religious": ["non_religious"] }),
+  },
+  {
+    key: "familyType",
+    columns: /^(single|multi)_family$/,
+    extract: bucketed({ "Single-family": ["single_family"], "Multi-family": ["multi_family"] }),
+  },
+  { key: "sped", columns: /^sped$/, extract: extractSpedDemographics },
+  {
+    key: "compliance",
+    columns: /^(non-)?compliant$/,
+    extract: bucketed({ Compliant: ["compliant"], "Non-compliant": ["non-compliant"] }),
+  },
+];
+
+// One year's rows -> { [category]: [{ label, pct }] }. Each category picks
+// its own rows: the statewide rows when any of them carry that category's
+// columns, else the summed region rows — never both (see the Hawaii note in
+// shapeState). Choosing per category, not per year, keeps a statewide grade
+// row from hiding region-level gender (WI). `overrides` is a state's
+// `demographics` config: `false` drops a category; `{ rows: "regions" }`
+// forces the region sum; `{ labels }` renames bars; `{ unit }` names what
+// the bars count when it isn't students (see demographicUnits below).
+function extractDemographics(yearRows, countField, overrides = {}) {
+  const regionRows = yearRows.filter((r) => !isGrandTotalRow(r));
   const demographics = {};
-  const grade = extractGradeDemographics(latestYearRows);
-  if (grade) demographics.grade = grade;
-  const gender = extractColumnDemographics(latestYearRows, {
-    gender_sex_male: "Male",
-    gender_sex_female: "Female",
-    gender_sex_other: "Other / not specified",
-  });
-  if (gender) demographics.gender = gender;
-  const race = extractColumnDemographics(latestYearRows, {
-    race_white: "White",
-    race_black: "Black",
-    race_asian: "Asian",
-    race_nativeamerican: "Native American",
-    race_nativehawaiian: "Native Hawaiian",
-    race_multi: "Multiracial",
-    race_other: "Other / not specified",
-  });
-  if (race) demographics.race = race;
+  for (const { key, columns, extract } of DEMOGRAPHIC_CATEGORIES) {
+    const override = overrides[key] ?? {};
+    if (override === false) continue;
+    const carries = (r) =>
+      Object.keys(r).some((k) => columns.test(k) && typeof r[k] === "number");
+    const statewideRows = yearRows.filter((r) => isGrandTotalRow(r) && carries(r));
+    const rows = statewideRows.length && override.rows !== "regions" ? statewideRows : regionRows;
+    const buckets = extract(rows, countField);
+    if (!buckets) continue;
+    demographics[key] = override.labels
+      ? buckets.map((b) => ({ ...b, label: override.labels[b.label] ?? b.label }))
+      : buckets;
+  }
   return demographics;
 }
 
@@ -1199,13 +1336,6 @@ export function isGrandTotalRow(row) {
 // resolved. See decisions.md, 2026-10-05.
 function hasAgeBreakdown(row) {
   return Object.keys(row).some((k) => k.startsWith("age") && typeof row[k] === "number");
-}
-
-// Any grade/gender/race column extractDemographics below would actually use.
-function hasAnyDemographics(row) {
-  return Object.keys(row).some(
-    (k) => /^(grade|gender_sex|race)/.test(k) && typeof row[k] === "number",
-  );
 }
 
 // Raw count cells aren't all real numbers (checked directly against the
@@ -1270,6 +1400,7 @@ export function shapeState({
   excludeNames,
   excludeYears,
   starredCounts,
+  demographics,
 }) {
   const parse = (raw) => parseCount(raw, { starredCounts });
   const rowsByYear = new Map(); // every dated row, keyed by raw sy_fall — also feeds demographics below
@@ -1409,7 +1540,7 @@ export function shapeState({
     .sort((a, b) => (b.values[latestLabel] ?? 0) - (a.values[latestLabel] ?? 0));
 
   // Demographics prefer the state's own blank-geography ("statewide") rows
-  // when any of them carry real grade/gender/race data — a single
+  // when any of them carry that category's data — a single
   // authoritative measurement, not a geographic breakdown — falling back to
   // summing the named sub-region rows only when no statewide row has it.
   // NEVER both: confirmed (2026-10-07) that Hawaii's statewide row and its 7
@@ -1433,13 +1564,7 @@ export function shapeState({
   // from demographicsByYear — the frontend falls back/grays out for those.
   const demographicsByYear = {};
   for (const [year, yearRowsForYear] of rowsByYear) {
-    const statewideDemoRows = yearRowsForYear.filter(
-      (r) => isGrandTotalRow(r) && hasAnyDemographics(r),
-    );
-    const demoRowsForYear = statewideDemoRows.length
-      ? statewideDemoRows
-      : yearRowsForYear.filter((r) => !isGrandTotalRow(r));
-    const demo = extractDemographics(demoRowsForYear);
+    const demo = extractDemographics(yearRowsForYear, countField, demographics);
     if (Object.keys(demo).length) demographicsByYear[yearLabel(year)] = demo;
   }
 
@@ -1466,6 +1591,13 @@ export function shapeState({
     reportingCountByYear,
     regions,
     demographicsByYear,
+    // Category -> what its bars count, only where that isn't students (NC
+    // religiosity counts homeschools). Read by the PNG export's subtitle.
+    demographicUnits: Object.fromEntries(
+      Object.entries(demographics ?? {})
+        .filter(([, o]) => o?.unit)
+        .map(([key, o]) => [key, o.unit]),
+    ),
     // Default/latest-year view — kept so anything not yet reading
     // demographicsByYear (or a hand-entered state with no per-year data)
     // still gets a sensible single breakdown.
@@ -1485,6 +1617,7 @@ function buildMapMatched(rows, code, cfg) {
     excludeYears: cfg.excludeYears,
     excludeNames: cfg.excludeNames,
     starredCounts: cfg.starredCounts,
+    demographics: cfg.demographics,
   });
   const reportingByYear = Object.fromEntries(
     Object.entries(shaped.reportingCountByYear).map(([yr, n]) => [yr, `${n} of ${validNames.size}`]),
@@ -1510,6 +1643,7 @@ function buildListOnly(rows, code, cfg) {
     countField: cfg.countField,
     excludeNames: cfg.excludeNames,
     starredCounts: cfg.starredCounts,
+    demographics: cfg.demographics,
   });
   // No real boundary file, so no fixed "of N" denominator — just the count.
   const reportingByYear = Object.fromEntries(
